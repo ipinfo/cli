@@ -1,5 +1,33 @@
 # IPinfo Query Language (IQL) Specification
 
+The IPinfo Query Language (IQL) is used to query, transform, and output data
+from publicly available IPinfo APIs.
+
+## Quickstart
+
+To get a quick idea of what IQL is able to do, consider this query:
+
+```
+@ip=8.8.8.0/24 anycast=false country="US" ip>=8.8.8.253 @sort(desc)=ip @out(csv)=ip,city
+```
+
+Which will output the following CSV to `stdout`:
+
+```csv
+ip,city
+8.8.8.255,Mountain View
+8.8.8.254,Mountain View
+8.8.8.253,Mountain View
+```
+
+## Data Source
+
+TODO
+
+## Post-Processing
+
+TODO
+
 ## Key-Value Filter
 
 Key-value pairs of the form `<key><op><value>` are used as filters.
