@@ -83,8 +83,8 @@ anycast="false"
 Filter for data whose country key has the value `"US"`.
 
 ```
-`country=US`
-`country="US"`
+country=US
+country="US"
 ```
 
 #### Example 5
