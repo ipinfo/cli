@@ -52,17 +52,57 @@ The supported operators are:
 Values must be wrapped in quotation marks if they contain spaces, which would
 otherwise indicate the start of a new token.
 
+### Boolean Operators
+
+Key-value filters can be combined using boolean operators.
+
+The supported boolean operators are:
+
+`AND`: Checks that the predicate of two filters are both met.
+
+`OR`: Checks that at least one of the predicate of two filters are met.
+
+`NOT`: Checks that the following predicate of a filter isn't met.
+
+When multiple key-value filters appear without any boolean operator, `AND` is
+implicitly used.
+
+Using `NOT` on an expression is equivalent to negating all operators within the
+expression.
+
+### Operator Negation
+
+Each of these operators has a "negation operator":
+
+`=` negates `!=` and vice versa.
+
+`>` negates `<=` and vice versa.
+
+`<` negates `>=` and vice versa.
+
+`AND` negates `OR` and vice versa.
+
+`NOT` negates itself; `NOT NOT` is a no-op.
+
 ### Examples
 
 #### Example 1
 
-Filter for data with IPs less than `8.8.8.255`, e.g. `8.8.8.{0..254}`.
+Filter for data with IPs `8.8.8.{0..254}`.
 
 ```
-ip<8.8.8.255
+ip>=8.8.8.0 ip<8.8.8.255
 ```
 
 #### Example 2
+
+Equivalent to example 1 using `NOT` and `OR`.
+
+```
+NOT (ip<8.8.8.0 OR ip>8.8.8.254)
+```
+
+#### Example 3
 
 Filter for data that isn't categorized as "anycast".
 
@@ -70,7 +110,7 @@ Filter for data that isn't categorized as "anycast".
 anycast=false
 ```
 
-#### Example 3
+#### Example 4
 
 INCORRECT: the `anycast` key will never have a string value.
 
@@ -78,16 +118,16 @@ INCORRECT: the `anycast` key will never have a string value.
 anycast="false"
 ```
 
-#### Example 4
-
-Filter for data whose country key has the value `"US"`.
-
-```
-country=US
-country="US"
-```
-
 #### Example 5
+
+Filter for data whose country key has the value `"US"` or `"PK"`.
+
+```
+country=US OR country=PK
+country="US" OR country="PK"
+```
+
+#### Example 6
 
 Filter for data whose ASN's domain is `"google.com"`.
 
@@ -96,7 +136,7 @@ asn.domain=google.com
 asn.domain="google.com"
 ```
 
-#### Example 6
+#### Example 7
 
 Filter for data which is considered to be coming from a VPN.
 
@@ -104,7 +144,7 @@ Filter for data which is considered to be coming from a VPN.
 privacy.vpn!=false
 ```
 
-#### Example 7
+#### Example 8
 
 Filter for data which has less than 1000 associated domains.
 
