@@ -38,21 +38,30 @@ The supported data `<values>` are:
 
 `<cidr>`: IP range using CIDR syntax, e.g. `@data=8.8.0.0/16`.
 
+`<asn>`: ASN value, e.g. `@data=ASN123`.
+
 `<value>,<value>,...,<value>`: multiple values separated by a comma (`,`), e.g.
 `@data=1.1.1.1,8.8.8.8,9.9.9.9,8.8.0.0/16`.
 
-In the future, `<asn>` and other data sources will be supported as well.
+Note that it is not possible to specify different data types in the same query
+currently, i.e. IPs/CIDRs cannot be combined with ASNs.
 
 ### Full Data Set
 
 To specify that a query is against an entire data set, the special value
-specified as `ip` can be given as follows:
+specified as `ip` or `asn` can be given as follows:
 
 ```
 @data=ip
 ```
 
 This will apply the query against the full IP data set.
+
+```
+@data=asn
+```
+
+This will apply the query against the full ASN data set.
 
 ### External Input
 
