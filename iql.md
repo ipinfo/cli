@@ -12,7 +12,7 @@ To get a quick idea of what IQL is able to do, consider this query:
 anycast=false country="US" ip>=8.8.8.253
 ```
 
-Which will output the following CSV to `stdout`:
+Which will output the following CSV data:
 
 ```csv
 ip,city
