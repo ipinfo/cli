@@ -262,6 +262,17 @@ Each of these operators has a "negation operator":
 
 `NOT` negates itself; `NOT NOT` is a no-op.
 
+### Regular Expressions
+
+Keys whose values are meant to be strings can have key-value filters that use
+the `=` and `!=` operator against a regular expression-like value.
+
+Currently the only supported syntax is:
+
+`*`: match everything.
+
+Strings can contain as many `*` characters as desired.
+
 ### Examples
 
 #### Example 1
@@ -312,6 +323,15 @@ Filter for data whose ASN's domain is `"google.com"`.
 ```
 asn.domain=google.com
 asn.domain="google.com"
+```
+
+#### Example 6
+
+Filter for data whose ASN's domain ends with `".org"`.
+
+```
+asn.domain=*.org
+asn.domain="*.org"
 ```
 
 #### Example 7
