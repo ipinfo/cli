@@ -50,7 +50,7 @@ Key-value pairs of the form `<key><op><value>` are used as filters.
 Nested keys can be specified by joining keys in the path to the target key with
 a dot, e.g. `<key1>.<key2>.<key3><op><value>`.
 
-The supported operators are:
+The supported operators `<op>` are:
 
 `=`: Checks for data with equal values.
 
@@ -69,9 +69,11 @@ otherwise indicate the start of a new token.
 
 ### Boolean Operators
 
-Key-value filters can be combined using boolean operators.
+Key-value filters can be combined using boolean operators as
+`<kv_filter><bool_op><kv_filter>` for binary boolean operators and
+`<bool_op><kv_filter>` for unary boolean operators.
 
-The supported boolean operators are:
+The supported boolean operators `<bool_op>` are:
 
 `AND`: Checks that the predicate of two filters are both met.
 
