@@ -43,6 +43,31 @@ The supported data `<values>` are:
 
 In the future, `<asn>` and other data sources will be supported as well.
 
+### Full Data Set
+
+To specify that a query is against an entire data set, the special value
+specified as `ip` can be given as follows:
+
+```
+@data=ip
+```
+
+This will apply the query against the full IP data set.
+
+### External Input
+
+A special value specified as `-` can be given as follows:
+
+```
+@data=-
+```
+
+This will indicate, depending on the context of its usage, that the data input
+is coming from some outside source.
+
+In the context of the query being served by an HTTP server, this indicates that
+the data is available in the body of an HTTP POST request.
+
 ## Post-Processing
 
 Post-processing happens on data that is gathered and filtered.
