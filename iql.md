@@ -123,7 +123,61 @@ order by IP for conflicting values of the 1st field.
 
 ### Output
 
-TODO
+IQL can output specific fields in different formats.
+
+The following syntax is used to specify an output format:
+
+```
+@out(<?format>)=<fields>
+```
+
+#### Output Fields
+
+The supported `<fields>` are all those available for the specified data source.
+
+Multiple fields may be specified by separating each field with a comma.
+
+Nested fields are specified by combining all keys in the path to the target key
+with a dot (`.`).
+
+#### Output Format
+
+The supported formats are:
+
+`csv`: CSV format; the header will consist of the specified fields.
+
+`json`: JSON format; an array holding JSON objects, each of whose key/value
+pairs map to a field and its value, respectively.
+
+`fmt`: generic format allowing each row to be generically specified by the
+user. See the "Generic Output Format" section.
+
+The default format, if not specified, is `csv`.
+
+##### Generic Output Format
+
+When `fmt` is specified as the output format, the value is no longer
+interpreted as a list of fields. Instead, it must be a quoted string containing
+arbitrary text along with placeholders for field values, e.g.:
+
+```
+@out(fmt)="<ip> was geolocated to <city>."
+```
+
+The above example will output each row as the above text, with the fields
+between `<` and `>` replaced by their corresponding value.
+
+When using this format, each specified field, even if repeated, is counted as a
+unique increasing number when using `$<n>` format in e.g. `@sort` directives.
+So consider the following:
+
+```
+@sort=$3(desc),$1
+@out(fmt)="<ip> | <city> | <country>"
+```
+
+This will do a descending sort on the country, and then an ascending sort on
+the IP when countries conflict.
 
 ## Key-Value Filter
 
