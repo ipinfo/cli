@@ -30,11 +30,12 @@ Data sources are specified by `@data=<value>`.
 
 The supported data values are:
 
-`<ip>`: Individual IP value.
+`<ip>`: Individual IP value, e.g. `@data=8.8.8.8`.
 
-`<cidr>`: IP range using CIDR syntax.
+`<cidr>`: IP range using CIDR syntax, e.g. `@data=8.8.0.0/16`.
 
-`<value>,<value>,...,<value>`: multiple values separated by a comma (`,`).
+`<value>,<value>,...,<value>`: multiple values separated by a comma (`,`), e.g.
+`@data=1.1.1.1,8.8.8.8,9.9.9.9,8.8.0.0/16`.
 
 In the future, `<asn>` and other data sources will be supported as well.
 
