@@ -8,7 +8,7 @@ from publicly available IPinfo APIs.
 To get a quick idea of what IQL is able to do, consider this query:
 
 ```
-@data=8.8.8.0/24 @sort(desc)=ip @out(csv)=ip,city
+@data=8.8.8.0/24 @sort=ip(desc) @out(csv)=ip,city
 anycast=false country="US" ip>=8.8.8.253
 ```
 
@@ -49,15 +49,23 @@ Sorting data in ascending or descending order on multiple fields is possible
 with the following syntax:
 
 ```
-@sort(<?order>)=<fields>
+@sort=<field>(<?order>)
 ```
 
-The supported `<fields>` are all those available for the specified data source.
+#### Sort Fields
+
+The supported `<field>` values are all those available for the specified data
+source.
 
 Multiple fields may be specified by separating each field with a comma.
 
 Nested fields are specified by combining all keys in the path to the target key
 with a dot (`.`).
+
+Fields may be specified as `$<n>` where `n` is an index starting from `1` that
+refers to the position of a field in the `@out` pre-processing directive.
+
+#### Sort Orders
 
 The supported orders `<order>` are:
 
@@ -80,7 +88,7 @@ Sort data in ascending order by IP.
 Sort data in ascending order by city, and then by IP for conflicting cities.
 
 ```
-@sort(asc)=city,ip
+@sort=city(asc),ip
 ```
 
 #### Example 3
@@ -88,15 +96,25 @@ Sort data in ascending order by city, and then by IP for conflicting cities.
 Sort data in descending order by IP.
 
 ```
-@sort(desc)=ip
+@sort=ip(desc)
 ```
 
 #### Example 4
 
-Sort data in descending order by city, and then by IP for conflicting cities.
+Sort data in descending order by city, and then descending order by IP for
+conflicting cities.
 
 ```
-@sort(desc)=city,ip
+@sort=city(desc),ip(desc)
+```
+
+#### Example 5
+
+Sort data in descending order by the 1st field of `@out`, and then descending
+order by IP for conflicting values of the 1st field.
+
+```
+@sort=$1(desc),ip(desc)
 ```
 
 ### Output
@@ -237,7 +255,7 @@ world.
 ### Example 1
 
 ```
-@data=8.8.8.0/24 @sort(desc)=ip @out(csv)=ip,city
+@data=8.8.8.0/24 @sort=ip(desc) @out(csv)=ip,city
 anycast=false country="US" ip>=8.8.8.253
 ```
 
@@ -251,7 +269,7 @@ ip,city
 ### Example 2
 
 ```
-@data=8.8.8.0/24 @sort(asc)=ip @out(json)=ip,city
+@data=8.8.8.0/24 @sort=$1(asc) @out(json)=ip,city
 anycast=false country="US" ip<=8.8.8.2
 ```
 
