@@ -26,7 +26,11 @@ ip,city
 Data sources specify which API to use and which data to gather against that
 API.
 
-Data sources are specified by `@data=<values>`.
+Data sources are specified by:
+
+```
+@data=<values>
+```
 
 The supported data `<values>` are:
 
