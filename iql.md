@@ -32,7 +32,7 @@ TODO
 
 Key-value pairs of the form `<key><op><value>` are used as filters.
 
-Nested keys can be retrieved by joining keys in the path to the target key with
+Nested keys can be specified by joining keys in the path to the target key with
 a dot, e.g. `<key1>.<key2>.<key3><op><value>`.
 
 The supported operators are:
@@ -153,6 +153,9 @@ domains.total<1000
 ```
 
 ## Full IQL Examples
+
+The following examples show full IQL examples that may appear in the real
+world.
 
 ### Example 1
 
