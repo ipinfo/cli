@@ -8,7 +8,8 @@ from publicly available IPinfo APIs.
 To get a quick idea of what IQL is able to do, consider this query:
 
 ```
-@ip=8.8.8.0/24 anycast=false country="US" ip>=8.8.8.253 @sort(desc)=ip @out(csv)=ip,city
+@data=8.8.8.0/24 @sort(desc)=ip @out(csv)=ip,city
+anycast=false country="US" ip>=8.8.8.253
 ```
 
 Which will output the following CSV to `stdout`:
@@ -22,7 +23,20 @@ ip,city
 
 ## Data Source
 
-TODO
+Data sources specify which API to use and which data to gather against that
+API.
+
+Data sources are specified by `@data=<value>`.
+
+The supported data values are:
+
+`<ip>`: Individual IP value.
+
+`<cidr>`: IP range using CIDR syntax.
+
+`<value>,<value>,...,<value>`: multiple values separated by a comma (`,`).
+
+In the future, `<asn>` and other data sources will be supported as well.
 
 ## Post-Processing
 
@@ -160,7 +174,8 @@ world.
 ### Example 1
 
 ```
-@ip=8.8.8.0/24 anycast=false country="US" ip>=8.8.8.253 @sort(desc)=ip @out(csv)=ip,city
+@data=8.8.8.0/24 @sort(desc)=ip @out(csv)=ip,city
+anycast=false country="US" ip>=8.8.8.253
 ```
 
 ```csv
@@ -173,7 +188,8 @@ ip,city
 ### Example 2
 
 ```
-@ip=8.8.8.0/24 anycast=false country="US" ip<=8.8.8.2 @sort(asc)=ip @out(json)=ip,city
+@data=8.8.8.0/24 @sort(asc)=ip @out(json)=ip,city
+anycast=false country="US" ip<=8.8.8.2
 ```
 
 ```json
