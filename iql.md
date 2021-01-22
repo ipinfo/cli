@@ -26,9 +26,9 @@ ip,city
 Data sources specify which API to use and which data to gather against that
 API.
 
-Data sources are specified by `@data=<value>`.
+Data sources are specified by `@data=<values>`.
 
-The supported data values are:
+The supported data `<values>` are:
 
 `<ip>`: Individual IP value, e.g. `@data=8.8.8.8`.
 
@@ -40,6 +40,66 @@ The supported data values are:
 In the future, `<asn>` and other data sources will be supported as well.
 
 ## Post-Processing
+
+Post-processing happens on data that is gathered and filtered.
+
+### Sorting
+
+Sorting data in ascending or descending order on multiple fields is possible
+with the following syntax:
+
+```
+@sort(<?order>)=<fields>
+```
+
+The supported `<fields>` are all those available for the specified data source.
+
+Multiple fields may be specified by separating each field with a comma.
+
+Nested fields are specified by combining all keys in the path to the target key
+with a dot (`.`).
+
+The supported orders `<order>` are:
+
+`asc`: ascending order; this is the default.
+
+`desc`: descending order.
+
+The default order, if not specified, is ascending order.
+
+#### Example 1
+
+Sort data in ascending order by IP.
+
+```
+@sort=ip
+```
+
+#### Example 2
+
+Sort data in ascending order by city, and then by IP for conflicting cities.
+
+```
+@sort(asc)=city,ip
+```
+
+#### Example 3
+
+Sort data in descending order by IP.
+
+```
+@sort(desc)=ip
+```
+
+#### Example 4
+
+Sort data in descending order by city, and then by IP for conflicting cities.
+
+```
+@sort(desc)=city,ip
+```
+
+### Output
 
 TODO
 
