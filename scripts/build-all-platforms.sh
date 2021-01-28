@@ -35,7 +35,7 @@ do
 
     GOOS=$os GOARCH=$arch go build                                            \
         -o $ROOT/build/${output}                                              \
-        $ROOT/ipinfo/main.go &
+        $ROOT/ipinfo &
 done
 
 wait
