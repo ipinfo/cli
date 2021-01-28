@@ -5,13 +5,34 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
+	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/urfave/cli/v2"
 )
 
 var progBase = filepath.Base(os.Args[0])
 
+var ii *ipinfo.Client
+
+func prepareIpinfoClient(c *cli.Context) error {
+	tok := c.String("token")
+	ii = ipinfo.NewClient(nil, nil, tok)
+	return nil
+}
+
 func main() {
+	tokenFlag := &cli.StringFlag{
+		Name:    "token",
+		Aliases: []string{"t"},
+		Usage:   "use `TOK` as API token",
+	}
+	jsonFlag := &cli.BoolFlag{
+		Name:    "json",
+		Aliases: []string{"j"},
+		Usage:   "output JSON format",
+	}
+
 	cli.VersionPrinter = func(c *cli.Context) {
 		fmt.Printf("%s\n", c.App.Version)
 	}
@@ -51,7 +72,7 @@ func main() {
 			return c.App.Run(newArgs)
 		}
 		if isASN(ipOrASN) {
-			asn := ipOrASN
+			asn := strings.ToUpper(ipOrASN)
 			ipCmd := c.App.Command("_asn")
 			ipCmd.Name = asn
 			ipCmd.HelpName = progBase + " " + asn
@@ -68,13 +89,21 @@ func main() {
 			Name:  "myip",
 			Usage: "get details for your IP",
 			Flags: []cli.Flag{
-				&cli.BoolFlag{
-					Name:    "json",
-					Aliases: []string{"j"},
-					Usage:   "output JSON format",
-				},
+				jsonFlag,
+				tokenFlag,
 			},
+			Before: prepareIpinfoClient,
 			Action: cmdMyIP,
+		},
+		{
+			Name:   "login",
+			Usage:  "save an API token session",
+			Action: cmdLogin,
+		},
+		{
+			Name:   "logout",
+			Usage:  "delete your current API token session",
+			Action: cmdLogout,
 		},
 		{
 			Name:  "completion",
@@ -104,12 +133,10 @@ func main() {
 					Required: true,
 					Hidden:   true,
 				},
-				&cli.BoolFlag{
-					Name:    "json",
-					Aliases: []string{"j"},
-					Usage:   "output JSON format",
-				},
+				jsonFlag,
+				tokenFlag,
 			},
+			Before: prepareIpinfoClient,
 			Action: cmdIP,
 		},
 		{
@@ -121,12 +148,10 @@ func main() {
 					Required: true,
 					Hidden:   true,
 				},
-				&cli.BoolFlag{
-					Name:    "json",
-					Aliases: []string{"j"},
-					Usage:   "output JSON format",
-				},
+				jsonFlag,
+				tokenFlag,
 			},
+			Before: prepareIpinfoClient,
 			Action: cmdASN,
 		},
 	}
