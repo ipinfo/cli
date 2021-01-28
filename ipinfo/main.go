@@ -38,13 +38,27 @@ func main() {
 			return nil
 		}
 
-		// Check for whether the "command" is really an IP or ASN; handle those
-		// properly.
-		if err := cmdIP(c); err != errNotIP {
-			return err
+		// check whether initial command is an IP or ASN.
+		ipOrASN := args.First()
+		if isIP(ipOrASN) {
+			ipStr := ipOrASN
+			ipCmd := c.App.Command("_ip")
+			ipCmd.Name = ipStr
+			ipCmd.HelpName = progBase + " " + ipStr
+
+			newArgs := []string{os.Args[0], ipStr, "--ip", ipStr}
+			newArgs = append(newArgs, os.Args[2:]...)
+			return c.App.Run(newArgs)
 		}
-		if err := cmdAsn(c); err != errNotASN {
-			return err
+		if isASN(ipOrASN) {
+			asn := ipOrASN
+			ipCmd := c.App.Command("_asn")
+			ipCmd.Name = asn
+			ipCmd.HelpName = progBase + " " + asn
+
+			newArgs := []string{os.Args[0], asn, "--asn", asn}
+			newArgs = append(newArgs, os.Args[2:]...)
+			return c.App.Run(newArgs)
 		}
 
 		return cli.ShowCommandHelp(c, args.First())
@@ -77,6 +91,43 @@ func main() {
 					Action: cmdCompletionZsh,
 				},
 			},
+		},
+		/* hidden commands as hacks to allow ip/asn positional arguments
+		   without requiring them to be behind commands that the user has to
+		   input manually. */
+		{
+			Name:   "_ip",
+			Hidden: true,
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:     "ip",
+					Required: true,
+					Hidden:   true,
+				},
+				&cli.BoolFlag{
+					Name:    "json",
+					Aliases: []string{"j"},
+					Usage:   "output JSON format",
+				},
+			},
+			Action: cmdIP,
+		},
+		{
+			Name:   "_asn",
+			Hidden: true,
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:     "asn",
+					Required: true,
+					Hidden:   true,
+				},
+				&cli.BoolFlag{
+					Name:    "json",
+					Aliases: []string{"j"},
+					Usage:   "output JSON format",
+				},
+			},
+			Action: cmdASN,
 		},
 	}
 
