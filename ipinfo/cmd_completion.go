@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"strings"
+
+	"github.com/urfave/cli/v2"
 )
 
 var autocompleteBash = strings.TrimLeft(`
@@ -45,3 +48,21 @@ _cli_zsh_autocomplete() {
 
 compdef _cli_zsh_autocomplete $$PROG$$
 `, "\n")
+
+func cmdCompletionBash(c *cli.Context) error {
+	fmt.Printf(
+		strings.ReplaceAll(
+			autocompleteBash, "$$PROG$$", progBase,
+		),
+	)
+	return nil
+}
+
+func cmdCompletionZsh(c *cli.Context) error {
+	fmt.Printf(
+		strings.ReplaceAll(
+			autocompleteZsh, "$$PROG$$", progBase,
+		),
+	)
+	return nil
+}
