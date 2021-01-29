@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/urfave/cli/v2"
 )
 
@@ -14,7 +12,5 @@ func cmdASN(c *cli.Context) error {
 		return err
 	}
 
-	fmt.Printf("%v\n", data)
-
-	return nil
+	return outputJSON(data)
 }

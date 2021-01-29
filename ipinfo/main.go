@@ -148,7 +148,6 @@ func main() {
 					Required: true,
 					Hidden:   true,
 				},
-				jsonFlag,
 				tokenFlag,
 			},
 			Before: prepareIpinfoClient,
