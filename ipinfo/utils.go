@@ -17,6 +17,11 @@ func isIP(ipStr string) bool {
 	return net.ParseIP(ipStr) != nil
 }
 
+func isCIDR(cidrStr string) bool {
+	_, _, err := net.ParseCIDR(cidrStr)
+	return err == nil
+}
+
 func isASN(asn string) bool {
 	// check length.
 	if len(asn) < 3 {
@@ -128,10 +133,40 @@ func cidrToIPs(cidrStr string) ([]net.IP, error) {
 
 	mask := binary.BigEndian.Uint32(ipnet.Mask)
 	start := binary.BigEndian.Uint32(ipnet.IP)
-	finish := (start & mask) | (mask ^ 0xffffffff)
+	end := (start & mask) | (mask ^ 0xffffffff)
 
-	ips := make([]net.IP, 0, finish-start+1)
-	for i := start; i <= finish; i++ {
+	ips := make([]net.IP, 0, end-start+1)
+	for i := start; i <= end; i++ {
+		ip := make(net.IP, 4)
+		binary.BigEndian.PutUint32(ip, i)
+		ips = append(ips, ip)
+	}
+
+	return ips, nil
+}
+
+func ipRangeToIPs(ipStrStart string, ipStrEnd string) ([]net.IP, error) {
+	var ipStart, ipEnd net.IP
+
+	if ipStart = net.ParseIP(ipStrStart); ipStart == nil {
+		return nil, errNotIP
+	}
+	if ipEnd = net.ParseIP(ipStrEnd); ipEnd == nil {
+		return nil, errNotIP
+	}
+
+	start := binary.BigEndian.Uint32(ipStart.To4())
+	end := binary.BigEndian.Uint32(ipEnd.To4())
+
+	// return decreasing list if range is flipped.
+	if start > end {
+		tmp := start
+		start = end
+		end = tmp
+	}
+
+	ips := make([]net.IP, 0, end-start+1)
+	for i := start; i <= end; i++ {
 		ip := make(net.IP, 4)
 		binary.BigEndian.PutUint32(ip, i)
 		ips = append(ips, ip)

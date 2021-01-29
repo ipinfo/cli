@@ -92,21 +92,36 @@ func main() {
 				jsonFlag,
 				tokenFlag,
 			},
-			Before: prepareIpinfoClient,
-			Action: cmdMyIP,
+			Before:          prepareIpinfoClient,
+			Action:          cmdMyIP,
+			HideHelpCommand: true,
 		},
 		{
-			Name:   "login",
-			Usage:  "save an API token session",
+			Name:            "prips",
+			Usage:           "print IP list from CIDR or range",
+			Action:          cmdPrips,
+			HideHelpCommand: true,
+			ArgsUsage:       "<cidrs or ip-range>",
+			Description: "Accepts CIDRs (e.g. 8.8.8.0/24) or an IP range (e.g. 8.8.8.0 8.8.8.255).\n" +
+				"\n" +
+				progBase + " prips 8.8.8.0/24\n" +
+				progBase + " prips 8.8.8.0/24 8.8.2.0/24 8.8.1.0/24\n" +
+				progBase + " prips 8.8.8.0 8.8.8.255",
+		},
+		{
+			Name:  "login",
+			Usage: "save an API token session",
 			Flags: []cli.Flag{
 				tokenFlag,
 			},
-			Action: cmdLogin,
+			Action:          cmdLogin,
+			HideHelpCommand: true,
 		},
 		{
-			Name:   "logout",
-			Usage:  "delete your current API token session",
-			Action: cmdLogout,
+			Name:            "logout",
+			Usage:           "delete your current API token session",
+			Action:          cmdLogout,
+			HideHelpCommand: true,
 		},
 		{
 			Name:  "completion",
@@ -123,6 +138,7 @@ func main() {
 					Action: cmdCompletionZsh,
 				},
 			},
+			HideHelpCommand: true,
 		},
 		/* hidden commands as hacks to allow ip/asn positional arguments
 		   without requiring them to be behind commands that the user has to
