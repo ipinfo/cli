@@ -27,5 +27,7 @@ func cmdLogin(c *cli.Context) error {
 		return err
 	}
 
+	fmt.Println("logged in")
+
 	return nil
 }
