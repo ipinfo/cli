@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/urfave/cli/v2"
 )
 
@@ -29,13 +27,8 @@ func cmdPrips(c *cli.Context) error {
 	// output CIDRs if that's what we have.
 	if hasCIDR {
 		for _, arg := range args {
-			ips, err := cidrToIPs(arg)
-			if err != nil {
+			if err := outputIPsFromCIDR(arg); err != nil {
 				return err
-			}
-
-			for _, ip := range ips {
-				fmt.Println(ip)
 			}
 		}
 		return nil
@@ -47,13 +40,8 @@ func cmdPrips(c *cli.Context) error {
 	}
 
 	// now we definitely have 2 IPs only.
-	ips, err := ipRangeToIPs(args[0], args[1])
-	if err != nil {
+	if err := outputIPsFromRange(args[0], args[1]); err != nil {
 		return err
-	}
-
-	for _, ip := range ips {
-		fmt.Println(ip)
 	}
 
 	return nil

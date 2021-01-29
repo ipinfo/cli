@@ -125,34 +125,33 @@ func outputFriendlyCore(d *ipinfo.Core) {
 	}
 }
 
-func cidrToIPs(cidrStr string) ([]net.IP, error) {
+func outputIPsFromCIDR(cidrStr string) error {
 	_, ipnet, err := net.ParseCIDR(cidrStr)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	mask := binary.BigEndian.Uint32(ipnet.Mask)
 	start := binary.BigEndian.Uint32(ipnet.IP)
 	end := (start & mask) | (mask ^ 0xffffffff)
 
-	ips := make([]net.IP, 0, end-start+1)
 	for i := start; i <= end; i++ {
 		ip := make(net.IP, 4)
 		binary.BigEndian.PutUint32(ip, i)
-		ips = append(ips, ip)
+		fmt.Println(ip)
 	}
 
-	return ips, nil
+	return nil
 }
 
-func ipRangeToIPs(ipStrStart string, ipStrEnd string) ([]net.IP, error) {
+func outputIPsFromRange(ipStrStart string, ipStrEnd string) error {
 	var ipStart, ipEnd net.IP
 
 	if ipStart = net.ParseIP(ipStrStart); ipStart == nil {
-		return nil, errNotIP
+		return errNotIP
 	}
 	if ipEnd = net.ParseIP(ipStrEnd); ipEnd == nil {
-		return nil, errNotIP
+		return errNotIP
 	}
 
 	start := binary.BigEndian.Uint32(ipStart.To4())
@@ -165,12 +164,11 @@ func ipRangeToIPs(ipStrStart string, ipStrEnd string) ([]net.IP, error) {
 		end = tmp
 	}
 
-	ips := make([]net.IP, 0, end-start+1)
 	for i := start; i <= end; i++ {
 		ip := make(net.IP, 4)
 		binary.BigEndian.PutUint32(ip, i)
-		ips = append(ips, ip)
+		fmt.Println(ip)
 	}
 
-	return ips, nil
+	return nil
 }
