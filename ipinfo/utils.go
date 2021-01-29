@@ -103,7 +103,7 @@ func outputFriendlyCore(d *ipinfo.Core) {
 		header.Printf("                ABUSE                 ")
 		fmt.Println()
 		fmt.Printf("Address         %s\n", d.Abuse.Address)
-		fmt.Printf("Country         %s\n", d.Abuse.Country)
+		fmt.Printf("Country         %s (%s)\n", d.Abuse.CountryName, d.Abuse.Country)
 		fmt.Printf("Email           %s\n", d.Abuse.Email)
 		fmt.Printf("Name            %s\n", d.Abuse.Name)
 		fmt.Printf("Network         %s\n", d.Abuse.Network)
