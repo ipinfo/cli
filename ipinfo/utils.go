@@ -233,6 +233,7 @@ func restoreToken() (string, error) {
 	}
 	tokFilePath := filepath.Join(cdir, "ipinfo", "token")
 	tokFile, err := os.Open(tokFilePath)
+	defer tokFile.Close()
 	if err != nil {
 		return "", err
 	}
