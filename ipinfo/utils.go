@@ -4,8 +4,10 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -157,18 +159,88 @@ func outputIPsFromRange(ipStrStart string, ipStrEnd string) error {
 	start := binary.BigEndian.Uint32(ipStart.To4())
 	end := binary.BigEndian.Uint32(ipEnd.To4())
 
-	// return decreasing list if range is flipped.
 	if start > end {
-		tmp := start
-		start = end
-		end = tmp
-	}
-
-	for i := start; i <= end; i++ {
-		ip := make(net.IP, 4)
-		binary.BigEndian.PutUint32(ip, i)
-		fmt.Println(ip)
+		// return decreasing list if range is flipped.
+		for i := start; i >= end; i-- {
+			ip := make(net.IP, 4)
+			binary.BigEndian.PutUint32(ip, i)
+			fmt.Println(ip)
+		}
+	} else {
+		for i := start; i <= end; i++ {
+			ip := make(net.IP, 4)
+			binary.BigEndian.PutUint32(ip, i)
+			fmt.Println(ip)
+		}
 	}
 
 	return nil
+}
+
+func saveToken(tok string) error {
+	// create ipinfo config directory.
+	cdir, err := os.UserConfigDir()
+	if err != nil {
+		return err
+	}
+	iiCdir := filepath.Join(cdir, "ipinfo")
+	if err := os.MkdirAll(iiCdir, 0700); err != nil {
+		return err
+	}
+
+	// open token file.
+	tokFilePath := filepath.Join(iiCdir, "token")
+	tokFile, err := os.OpenFile(
+		tokFilePath,
+		os.O_RDWR|os.O_CREATE|os.O_TRUNC,
+		0664,
+	)
+	defer tokFile.Close()
+	if err != nil {
+		return err
+	}
+
+	// write token.
+	_, err = tokFile.WriteString(tok)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func deleteToken() error {
+	// get token file path.
+	cdir, err := os.UserConfigDir()
+	if err != nil {
+		return err
+	}
+	tokFilePath := filepath.Join(cdir, "ipinfo", "token")
+
+	// remove token file.
+	if err := os.Remove(tokFilePath); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func restoreToken() (string, error) {
+	// open token file.
+	cdir, err := os.UserConfigDir()
+	if err != nil {
+		return "", err
+	}
+	tokFilePath := filepath.Join(cdir, "ipinfo", "token")
+	tokFile, err := os.Open(tokFilePath)
+	if err != nil {
+		return "", err
+	}
+
+	tok, err := ioutil.ReadAll(tokFile)
+	if err != nil {
+		return "", nil
+	}
+
+	return string(tok[:]), nil
 }

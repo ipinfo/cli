@@ -17,6 +17,10 @@ var ii *ipinfo.Client
 
 func prepareIpinfoClient(c *cli.Context) error {
 	tok := c.String("token")
+	if tok == "" {
+		tok, _ = restoreToken()
+	}
+
 	ii = ipinfo.NewClient(nil, nil, tok)
 	return nil
 }
