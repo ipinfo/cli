@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/urfave/cli/v2"
 )
 
@@ -12,7 +10,11 @@ func cmdMyIP(c *cli.Context) error {
 		return err
 	}
 
-	fmt.Printf("%v\n", data)
+	if c.Bool("json") {
+		return outputJSON(data)
+	}
+
+	outputFriendlyCore(data)
 
 	return nil
 }
