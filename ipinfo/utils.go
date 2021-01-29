@@ -48,6 +48,7 @@ func outputFriendlyCore(d *ipinfo.Core) {
 	header.Printf("                 CORE                 ")
 	fmt.Println()
 	fmt.Printf("IP              %s\n", d.IP.String())
+	fmt.Printf("Anycast         %v\n", d.Anycast)
 	fmt.Printf("Hostname        %s\n", d.Hostname)
 	fmt.Printf("City            %s\n", d.City)
 	fmt.Printf("Region          %s\n", d.Region)
