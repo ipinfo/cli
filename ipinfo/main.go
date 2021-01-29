@@ -69,6 +69,11 @@ func main() {
 		}
 
 		// check whether initial command is an IP or ASN.
+		/* HACK
+		the tactic used here uses hidden commands allow ip/asn positional
+		arguments without requiring them to be behind commands that the user
+		has to input manually.
+		*/
 		ipOrASN := args.First()
 		if isIP(ipOrASN) {
 			ipStr := ipOrASN
@@ -187,9 +192,6 @@ func main() {
 			},
 			HideHelpCommand: true,
 		},
-		/* hidden commands as hacks to allow ip/asn positional arguments
-		   without requiring them to be behind commands that the user has to
-		   input manually. */
 		{
 			Name:   "_ip",
 			Hidden: true,
