@@ -98,6 +98,9 @@ func main() {
 		{
 			Name:   "login",
 			Usage:  "save an API token session",
+			Flags: []cli.Flag{
+				tokenFlag,
+			},
 			Action: cmdLogin,
 		},
 		{
