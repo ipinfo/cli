@@ -193,7 +193,7 @@ func saveToken(tok string) error {
 	tokFile, err := os.OpenFile(
 		tokFilePath,
 		os.O_RDWR|os.O_CREATE|os.O_TRUNC,
-		0664,
+		0660,
 	)
 	defer tokFile.Close()
 	if err != nil {
