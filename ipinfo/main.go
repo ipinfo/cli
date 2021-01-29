@@ -36,6 +36,11 @@ func main() {
 		Aliases: []string{"j"},
 		Usage:   "output JSON format",
 	}
+	csvFlag := &cli.BoolFlag{
+		Name:    "csv",
+		Aliases: []string{"c"},
+		Usage:   "output CSV format",
+	}
 
 	cli.VersionPrinter = func(c *cli.Context) {
 		fmt.Printf("%s\n", c.App.Version)
@@ -101,6 +106,34 @@ func main() {
 			HideHelpCommand: true,
 		},
 		{
+			Name:      "bulk",
+			Usage:     "get details for multiple IPs in bulk",
+			ArgsUsage: "<paths or '-' or cidrs or ip-range>",
+			Description: "Accepts file paths, '-' for stdin, CIDRs and IP ranges.\n" +
+				"\n" +
+				"# Lookup all IPs from stdin.\n" +
+				"$ " + progBase + " bulk -\n" +
+				"\n" +
+				"# Lookup all IPs in 2 files.\n" +
+				"$ " + progBase + " bulk /path/to/iplist1.txt /path/to/iplist2.txt\n" +
+				"\n" +
+				"# Lookup all IPs from CIDR.\n" +
+				"$ " + progBase + " bulk 8.8.8.0/24\n" +
+				"\n" +
+				"# Lookup all IPs from multiple CIDRs.\n" +
+				"$ " + progBase + " bulk 8.8.8.0/24 8.8.2.0/24 8.8.1.0/24\n" +
+				"\n" +
+				"# Lookup all IPs in an IP range.\n" +
+				"$ " + progBase + " bulk 8.8.8.0 8.8.8.255",
+			Flags: []cli.Flag{
+				jsonFlag,
+				csvFlag,
+			},
+			Before:          prepareIpinfoClient,
+			Action:          cmdBulk,
+			HideHelpCommand: true,
+		},
+		{
 			Name:            "prips",
 			Usage:           "print IP list from CIDR or range",
 			Action:          cmdPrips,
@@ -108,15 +141,25 @@ func main() {
 			ArgsUsage:       "<cidrs or ip-range>",
 			Description: "Accepts CIDRs (e.g. 8.8.8.0/24) or an IP range (e.g. 8.8.8.0 8.8.8.255).\n" +
 				"\n" +
-				progBase + " prips 8.8.8.0/24\n" +
-				progBase + " prips 8.8.8.0/24 8.8.2.0/24 8.8.1.0/24\n" +
-				progBase + " prips 8.8.8.0 8.8.8.255",
+				"# List all IPs in a CIDR.\n" +
+				"$ " + progBase + " prips 8.8.8.0/24\n" +
+				"\n" +
+				"# List all IPs in multiple CIDRs.\n" +
+				"$ " + progBase + " prips 8.8.8.0/24 8.8.2.0/24 8.8.1.0/24\n" +
+				"\n" +
+				"# List all IPs in an IP range.\n" +
+				"$ " + progBase + " prips 8.8.8.0 8.8.8.255",
 		},
 		{
 			Name:  "login",
 			Usage: "save an API token session",
 			Flags: []cli.Flag{
-				tokenFlag,
+				&cli.StringFlag{
+					Name:    "token",
+					Aliases: []string{"t"},
+					Usage: "token to login with " +
+						"(potentially unsafe; let CLI prompt you instead)",
+				},
 			},
 			Action:          cmdLogin,
 			HideHelpCommand: true,
