@@ -204,6 +204,27 @@ func outputIPsFromRange(ipStrStart string, ipStrEnd string) error {
 	return nil
 }
 
+func inputIPsFromStdin() []net.IP {
+	ips := make([]net.IP, 0, 10000)
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		ipStr := scanner.Text()
+		if ipStr == "" {
+			break
+		}
+
+		ip := net.ParseIP(ipStr)
+		if ip == nil {
+			// ignore any non-IP input.
+			continue
+		}
+
+		ips = append(ips, ip)
+	}
+
+	return ips, nil
+}
+
 func saveToken(tok string) error {
 	// create ipinfo config directory.
 	cdir, err := os.UserConfigDir()

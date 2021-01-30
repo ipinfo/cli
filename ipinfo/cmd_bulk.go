@@ -15,24 +15,7 @@ func cmdBulk(c *cli.Context) error {
 
 	// check for stdin, implied or explicit.
 	if len(args) == 0 || (len(args) == 1 && args[0] == "-") {
-		ips := make([]net.IP, 0, 10000)
-		scanner := bufio.NewScanner(os.Stdin)
-		for scanner.Scan() {
-			ipStr := scanner.Text()
-			if ipStr == "" {
-				break
-			}
-
-			ip := net.ParseIP(ipStr)
-			if ip == nil {
-				// ignore any non-IP input.
-				continue
-			}
-
-			ips = append(ips, ip)
-		}
-
-		// if no ips for whatever reason, exit early.
+		ips := inputIPsFromStdin()
 		if len(ips) == 0 {
 			fmt.Println("no input ips")
 			return nil
