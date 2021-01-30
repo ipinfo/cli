@@ -253,6 +253,27 @@ func ipsFromCIDR(cidrStr string) ([]net.IP, error) {
 	return ips, nil
 }
 
+func ipsFromCIDRs(cidrStrs []string) (ips []net.IP, err error) {
+	// collect IPs lists together first, then allocate a final list and do
+	// a fast transfer.
+	ipRanges := make([][]net.IP, len(cidrStrs))
+	totalIPs := 0
+	for i, cidr := range cidrStrs {
+		ipRanges[i], err = ipsFromCIDR(cidr)
+		if err != nil {
+			return nil, err
+		}
+		totalIPs += len(ipRanges[i])
+	}
+
+	ips = make([]net.IP, 0, totalIPs)
+	for _, ipRange := range ipRanges {
+		ips = append(ips, ipRange...)
+	}
+
+	return ips, nil
+}
+
 func ipsFromRange(ipStrStart string, ipStrEnd string) ([]net.IP, error) {
 	var ips []net.IP
 	var ipStart, ipEnd net.IP
@@ -281,6 +302,36 @@ func ipsFromRange(ipStrStart string, ipStrEnd string) ([]net.IP, error) {
 			binary.BigEndian.PutUint32(ip, i)
 			ips = append(ips, ip)
 		}
+	}
+
+	return ips, nil
+}
+
+func ipsFromFile(pathToFile string) ([]net.IP, error) {
+	f, err := os.Open(pathToFile)
+	if err != nil {
+		return nil, err
+	}
+
+	return ipsFromReader(f), nil
+}
+
+func ipsFromFiles(paths []string) (ips []net.IP, err error) {
+	// collect IPs lists together first, then allocate a final list and do
+	// a fast transfer.
+	ipLists := make([][]net.IP, len(paths))
+	totalIPs := 0
+	for i, p := range paths {
+		ipLists[i], err = ipsFromFile(p)
+		if err != nil {
+			return nil, err
+		}
+		totalIPs += len(ipLists[i])
+	}
+
+	ips = make([]net.IP, 0, totalIPs)
+	for _, ipList := range ipLists {
+		ips = append(ips, ipList...)
 	}
 
 	return ips, nil

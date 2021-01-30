@@ -16,6 +16,7 @@ func cmdBulk(c *cli.Context) (err error) {
 	// check for stdin, implied or explicit.
 	if len(args) == 0 || (len(args) == 1 && args[0] == "-") {
 		ips = ipsFromStdin()
+
 		goto lookup
 	}
 
@@ -44,20 +45,9 @@ func cmdBulk(c *cli.Context) (err error) {
 			}
 		}
 
-		// collect IPs lists together first, then allocate a final list and do
-		// a fast transfer.
-		ipRanges := make([][]net.IP, len(args))
-		totalIPs := 0
-		for i, arg := range args {
-			ipRanges[i], err = ipsFromCIDR(arg)
-			if err != nil {
-				return err
-			}
-			totalIPs += len(ipRanges[i])
-		}
-		ips = make([]net.IP, 0, totalIPs)
-		for _, ipRange := range ipRanges {
-			ips = append(ips, ipRange...)
+		ips, err = ipsFromCIDRs(args)
+		if err != nil {
+			return err
 		}
 
 		goto lookup
@@ -71,7 +61,10 @@ func cmdBulk(c *cli.Context) (err error) {
 			}
 		}
 
-		// TODO
+		ips, err = ipsFromFiles(args)
+		if err != nil {
+			return err
+		}
 
 		goto lookup
 	}
