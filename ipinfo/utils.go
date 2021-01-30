@@ -1,10 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"encoding/binary"
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net"
 	"os"
@@ -154,6 +156,7 @@ func outputCSVBatchCore(core ipinfo.BatchCore) error {
 	return nil
 }
 
+// Same as ipsFromCIDR with O(1) memory by discarding IPs after printing.
 func outputIPsFromCIDR(cidrStr string) error {
 	_, ipnet, err := net.ParseCIDR(cidrStr)
 	if err != nil {
@@ -173,6 +176,7 @@ func outputIPsFromCIDR(cidrStr string) error {
 	return nil
 }
 
+// Same as ipsFromRange with O(1) memory by discarding IPs after printing.
 func outputIPsFromRange(ipStrStart string, ipStrEnd string) error {
 	var ipStart, ipEnd net.IP
 
@@ -204,9 +208,13 @@ func outputIPsFromRange(ipStrStart string, ipStrEnd string) error {
 	return nil
 }
 
-func inputIPsFromStdin() []net.IP {
+func ipsFromStdin() []net.IP {
+	return ipsFromReader(os.Stdin)
+}
+
+func ipsFromReader(r io.Reader) []net.IP {
 	ips := make([]net.IP, 0, 10000)
-	scanner := bufio.NewScanner(os.Stdin)
+	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		ipStr := scanner.Text()
 		if ipStr == "" {
@@ -220,6 +228,59 @@ func inputIPsFromStdin() []net.IP {
 		}
 
 		ips = append(ips, ip)
+	}
+
+	return ips
+}
+
+func ipsFromCIDR(cidrStr string) ([]net.IP, error) {
+	_, ipnet, err := net.ParseCIDR(cidrStr)
+	if err != nil {
+		return nil, err
+	}
+
+	mask := binary.BigEndian.Uint32(ipnet.Mask)
+	start := binary.BigEndian.Uint32(ipnet.IP)
+	end := (start & mask) | (mask ^ 0xffffffff)
+
+	ips := make([]net.IP, 0, end-start+1)
+	for i := start; i <= end; i++ {
+		ip := make(net.IP, 4)
+		binary.BigEndian.PutUint32(ip, i)
+		ips = append(ips, ip)
+	}
+
+	return ips, nil
+}
+
+func ipsFromRange(ipStrStart string, ipStrEnd string) ([]net.IP, error) {
+	var ips []net.IP
+	var ipStart, ipEnd net.IP
+
+	if ipStart = net.ParseIP(ipStrStart); ipStart == nil {
+		return nil, errNotIP
+	}
+	if ipEnd = net.ParseIP(ipStrEnd); ipEnd == nil {
+		return nil, errNotIP
+	}
+
+	start := binary.BigEndian.Uint32(ipStart.To4())
+	end := binary.BigEndian.Uint32(ipEnd.To4())
+	if start > end {
+		ips = make([]net.IP, 0, start-end+1)
+		// return decreasing list if range is flipped.
+		for i := start; i >= end; i-- {
+			ip := make(net.IP, 4)
+			binary.BigEndian.PutUint32(ip, i)
+			ips = append(ips, ip)
+		}
+	} else {
+		ips = make([]net.IP, 0, end-start+1)
+		for i := start; i <= end; i++ {
+			ip := make(net.IP, 4)
+			binary.BigEndian.PutUint32(ip, i)
+			ips = append(ips, ip)
+		}
 	}
 
 	return ips, nil
