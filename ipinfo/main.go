@@ -116,8 +116,9 @@ func main() {
 			ArgsUsage: "<paths or '-' or cidrs or ip-range>",
 			Description: "Accepts file paths, '-' for stdin, CIDRs and IP ranges.\n" +
 				"\n" +
-				"# Lookup all IPs from stdin.\n" +
-				"$ " + progBase + " bulk -\n" +
+				"# Lookup all IPs from stdin ('-' can be implied).\n" +
+				"$ ipinfo prips 8.8.8.0/24 | " + progBase + " bulk\n" +
+				"$ ipinfo prips 8.8.8.0/24 | " + progBase + " bulk -\n" +
 				"\n" +
 				"# Lookup all IPs in 2 files.\n" +
 				"$ " + progBase + " bulk /path/to/iplist1.txt /path/to/iplist2.txt\n" +
@@ -131,7 +132,12 @@ func main() {
 				"# Lookup all IPs in an IP range.\n" +
 				"$ " + progBase + " bulk 8.8.8.0 8.8.8.255",
 			Flags: []cli.Flag{
-				jsonFlag,
+				&cli.BoolFlag{
+					Name:    "json",
+					Aliases: []string{"j"},
+					Usage:   "output JSON format",
+					Value:   true,
+				},
 				csvFlag,
 			},
 			Before:          prepareIpinfoClient,

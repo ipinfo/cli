@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/binary"
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -13,6 +14,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/ipinfo/go/v2/ipinfo"
+	"github.com/jszwec/csvutil"
 )
 
 func isIP(ipStr string) bool {
@@ -125,6 +127,31 @@ func outputFriendlyCore(d *ipinfo.Core) {
 			}
 		}
 	}
+}
+
+func outputCSVBatchCore(core ipinfo.BatchCore) error {
+	csvWriter := csv.NewWriter(os.Stdout)
+	csvEnc := csvutil.NewEncoder(csvWriter)
+	csvEnc.AutoHeader = false
+
+	// print header from some random entry.
+	for _, v := range core {
+		if err := csvEnc.EncodeHeader(v); err != nil {
+			return err
+		}
+		csvWriter.Flush()
+		break
+	}
+
+	// print entries.
+	for _, v := range core {
+		if err := csvEnc.Encode(v); err != nil {
+			return err
+		}
+		csvWriter.Flush()
+	}
+
+	return nil
 }
 
 func outputIPsFromCIDR(cidrStr string) error {
@@ -244,4 +271,11 @@ func restoreToken() (string, error) {
 	}
 
 	return string(tok[:]), nil
+}
+
+func fileExists(pathToFile string) bool {
+	if _, err := os.Stat(pathToFile); os.IsNotExist(err) {
+		return false
+	}
+	return true
 }
