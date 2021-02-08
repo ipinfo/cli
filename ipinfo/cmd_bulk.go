@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net"
+	"os"
 
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
@@ -72,6 +73,11 @@ func cmdBulk() (err error) {
 
 	// check for stdin, implied or explicit.
 	if len(args) == 0 || (len(args) == 1 && args[0] == "-") {
+		stat, _ := os.Stdin.Stat()
+		if (stat.Mode() & os.ModeCharDevice) != 0 {
+			fmt.Println("** manual input mode **")
+			fmt.Println("Enter all IPs, one per line:")
+		}
 		ips = ipsFromStdin()
 
 		goto lookup

@@ -7,6 +7,9 @@ import (
 	"strings"
 
 	"github.com/ipinfo/go/v2/ipinfo"
+	"github.com/posener/complete/v2"
+	"github.com/posener/complete/v2/predict"
+	"github.com/spf13/pflag"
 )
 
 var progBase = filepath.Base(os.Args[0])
@@ -44,6 +47,57 @@ Options:
 }
 
 func main() {
+	completion := &complete.Command{
+		Sub: map[string]*complete.Command{
+			"myip": &complete.Command{
+				Flags: map[string]complete.Predictor{
+					"-token":  predict.Something,
+					"-help":   predict.Nothing,
+					"-pretty": predict.Nothing,
+					"-json":   predict.Nothing,
+					"-csv":    predict.Nothing,
+				},
+			},
+			"bulk": &complete.Command{
+				Flags: map[string]complete.Predictor{
+					"-token": predict.Something,
+					"-help":  predict.Nothing,
+					"-json":  predict.Nothing,
+					"-csv":   predict.Nothing,
+				},
+			},
+			"sum": &complete.Command{
+				Flags: map[string]complete.Predictor{
+					"-token":  predict.Something,
+					"-help":   predict.Nothing,
+					"-pretty": predict.Nothing,
+					"-json":   predict.Nothing,
+				},
+			},
+			"prips": &complete.Command{
+				Flags: map[string]complete.Predictor{
+					"-help": predict.Nothing,
+				},
+			},
+			"login": &complete.Command{
+				Flags: map[string]complete.Predictor{
+					"-token": predict.Something,
+					"-help":  predict.Nothing,
+				},
+			},
+			"logout": &complete.Command{
+				Flags: map[string]complete.Predictor{
+					"-help": predict.Nothing,
+				},
+			},
+			"version": &complete.Command{},
+		},
+		Flags: map[string]complete.Predictor{
+			"-help": predict.Nothing,
+		},
+	}
+	completion.Complete(progBase)
+
 	if len(os.Args) == 1 {
 		printHelp()
 		return
@@ -69,15 +123,21 @@ func main() {
 		err = cmdLogin()
 	case cmd == "logout":
 		err = cmdLogout()
-	case cmd == "v":
-		err = cmdVersion()
-	case cmd == "vsn":
-		err = cmdVersion()
 	case cmd == "version":
 		err = cmdVersion()
 	default:
-		fmt.Printf("err: \"%s\" is not a command.\n", cmd)
-		printHelp()
+		var fHelp bool
+
+		pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
+		pflag.Parse()
+
+		if fHelp {
+			printHelp()
+		} else {
+			fmt.Printf("err: \"%s\" is not a command.\n", cmd)
+			fmt.Println()
+			printHelp()
+		}
 	}
 
 	if err != nil {
