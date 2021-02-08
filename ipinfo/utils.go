@@ -131,6 +131,24 @@ func outputFriendlyCore(d *ipinfo.Core) {
 	}
 }
 
+func outputCSV(v interface{}) error {
+	csvWriter := csv.NewWriter(os.Stdout)
+	csvEnc := csvutil.NewEncoder(csvWriter)
+	csvEnc.AutoHeader = false
+
+	if err := csvEnc.EncodeHeader(v); err != nil {
+		return err
+	}
+	csvWriter.Flush()
+
+	if err := csvEnc.Encode(v); err != nil {
+		return err
+	}
+	csvWriter.Flush()
+
+	return nil
+}
+
 func outputCSVBatchCore(core ipinfo.BatchCore) error {
 	csvWriter := csv.NewWriter(os.Stdout)
 	csvEnc := csvutil.NewEncoder(csvWriter)
