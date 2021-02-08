@@ -49,33 +49,38 @@ func main() {
 		return
 	}
 
+	var err error
 	cmd := os.Args[1]
 	switch {
 	case isIP(cmd):
-		cmdIP(cmd)
+		err = cmdIP(cmd)
 	case isASN(cmd):
 		asn := strings.ToUpper(cmd)
-		cmdASN(asn)
+		err = cmdASN(asn)
 	case cmd == "myip":
-		cmdMyIP()
+		err = cmdMyIP()
 	case cmd == "bulk":
-		cmdBulk()
+		err = cmdBulk()
 	case cmd == "sum":
-		cmdSum()
+		err = cmdSum()
 	case cmd == "prips":
-		cmdPrips()
+		err = cmdPrips()
 	case cmd == "login":
-		cmdLogin()
+		err = cmdLogin()
 	case cmd == "logout":
-		cmdLogout()
+		err = cmdLogout()
 	case cmd == "v":
-		cmdVersion()
+		err = cmdVersion()
 	case cmd == "vsn":
-		cmdVersion()
+		err = cmdVersion()
 	case cmd == "version":
-		cmdVersion()
+		err = cmdVersion()
 	default:
 		fmt.Printf("err: \"%s\" is not a command.\n", cmd)
 		printHelp()
+	}
+
+	if err != nil {
+		fmt.Printf("err: %v\n", err)
 	}
 }
