@@ -226,6 +226,19 @@ func outputIPsFromRange(ipStrStart string, ipStrEnd string) error {
 	return nil
 }
 
+func createBarString(cnt int, maxCnt int) string {
+	bar := "█"
+	for i := 0; i < maxCnt; i++ {
+		if i < cnt {
+			bar += "█"
+		} else {
+			bar += "🮀"
+		}
+	}
+	bar += "█"
+	return bar
+}
+
 func ipsFromStdin() []net.IP {
 	return ipsFromReader(os.Stdin)
 }

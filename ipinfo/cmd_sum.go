@@ -4,8 +4,11 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"sort"
+	"strings"
 
 	"github.com/fatih/color"
+	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
 )
 
@@ -139,13 +142,13 @@ lookup:
 		return nil
 	}
 
-	data, err := ii.GetIPSummary(ips)
+	d, err := ii.GetIPSummary(ips)
 	if err != nil {
 		return err
 	}
 
 	if fJSON {
-		return outputJSON(data)
+		return outputJSON(d)
 	}
 
 	// print pretty.
@@ -153,6 +156,95 @@ lookup:
 
 	header.Printf("                SUMMARY               ")
 	fmt.Println()
+	fmt.Printf("Total                          %v\n", d.Total)
+	fmt.Printf("Unique                         %v\n", d.Unique)
+	fmt.Printf("Anycast                        %v\n", d.Anycast)
+	fmt.Printf("Bogon                          %v\n", d.Bogon)
+	fmt.Printf("VPN                            %v\n", d.Privacy.VPN)
+	fmt.Printf("Proxy                          %v\n", d.Privacy.Proxy)
+	fmt.Printf("Hosting                        %v\n", d.Privacy.Hosting)
+	fmt.Printf("Tor                            %v\n", d.Privacy.Tor)
+	fmt.Println()
+	header.Printf("                TOP ASNs              ")
+	fmt.Println()
+	topASNs := orderSummaryMapping(d.ASNs)
+	for i, asnSum := range topASNs {
+		k := asnSum.k
+		v := asnSum.v
+
+		asnParts := strings.SplitN(k, " ", 2)
+		id := asnParts[0]
+		name := asnParts[1]
+
+		pct := (float64(v) / float64(d.Unique)) * 100
+		barCnt := int(pct / 5)
+		bar := createBarString(barCnt, 30)
+
+		fmt.Printf(
+			"%v. %-18v %13s\n",
+			i+1, id, fmt.Sprintf("%v (%.1f%%)", v, pct),
+		)
+		fmt.Printf("   %v\n", name)
+		fmt.Printf("   %-30s\n", bar)
+		fmt.Println()
+	}
+	header.Printf("             TOP COUNTRIES            ")
+	fmt.Println()
+	topCountries := orderSummaryMapping(d.Countries)
+	for i, countriesSum := range topCountries {
+		k := countriesSum.k
+		v := countriesSum.v
+
+		pct := (float64(v) / float64(d.Unique)) * 100
+		barCnt := int(pct / 5)
+		bar := createBarString(barCnt, 30)
+
+		fmt.Printf(
+			"%v. %-18v %13s\n",
+			i+1,
+			ipinfo.GetCountryName(k),
+			fmt.Sprintf("%v (%.1f%%)", v, pct),
+		)
+		fmt.Printf("   %-30s\n", bar)
+		fmt.Println()
+	}
 
 	return nil
+}
+
+/*
+small utility for properly sorting summary results.
+
+this is only needed because Golang maps don't guarantee ordered traversals.
+when we decode from the raw JSON, which *is* sorted already, we lose that
+sort order so have to regain it here.
+*/
+
+type sumPair struct {
+	k string
+	v uint64
+}
+
+type sumPairList []sumPair
+
+func (s sumPairList) Len() int {
+	return len(s)
+}
+
+func (s sumPairList) Less(i, j int) bool {
+	return s[i].v < s[j].v
+}
+
+func (s sumPairList) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+
+func orderSummaryMapping(m map[string]uint64) []sumPair {
+	s := make(sumPairList, 0, len(m))
+	for k, v := range m {
+		s = append(s, sumPair{k, v})
+	}
+
+	sort.Sort(sort.Reverse(s))
+	return s
 }
