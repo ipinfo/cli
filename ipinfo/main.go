@@ -7,8 +7,6 @@ import (
 	"strings"
 
 	"github.com/ipinfo/go/v2/ipinfo"
-	"github.com/posener/complete/v2"
-	"github.com/posener/complete/v2/predict"
 	"github.com/spf13/pflag"
 )
 
@@ -47,57 +45,6 @@ Options:
 }
 
 func main() {
-	completion := &complete.Command{
-		Sub: map[string]*complete.Command{
-			"myip": &complete.Command{
-				Flags: map[string]complete.Predictor{
-					"-token":  predict.Something,
-					"-help":   predict.Nothing,
-					"-pretty": predict.Nothing,
-					"-json":   predict.Nothing,
-					"-csv":    predict.Nothing,
-				},
-			},
-			"bulk": &complete.Command{
-				Flags: map[string]complete.Predictor{
-					"-token": predict.Something,
-					"-help":  predict.Nothing,
-					"-json":  predict.Nothing,
-					"-csv":   predict.Nothing,
-				},
-			},
-			"sum": &complete.Command{
-				Flags: map[string]complete.Predictor{
-					"-token":  predict.Something,
-					"-help":   predict.Nothing,
-					"-pretty": predict.Nothing,
-					"-json":   predict.Nothing,
-				},
-			},
-			"prips": &complete.Command{
-				Flags: map[string]complete.Predictor{
-					"-help": predict.Nothing,
-				},
-			},
-			"login": &complete.Command{
-				Flags: map[string]complete.Predictor{
-					"-token": predict.Something,
-					"-help":  predict.Nothing,
-				},
-			},
-			"logout": &complete.Command{
-				Flags: map[string]complete.Predictor{
-					"-help": predict.Nothing,
-				},
-			},
-			"version": &complete.Command{},
-		},
-		Flags: map[string]complete.Predictor{
-			"-help": predict.Nothing,
-		},
-	}
-	completion.Complete(progBase)
-
 	if len(os.Args) == 1 {
 		printHelp()
 		return

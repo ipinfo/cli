@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 
+	"github.com/fatih/color"
 	"github.com/spf13/pflag"
 )
 
@@ -147,7 +148,11 @@ lookup:
 		return outputJSON(data)
 	}
 
-	// TODO pretty
-	fmt.Printf("%v\n", data)
+	// print pretty.
+	header := color.New(color.Bold, color.BgWhite, color.FgHiMagenta)
+
+	header.Printf("                SUMMARY               ")
+	fmt.Println()
+
 	return nil
 }
