@@ -5,6 +5,6 @@ import (
 )
 
 func cmdVersion() error {
-	fmt.Println("0.1.0")
+	fmt.Println("1.0.0")
 	return nil
 }
