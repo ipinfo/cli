@@ -208,6 +208,31 @@ lookup:
 		fmt.Printf("   %-30s\n", bar)
 		fmt.Println()
 	}
+	header.Printf("            TOP USAGE TYPES           ")
+	fmt.Println()
+	topUsageTypes := orderSummaryMapping(d.IPTypes)
+	for i, usageTypeSum := range topUsageTypes {
+		k := usageTypeSum.k
+		if k == "isp" {
+			k = "ISP"
+		} else {
+			k = strings.Title(k)
+		}
+		v := usageTypeSum.v
+
+		pct := (float64(v) / float64(d.Unique)) * 100
+		barCnt := int(pct / 5)
+		bar := createBarString(barCnt, 30)
+
+		fmt.Printf(
+			"%v. %-18v %13s\n",
+			i+1,
+			k,
+			fmt.Sprintf("%v (%.1f%%)", v, pct),
+		)
+		fmt.Printf("   %-30s\n", bar)
+		fmt.Println()
+	}
 
 	return nil
 }
