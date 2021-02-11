@@ -165,6 +165,7 @@ lookup:
 	fmt.Printf("Hosting                        %v\n", d.Privacy.Hosting)
 	fmt.Printf("Tor                            %v\n", d.Privacy.Tor)
 	fmt.Println()
+
 	header.Printf("                TOP ASNs              ")
 	fmt.Println()
 	topASNs := orderSummaryMapping(d.ASNs)
@@ -177,37 +178,17 @@ lookup:
 		name := asnParts[1]
 
 		pct := (float64(v) / float64(d.Unique)) * 100
-		barCnt := int(pct / 5)
-		bar := createBarString(barCnt, 30)
+		barCnt := int(pct / 6)
+		bar := createBarString(barCnt, 15)
 
+		fmt.Printf("%v. %v - %v\n", i+1, id, name)
 		fmt.Printf(
-			"%v. %-18v %13s\n",
-			i+1, id, fmt.Sprintf("%v (%.1f%%)", v, pct),
+			"   %-15s %14s\n",
+			bar, fmt.Sprintf("%v (%.1f%%)", v, pct),
 		)
-		fmt.Printf("   %v\n", name)
-		fmt.Printf("   %-30s\n", bar)
 		fmt.Println()
 	}
-	header.Printf("             TOP COUNTRIES            ")
-	fmt.Println()
-	topCountries := orderSummaryMapping(d.Countries)
-	for i, countriesSum := range topCountries {
-		k := countriesSum.k
-		v := countriesSum.v
 
-		pct := (float64(v) / float64(d.Unique)) * 100
-		barCnt := int(pct / 5)
-		bar := createBarString(barCnt, 30)
-
-		fmt.Printf(
-			"%v. %-18v %13s\n",
-			i+1,
-			ipinfo.GetCountryName(k),
-			fmt.Sprintf("%v (%.1f%%)", v, pct),
-		)
-		fmt.Printf("   %-30s\n", bar)
-		fmt.Println()
-	}
 	header.Printf("            TOP USAGE TYPES           ")
 	fmt.Println()
 	topUsageTypes := orderSummaryMapping(d.IPTypes)
@@ -221,16 +202,94 @@ lookup:
 		v := usageTypeSum.v
 
 		pct := (float64(v) / float64(d.Unique)) * 100
-		barCnt := int(pct / 5)
-		bar := createBarString(barCnt, 30)
+		barCnt := int(pct / 6)
+		bar := createBarString(barCnt, 15)
 
+		fmt.Printf("%v. %v\n", i+1, k)
 		fmt.Printf(
-			"%v. %-18v %13s\n",
-			i+1,
-			k,
-			fmt.Sprintf("%v (%.1f%%)", v, pct),
+			"   %-15s %14s\n",
+			bar, fmt.Sprintf("%v (%.1f%%)", v, pct),
 		)
-		fmt.Printf("   %-30s\n", bar)
+		fmt.Println()
+	}
+
+	header.Printf("              TOP ROUTES             ")
+	fmt.Println()
+	topRoutes := orderSummaryMapping(d.Routes)
+	for i, routesSum := range topRoutes {
+		k := routesSum.k
+		v := routesSum.v
+
+		routeParts := strings.SplitN(k, " ", 2)
+		asn := routeParts[0]
+		route := routeParts[1]
+
+		pct := (float64(v) / float64(d.Unique)) * 100
+		barCnt := int(pct / 6)
+		bar := createBarString(barCnt, 15)
+
+		fmt.Printf("%v. %v - %v\n", i+1, route, asn)
+		fmt.Printf(
+			"   %-15s %14s\n",
+			bar, fmt.Sprintf("%v (%.1f%%)", v, pct),
+		)
+		fmt.Println()
+	}
+
+	header.Printf("             TOP COUNTRIES            ")
+	fmt.Println()
+	topCountries := orderSummaryMapping(d.Countries)
+	for i, countriesSum := range topCountries {
+		k := countriesSum.k
+		v := countriesSum.v
+
+		pct := (float64(v) / float64(d.Unique)) * 100
+		barCnt := int(pct / 6)
+		bar := createBarString(barCnt, 15)
+
+		fmt.Printf("%v. %v\n", i+1, ipinfo.GetCountryName(k))
+		fmt.Printf(
+			"   %-15s %14s\n",
+			bar, fmt.Sprintf("%v (%.1f%%)", v, pct),
+		)
+		fmt.Println()
+	}
+
+	header.Printf("              TOP CITIES             ")
+	fmt.Println()
+	topCities := orderSummaryMapping(d.Cities)
+	for i, citiesSum := range topCities {
+		k := citiesSum.k
+		v := citiesSum.v
+
+		pct := (float64(v) / float64(d.Unique)) * 100
+		barCnt := int(pct / 6)
+		bar := createBarString(barCnt, 15)
+
+		fmt.Printf("%v. %v\n", i+1, k)
+		fmt.Printf(
+			"   %-15s %14s\n",
+			bar, fmt.Sprintf("%v (%.1f%%)", v, pct),
+		)
+		fmt.Println()
+	}
+
+	header.Printf("              TOP REGIONS            ")
+	fmt.Println()
+	topRegions := orderSummaryMapping(d.Regions)
+	for i, regionsSum := range topRegions {
+		k := regionsSum.k
+		v := regionsSum.v
+
+		pct := (float64(v) / float64(d.Unique)) * 100
+		barCnt := int(pct / 6)
+		bar := createBarString(barCnt, 15)
+
+		fmt.Printf("%v. %v\n", i+1, k)
+		fmt.Printf(
+			"   %-15s %14s\n",
+			bar, fmt.Sprintf("%v (%.1f%%)", v, pct),
+		)
 		fmt.Println()
 	}
 
