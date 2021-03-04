@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/fatih/color"
@@ -152,47 +153,51 @@ lookup:
 	}
 
 	// print pretty.
-	header := color.New(color.Bold, color.BgWhite, color.FgHiMagenta)
+	var entryLen string
+	var tmpEntryLen int
+	header := color.New(color.Bold, color.FgWhite)
+	entry := color.New(color.FgCyan)
+	num := color.New(color.FgGreen)
 
-	header.Printf("                SUMMARY               ")
-	fmt.Println()
-	fmt.Printf("Total                          %v\n", d.Total)
-	fmt.Printf("Unique                         %v\n", d.Unique)
-	fmt.Printf("Anycast                        %v\n", d.Anycast)
-	fmt.Printf("Bogon                          %v\n", d.Bogon)
-	fmt.Printf("VPN                            %v\n", d.Privacy.VPN)
-	fmt.Printf("Proxy                          %v\n", d.Privacy.Proxy)
-	fmt.Printf("Hosting                        %v\n", d.Privacy.Hosting)
-	fmt.Printf("Tor                            %v\n", d.Privacy.Tor)
+	header.Println("Summary")
+	headerPrint := func(name string, val uint64) {
+		fmt.Printf(
+			"- %s %s\n",
+			entry.Sprintf("%-7s", name),
+			num.Sprintf("%v", val),
+		)
+	}
+	headerPrint("Total", d.Total)
+	headerPrint("Unique", d.Unique)
+	headerPrint("Anycast", d.Anycast)
+	headerPrint("Bogon", d.Bogon)
+	headerPrint("VPN", d.Privacy.VPN)
+	headerPrint("Proxy", d.Privacy.Proxy)
+	headerPrint("Hosting", d.Privacy.Hosting)
+	headerPrint("Tor", d.Privacy.Tor)
 	fmt.Println()
 
-	header.Printf("                TOP ASNs              ")
-	fmt.Println()
+	// TODO get longest string length per category to determine size to use for
+	//      width before v/pct.
+	header.Println("Top ASNs")
 	topASNs := orderSummaryMapping(d.ASNs)
-	for i, asnSum := range topASNs {
+	entryLen = strconv.Itoa(longestKeyLen(topASNs))
+	for _, asnSum := range topASNs {
 		k := asnSum.k
 		v := asnSum.v
-
-		asnParts := strings.SplitN(k, " ", 2)
-		id := asnParts[0]
-		name := asnParts[1]
-
 		pct := (float64(v) / float64(d.Unique)) * 100
-		barCnt := int(pct / 6)
-		bar := createBarString(barCnt, 15)
-
-		fmt.Printf("%v. %v - %v\n", i+1, id, name)
 		fmt.Printf(
-			"   %-15s %14s\n",
-			bar, fmt.Sprintf("%v (%.1f%%)", v, pct),
+			"- %v %v\n",
+			entry.Sprintf("%-"+entryLen+"s", k),
+			num.Sprintf("%v (%.1f%%)", v, pct),
 		)
-		fmt.Println()
 	}
-
-	header.Printf("            TOP USAGE TYPES           ")
 	fmt.Println()
+
+	header.Println("Top Usage Types")
 	topUsageTypes := orderSummaryMapping(d.IPTypes)
-	for i, usageTypeSum := range topUsageTypes {
+	entryLen = strconv.Itoa(longestKeyLen(topUsageTypes))
+	for _, usageTypeSum := range topUsageTypes {
 		k := usageTypeSum.k
 		if k == "isp" {
 			k = "ISP"
@@ -200,97 +205,84 @@ lookup:
 			k = strings.Title(k)
 		}
 		v := usageTypeSum.v
-
 		pct := (float64(v) / float64(d.Unique)) * 100
-		barCnt := int(pct / 6)
-		bar := createBarString(barCnt, 15)
-
-		fmt.Printf("%v. %v\n", i+1, k)
 		fmt.Printf(
-			"   %-15s %14s\n",
-			bar, fmt.Sprintf("%v (%.1f%%)", v, pct),
+			"- %v %v\n",
+			entry.Sprintf("%-"+entryLen+"s", k),
+			num.Sprintf("%v (%.1f%%)", v, pct),
 		)
-		fmt.Println()
 	}
-
-	header.Printf("              TOP ROUTES             ")
 	fmt.Println()
+
+	header.Println("Top Routes")
 	topRoutes := orderSummaryMapping(d.Routes)
-	for i, routesSum := range topRoutes {
+	entryLen = strconv.Itoa(longestKeyLen(topRoutes) + 2)
+	for _, routesSum := range topRoutes {
 		k := routesSum.k
 		v := routesSum.v
-
 		routeParts := strings.SplitN(k, " ", 2)
 		asn := routeParts[0]
 		route := routeParts[1]
-
 		pct := (float64(v) / float64(d.Unique)) * 100
-		barCnt := int(pct / 6)
-		bar := createBarString(barCnt, 15)
-
-		fmt.Printf("%v. %v - %v\n", i+1, route, asn)
 		fmt.Printf(
-			"   %-15s %14s\n",
-			bar, fmt.Sprintf("%v (%.1f%%)", v, pct),
+			"- %v %v\n",
+			entry.Sprintf(
+				"%-"+entryLen+"s",
+				fmt.Sprintf("%s (%s)", route, asn),
+			),
+			num.Sprintf("%v (%.1f%%)", v, pct),
 		)
-		fmt.Println()
 	}
-
-	header.Printf("             TOP COUNTRIES            ")
 	fmt.Println()
+
+	header.Println("Top Countries")
 	topCountries := orderSummaryMapping(d.Countries)
-	for i, countriesSum := range topCountries {
+	for _, p := range topCountries {
+		l := ipinfo.GetCountryName(p.k)
+		if len(l) > tmpEntryLen {
+			tmpEntryLen = len(l)
+		}
+	}
+	entryLen = strconv.Itoa(tmpEntryLen)
+	for _, countriesSum := range topCountries {
 		k := countriesSum.k
 		v := countriesSum.v
-
 		pct := (float64(v) / float64(d.Unique)) * 100
-		barCnt := int(pct / 6)
-		bar := createBarString(barCnt, 15)
-
-		fmt.Printf("%v. %v\n", i+1, ipinfo.GetCountryName(k))
 		fmt.Printf(
-			"   %-15s %14s\n",
-			bar, fmt.Sprintf("%v (%.1f%%)", v, pct),
+			"- %v %v\n",
+			entry.Sprintf("%-"+entryLen+"s", ipinfo.GetCountryName(k)),
+			num.Sprintf("%v (%.1f%%)", v, pct),
 		)
-		fmt.Println()
 	}
-
-	header.Printf("              TOP CITIES             ")
 	fmt.Println()
+
+	header.Println("Top Cities")
 	topCities := orderSummaryMapping(d.Cities)
-	for i, citiesSum := range topCities {
+	entryLen = strconv.Itoa(longestKeyLen(topCities))
+	for _, citiesSum := range topCities {
 		k := citiesSum.k
 		v := citiesSum.v
-
 		pct := (float64(v) / float64(d.Unique)) * 100
-		barCnt := int(pct / 6)
-		bar := createBarString(barCnt, 15)
-
-		fmt.Printf("%v. %v\n", i+1, k)
 		fmt.Printf(
-			"   %-15s %14s\n",
-			bar, fmt.Sprintf("%v (%.1f%%)", v, pct),
+			"- %v %v\n",
+			entry.Sprintf("%-"+entryLen+"s", k),
+			num.Sprintf("%v (%.1f%%)", v, pct),
 		)
-		fmt.Println()
 	}
-
-	header.Printf("              TOP REGIONS            ")
 	fmt.Println()
+
+	header.Println("Top Regions")
 	topRegions := orderSummaryMapping(d.Regions)
-	for i, regionsSum := range topRegions {
+	entryLen = strconv.Itoa(longestKeyLen(topRegions))
+	for _, regionsSum := range topRegions {
 		k := regionsSum.k
 		v := regionsSum.v
-
 		pct := (float64(v) / float64(d.Unique)) * 100
-		barCnt := int(pct / 6)
-		bar := createBarString(barCnt, 15)
-
-		fmt.Printf("%v. %v\n", i+1, k)
 		fmt.Printf(
-			"   %-15s %14s\n",
-			bar, fmt.Sprintf("%v (%.1f%%)", v, pct),
+			"- %v %v\n",
+			entry.Sprintf("%-"+entryLen+"s", k),
+			num.Sprintf("%v (%.1f%%)", v, pct),
 		)
-		fmt.Println()
 	}
 
 	return nil
@@ -331,4 +323,14 @@ func orderSummaryMapping(m map[string]uint64) []sumPair {
 
 	sort.Sort(sort.Reverse(s))
 	return s
+}
+
+func longestKeyLen(s []sumPair) int {
+	longestK := 0
+	for _, p := range s {
+		if len(p.k) > longestK {
+			longestK = len(p.k)
+		}
+	}
+	return longestK
 }
