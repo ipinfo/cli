@@ -134,12 +134,6 @@ func outputFriendlyCore(d *ipinfo.Core) {
 func outputCSV(v interface{}) error {
 	csvWriter := csv.NewWriter(os.Stdout)
 	csvEnc := csvutil.NewEncoder(csvWriter)
-	csvEnc.AutoHeader = false
-
-	if err := csvEnc.EncodeHeader(v); err != nil {
-		return err
-	}
-	csvWriter.Flush()
 
 	if err := csvEnc.Encode(v); err != nil {
 		return err
@@ -152,16 +146,6 @@ func outputCSV(v interface{}) error {
 func outputCSVBatchCore(core ipinfo.BatchCore) error {
 	csvWriter := csv.NewWriter(os.Stdout)
 	csvEnc := csvutil.NewEncoder(csvWriter)
-	csvEnc.AutoHeader = false
-
-	// print header from some random entry.
-	for _, v := range core {
-		if err := csvEnc.EncodeHeader(v); err != nil {
-			return err
-		}
-		csvWriter.Flush()
-		break
-	}
 
 	// print entries.
 	for _, v := range core {
@@ -169,6 +153,385 @@ func outputCSVBatchCore(core ipinfo.BatchCore) error {
 			return err
 		}
 		csvWriter.Flush()
+	}
+
+	return nil
+}
+
+func outputFieldBatchCore(core ipinfo.BatchCore, field string) error {
+	csvWriter := csv.NewWriter(os.Stdout)
+	csvEnc := csvutil.NewEncoder(csvWriter)
+	csvEnc.AutoHeader = false
+
+	// TODO the dread of not having macros... we can simplify code length here
+	// with reflection but until then this will have to do.
+	switch field {
+	case "hostname":
+		fmt.Printf("ip,hostname\n")
+		for _, d := range core {
+			fmt.Printf("%s,%v\n", d.IP, d.Hostname)
+		}
+	case "anycast":
+		fmt.Printf("ip,anycast\n")
+		for _, d := range core {
+			fmt.Printf("%s,%v\n", d.IP, d.Anycast)
+		}
+	case "city":
+		fmt.Printf("ip,city\n")
+		for _, d := range core {
+			fmt.Printf("%s,%v\n", d.IP, d.City)
+		}
+	case "region":
+		fmt.Printf("ip,region\n")
+		for _, d := range core {
+			fmt.Printf("%s,%v\n", d.IP, d.Region)
+		}
+	case "country":
+		fmt.Printf("ip,country\n")
+		for _, d := range core {
+			fmt.Printf("%s,%v\n", d.IP, d.Country)
+		}
+	case "country_name":
+		fmt.Printf("ip,country_name\n")
+		for _, d := range core {
+			fmt.Printf("%s,%v\n", d.IP, d.CountryName)
+		}
+	case "loc":
+		fmt.Printf("ip,loc\n")
+		for _, d := range core {
+			fmt.Printf("%s,%v\n", d.IP, d.Location)
+		}
+	case "org":
+		fmt.Printf("ip,org\n")
+		for _, d := range core {
+			fmt.Printf("%s,%v\n", d.IP, d.Org)
+		}
+	case "postal":
+		fmt.Printf("ip,postal\n")
+		for _, d := range core {
+			fmt.Printf("%s,%v\n", d.IP, d.Postal)
+		}
+	case "timezone":
+		fmt.Printf("ip,timezone\n")
+		for _, d := range core {
+			fmt.Printf("%s,%v\n", d.IP, d.Timezone)
+		}
+	case "asn":
+		fmt.Printf("ip,")
+		if err := csvEnc.EncodeHeader(ipinfo.CoreASN{}); err != nil {
+			return err
+		}
+		csvWriter.Flush()
+
+		for _, d := range core {
+			if d.ASN == nil {
+				continue
+			}
+
+			fmt.Printf("%s,", d.IP)
+			if err := csvEnc.Encode(d.ASN); err != nil {
+				return err
+			}
+			csvWriter.Flush()
+		}
+	case "asn.id":
+		fmt.Printf("ip,asn_id\n")
+		for _, d := range core {
+			if d.ASN == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.ASN.ASN)
+		}
+	case "asn.name":
+		fmt.Printf("ip,asn_name\n")
+		for _, d := range core {
+			if d.ASN == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.ASN.Name)
+		}
+	case "asn.domain":
+		fmt.Printf("ip,asn_domain\n")
+		for _, d := range core {
+			if d.ASN == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.ASN.Domain)
+		}
+	case "asn.route":
+		fmt.Printf("ip,asn_route\n")
+		for _, d := range core {
+			if d.ASN == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.ASN.Route)
+		}
+	case "asn.type":
+		fmt.Printf("ip,asn_type\n")
+		for _, d := range core {
+			if d.ASN == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.ASN.Type)
+		}
+	case "company":
+		fmt.Printf("ip,")
+		if err := csvEnc.EncodeHeader(ipinfo.CoreCompany{}); err != nil {
+			return err
+		}
+		csvWriter.Flush()
+
+		for _, d := range core {
+			if d.Company == nil {
+				continue
+			}
+			fmt.Printf("%s,", d.IP)
+			if err := csvEnc.Encode(d.Company); err != nil {
+				return err
+			}
+			csvWriter.Flush()
+		}
+	case "company.name":
+		fmt.Printf("ip,company_name\n")
+		for _, d := range core {
+			if d.Company == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.Company.Name)
+		}
+	case "company.domain":
+		fmt.Printf("ip,company_domain\n")
+		for _, d := range core {
+			if d.Company == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.Company.Domain)
+		}
+	case "company.type":
+		fmt.Printf("ip,company_type\n")
+		for _, d := range core {
+			if d.Company == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.Company.Type)
+		}
+	case "carrier":
+		fmt.Printf("ip,")
+		if err := csvEnc.EncodeHeader(ipinfo.CoreCarrier{}); err != nil {
+			return err
+		}
+		csvWriter.Flush()
+
+		for _, d := range core {
+			if d.Carrier == nil {
+				continue
+			}
+
+			fmt.Printf("%s,", d.IP)
+			if err := csvEnc.Encode(d.Carrier); err != nil {
+				return err
+			}
+			csvWriter.Flush()
+		}
+	case "carrier.name":
+		fmt.Printf("ip,carrier_name\n")
+		for _, d := range core {
+			if d.Carrier == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.Carrier.Name)
+		}
+	case "carrier.mcc":
+		fmt.Printf("ip,carrier_mcc\n")
+		for _, d := range core {
+			if d.Carrier == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.Carrier.MCC)
+		}
+	case "carrier.mnc":
+		fmt.Printf("ip,carrier_mnc\n")
+		for _, d := range core {
+			if d.Carrier == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.Carrier.MNC)
+		}
+	case "privacy":
+		fmt.Printf("ip,")
+		if err := csvEnc.EncodeHeader(ipinfo.CorePrivacy{}); err != nil {
+			return err
+		}
+		csvWriter.Flush()
+
+		for _, d := range core {
+			if d.Privacy == nil {
+				continue
+			}
+
+			fmt.Printf("%s,", d.IP)
+			if err := csvEnc.Encode(d.Privacy); err != nil {
+				return err
+			}
+			csvWriter.Flush()
+		}
+	case "privacy.vpn":
+		fmt.Printf("ip,privacy_vpn\n")
+		for _, d := range core {
+			if d.Privacy == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.Privacy.VPN)
+		}
+	case "privacy.proxy":
+		fmt.Printf("ip,privacy_proxy\n")
+		for _, d := range core {
+			if d.Privacy == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.Privacy.Proxy)
+		}
+	case "privacy.tor":
+		fmt.Printf("ip,privacy_tor\n")
+		for _, d := range core {
+			if d.Privacy == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.Privacy.Tor)
+		}
+	case "privacy.hosting":
+		fmt.Printf("ip,privacy_hosting\n")
+		for _, d := range core {
+			if d.Privacy == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.Privacy.Hosting)
+		}
+	case "abuse":
+		fmt.Printf("ip,")
+		if err := csvEnc.EncodeHeader(ipinfo.CoreAbuse{}); err != nil {
+			return err
+		}
+		csvWriter.Flush()
+
+		for _, d := range core {
+			if d.Abuse == nil {
+				continue
+			}
+
+			fmt.Printf("%s,", d.IP)
+			if err := csvEnc.Encode(d.Abuse); err != nil {
+				return err
+			}
+			csvWriter.Flush()
+		}
+	case "abuse.address":
+		fmt.Printf("ip,abuse_address\n")
+		for _, d := range core {
+			if d.Abuse == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.Abuse.Address)
+		}
+	case "abuse.country":
+		fmt.Printf("ip,abuse_country\n")
+		for _, d := range core {
+			if d.Abuse == nil {
+				continue
+			}
+
+			fmt.Printf("%s,\"%v\"\n", d.IP, d.Abuse.Country)
+		}
+	case "abuse.country_name":
+		fmt.Printf("ip,abuse_country_name\n")
+		for _, d := range core {
+			if d.Abuse == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.Abuse.CountryName)
+		}
+	case "abuse.email":
+		fmt.Printf("ip,abuse_email\n")
+		for _, d := range core {
+			if d.Abuse == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.Abuse.Email)
+		}
+	case "abuse.name":
+		fmt.Printf("ip,abuse_name\n")
+		for _, d := range core {
+			if d.Abuse == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.Abuse.Name)
+		}
+	case "abuse.network":
+		fmt.Printf("ip,abuse_network\n")
+		for _, d := range core {
+			if d.Abuse == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.Abuse.Network)
+		}
+	case "abuse.phone":
+		fmt.Printf("ip,abuse_phone\n")
+		for _, d := range core {
+			if d.Abuse == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.Abuse.Phone)
+		}
+	case "domains":
+		fmt.Printf("ip,")
+		if err := csvEnc.EncodeHeader(ipinfo.CoreDomains{}); err != nil {
+			return err
+		}
+		csvWriter.Flush()
+
+		for _, d := range core {
+			if d.Domains == nil {
+				continue
+			}
+
+			fmt.Printf("%s,", d.IP)
+			if err := csvEnc.Encode(d.Domains); err != nil {
+				return err
+			}
+			csvWriter.Flush()
+		}
+	case "domains.total":
+		fmt.Printf("ip,domains_total\n")
+		for _, d := range core {
+			if d.Domains == nil {
+				continue
+			}
+
+			fmt.Printf("%s,%v\n", d.IP, d.Domains.Total)
+		}
+	default:
+		fmt.Printf("ip,%s\n", field)
 	}
 
 	return nil

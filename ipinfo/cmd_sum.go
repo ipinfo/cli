@@ -43,7 +43,7 @@ Options:
     --help, -h
       show help.
 
-  Outputs:
+  Formats:
     --pretty, -p
       output pretty format. (default)
     --json, -j
@@ -177,8 +177,6 @@ lookup:
 	headerPrint("Tor", d.Privacy.Tor)
 	fmt.Println()
 
-	// TODO get longest string length per category to determine size to use for
-	//      width before v/pct.
 	header.Println("Top ASNs")
 	topASNs := orderSummaryMapping(d.ASNs)
 	entryLen = strconv.Itoa(longestKeyLen(topASNs))

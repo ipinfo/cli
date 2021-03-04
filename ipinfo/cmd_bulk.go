@@ -40,6 +40,11 @@ Options:
       show help.
 
   Outputs:
+    --field, -f
+      lookup only a specific field in the output.
+      field names correspond to JSON keys, e.g. 'hostname' or 'company.type'.
+
+  Formats:
     --json, -j
       output JSON format. (default)
     --csv, -c
@@ -51,11 +56,13 @@ func cmdBulk() (err error) {
 	var ips []net.IP
 	var fTok string
 	var fHelp bool
+	var fField string
 	var fJSON bool
 	var fCSV bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
+	pflag.StringVarP(&fField, "field", "f", "", "specific field to lookup.")
 	pflag.BoolVarP(&fJSON, "json", "j", true, "output JSON format. (default)")
 	pflag.BoolVarP(&fCSV, "csv", "c", false, "output CSV format.")
 	pflag.Parse()
@@ -142,6 +149,10 @@ lookup:
 	data, err := ii.GetIPInfoBatch(ips, ipinfo.BatchReqOpts{})
 	if err != nil {
 		return err
+	}
+
+	if fField != "" {
+		return outputFieldBatchCore(data, fField)
 	}
 
 	if fCSV {

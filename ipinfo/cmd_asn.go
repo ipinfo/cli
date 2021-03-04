@@ -18,6 +18,11 @@ Options:
       show help.
 
   Outputs:
+    --field, -f
+      lookup only a specific field in the output.
+      field names correspond to JSON keys, e.g. 'hostname' or 'company.type'.
+
+  Formats:
     --json, -j
       output JSON format. (default)
 `, progBase, asn)
