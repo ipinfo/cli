@@ -39,8 +39,19 @@ Commands:
   version     show current version.
 
 Options:
-  --help, -h
-    show help.
+  General:
+    --token <tok>, -t <tok>
+      use <tok> as API token.
+    --help, -h
+      show help.
+
+  Outputs:
+    --pretty, -p
+      output pretty format.
+    --json, -j
+      output JSON format.
+    --csv, -c
+      output CSV format.
 `, progBase)
 }
 
