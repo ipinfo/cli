@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/ipinfo/go/v2/ipinfo"
-	"github.com/spf13/pflag"
 )
 
 var progBase = filepath.Base(os.Args[0])
@@ -23,46 +22,14 @@ func prepareIpinfoClient(tok string) error {
 	return nil
 }
 
-func printHelp() {
-	fmt.Printf(
-		`Usage: %s <cmd> [<opts>] [<args>]
-
-Commands:
-  <ip>        look up details for an IP address, e.g. 8.8.8.8.
-  <asn>       look up details for an ASN, e.g. AS123 or as123.
-  myip        get details for your IP.
-  bulk        get details for multiple IPs in bulk.
-  sum         get summarized data for a group of IPs.
-  prips       print IP list from CIDR or range.
-  login       save an API token session.
-  logout      delete your current API token session.
-  version     show current version.
-
-Options:
-  General:
-    --token <tok>, -t <tok>
-      use <tok> as API token.
-    --help, -h
-      show help.
-
-  Outputs:
-    --pretty, -p
-      output pretty format.
-    --json, -j
-      output JSON format.
-    --csv, -c
-      output CSV format.
-`, progBase)
-}
-
 func main() {
-	if len(os.Args) == 1 {
-		printHelp()
-		return
+	var err error
+	var cmd string
+
+	if len(os.Args) > 1 {
+		cmd = os.Args[1]
 	}
 
-	var err error
-	cmd := os.Args[1]
 	switch {
 	case isIP(cmd):
 		err = cmdIP(cmd)
@@ -84,18 +51,7 @@ func main() {
 	case cmd == "version":
 		err = cmdVersion()
 	default:
-		var fHelp bool
-
-		pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
-		pflag.Parse()
-
-		if fHelp {
-			printHelp()
-		} else {
-			fmt.Printf("err: \"%s\" is not a command.\n", cmd)
-			fmt.Println()
-			printHelp()
-		}
+		err = cmdDefault()
 	}
 
 	if err != nil {
