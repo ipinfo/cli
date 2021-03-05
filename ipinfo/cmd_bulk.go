@@ -152,7 +152,7 @@ lookup:
 	}
 
 	if fField != "" {
-		return outputFieldBatchCore(data, fField)
+		return outputFieldBatchCore(data, fField, true, false)
 	}
 
 	if fCSV {

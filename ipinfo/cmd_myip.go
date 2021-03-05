@@ -66,7 +66,7 @@ func cmdMyIP() error {
 	if fField != "" {
 		d := make(ipinfo.BatchCore, 1)
 		d[data.IP.String()] = data
-		return outputFieldBatchCore(d, fField)
+		return outputFieldBatchCore(d, fField, false, true)
 	}
 	if fJSON {
 		return outputJSON(data)
