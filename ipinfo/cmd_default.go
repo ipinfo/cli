@@ -18,7 +18,7 @@ Commands:
   <asn>       look up details for an ASN, e.g. AS123 or as123.
   myip        get details for your IP.
   bulk        get details for multiple IPs in bulk.
-  sum         get summarized data for a group of IPs.
+  summarize   get summarized data for a group of IPs.
   prips       print IP list from CIDR or range.
   login       save an API token session.
   logout      delete your current API token session.

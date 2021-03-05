@@ -15,26 +15,26 @@ import (
 
 func printHelpSum() {
 	fmt.Printf(
-		`Usage: %s sum [<opts>] <paths or '-' or cidrs or ip-range>
+		`Usage: %s summarize [<opts>] <paths or '-' or cidrs or ip-range>
 
 Description:
   Accepts file paths, '-' for stdin, CIDRs and IP ranges.
 
   # Lookup all IPs from stdin ('-' can be implied).
-  $ %[1]s prips 8.8.8.0/24 | %[1]s sum
-  $ %[1]s prips 8.8.8.0/24 | %[1]s sum -
+  $ %[1]s prips 8.8.8.0/24 | %[1]s summarize
+  $ %[1]s prips 8.8.8.0/24 | %[1]s summarize -
 
   # Lookup all IPs in 2 files.
-  $ %[1]s sum /path/to/iplist1.txt /path/to/iplist2.txt
+  $ %[1]s summarize /path/to/iplist1.txt /path/to/iplist2.txt
 
   # Lookup all IPs from CIDR.
-  $ %[1]s sum 8.8.8.0/24
+  $ %[1]s summarize 8.8.8.0/24
 
   # Lookup all IPs from multiple CIDRs.
-  $ %[1]s sum 8.8.8.0/24 8.8.2.0/24 8.8.1.0/24
+  $ %[1]s summarize 8.8.8.0/24 8.8.2.0/24 8.8.1.0/24
 
   # Lookup all IPs in an IP range.
-  $ %[1]s sum 8.8.8.0 8.8.8.255
+  $ %[1]s summarize 8.8.8.0 8.8.8.255
 
 Options:
   General:

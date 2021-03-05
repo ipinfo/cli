@@ -40,7 +40,7 @@ func main() {
 		err = cmdMyIP()
 	case cmd == "bulk":
 		err = cmdBulk()
-	case cmd == "sum":
+	case cmd == "summarize":
 		err = cmdSum()
 	case cmd == "prips":
 		err = cmdPrips()
