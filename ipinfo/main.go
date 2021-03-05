@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 
 	"github.com/ipinfo/go/v2/ipinfo"
 )
 
 var progBase = filepath.Base(os.Args[0])
+var version = "1.0.0"
 
 var ii *ipinfo.Client
 
@@ -19,6 +21,10 @@ func prepareIpinfoClient(tok string) error {
 	}
 
 	ii = ipinfo.NewClient(nil, nil, tok)
+	ii.UserAgent = fmt.Sprintf(
+		"IPinfoCli/%s (os/%s - arch/%s)",
+		version, runtime.GOOS, runtime.GOARCH,
+	)
 	return nil
 }
 
