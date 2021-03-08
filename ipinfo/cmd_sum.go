@@ -171,6 +171,7 @@ lookup:
 	headerPrint("Unique", d.Unique)
 	headerPrint("Anycast", d.Anycast)
 	headerPrint("Bogon", d.Bogon)
+	headerPrint("Mobile", d.Mobile)
 	headerPrint("VPN", d.Privacy.VPN)
 	headerPrint("Proxy", d.Privacy.Proxy)
 	headerPrint("Hosting", d.Privacy.Hosting)
@@ -281,6 +282,23 @@ lookup:
 			entry.Sprintf("%-"+entryLen+"s", k),
 			num.Sprintf("%v (%.1f%%)", v, pct),
 		)
+	}
+
+	if len(d.Carriers) > 0 {
+		fmt.Println()
+		header.Println("Top Carriers")
+		topCarriers := orderSummaryMapping(d.Carriers)
+		entryLen = strconv.Itoa(longestKeyLen(topCarriers))
+		for _, carriersSum := range topCarriers {
+			k := carriersSum.k
+			v := carriersSum.v
+			pct := (float64(v) / float64(d.Mobile)) * 100
+			fmt.Printf(
+				"- %v %v\n",
+				entry.Sprintf("%-"+entryLen+"s", k),
+				num.Sprintf("%v (%.1f%%)", v, pct),
+			)
+		}
 	}
 
 	return nil
