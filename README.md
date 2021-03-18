@@ -11,10 +11,10 @@ allowing you to:
 ## Table of Contents
 
 * [Installation](#installation)
-    + [Linux](#linux)
-    + [macOS](#macos)
-    + [Windows](#windows)
-    + [Source](#source)
+    + [Using `curl`/`wget`](#using--curl---wget-)
+    + [Using Homebrew](#using-homebrew)
+    + [Using Linux package managers](#using-linux-package-managers)
+    + [Using `git`](#using--git-)
 * [Quick Start](#quick-start)
 * [Other IPinfo Tools](#other-ipinfo-tools)
 * [About IPinfo](#about-ipinfo)
@@ -25,19 +25,19 @@ The pre-built binaries for all platforms are available on GitHub via artifacts
 in releases. You need to simply download, unpack and move them to your shell's
 binary search path.
 
-### Linux
+### Using `curl`/`wget`
 
 TODO
 
-### macOS
+### Using Homebrew
 
-TODO
+[Coming soon!](https://github.com/ipinfo/cli/issues/3)
 
-### Windows
+### Using Linux package managers
 
-TODO
+[Coming soon!](https://github.com/ipinfo/cli/issues/3)
 
-### Source
+### Using `git`
 
 Installing from source requires at least the Golang version specified in
 `go.mod`. You can install the Golang toolchain from
