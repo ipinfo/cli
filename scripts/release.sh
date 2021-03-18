@@ -15,13 +15,13 @@ if [ -z "$VSN" ]; then
 fi
 
 # build
-rm ./build/ipinfo_${VSN}_*
+rm -f ./build/ipinfo_${VSN}_*
 $ROOT/scripts/build-all-platforms.sh "$VSN"
 
 # archive
 cd ./build
-for t in ./ipinfo_${VSN}_* ; do
-    if [[ $t == ./ipinfo_*_windows_* ]]; then
+for t in ipinfo_${VSN}_* ; do
+    if [[ $t == ipinfo_*_windows_* ]]; then
         zip -q ${t/.exe/.zip} $t
     else
         tar -czf ${t}.tar.gz $t
@@ -31,5 +31,6 @@ cd ..
 
 # release
 gh release create $VSN                                                        \
+    -R ipinfo/cli                                                             \
     ./build/*.tar.gz                                                          \
     ./build/*.zip
