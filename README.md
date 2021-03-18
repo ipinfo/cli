@@ -8,10 +8,61 @@ allowing you to:
 - Summarize the details of up to 1000 IPs at a time.
 - Sign up for a IPinfo API token.
 
+## Table of Contents
+
+* [Installation](#installation)
+    + [Linux](#linux)
+    + [macOS](#macos)
+    + [Windows](#windows)
+    + [Source](#source)
+* [Quick Start](#quick-start)
+* [Other IPinfo Tools](#other-ipinfo-tools)
+* [About IPinfo](#about-ipinfo)
+
 ## Installation
 
-TODO - give a curl/wget cmd for installing from github archives, unpacking that
-and installing it to common locations for different operating systems.
+The pre-built binaries for all platforms are available on GitHub via artifacts
+in releases. You need to simply download, unpack and move them to your shell's
+binary search path.
+
+### Linux
+
+TODO
+
+### macOS
+
+TODO
+
+### Windows
+
+TODO
+
+### Source
+
+Installing from source requires at least the Golang version specified in
+`go.mod`. You can install the Golang toolchain from
+[the official site](https://golang.org/doc/install).
+
+Once the correct Golang version is installed, simply clone the repository and
+install the binary:
+
+```bash
+$ git clone https://github.com/ipinfo/cli ipinfo-cli
+$ cd ipinfo-cli
+$ go install ./ipinfo/
+$ ipinfo
+```
+
+Alternatively, you can do the following to output the binary somewhere
+specific:
+
+```bash
+$ git clone https://github.com/ipinfo/cli ipinfo-cli
+$ cd ipinfo-cli
+$ go build -o <path> ./ipinfo/
+```
+
+Replace `<path>` with the required location.
 
 ## Quick Start
 
