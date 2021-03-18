@@ -45,6 +45,9 @@ After a non-Windows platform `PLAT` from the above, run:
 
 ```bash
 $ curl -L https://github.com/ipinfo/cli/releases/download/1.0.0b1/ipinfo_1.0.0b1_${PLAT}.tar.gz
+# OR
+$ wget https://github.com/ipinfo/cli/releases/download/1.0.0b1/ipinfo_1.0.0b1_${PLAT}.tar.gz
+
 $ tar -xvf ipinfo_1.0.0b1_${PLAT}.tar.gz
 $ mv ipinfo_1.0.0b1_${PLAT} /usr/local/bin/ipinfo
 ```
