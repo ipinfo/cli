@@ -11,10 +11,10 @@ allowing you to:
 ## Table of Contents
 
 * [Installation](#installation)
-    + [Using `curl`/`wget`](#using--curl---wget-)
+    + [Using `curl`/`wget`](#using-curlwget)
     + [Using Homebrew](#using-homebrew)
     + [Using Linux package managers](#using-linux-package-managers)
-    + [Using `git`](#using--git-)
+    + [Using `git`](#using-git)
 * [Quick Start](#quick-start)
 * [Other IPinfo Tools](#other-ipinfo-tools)
 * [About IPinfo](#about-ipinfo)
@@ -41,9 +41,10 @@ solaris_amd64
 windows_amd64
 ```
 
-After a non-Windows platform `PLAT` from the above, run:
+After choosing a platform `PLAT` from above, run:
 
 ```bash
+# for Windows, use ".zip" instead of ".tar.gz"
 $ curl -L https://github.com/ipinfo/cli/releases/download/1.0.0b1/ipinfo_1.0.0b1_${PLAT}.tar.gz
 # OR
 $ wget https://github.com/ipinfo/cli/releases/download/1.0.0b1/ipinfo_1.0.0b1_${PLAT}.tar.gz
@@ -51,8 +52,6 @@ $ wget https://github.com/ipinfo/cli/releases/download/1.0.0b1/ipinfo_1.0.0b1_${
 $ tar -xvf ipinfo_1.0.0b1_${PLAT}.tar.gz
 $ mv ipinfo_1.0.0b1_${PLAT} /usr/local/bin/ipinfo
 ```
-
-For Windows, the binary is archived as a `zip` file.
 
 ### Using Homebrew
 
