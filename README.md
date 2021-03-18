@@ -21,11 +21,11 @@ allowing you to:
 
 ## Installation
 
+### Using `curl`/`wget`
+
 The pre-built binaries for all platforms are available on GitHub via artifacts
 in releases. You need to simply download, unpack and move them to your shell's
 binary search path.
-
-### Using `curl`/`wget`
 
 TODO
 
@@ -106,7 +106,8 @@ Options:
 
 If you have a token, log in with it first. You can continue without a token,
 but there will be limited data output and some features (like bulk lookups)
-will not be available.
+will not be available. Get your token for free at
+[https://ipinfo.io/signup](https://ipinfo.io/signup?ref=cli).
 
 ```bash
 $ ipinfo login
