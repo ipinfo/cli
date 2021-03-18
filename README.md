@@ -27,7 +27,29 @@ The pre-built binaries for all platforms are available on GitHub via artifacts
 in releases. You need to simply download, unpack and move them to your shell's
 binary search path.
 
-TODO
+The following OS & arch combinations are supported:
+
+```
+darwin_amd64
+dragonfly_amd64
+freebsd_amd64
+linux_amd64
+netbsd_amd64
+openbsd_amd64
+plan9_amd64
+solaris_amd64
+windows_amd64
+```
+
+After a non-Windows platform `PLAT` from the above, run:
+
+```bash
+$ curl -L https://github.com/ipinfo/cli/releases/download/1.0.0b1/ipinfo_1.0.0b1_${PLAT}.tar.gz
+$ tar -xvf ipinfo_1.0.0b1_${PLAT}.tar.gz
+$ mv ipinfo_1.0.0b1_${PLAT} /usr/local/bin/ipinfo
+```
+
+For Windows, the binary is archived as a `zip` file.
 
 ### Using Homebrew
 

@@ -19,13 +19,15 @@ rm ./build/ipinfo_${VSN}_*
 $ROOT/scripts/build-all-platforms.sh "$VSN"
 
 # archive
-for t in ./build/ipinfo_${VSN}_* ; do
-    if [[ $t == ./build/ipinfo_*_windows_* ]]; then
+cd ./build
+for t in ./ipinfo_${VSN}_* ; do
+    if [[ $t == ./ipinfo_*_windows_* ]]; then
         zip -q ${t/.exe/.zip} $t
     else
         tar -czf ${t}.tar.gz $t
     fi
 done
+cd ..
 
 # release
 gh release create $VSN                                                        \
