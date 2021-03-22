@@ -74,8 +74,11 @@ install the binary:
 $ git clone https://github.com/ipinfo/cli ipinfo-cli
 $ cd ipinfo-cli
 $ go install ./ipinfo/
-$ ipinfo
+$ $GOPATH/bin/ipinfo
 ```
+
+You can add `$GOPATH/bin` to your `$PATH` to access `ipinfo` directly from
+anywhere.
 
 Alternatively, you can do the following to output the binary somewhere
 specific:
