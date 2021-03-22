@@ -27,7 +27,8 @@ The pre-built binaries for all platforms are available on GitHub via artifacts
 in releases. You need to simply download, unpack and move them to your shell's
 binary search path.
 
-The following OS & arch combinations are supported:
+The following OS & arch combinations are supported (if you use one not listed
+on here, please open an issue):
 
 ```
 darwin_amd64
