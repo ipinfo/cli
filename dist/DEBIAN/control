@@ -1,0 +1,11 @@
+Source: ipinfo
+Section: utils
+Version: 1.0-1
+Priority: optional
+Maintainer: IPinfo <support@ipinfo.io>
+Vcs-Git: https://github.com/ipinfo/cli
+Vcs-browser: https://github.com/ipinfo/cli
+Homepage: https://ipinfo.io
+Package: ipinfo
+Architecture: amd64
+Description: This is the official CLI for the IPinfo IP Address API.

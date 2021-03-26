@@ -15,11 +15,11 @@ if [ -z "$VSN" ]; then
 fi
 
 # build
-rm -f ./build/ipinfo_${VSN}_*
+rm -f $ROOT/build/ipinfo_${VSN}_*
 $ROOT/scripts/build-all-platforms.sh "$VSN"
 
 # archive
-cd ./build
+cd $ROOT/build
 for t in ipinfo_${VSN}_* ; do
     if [[ $t == ipinfo_*_windows_* ]]; then
         zip -q ${t/.exe/.zip} $t
@@ -29,8 +29,12 @@ for t in ipinfo_${VSN}_* ; do
 done
 cd ..
 
+# dist: debian
+dpkg-deb --build ${ROOT}/dist build/ipinfo_${VSN}.deb
+
 # release
 gh release create $VSN                                                        \
     -R ipinfo/cli                                                             \
-    ./build/*.tar.gz                                                          \
-    ./build/*.zip
+    $ROOT/build/*.tar.gz                                                      \
+    $ROOT/build/*.zip                                                         \
+    $ROOT/build/*.deb
