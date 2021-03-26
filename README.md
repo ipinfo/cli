@@ -13,6 +13,7 @@ allowing you to:
 * [Installation](#installation)
     + [Using `curl`/`wget`](#using-curlwget)
     + [Using Homebrew](#using-homebrew)
+    + [Using `.deb`](#using-deb)
     + [Using Linux package managers](#using-linux-package-managers)
     + [Using `git`](#using-git)
 * [Quick Start](#quick-start)
@@ -46,17 +47,26 @@ After choosing a platform `PLAT` from above, run:
 
 ```bash
 # for Windows, use ".zip" instead of ".tar.gz"
-$ curl -L https://github.com/ipinfo/cli/releases/download/1.0.0b1/ipinfo_1.0.0b1_${PLAT}.tar.gz
+$ curl -L https://github.com/ipinfo/cli/releases/download/1.0.0b2/ipinfo_1.0.0b2_${PLAT}.tar.gz
 # OR
-$ wget https://github.com/ipinfo/cli/releases/download/1.0.0b1/ipinfo_1.0.0b1_${PLAT}.tar.gz
+$ wget https://github.com/ipinfo/cli/releases/download/1.0.0b2/ipinfo_1.0.0b2_${PLAT}.tar.gz
 
-$ tar -xvf ipinfo_1.0.0b1_${PLAT}.tar.gz
-$ mv ipinfo_1.0.0b1_${PLAT} /usr/local/bin/ipinfo
+$ tar -xvf ipinfo_1.0.0b2_${PLAT}.tar.gz
+$ mv ipinfo_1.0.0b2_${PLAT} /usr/local/bin/ipinfo
 ```
 
 ### Using Homebrew
 
 [Coming soon!](https://github.com/ipinfo/cli/issues/3)
+
+### Using `.deb`
+
+The `ipinfo` binary will be installed in `/usr/local/bin/ipinfo`:
+
+```bash
+$ curl -L https://github.com/ipinfo/cli/releases/download/1.0.0b2/ipinfo_1.0.0b2.deb
+$ sudo dpkg -i ipinfo_1.0.0b2.deb
+```
 
 ### Using Linux package managers
 
