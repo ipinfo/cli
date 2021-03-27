@@ -15,7 +15,7 @@ if [ -z "$VSN" ]; then
 fi
 
 # build
-rm -f $ROOT/build/ipinfo_${VSN}_*
+rm -f $ROOT/build/ipinfo_${VSN}*
 $ROOT/scripts/build-all-platforms.sh "$VSN"
 
 # archive
@@ -30,6 +30,9 @@ done
 cd ..
 
 # dist: debian
+rm -rf $ROOT/dist/usr
+mkdir -p $ROOT/dist/usr/local/bin
+cp $ROOT/build/ipinfo_1.0.0b2_linux_amd64 $ROOT/dist/usr/local/bin/ipinfo
 dpkg-deb --build ${ROOT}/dist build/ipinfo_${VSN}.deb
 
 # release
