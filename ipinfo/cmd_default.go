@@ -21,6 +21,7 @@ Commands:
   bulk        get details for multiple IPs in bulk.
   summarize   get summarized data for a group of IPs.
   prips       print IP list from CIDR or range.
+  grepip      grep for IPs matching criteria from any source.
   login       save an API token session.
   logout      delete your current API token session.
   version     show current version.

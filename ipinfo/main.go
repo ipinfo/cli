@@ -51,6 +51,8 @@ func main() {
 		err = cmdSum()
 	case cmd == "prips":
 		err = cmdPrips()
+	case cmd == "grepip":
+		err = cmdGrepIP()
 	case cmd == "login":
 		err = cmdLogin()
 	case cmd == "logout":
