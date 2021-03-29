@@ -139,6 +139,14 @@ func outputFieldBatchCore(
 	// TODO the dread of not having macros... we can simplify code length here
 	// with reflection but until then this will have to do.
 	switch field {
+	case "ip":
+		if header {
+			fmt.Printf("ip\n")
+		}
+
+		for _, d := range core {
+			fmt.Printf("%v\n", d.IP)
+		}
 	case "hostname":
 		if header {
 			if !fieldOnly {
