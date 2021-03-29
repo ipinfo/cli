@@ -7,6 +7,7 @@ import (
 
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
+	"github.com/ipinfo/cli/lib"
 )
 
 func printHelpDefault() {
@@ -86,7 +87,7 @@ func cmdDefault() (err error) {
 		return err
 	}
 
-	ips = ipsFromStdin()
+	ips = lib.IPsFromStdin()
 
 	if len(ips) == 0 {
 		fmt.Println("no input ips")

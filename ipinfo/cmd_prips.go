@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/pflag"
+	"github.com/ipinfo/cli/lib"
 )
 
 func printHelpPrips() {
@@ -50,19 +51,19 @@ func cmdPrips() error {
 	// ensure we only have CIDRs or IPs, but not both.
 	hasCIDR := false
 	for _, arg := range args {
-		if isCIDR(arg) {
+		if lib.IsCIDR(arg) {
 			hasCIDR = true
-		} else if !isIP(arg) {
-			return errNotIP
+		} else if !lib.IsIP(arg) {
+			return lib.ErrNotIP
 		} else if hasCIDR {
-			return errCannotMixCIDRAndIPs
+			return lib.ErrCannotMixCIDRAndIPs
 		}
 	}
 
 	// output CIDRs if that's what we have.
 	if hasCIDR {
 		for _, arg := range args {
-			if err := outputIPsFromCIDR(arg); err != nil {
+			if err := lib.OutputIPsFromCIDR(arg); err != nil {
 				return err
 			}
 		}
@@ -71,11 +72,11 @@ func cmdPrips() error {
 
 	// IP range input requires 2 IPs.
 	if len(args) != 2 {
-		return errIPRangeRequiresTwoIPs
+		return lib.ErrIPRangeRequiresTwoIPs
 	}
 
 	// now we definitely have 2 IPs only.
-	if err := outputIPsFromRange(args[0], args[1]); err != nil {
+	if err := lib.OutputIPsFromRange(args[0], args[1]); err != nil {
 		return err
 	}
 

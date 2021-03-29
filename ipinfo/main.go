@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/ipinfo/go/v2/ipinfo"
+	"github.com/ipinfo/cli/lib"
 )
 
 var progBase = filepath.Base(os.Args[0])
@@ -37,9 +38,9 @@ func main() {
 	}
 
 	switch {
-	case isIP(cmd):
+	case lib.IsIP(cmd):
 		err = cmdIP(cmd)
-	case isASN(cmd):
+	case lib.IsASN(cmd):
 		asn := strings.ToUpper(cmd)
 		err = cmdASN(asn)
 	case cmd == "myip":
