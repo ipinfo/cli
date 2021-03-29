@@ -72,23 +72,28 @@ func cmdGrepIP() error {
 		return nil
 	}
 
+	// actual scanner.
 	scanrdr := func(src string, r io.Reader) {
 		fmt.Printf("scanning %v\n", src)
 	}
 
+	// opens a file and delegates to scanrdr.
 	scanfile := func(path string) {
 		f, err := os.Open(path)
 		if err != nil {
+			// TODO print error but have a `-q` flag to be quiet.
 			return
 		}
 
 		scanrdr(path, f)
 	}
 
+	// scan stdin first.
 	if (stat.Mode() & os.ModeCharDevice) == 0 {
 		scanrdr("(stdin)", os.Stdin)
 	}
 
+	// scan all args.
 	for _, arg := range args {
 		fi, err := os.Stat(arg)
 		if err != nil {
@@ -100,16 +105,17 @@ func cmdGrepIP() error {
 			scanfile(arg)
 		case mode.IsDir():
 			filepath.WalkDir(arg, func(path string, d fs.DirEntry, err error) error {
+				// skip input dir.
 				if arg == path {
 					return nil
 				}
 
+				// don't recurse if requested.
 				if fNoRecurse && d.IsDir() {
 					return fs.SkipDir
 				}
 
 				scanfile(path)
-
 				return nil
 			})
 		}
