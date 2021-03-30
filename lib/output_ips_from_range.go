@@ -6,7 +6,8 @@ import (
 	"fmt"
 )
 
-// Same as ipsFromRange with O(1) memory by discarding IPs after printing.
+// OutputIPsFromRange is the same as IPsFromRange with O(1) memory by
+// discarding IPs after printing.
 func OutputIPsFromRange(ipStrStart string, ipStrEnd string) error {
 	var ipStart, ipEnd net.IP
 

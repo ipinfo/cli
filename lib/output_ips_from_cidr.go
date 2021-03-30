@@ -6,7 +6,8 @@ import (
 	"fmt"
 )
 
-// Same as ipsFromCIDR with O(1) memory by discarding IPs after printing.
+// OutputIPsFromCIDR is the same as IPsFromCIDR with O(1) memory by discarding
+// IPs after printing.
 func OutputIPsFromCIDR(cidrStr string) error {
 	_, ipnet, err := net.ParseCIDR(cidrStr)
 	if err != nil {

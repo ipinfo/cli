@@ -5,6 +5,7 @@ import (
 	"net"
 )
 
+// IPsFromCIDR returns a list of IPs from a CIDR string.
 func IPsFromCIDR(cidrStr string) ([]net.IP, error) {
 	_, ipnet, err := net.ParseCIDR(cidrStr)
 	if err != nil {

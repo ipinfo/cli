@@ -7,8 +7,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/ipinfo/cli/lib"
+	"github.com/ipinfo/go/v2/ipinfo"
 )
 
 var progBase = filepath.Base(os.Args[0])

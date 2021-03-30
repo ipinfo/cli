@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 )
 
+// IPsFromRange returns a list of IPs from a start and end IP string.
 func IPsFromRange(ipStrStart string, ipStrEnd string) ([]net.IP, error) {
 	var ips []net.IP
 	var ipStart, ipEnd net.IP

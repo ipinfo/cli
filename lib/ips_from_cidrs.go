@@ -4,6 +4,7 @@ import (
 	"net"
 )
 
+// IPsFromCIDRs returns a list of IPs from a list of CIDRs in string form.
 func IPsFromCIDRs(cidrStrs []string) (ips []net.IP, err error) {
 	// collect IPs lists together first, then allocate a final list and do
 	// a fast transfer.

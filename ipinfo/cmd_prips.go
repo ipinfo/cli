@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/spf13/pflag"
 	"github.com/ipinfo/cli/lib"
+	"github.com/spf13/pflag"
 )
 
 func printHelpPrips() {

@@ -5,9 +5,9 @@ import (
 	"net"
 	"os"
 
+	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
-	"github.com/ipinfo/cli/lib"
 )
 
 func printHelpDefault() {

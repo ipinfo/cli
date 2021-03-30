@@ -142,8 +142,8 @@ func cmdGrepIP() error {
 			} else {
 				matches = make([][]int, 0, len(allMatches))
 				for _, m := range allMatches {
-					m_ip := net.ParseIP(d[m[0]:m[1]])
-					ip := binary.BigEndian.Uint32(m_ip.To4())
+					mIP := net.ParseIP(d[m[0]:m[1]])
+					ip := binary.BigEndian.Uint32(mIP.To4())
 
 					if fBogon {
 						for _, bogonRange := range bogonRanges {

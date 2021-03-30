@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+// IsASN checks whether an ASN string really is an ASN of the form "asX" or
+// "ASX" where "X" is the ASN's number.
 func IsASN(asn string) bool {
 	// check length.
 	if len(asn) < 3 {

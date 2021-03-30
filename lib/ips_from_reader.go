@@ -6,6 +6,8 @@ import (
 	"io"
 )
 
+// IPsFromReader returns a list of IPs after reading from a reader; the reader
+// should have IPs per-line.
 func IPsFromReader(r io.Reader) []net.IP {
 	ips := make([]net.IP, 0, 10000)
 	scanner := bufio.NewScanner(r)

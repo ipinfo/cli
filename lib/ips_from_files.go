@@ -4,6 +4,7 @@ import (
 	"net"
 )
 
+// IPsFromFiles returns a list of IPs found in a list of files.
 func IPsFromFiles(paths []string) (ips []net.IP, err error) {
 	// collect IPs lists together first, then allocate a final list and do
 	// a fast transfer.
