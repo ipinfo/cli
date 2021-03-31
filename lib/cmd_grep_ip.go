@@ -16,6 +16,7 @@ import (
 	"github.com/spf13/pflag"
 )
 
+// CmdGrepIPFlags are flags expected by CmdGrepIP.
 type CmdGrepIPFlags struct {
 	OnlyMatching bool
 	NoFilename bool
@@ -26,6 +27,10 @@ type CmdGrepIPFlags struct {
 	ExclRes bool
 }
 
+// Init initializes the common flags available to CmdGrepIP with sensible
+// defaults.
+//
+// pflag.Parse() must be called to actually use the final flag values.
 func (f *CmdGrepIPFlags) Init() {
 	pflag.BoolVarP(
 		&f.OnlyMatching,
@@ -64,6 +69,7 @@ func (f *CmdGrepIPFlags) Init() {
 	)
 }
 
+// CmdGrepIP is the common core logic for the `grepip` command-line utility.
 func CmdGrepIP(f CmdGrepIPFlags, args []string, printHelp func()) error {
 	if f.Help {
 		printHelp()
