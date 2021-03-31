@@ -37,10 +37,8 @@ Options:
       match only IPv4 addresses.
     --ipv6, -6
       match only IPv6 addresses.
-    --localhost, -l
-      match IPs in 127.0.0.0/8 range.
-    --bogon, -b
-      match any bogon IP.
+    --exclude-reserved, -x
+      exclude reserved/bogon IPs.
       full list can be found at https://ipinfo.io/bogon.
 `, progBase)
 }
@@ -52,8 +50,7 @@ func cmdGrepIP() error {
 	var fHelp bool
 	var fV4 bool
 	var fV6 bool
-	var fLocalhost bool
-	var fBogon bool
+	var fExclRes bool
 
 	pflag.BoolVarP(&fOnlyMatching, "only-matching", "o", false, "print only matched IPs in result line.")
 	pflag.BoolVarP(&fNoFilename, "no-filename", "h", false, "don't print source of match in result lines when more than 1 source.")
@@ -61,8 +58,7 @@ func cmdGrepIP() error {
 	pflag.BoolVarP(&fHelp, "help", "", false, "show help.")
 	pflag.BoolVarP(&fV4, "ipv4", "4", false, "print only IPv4 matches.")
 	pflag.BoolVarP(&fV6, "ipv6", "6", false, "print only IPv6 matches.")
-	pflag.BoolVarP(&fLocalhost, "localhost", "l", false, "match IPs in 127.0.0.0/8 range.")
-	pflag.BoolVarP(&fBogon, "bogon", "b", false, "match any bogon IP.")
+	pflag.BoolVarP(&fExclRes, "exclude-reserved", "x", false, "exclude reserved/bogon IPs.")
 	pflag.Parse()
 
 	if fHelp {
@@ -119,13 +115,11 @@ func cmdGrepIP() error {
 		start lib.IP6u128
 		end   lib.IP6u128
 	}
-	var bogonRanges4 []iprange4
-	var localhostRange4 iprange4
-	var bogonRanges6 []iprange6
-	var localhostRange6 iprange6
-	if fBogon {
+	var exclRanges4 []iprange4
+	var exclRanges6 []iprange6
+	if fExclRes {
 		// v4
-		bogonRanges4Str := []string{
+		exclRanges4Str := []string{
 			"0.0.0.0/8",
 			"10.0.0.0/8",
 			"100.64.0.0/10",
@@ -142,22 +136,23 @@ func cmdGrepIP() error {
 			"240.0.0.0/4",
 			"255.255.255.255/32",
 		}
-		bogonRanges4 = make([]iprange4, len(bogonRanges4Str))
-		for i, bogonRangeStr := range bogonRanges4Str {
+		exclRanges4 = make([]iprange4, len(exclRanges4Str))
+		for i, bogonRangeStr := range exclRanges4Str {
 			start, end, err := lib.IPRangeStartEndFromCIDR(bogonRangeStr)
 			if err != nil {
 				panic(err)
 			}
 
-			bogonRanges4[i] = iprange4{
+			exclRanges4[i] = iprange4{
 				start: start,
 				end:   end,
 			}
 		}
 
 		// v6
-		bogonRanges6Str := []string{
+		exclRanges6Str := []string{
 			"::/128",
+			"::1/128",
 			"::ffff:0:0/96",
 			"::/96",
 			"100::/64",
@@ -170,6 +165,7 @@ func cmdGrepIP() error {
 			// 6to4 bogon ranges
 			"2002::/24",
 			"2002:a00::/24",
+			"2002:7f00::/24",
 			"2002:a9fe::/32",
 			"2002:ac10::/28",
 			"2002:c000::/40",
@@ -184,6 +180,7 @@ func cmdGrepIP() error {
 			// teredo
 			"2001::/40",
 			"2001:0:a00::/40",
+			"2001:0:7f00::/40",
 			"2001:0:a9fe::/48",
 			"2001:0:ac10::/44",
 			"2001:0:c000::/56",
@@ -196,39 +193,17 @@ func cmdGrepIP() error {
 			"2001:0:f000::/36",
 			"2001:0:ffff:ffff::/64",
 		}
-		bogonRanges6 = make([]iprange6, len(bogonRanges6Str))
-		for i, bogonRangeStr := range bogonRanges6Str {
+		exclRanges6 = make([]iprange6, len(exclRanges6Str))
+		for i, bogonRangeStr := range exclRanges6Str {
 			start, end, err := lib.IP6RangeStartEndFromCIDR(bogonRangeStr)
 			if err != nil {
 				panic(err)
 			}
 
-			bogonRanges6[i] = iprange6{
+			exclRanges6[i] = iprange6{
 				start: start,
 				end:   end,
 			}
-		}
-	} else if fLocalhost { // localhost is a subset of bogon
-		// v4
-		start, end, err := lib.IPRangeStartEndFromCIDR("127.0.0.0/8")
-		if err != nil {
-			panic(err)
-		}
-
-		localhostRange4 = iprange4{
-			start: start,
-			end:   end,
-		}
-
-		// v6
-		start6, end6, err := lib.IP6RangeStartEndFromCIDR("::1/128")
-		if err != nil {
-			panic(err)
-		}
-
-		localhostRange6 = iprange6{
-			start: start6,
-			end:   end6,
 		}
 	}
 
@@ -249,7 +224,7 @@ func cmdGrepIP() error {
 			// get all matches and then filter.
 			var matches [][]int
 			allMatches := rexp.FindAllStringIndex(d, -1)
-			if !fLocalhost && !fBogon {
+			if !fExclRes {
 				matches = allMatches
 			} else {
 				matches = make([][]int, 0, len(allMatches))
@@ -263,36 +238,23 @@ func cmdGrepIP() error {
 							Lo: binary.BigEndian.Uint64(ip[8:]),
 						}
 
-						if fBogon {
-							for _, r := range bogonRanges6 {
-								if ip128.Gte(r.start) && ip128.Lte(r.end) {
-									matches = append(matches, m)
-									break
-								}
-							}
-						} else if fLocalhost {
-							r := localhostRange6
+						for _, r := range exclRanges6 {
 							if ip128.Gte(r.start) && ip128.Lte(r.end) {
-								matches = append(matches, m)
+								goto next_match
 							}
 						}
 					} else {
 						ip := binary.BigEndian.Uint32(mIP.To4())
 
-						if fBogon {
-							for _, r := range bogonRanges4 {
-								if ip >= r.start && ip <= r.end {
-									matches = append(matches, m)
-									break
-								}
-							}
-						} else if fLocalhost { // localhost is a subset of bogon
-							r := localhostRange4
+						for _, r := range exclRanges4 {
 							if ip >= r.start && ip <= r.end {
-								matches = append(matches, m)
+								goto next_match
 							}
 						}
 					}
+
+					matches = append(matches, m)
+				next_match:
 				}
 			}
 
