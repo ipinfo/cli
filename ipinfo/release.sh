@@ -32,12 +32,13 @@ cd ..
 # dist: debian
 rm -rf $ROOT/ipinfo/dist/usr
 mkdir -p $ROOT/ipinfo/dist/usr/local/bin
-cp $ROOT/build/ipinfo_1.0.0b3_linux_amd64 $ROOT/ipinfo/dist/usr/local/bin/ipinfo
+cp $ROOT/build/ipinfo_${VSN}_linux_amd64 $ROOT/ipinfo/dist/usr/local/bin/ipinfo
 dpkg-deb --build ${ROOT}/ipinfo/dist build/ipinfo_${VSN}.deb
 
 # release
 gh release create $VSN                                                        \
     -R ipinfo/cli                                                             \
+    -t "ipinfo-${VSN}"                                                        \
     $ROOT/build/ipinfo_*.tar.gz                                               \
     $ROOT/build/ipinfo_*.zip                                                  \
     $ROOT/build/ipinfo_*.deb
