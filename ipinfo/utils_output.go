@@ -45,81 +45,101 @@ func outputCSVBatchCore(core ipinfo.BatchCore) error {
 }
 
 func outputFriendlyCore(d *ipinfo.Core) {
-	header := color.New(color.Bold, color.BgWhite, color.FgHiMagenta)
+	var printline func(name string, val string)
 
-	header.Printf("                 CORE                 ")
-	fmt.Println()
-	fmt.Printf("IP              %s\n", d.IP.String())
+	fmtHdr := color.New(color.Bold, color.FgWhite)
+	fmtEntry := color.New(color.FgCyan)
+	fmtVal := color.New(color.FgGreen)
+
+	printlineGen := func(entryLen string) func(string, string) {
+		return func(name string, val string) {
+			fmt.Printf(
+				"- %s %s\n",
+				fmtEntry.Sprintf("%-"+entryLen+"s", name),
+				fmtVal.Sprintf("%v", val),
+			)
+		}
+	}
+
+	fmtHdr.Println("Core")
+	if d.Bogon {
+		printline = printlineGen("5")
+	} else {
+		printline = printlineGen("12")
+	}
+	printline("IP", d.IP.String())
 	if d.Bogon {
 		// exit early after printing bogon status.
-		fmt.Printf("Bogon           %v\n", d.Bogon)
+		printline("Bogon", fmt.Sprintf("%v", d.Bogon))
 		return
 	}
-	fmt.Printf("Anycast         %v\n", d.Anycast)
-	fmt.Printf("Hostname        %s\n", d.Hostname)
-	fmt.Printf("City            %s\n", d.City)
-	fmt.Printf("Region          %s\n", d.Region)
-	fmt.Printf("Country         %s (%s)\n", d.CountryName, d.Country)
-	fmt.Printf("Location        %s\n", d.Location)
-	fmt.Printf("Organization    %s\n", d.Org)
-	fmt.Printf("Postal          %s\n", d.Postal)
-	fmt.Printf("Timezone        %s\n", d.Timezone)
+	printline("Anycast", fmt.Sprintf("%v", d.Anycast))
+	printline("Hostname", d.Hostname)
+	printline("City", d.City)
+	printline("Region", d.Region)
+	printline("Country", fmt.Sprintf("%v (%v)", d.CountryName, d.Country))
+	printline("Location", d.Location)
+	printline("Organization", d.Org)
+	printline("Postal", d.Postal)
+	printline("Timezone", d.Timezone)
 	if d.ASN != nil {
 		fmt.Println()
-		header.Printf("                 ASN                  ")
-		fmt.Println()
-		fmt.Printf("ID              %s\n", d.ASN.ASN)
-		fmt.Printf("Name            %s\n", d.ASN.Name)
-		fmt.Printf("Domain          %s\n", d.ASN.Domain)
-		fmt.Printf("Route           %s\n", d.ASN.Route)
-		fmt.Printf("Type            %s\n", d.ASN.Type)
+		fmtHdr.Println("ASN")
+		printline = printlineGen("6")
+		printline("ID", d.ASN.ASN)
+		printline("Name", d.ASN.Name)
+		printline("Domain", d.ASN.Domain)
+		printline("Route", d.ASN.Route)
+		printline("Type", d.ASN.Type)
 	}
 	if d.Company != nil {
 		fmt.Println()
-		header.Printf("               COMPANY                ")
-		fmt.Println()
-		fmt.Printf("Name            %s\n", d.Company.Name)
-		fmt.Printf("Domain          %s\n", d.Company.Domain)
-		fmt.Printf("Type            %s\n", d.Company.Type)
+		fmtHdr.Println("Company")
+		printline = printlineGen("6")
+		printline("Name", d.Company.Name)
+		printline("Domain", d.Company.Domain)
+		printline("Type", d.Company.Type)
 	}
 	if d.Carrier != nil {
 		fmt.Println()
-		header.Printf("               CARRIER                ")
-		fmt.Println()
-		fmt.Printf("Name            %s\n", d.Carrier.Name)
-		fmt.Printf("MCC             %s\n", d.Carrier.MCC)
-		fmt.Printf("MNC             %s\n", d.Carrier.MNC)
+		fmtHdr.Println("Carrier")
+		printline = printlineGen("4")
+		printline("Name", d.Carrier.Name)
+		printline("MCC", d.Carrier.MCC)
+		printline("MNC", d.Carrier.MNC)
 	}
 	if d.Privacy != nil {
 		fmt.Println()
-		header.Printf("               PRIVACY                ")
-		fmt.Println()
-		fmt.Printf("VPN             %v\n", d.Privacy.VPN)
-		fmt.Printf("Proxy           %v\n", d.Privacy.Proxy)
-		fmt.Printf("Tor             %v\n", d.Privacy.Tor)
-		fmt.Printf("Hosting         %v\n", d.Privacy.Hosting)
+		fmtHdr.Println("Privacy")
+		printline = printlineGen("7")
+		printline("VPN", fmt.Sprintf("%v", d.Privacy.VPN))
+		printline("Proxy", fmt.Sprintf("%v", d.Privacy.Proxy))
+		printline("Tor", fmt.Sprintf("%v", d.Privacy.Tor))
+		printline("Hosting", fmt.Sprintf("%v", d.Privacy.Hosting))
 	}
 	if d.Abuse != nil {
 		fmt.Println()
-		header.Printf("                ABUSE                 ")
-		fmt.Println()
-		fmt.Printf("Address         %s\n", d.Abuse.Address)
-		fmt.Printf("Country         %s (%s)\n", d.Abuse.CountryName, d.Abuse.Country)
-		fmt.Printf("Email           %s\n", d.Abuse.Email)
-		fmt.Printf("Name            %s\n", d.Abuse.Name)
-		fmt.Printf("Network         %s\n", d.Abuse.Network)
-		fmt.Printf("Phone           %s\n", d.Abuse.Phone)
+		fmtHdr.Println("Abuse")
+		printline = printlineGen("7")
+		printline("Address", d.Abuse.Address)
+		printline("Country", fmt.Sprintf("%v (%v)", d.Abuse.CountryName, d.Abuse.Country))
+		printline("Email", d.Abuse.Email)
+		printline("Name", d.Abuse.Name)
+		printline("Network", d.Abuse.Network)
+		printline("Phone", d.Abuse.Phone)
 	}
 	if d.Domains != nil && d.Domains.Total > 0 {
 		fmt.Println()
-		header.Printf("               DOMAINS                ")
-		fmt.Println()
-		fmt.Printf("Total           %v\n", d.Domains.Total)
+		fmtHdr.Println("Domains")
+		printline = printlineGen("8")
+		printline("Total", fmt.Sprintf("%v", d.Domains.Total))
 		if len(d.Domains.Domains) > 0 {
-			fmt.Printf("Examples     1: %s\n", d.Domains.Domains[0])
+			printline("Examples", d.Domains.Domains[0])
 			if len(d.Domains.Domains) > 1 {
-				for i, d := range d.Domains.Domains[1:] {
-					fmt.Printf("             %v: %s\n", i+2, d)
+				for _, d := range d.Domains.Domains[1:] {
+					fmt.Printf(
+						"           %v\n", fmtVal.Sprintf("%v", d),
+					)
 				}
 			}
 		}
