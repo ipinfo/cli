@@ -1,1 +1,5 @@
 .vim/
+ipinfo/dist/
+grepip/dist/
+!ipinfo/dist/DEBIAN/
+!grepip/dist/DEBIAN/
