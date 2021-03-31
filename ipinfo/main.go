@@ -7,11 +7,12 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/go/v2/ipinfo"
 )
 
 var progBase = filepath.Base(os.Args[0])
-var version = "1.0.0b1"
+var version = "1.0.0b3"
 
 var ii *ipinfo.Client
 
@@ -37,9 +38,9 @@ func main() {
 	}
 
 	switch {
-	case isIP(cmd):
+	case lib.IsIP(cmd):
 		err = cmdIP(cmd)
-	case isASN(cmd):
+	case lib.IsASN(cmd):
 		asn := strings.ToUpper(cmd)
 		err = cmdASN(asn)
 	case cmd == "myip":
@@ -50,6 +51,8 @@ func main() {
 		err = cmdSum()
 	case cmd == "prips":
 		err = cmdPrips()
+	case cmd == "grepip":
+		err = cmdGrepIP()
 	case cmd == "login":
 		err = cmdLogin()
 	case cmd == "logout":

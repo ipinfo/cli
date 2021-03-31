@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 
+	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
 )
@@ -20,6 +21,7 @@ Commands:
   bulk        get details for multiple IPs in bulk.
   summarize   get summarized data for a group of IPs.
   prips       print IP list from CIDR or range.
+  grepip      grep for IPs matching criteria from any source.
   login       save an API token session.
   logout      delete your current API token session.
   version     show current version.
@@ -86,7 +88,7 @@ func cmdDefault() (err error) {
 		return err
 	}
 
-	ips = ipsFromStdin()
+	ips = lib.IPsFromStdin()
 
 	if len(ips) == 0 {
 		fmt.Println("no input ips")

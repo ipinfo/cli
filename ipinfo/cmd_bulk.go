@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 
+	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
 )
@@ -85,21 +86,21 @@ func cmdBulk() (err error) {
 			fmt.Println("** manual input mode **")
 			fmt.Println("Enter all IPs, one per line:")
 		}
-		ips = ipsFromStdin()
+		ips = lib.IPsFromStdin()
 
 		goto lookup
 	}
 
 	// check for IP range.
-	if isIP(args[0]) {
+	if lib.IsIP(args[0]) {
 		if len(args) != 2 {
-			return errIPRangeRequiresTwoIPs
+			return lib.ErrIPRangeRequiresTwoIPs
 		}
-		if !isIP(args[1]) {
-			return errNotIP
+		if !lib.IsIP(args[1]) {
+			return lib.ErrNotIP
 		}
 
-		ips, err = ipsFromRange(args[0], args[1])
+		ips, err = lib.IPsFromRange(args[0], args[1])
 		if err != nil {
 			return err
 		}
@@ -108,14 +109,14 @@ func cmdBulk() (err error) {
 	}
 
 	// check for all CIDRs.
-	if isCIDR(args[0]) {
+	if lib.IsCIDR(args[0]) {
 		for _, arg := range args[1:] {
-			if !isCIDR(arg) {
-				return errNotCIDR
+			if !lib.IsCIDR(arg) {
+				return lib.ErrNotCIDR
 			}
 		}
 
-		ips, err = ipsFromCIDRs(args)
+		ips, err = lib.IPsFromCIDRs(args)
 		if err != nil {
 			return err
 		}
@@ -127,11 +128,11 @@ func cmdBulk() (err error) {
 	if fileExists(args[0]) {
 		for _, arg := range args[1:] {
 			if !fileExists(arg) {
-				return errNotFile
+				return lib.ErrNotFile
 			}
 		}
 
-		ips, err = ipsFromFiles(args)
+		ips, err = lib.IPsFromFiles(args)
 		if err != nil {
 			return err
 		}
