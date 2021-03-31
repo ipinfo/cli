@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strings"
 
 	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib"
@@ -33,9 +34,9 @@ Options:
 
   Filters:
     --ipv4, -4
-      print only IPv4 matches.
+      match only IPv4 addresses.
     --ipv6, -6
-      print only IPv6 matches.
+      match only IPv6 addresses.
     --localhost, -l
       match IPs in 127.0.0.0/8 range.
     --bogon, -b
@@ -79,15 +80,52 @@ func cmdGrepIP() error {
 		return nil
 	}
 
-	// each range is a 2-tuple of start/end IPs of the range, inclusive.
-	var bogonRanges [][]uint32
-	var localhostRange []uint32
+	// if user hasn't forced no-filename, and we have more than 1 source, then
+	// output file
+	if !fNoFilename && !(len(args) == 0 || (len(args) == 1 && !isStdin)) {
+		fNoFilename = false
+	} else {
+		fNoFilename = true
+	}
 
-	rexp := regexp.MustCompile("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}")
-	fmtSrc := color.New(color.FgMagenta)
-	fmtMatch := color.New(color.Bold, color.FgRed)
+	// figure out exactly what IP versions we'll match; 0=all, 4=ipv4, 6=ipv6.
+	ipv := 0
+	if fV4 && fV6 {
+		ipv = 0
+	} else if fV4 {
+		ipv = 4
+	} else if fV6 {
+		ipv = 6
+	}
+
+	// prepare regexp
+	var rexp *regexp.Regexp
+	rexp4 := "([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})"
+	rexp6 := "(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))"
+	if ipv == 4 {
+		rexp = regexp.MustCompile(rexp4)
+	} else if ipv == 6 {
+		rexp = regexp.MustCompile(rexp6)
+	} else {
+		rexp = regexp.MustCompile(rexp4 + "|" + rexp6)
+	}
+
+	// prepare bogon/localhost ranges
+	type iprange4 struct {
+		start uint32
+		end   uint32
+	}
+	type iprange6 struct {
+		start lib.IP6u128
+		end   lib.IP6u128
+	}
+	var bogonRanges4 []iprange4
+	var localhostRange4 iprange4
+	var bogonRanges6 []iprange6
+	var localhostRange6 iprange6
 	if fBogon {
-		bogonRangesStr := []string{
+		// v4
+		bogonRanges4Str := []string{
 			"0.0.0.0/8",
 			"10.0.0.0/8",
 			"100.64.0.0/10",
@@ -104,24 +142,98 @@ func cmdGrepIP() error {
 			"240.0.0.0/4",
 			"255.255.255.255/32",
 		}
-		bogonRanges = make([][]uint32, len(bogonRangesStr))
-		for i, bogonRangeStr := range bogonRangesStr {
+		bogonRanges4 = make([]iprange4, len(bogonRanges4Str))
+		for i, bogonRangeStr := range bogonRanges4Str {
 			start, end, err := lib.IPRangeStartEndFromCIDR(bogonRangeStr)
 			if err != nil {
 				panic(err)
 			}
 
-			bogonRanges[i] = []uint32{start, end}
+			bogonRanges4[i] = iprange4{
+				start: start,
+				end:   end,
+			}
 		}
-	}
-	if fLocalhost {
+
+		// v6
+		bogonRanges6Str := []string{
+			"::/128",
+			"::ffff:0:0/96",
+			"::/96",
+			"100::/64",
+			"2001:10::/28",
+			"2001:db8::/32",
+			"fc00::/7",
+			"fe80::/10",
+			"fec0::/10",
+			"ff00::/8",
+			// 6to4 bogon ranges
+			"2002::/24",
+			"2002:a00::/24",
+			"2002:a9fe::/32",
+			"2002:ac10::/28",
+			"2002:c000::/40",
+			"2002:c000:200::/40",
+			"2002:c0a8::/32",
+			"2002:c612::/31",
+			"2002:c633:6400::/40",
+			"2002:cb00:7100::/40",
+			"2002:e000::/20",
+			"2002:f000::/20",
+			"2002:ffff:ffff::/48",
+			// teredo
+			"2001::/40",
+			"2001:0:a00::/40",
+			"2001:0:a9fe::/48",
+			"2001:0:ac10::/44",
+			"2001:0:c000::/56",
+			"2001:0:c000:200::/56",
+			"2001:0:c0a8::/48",
+			"2001:0:c612::/47",
+			"2001:0:c633:6400::/56",
+			"2001:0:cb00:7100::/56",
+			"2001:0:e000::/36",
+			"2001:0:f000::/36",
+			"2001:0:ffff:ffff::/64",
+		}
+		bogonRanges6 = make([]iprange6, len(bogonRanges6Str))
+		for i, bogonRangeStr := range bogonRanges6Str {
+			start, end, err := lib.IP6RangeStartEndFromCIDR(bogonRangeStr)
+			if err != nil {
+				panic(err)
+			}
+
+			bogonRanges6[i] = iprange6{
+				start: start,
+				end:   end,
+			}
+		}
+	} else if fLocalhost { // localhost is a subset of bogon
+		// v4
 		start, end, err := lib.IPRangeStartEndFromCIDR("127.0.0.0/8")
 		if err != nil {
 			panic(err)
 		}
 
-		localhostRange = []uint32{start, end}
+		localhostRange4 = iprange4{
+			start: start,
+			end:   end,
+		}
+
+		// v6
+		start6, end6, err := lib.IP6RangeStartEndFromCIDR("::1/128")
+		if err != nil {
+			panic(err)
+		}
+
+		localhostRange6 = iprange6{
+			start: start6,
+			end:   end6,
+		}
 	}
+
+	fmtSrc := color.New(color.FgMagenta)
+	fmtMatch := color.New(color.Bold, color.FgRed)
 
 	// actual scanner.
 	scanrdr := func(src string, r io.Reader) {
@@ -142,19 +254,43 @@ func cmdGrepIP() error {
 			} else {
 				matches = make([][]int, 0, len(allMatches))
 				for _, m := range allMatches {
-					mIP := net.ParseIP(d[m[0]:m[1]])
-					ip := binary.BigEndian.Uint32(mIP.To4())
+					mIPStr := d[m[0]:m[1]]
+					mIP := net.ParseIP(mIPStr)
+					if strings.Contains(mIPStr, ":") {
+						ip := mIP.To16()
+						ip128 := lib.IP6u128{
+							Hi: binary.BigEndian.Uint64(ip[:8]),
+							Lo: binary.BigEndian.Uint64(ip[8:]),
+						}
 
-					if fBogon {
-						for _, bogonRange := range bogonRanges {
-							if ip >= bogonRange[0] && ip <= bogonRange[1] {
+						if fBogon {
+							for _, r := range bogonRanges6 {
+								if ip128.Gte(r.start) && ip128.Lte(r.end) {
+									matches = append(matches, m)
+									break
+								}
+							}
+						} else if fLocalhost {
+							r := localhostRange6
+							if ip128.Gte(r.start) && ip128.Lte(r.end) {
 								matches = append(matches, m)
-								break
 							}
 						}
-					} else if fLocalhost { // localhost is a subset of bogon
-						if ip >= localhostRange[0] && ip <= localhostRange[1] {
-							matches = append(matches, m)
+					} else {
+						ip := binary.BigEndian.Uint32(mIP.To4())
+
+						if fBogon {
+							for _, r := range bogonRanges4 {
+								if ip >= r.start && ip <= r.end {
+									matches = append(matches, m)
+									break
+								}
+							}
+						} else if fLocalhost { // localhost is a subset of bogon
+							r := localhostRange4
+							if ip >= r.start && ip <= r.end {
+								matches = append(matches, m)
+							}
 						}
 					}
 				}
@@ -206,14 +342,6 @@ func cmdGrepIP() error {
 		}
 
 		scanrdr(path, f)
-	}
-
-	// if user hasn't forced no-filename, and we have more than 1 source, then
-	// output file
-	if !fNoFilename && !(len(args) == 0 || (len(args) == 1 && !isStdin)) {
-		fNoFilename = false
-	} else {
-		fNoFilename = true
 	}
 
 	// scan stdin first.
