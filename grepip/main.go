@@ -14,7 +14,7 @@ var version = "1.0.0"
 
 func printHelp() {
 	fmt.Printf(
-		`Usage: grepip [<opts>]
+		`Usage: %s [<opts>]
 
 Options:
   General:
@@ -37,7 +37,7 @@ Options:
     --exclude-reserved, -x
       exclude reserved/bogon IPs.
       full list can be found at https://ipinfo.io/bogon.
-`)
+`, progBase)
 }
 
 func cmd() error {
