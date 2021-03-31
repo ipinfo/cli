@@ -36,7 +36,7 @@ cp $ROOT/build/ipinfo_${VSN}_linux_amd64 $ROOT/ipinfo/dist/usr/local/bin/ipinfo
 dpkg-deb --build ${ROOT}/ipinfo/dist build/ipinfo_${VSN}.deb
 
 # release
-gh release create $VSN                                                        \
+gh release create ipinfo-${VSN}                                               \
     -R ipinfo/cli                                                             \
     -t "ipinfo-${VSN}"                                                        \
     $ROOT/build/ipinfo_*.tar.gz                                               \

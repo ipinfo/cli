@@ -36,7 +36,7 @@ cp $ROOT/build/grepip_${VSN}_linux_amd64 $ROOT/grepip/dist/usr/local/bin/grepip
 dpkg-deb --build ${ROOT}/grepip/dist build/grepip_${VSN}.deb
 
 # release
-gh release create $VSN                                                        \
+gh release create grepip-${VSN}                                               \
     -R ipinfo/cli                                                             \
     -t "grepip-${VSN}"                                                        \
     $ROOT/build/grepip_*.tar.gz                                               \
