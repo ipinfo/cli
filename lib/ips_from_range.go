@@ -1,8 +1,8 @@
 package lib
 
 import (
-	"net"
 	"encoding/binary"
+	"net"
 )
 
 // IPsFromRange returns a list of IPs from a start and end IP string.

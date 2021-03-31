@@ -1,9 +1,9 @@
 package lib
 
 import (
-	"net"
 	"encoding/binary"
 	"fmt"
+	"net"
 )
 
 // OutputIPsFromCIDR is the same as IPsFromCIDR with O(1) memory by discarding

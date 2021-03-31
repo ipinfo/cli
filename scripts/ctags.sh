@@ -11,4 +11,6 @@ ctags \
     -f .vim/tags \
     --tag-relative=never \
     --totals=yes \
-        ./ipinfo
+        ./lib \
+        ./ipinfo \
+        ./grepip

@@ -1,8 +1,8 @@
 package lib
 
 import (
-	"os"
 	"net"
+	"os"
 )
 
 // IPsFromFile returns a list of IPs found in a file.

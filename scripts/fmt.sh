@@ -6,4 +6,6 @@ ROOT=$DIR/..
 # Format code in project.
 
 gofmt -w \
-    $ROOT/ipinfo
+    $ROOT/lib \
+    $ROOT/ipinfo \
+    $ROOT/grepip
