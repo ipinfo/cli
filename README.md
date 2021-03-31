@@ -22,6 +22,9 @@ allowing you to:
 
 ## Installation
 
+All CLI tools (e.g. `ipinfo`, `grepip`) are available for download from
+multiple mechanisms.
+
 ### Using `curl`/`wget`
 
 The pre-built binaries for all platforms are available on GitHub via artifacts
@@ -47,9 +50,9 @@ After choosing a platform `PLAT` from above, run:
 
 ```bash
 # for Windows, use ".zip" instead of ".tar.gz"
-$ curl -L https://github.com/ipinfo/cli/releases/download/1.0.0/ipinfo_1.0.0_${PLAT}.tar.gz
+$ curl -L https://github.com/ipinfo/cli/releases/download/ipinfo-1.0.0/ipinfo_1.0.0_${PLAT}.tar.gz
 # OR
-$ wget https://github.com/ipinfo/cli/releases/download/1.0.0/ipinfo_1.0.0_${PLAT}.tar.gz
+$ wget https://github.com/ipinfo/cli/releases/download/ipinfo-1.0.0/ipinfo_1.0.0_${PLAT}.tar.gz
 
 $ tar -xvf ipinfo_1.0.0_${PLAT}.tar.gz
 $ mv ipinfo_1.0.0_${PLAT} /usr/local/bin/ipinfo
@@ -64,7 +67,7 @@ $ mv ipinfo_1.0.0_${PLAT} /usr/local/bin/ipinfo
 The `ipinfo` binary will be installed in `/usr/local/bin/ipinfo`:
 
 ```bash
-$ curl -L https://github.com/ipinfo/cli/releases/download/1.0.0/ipinfo_1.0.0.deb
+$ curl -L https://github.com/ipinfo/cli/releases/download/ipinfo-1.0.0/ipinfo_1.0.0.deb
 $ sudo dpkg -i ipinfo_1.0.0.deb
 ```
 
