@@ -1,9 +1,9 @@
 package lib
 
 import (
-	"net"
 	"encoding/binary"
 	"fmt"
+	"net"
 )
 
 // OutputIPsFromRange is the same as IPsFromRange with O(1) memory by

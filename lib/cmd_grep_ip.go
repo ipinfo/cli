@@ -19,12 +19,12 @@ import (
 // CmdGrepIPFlags are flags expected by CmdGrepIP.
 type CmdGrepIPFlags struct {
 	OnlyMatching bool
-	NoFilename bool
-	NoRecurse bool
-	Help bool
-	V4 bool
-	V6 bool
-	ExclRes bool
+	NoFilename   bool
+	NoRecurse    bool
+	Help         bool
+	V4           bool
+	V6           bool
+	ExclRes      bool
 }
 
 // Init initializes the common flags available to CmdGrepIP with sensible

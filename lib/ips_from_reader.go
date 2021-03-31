@@ -2,8 +2,8 @@ package lib
 
 import (
 	"bufio"
-	"net"
 	"io"
+	"net"
 )
 
 // IPsFromReader returns a list of IPs after reading from a reader; the reader
