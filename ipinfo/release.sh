@@ -16,7 +16,7 @@ fi
 
 # build
 rm -f $ROOT/build/ipinfo_${VSN}*
-$ROOT/scripts/build-all-platforms.sh "$VSN"
+$ROOT/ipinfo/build-all-platforms.sh "$VSN"
 
 # archive
 cd $ROOT/build
@@ -30,14 +30,14 @@ done
 cd ..
 
 # dist: debian
-rm -rf $ROOT/dist/usr
-mkdir -p $ROOT/dist/usr/local/bin
-cp $ROOT/build/ipinfo_1.0.0b3_linux_amd64 $ROOT/dist/usr/local/bin/ipinfo
-dpkg-deb --build ${ROOT}/dist build/ipinfo_${VSN}.deb
+rm -rf $ROOT/ipinfo/dist/usr
+mkdir -p $ROOT/ipinfo/dist/usr/local/bin
+cp $ROOT/build/ipinfo_1.0.0b3_linux_amd64 $ROOT/ipinfo/dist/usr/local/bin/ipinfo
+dpkg-deb --build ${ROOT}/ipinfo/dist build/ipinfo_${VSN}.deb
 
 # release
 gh release create $VSN                                                        \
     -R ipinfo/cli                                                             \
-    $ROOT/build/*.tar.gz                                                      \
-    $ROOT/build/*.zip                                                         \
-    $ROOT/build/*.deb
+    $ROOT/build/ipinfo_*.tar.gz                                               \
+    $ROOT/build/ipinfo_*.zip                                                  \
+    $ROOT/build/ipinfo_*.deb
