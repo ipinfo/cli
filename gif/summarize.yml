@@ -1,0 +1,164 @@
+# The configurations that used for the recording, feel free to edit them
+config:
+
+  # Specify a command to be executed
+  # like `/bin/bash -l`, `ls`, or any other commands
+  # the default is bash for Linux
+  # or powershell.exe for Windows
+  command: /bin/bash
+  
+  # Specify the current working directory path
+  # the default is the current working directory path
+  cwd: null
+  
+  # Export additional ENV variables
+  env:
+    recording: true
+  
+  # Explicitly set the number of columns
+  # or use `auto` to take the current
+  # number of columns of your shell
+  cols: 100
+  
+  # Explicitly set the number of rows
+  # or use `auto` to take the current
+  # number of rows of your shell
+  rows: 53
+  
+  # Amount of times to repeat GIF
+  # If value is -1, play once
+  # If value is 0, loop indefinitely
+  # If value is a positive number, loop n times
+  repeat: 0
+  
+  # Quality
+  # 1 - 100
+  quality: 50
+  
+  # Delay between frames in ms
+  # If the value is `auto` use the actual recording delays
+  frameDelay: auto
+  
+  # Maximum delay between frames in ms
+  # Ignored if the `frameDelay` isn't set to `auto`
+  # Set to `auto` to prevent limiting the max idle time
+  maxIdleTime: auto
+  
+  # The surrounding frame box
+  # The `type` can be null, window, floating, or solid`
+  # To hide the title use the value null
+  # Don't forget to add a backgroundColor style with a null as type
+  frameBox:
+    type: solid
+    title: null
+    style:
+      boxShadow: none
+      margin: 0px
+  
+  # Add a watermark image to the rendered gif
+  # You need to specify an absolute path for
+  # the image on your machine or a URL, and you can also
+  # add your own CSS styles
+  watermark:
+    imagePath: null
+    style:
+      position: absolute
+      right: 15px
+      bottom: 15px
+      width: 100px
+      opacity: 0.9
+  
+  # Cursor style can be one of
+  # `block`, `underline`, or `bar`
+  cursorStyle: block
+  
+  # Font family
+  # You can use any font that is installed on your machine
+  # in CSS-like syntax
+  fontFamily: "Monaco, Lucida Console, Ubuntu Mono, Monospace"
+  
+  # The size of the font
+  fontSize: 13
+  
+  # The height of lines
+  lineHeight: 1
+  
+  # The spacing between letters
+  letterSpacing: 0
+  
+  # Theme
+  theme:
+    background: "transparent"
+    foreground: "#afafaf"
+    cursor: "#c7c7c7"
+    black: "#232628"
+    red: "#fc4384"
+    green: "#b3e33b"
+    yellow: "#ffa727"
+    blue: "#75dff2"
+    magenta: "#ae89fe"
+    cyan: "#708387"
+    white: "#d5d5d0"
+    brightBlack: "#626566"
+    brightRed: "#ff7fac"
+    brightGreen: "#c8ed71"
+    brightYellow: "#ebdf86"
+    brightBlue: "#75dff2"
+    brightMagenta: "#ae89fe"
+    brightCyan: "#b1c6ca"
+    brightWhite: "#f9f9f4"
+  
+# Records, feel free to edit them
+records:
+  - delay: 500
+    content: "$ "
+  - delay: 474
+    content: c
+  - delay: 128
+    content: a
+  - delay: 321
+    content: t
+  - delay: 89
+    content: ' '
+  - delay: 198
+    content: i
+  - delay: 179
+    content: p
+  - delay: 147
+    content: 's.txt '
+  - delay: 506
+    content: '|'
+  - delay: 530
+    content: ' '
+  - delay: 713
+    content: i
+  - delay: 178
+    content: p
+  - delay: 184
+    content: i
+  - delay: 128
+    content: 'nfo '
+  - delay: 276
+    content: s
+  - delay: 102
+    content: u
+  - delay: 165
+    content: m
+  - delay: 114
+    content: m
+  - delay: 88
+    content: a
+  - delay: 73
+    content: r
+  - delay: 119
+    content: i
+  - delay: 124
+    content: z
+  - delay: 41
+    content: e
+  - delay: 305
+    content: "\r\n"
+  - delay: 1158
+    content: "\e[1;37mSummary\r\n\e[0m- \e[36mTotal  \e[0m \e[32m11\e[0m\r\n- \e[36mUnique \e[0m \e[32m11\e[0m\r\n- \e[36mAnycast\e[0m \e[32m3\e[0m\r\n- \e[36mBogon  \e[0m \e[32m0\e[0m\r\n- \e[36mMobile \e[0m \e[32m0\e[0m\r\n- \e[36mVPN    \e[0m \e[32m0\e[0m\r\n- \e[36mProxy  \e[0m \e[32m0\e[0m\r\n- \e[36mHosting\e[0m \e[32m6\e[0m\r\n- \e[36mTor    \e[0m \e[32m0\e[0m\r\n\r\n\e[1;37mTop ASNs\r\n\e[0m- \e[36mAS15169 Google LLC               \e[0m \e[32m2 (18.2%)\e[0m\r\n- \e[36mAS24971 Master Internet s.r.o.   \e[0m \e[32m1 (9.1%)\e[0m\r\n- \e[36mAS32934 Facebook, Inc.           \e[0m \e[32m1 (9.1%)\e[0m\r\n- \e[36mAS16625 Akamai Technologies, Inc.\e[0m \e[32m1 (9.1%)\e[0m\r\n- \e[36mAS13335 Cloudflare, Inc.         \e[0m \e[32m1 (9.1%)\e[0m\r\n\r\n\e[1;37mTop Usage Types\r\n\e[0m- \e[36mHosting \e[0m \e[32m6 (54.5%)\e[0m\r\n- \e[36mBusiness\e[0m \e[32m4 (36.4%)\e[0m\r\n- \e[36mISP     \e[0m \e[32m1 (9.1%)\e[0m\r\n\r\n\e[1;37mTop Routes\r\n\e[0m- \e[36m23.193.128.0/19 (AS16625)\e[0m \e[32m1 (9.1%)\e[0m\r\n- \e[36m8.8.8.0/24 (AS15169)     \e[0m \e[32m1 (9.1%)\e[0m\r\n- \e[36m172.217.0.0/16 (AS15169) \e[0m \e[32m1 (9.1%)\e[0m\r\n- \e[36m83.223.52.0/24 (AS24971) \e[0m \e[32m1 (9.1%)\e[0m\r\n- \e[36m157.240.11.0/24 (AS32934)\e[0m \e[32m1 (9.1%)\e[0m\r\n\r\n\e[1;37mTop Countries\r\n\e[0m- \e[36mUnited States\e[0m \e[32m8 (72.7%)\e[0m\r\n- \e[36mNetherlands  \e[0m \e[32m2 (18.2%)\e[0m\r\n- \e[36mFrance       \e[0m \e[32m1 (9.1%)\e[0m\r\n\r\n\e[1;37mTop Cities\r\n\e[0m- \e[36mMountain View, California, US\e[0m \e[32m2 (18.2%)\e[0m\r\n- \e[36mLos Angeles, California, US  \e[0m \e[32m1 (9.1%)\e[0m\r\n- \e[36mSeattle, Washington, US      \e[0m \e[32m1 (9.1%)\e[0m\r\n- \e[36mWhite Hall, Alabama, US      \e[0m \e[32m1 (9.1%)\e[0m\r\n- \e[36mAmsterdam, North Holland, NL \e[0m \e[32m1 (9.1%)\e[0m\r\n\r\n\e[1;37mTop Regions\r\n\e[0m- \e[36mCalifornia, US   \e[0m \e[32m4 (36.4%)\e[0m\r\n- \e[36mNorth Holland, NL\e[0m \e[32m1 (9.1%)\e[0m\r\n- \e[36mWashington, US   \e[0m \e[32m1 (9.1%)\e[0m\r\n- \e[36mAlabama, US      \e[0m \e[32m1 (9.1%)\e[0m\r\n- \e[36mVirginia, US     \e[0m \e[32m1 (9.1%)\e[0m\r\n\e]0;$ "
+  - delay: 5000
+    content: "exit\r\n"

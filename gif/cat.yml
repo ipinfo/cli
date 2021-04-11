@@ -1,0 +1,186 @@
+# The configurations that used for the recording, feel free to edit them
+config:
+
+  # Specify a command to be executed
+  # like `/bin/bash -l`, `ls`, or any other commands
+  # the default is bash for Linux
+  # or powershell.exe for Windows
+  command: /bin/bash
+  
+  # Specify the current working directory path
+  # the default is the current working directory path
+  cwd: null
+  
+  # Export additional ENV variables
+  env:
+    recording: true
+  
+  # Explicitly set the number of columns
+  # or use `auto` to take the current
+  # number of columns of your shell
+  cols: 100
+  
+  # Explicitly set the number of rows
+  # or use `auto` to take the current
+  # number of rows of your shell
+  rows: 53
+  
+  # Amount of times to repeat GIF
+  # If value is -1, play once
+  # If value is 0, loop indefinitely
+  # If value is a positive number, loop n times
+  repeat: 0
+  
+  # Quality
+  # 1 - 100
+  quality: 50
+  
+  # Delay between frames in ms
+  # If the value is `auto` use the actual recording delays
+  frameDelay: auto
+  
+  # Maximum delay between frames in ms
+  # Ignored if the `frameDelay` isn't set to `auto`
+  # Set to `auto` to prevent limiting the max idle time
+  maxIdleTime: auto
+  
+  # The surrounding frame box
+  # The `type` can be null, window, floating, or solid`
+  # To hide the title use the value null
+  # Don't forget to add a backgroundColor style with a null as type
+  frameBox:
+    type: solid
+    title: null
+    style:
+      boxShadow: none
+      margin: 0px
+  
+  # Add a watermark image to the rendered gif
+  # You need to specify an absolute path for
+  # the image on your machine or a URL, and you can also
+  # add your own CSS styles
+  watermark:
+    imagePath: null
+    style:
+      position: absolute
+      right: 15px
+      bottom: 15px
+      width: 100px
+      opacity: 0.9
+  
+  # Cursor style can be one of
+  # `block`, `underline`, or `bar`
+  cursorStyle: block
+  
+  # Font family
+  # You can use any font that is installed on your machine
+  # in CSS-like syntax
+  fontFamily: "Monaco, Lucida Console, Ubuntu Mono, Monospace"
+  
+  # The size of the font
+  fontSize: 13
+  
+  # The height of lines
+  lineHeight: 1
+  
+  # The spacing between letters
+  letterSpacing: 0
+  
+  # Theme
+  theme:
+    background: "transparent"
+    foreground: "#afafaf"
+    cursor: "#c7c7c7"
+    black: "#232628"
+    red: "#fc4384"
+    green: "#b3e33b"
+    yellow: "#ffa727"
+    blue: "#75dff2"
+    magenta: "#ae89fe"
+    cyan: "#708387"
+    white: "#d5d5d0"
+    brightBlack: "#626566"
+    brightRed: "#ff7fac"
+    brightGreen: "#c8ed71"
+    brightYellow: "#ebdf86"
+    brightBlue: "#75dff2"
+    brightMagenta: "#ae89fe"
+    brightCyan: "#b1c6ca"
+    brightWhite: "#f9f9f4"
+  
+# Records, feel free to edit them
+records:
+  - delay: 600
+    content: "$ "
+  - delay: 770
+    content: c
+  - delay: 94
+    content: a
+  - delay: 138
+    content: t
+  - delay: 82
+    content: ' '
+  - delay: 97
+    content: i
+  - delay: 176
+    content: p
+  - delay: 112
+    content: 's.txt '
+  - delay: 297
+    content: '|'
+  - delay: 133
+    content: ' '
+  - delay: 448
+    content: i
+  - delay: 185
+    content: p
+  - delay: 179
+    content: i
+  - delay: 125
+    content: 'nfo '
+  - delay: 716
+    content: '|'
+  - delay: 124
+    content: ' '
+  - delay: 143
+    content: l
+  - delay: 104
+    content: e
+  - delay: 148
+    content: s
+  - delay: 174
+    content: s
+  - delay: 1152
+    content: "\r\n"
+  - delay: 20
+    content: "\e[?1049h\e[22;0;0t\e[?1h\e=\r"
+  - delay: 850
+    content: "{\r\n  \"1.1.1.1\": {\r\n    \"ip\": \"1.1.1.1\",\r\n    \"hostname\": \"one.one.one.one\",\r\n    \"anycast\": true,\r\n    \"city\": \"White Hall\",\r\n    \"region\": \"Alabama\",\r\n    \"country\": \"US\",\r\n    \"country_name\": \"United States\",\r\n    \"loc\": \"32.3271,-86.7119\",\r\n    \"org\": \"AS13335 Cloudflare, Inc.\",\r\n    \"postal\": \"36752\",\r\n    \"timezone\": \"America/Chicago\",\r\n    \"asn\": {\r\n      \"asn\": \"AS13335\",\r\n      \"name\": \"Cloudflare, Inc.\",\r\n      \"domain\": \"cloudflare.com\",\r\n      \"route\": \"1.1.1.0/24\",\r\n      \"type\": \"hosting\"\r\n    },\r\n    \"company\": {\r\n      \"name\": \"APNIC and Cloudflare DNS Resolver project\",\r\n      \"domain\": \"cloudflare.com\",\r\n      \"type\": \"hosting\"\r\n    },\r\n    \"privacy\": {\r\n      \"vpn\": false,\r\n      \"proxy\": false,\r\n      \"tor\": false,\r\n      \"hosting\": true\r\n    },\r\n    \"abuse\": {\r\n      \"address\": \"PO Box 3646, South Brisbane, QLD 4101, Australia\",\r\n      \"country\": \"AU\",\r\n      \"country_name\": \"Australia\",\r\n      \"email\": \"helpdesk@apnic.net\",\r\n      \"name\": \"APNIC RESEARCH\",\r\n      \"network\": \"1.1.1.0/24\",\r\n      \"phone\": \"+61-7-3858-3188\"\r\n    },\r\n    \"domains\": {\r\n      \"ip\": \"1.1.1.1\",\r\n      \"total\": 19583,\r\n      \"domains\": [\r\n        \"sodu2020.com\",\r\n        \"nextgen-global.com\",\r\n        \"stylemg.com\",\r\n        \"murrayjournal.com\",\r\n        \"telematicsct.com\"\r\n      ]\r\n    }\r\n  },\r\n:\e[K"
+  - delay: 1161
+    content: "\r\e[K \e[KESC\b\b\bESC\e[K[\b[\e[K6\b6\e[K~\b~\r\e[K  \"157.240.11.35\": {"
+  - delay: 7
+    content: "\r\n    \"ip\": \"157.240.11.35\",\r\n    \"hostname\": \"edge-star-mini-shv-02-lax3.facebook.com\",\r\n    \"city\": \"Los Angeles\",\r\n    \"region\": \"California\",\r\n    \"country\": \"US\",\r\n    \"country_name\": \"United States\",\r\n    \"loc\": \"34.0522,-118.2437\",\r\n    \"org\": \"AS32934 Facebook, Inc.\",\r\n    \"postal\": \"90009\",\r\n    \"timezone\": \"America/Los_Angeles\",\r\n    \"asn\": {\r\n      \"asn\": \"AS32934\",\r\n      \"name\": \"Facebook, Inc.\",\r\n      \"domain\": \"fb.com\",\r\n      \"route\": \"157.240.11.0/24\",\r\n      \"type\": \"business\"\r\n    },\r\n    \"company\": {\r\n      \"name\": \"Facebook, Inc.\",\r\n      \"domain\": \"fb.com\",\r\n      \"type\": \"business\"\r\n    },\r\n    \"privacy\": {\r\n      \"vpn\": false,\r\n      \"proxy\": false,\r\n      \"tor\": false,\r\n      \"hosting\": false\r\n    },\r\n    \"abuse\": {\r\n      \"address\": \"US, CA, Menlo Park, 1601 Willow Rd., 94025\",\r\n      \"country\": \"US\",\r\n      \"country_name\": \"United States\",\r\n      \"email\": \"domain@facebook.com\",\r\n      \"name\": \"Operations\",\r\n      \"network\": \"157.240.0.0/16\",\r\n      \"phone\": \"+1-650-543-4800\"\r\n    },\r\n    \"domains\": {\r\n      \"ip\": \"157.240.11.35\",\r\n      \"total\": 269275,\r\n      \"domains\": [\r\n        \"facebook.com\",\r\n        \"fb.com\",\r\n        \"fbsbx.com\",\r\n        \"thefacebook.com\",\r\n        \"adwitt.com\"\r\n      ]\r\n    }\r\n  },\r\n  \"162.144.8.133\": {\r\n    \"ip\": \"162.144.8.133\",\r\n:\e[K"
+  - delay: 930
+    content: "\r\e[K \e[KESC\b\b\bESC\e[K[\b[\e[K6\b6\e[K~\b~\r\e[K    \"hostname\": \"162-144-8-133.unifiedlayer.com\",\r\n    \"city\": \"Glen Avon\",\r\n    \"region\": \"California\",\r\n    \"country\": \"US\",\r\n    \"country_name\": \"United States\",\r\n    \"loc\": \"34.0117,-117.4848\",\r\n    \"org\": \"AS46606 Unified Layer\",\r\n    \"postal\": \"91752\",\r\n    \"timezone\": \"America/Los_Angeles\",\r\n    \"asn\": {\r\n      \"asn\": \"AS46606\",\r\n      \"name\": \"Unified Layer\",\r\n      \"domain\": \"unifiedlayer.com\",\r\n      \"route\": \"162.144.0.0/16\",\r\n      \"type\": \"hosting\"\r\n    },\r\n    \"company\": {\r\n      \"name\": \"Unified Layer\",\r\n      \"domain\": \"unifiedlayer.com\",\r\n      \"type\": \"hosting\"\r\n    },\r\n    \"privacy\": {\r\n      \"vpn\": false,\r\n      \"proxy\": false,\r\n      \"tor\": false,\r\n      \"hosting\": true\r\n    },\r\n    \"abuse\": {\r\n      \"address\": \"US, UT, Provo, 1958 South 950 East, 84606\",\r\n      \"country\": \"US\",\r\n      \"country_name\": \"United States\",\r\n      \"email\": \"abuse@bluehost.com\",\r\n      \"name\": \"Network Operations Center\",\r\n      \"network\": \"162.144.0.0/16\",\r\n      \"phone\": \"+1-801-765-9400\"\r\n    },\r\n    \"domains\": {\r\n      \"ip\": \"162.144.8.133\",\r\n      \"total\": 1,\r\n      \"domains\": [\r\n        \"unifiedlayer.com\"\r\n      ]\r\n    }\r\n  },\r\n  \"172.217.161.142\": {\r\n    \"ip\": \"172.217.161.142\",\r\n    \"hostname\": \"hkg12s17-in-f14.1e100.net\",\r\n    \"city\": \"Mountain View\",\r\n    \"region\": \"California\",\r\n    \"country\": \"US\",\r\n    \"country_name\": \"United States\",\r\n    \"loc\": \"37.4056,-122.0775\",\r\n:\e[K"
+  - delay: 476
+    content: "\r\e[K \e[KESC\b\b\bESC\e[K[\b[\e[K6\b6\e[K~\b~\r\e[K    \"org\": \"AS15169 Google LLC\",\r\n    \"postal\": \"94043\",\r\n    \"timezone\": \"America/Los_Angeles\",\r\n    \"asn\": {\r\n      \"asn\": \"AS15169\",\r\n      \"name\": \"Google LLC\",\r\n      \"domain\": \"google.com\",\r\n      \"route\": \"172.217.0.0/16\",\r\n      \"type\": \"business\"\r\n    },\r\n    \"company\": {\r\n      \"name\": \"Google LLC\",\r\n      \"domain\": \"google.com\",\r\n      \"type\": \"hosting\"\r\n    },\r\n    \"privacy\": {\r\n      \"vpn\": false,\r\n      \"proxy\": false,\r\n      \"tor\": false,\r\n      \"hosting\": true\r\n    },\r\n    \"abuse\": {\r\n      \"address\": \"US, CA, Mountain View, 1600 Amphitheatre Parkway, 94043\",\r\n      \"country\": \"US\",\r\n      \"country_name\": \"United States\",\r\n      \"email\": \"network-abuse@google.com\",\r\n      \"name\": \"Abuse\",\r\n      \"network\": \"172.217.0.0/16\",\r\n      \"phone\": \"+1-650-253-0000\"\r\n    },\r\n    \"domains\": {\r\n      \"ip\": \"172.217.161.142\",\r\n      \"total\": 3,\r\n      \"domains\": [\r\n        \"www.leremy.cn\",\r\n        \"pilo.cc\",\r\n        \"sneakst.com\"\r\n      ]\r\n    }\r\n  },\r\n  \"213.186.33.6\": {\r\n    \"ip\": \"213.186.33.6\",\r\n    \"hostname\": \"ouaib.ovh.net\",\r\n    \"city\": \"Lille\",\r\n    \"region\": \"Hauts-de-France\",\r\n    \"country\": \"FR\",\r\n    \"country_name\": \"France\",\r\n    \"loc\": \"50.6330,3.0586\",\r\n    \"org\": \"AS16276 OVH SAS\",\r\n    \"postal\": \"59000\",\r\n    \"timezone\": \"Europe/Paris\",\r\n    \"asn\": {\r\n:\e[K"
+  - delay: 528
+    content: "\r\e[K \e[KESC\b\b\bESC\e[K[\b[\e[K6\b6\e[K~\b~\r\e[K      \"asn\": \"AS16276\",\r\n      \"name\": \"OVH SAS\",\r\n      \"domain\": \"ovh.net\",\r\n      \"route\": \"213.186.32.0/19\",\r\n      \"type\": \"hosting\"\r\n    },\r\n    \"company\": {\r\n      \"name\": \"OVH SAS\",\r\n      \"domain\": \"ovh.net\",\r\n      \"type\": \"hosting\"\r\n    },\r\n    \"privacy\": {\r\n      \"vpn\": false,\r\n      \"proxy\": false,\r\n      \"tor\": false,\r\n      \"hosting\": true\r\n    },\r\n    \"abuse\": {\r\n      \"address\": \"OVH SAS, 2 rue Kellermann, 59100 Roubaix, France\",\r\n      \"country\": \"FR\",\r\n      \"country_name\": \"France\",\r\n      \"email\": \"abuse@ovh.net\",\r\n      \"name\": \"Abuse-C Role\",\r\n      \"network\": \"213.186.33.0/24\",\r\n      \"phone\": \"+33 9 74 53 13 23\"\r\n    },\r\n    \"domains\": {\r\n      \"ip\": \"213.186.33.6\",\r\n      \"total\": 22,\r\n      \"domains\": [\r\n        \"ovh.net\",\r\n        \"dlazdrowia.org\",\r\n        \"europe-bordeaux.fr\",\r\n        \"sosmicropc.com\",\r\n        \"pctc.be\"\r\n      ]\r\n    }\r\n  },\r\n  \"23.193.139.102\": {\r\n    \"ip\": \"23.193.139.102\",\r\n    \"hostname\": \"a23-193-139-102.deploy.static.akamaitechnologies.com\",\r\n    \"city\": \"Seattle\",\r\n    \"region\": \"Washington\",\r\n    \"country\": \"US\",\r\n    \"country_name\": \"United States\",\r\n    \"loc\": \"47.6062,-122.3321\",\r\n    \"org\": \"AS16625 Akamai Technologies, Inc.\",\r\n    \"postal\": \"98111\",\r\n    \"timezone\": \"America/Los_Angeles\",\r\n    \"asn\": {\r\n      \"asn\": \"AS16625\",\r\n      \"name\": \"Akamai Technologies, Inc.\",\r\n:\e[K"
+  - delay: 155
+    content: "\r\e[K \e[KESC\b\b\bESC\e[K[\b[\e[K6\b6\e[K~\b~\r\e[K      \"domain\": \"akamai.com\",\r\n      \"route\": \"23.193.128.0/19\",\r\n      \"type\": \"isp\"\r\n    },\r\n    \"company\": {\r\n      \"name\": \"Akamai Technologies, Inc.\",\r\n      \"domain\": \"akamai.com\",\r\n      \"type\": \"isp\"\r\n    },\r\n    \"privacy\": {\r\n      \"vpn\": false,\r\n      \"proxy\": false,\r\n      \"tor\": false,\r\n      \"hosting\": false\r\n    },\r\n    \"abuse\": {\r\n      \"address\": \"US, MA, Cambridge, 8 Cambridge Center, Mailstop 926-G, 02142\",\r\n      \"country\": \"US\",\r\n      \"country_name\": \"United States\",\r\n      \"email\": \"abuse@akamai.com\",\r\n      \"name\": \"NOC United States\",\r\n      \"network\": \"23.192.0.0/11\",\r\n      \"phone\": \"+1-617-444-2535\"\r\n    },\r\n    \"domains\": {\r\n      \"ip\": \"23.193.139.102\",\r\n      \"total\": 35915,\r\n      \"domains\": [\r\n        \"godaddy.com\",\r\n        \"carelocal.com\",\r\n        \"pec24.com\",\r\n        \"ajoobaa.com\",\r\n        \"flipcandles.com\"\r\n      ]\r\n    }\r\n  },\r\n  \"74.208.255.134\": {\r\n    \"ip\": \"74.208.255.134\",\r\n    \"hostname\": \"ionos.com\",\r\n    \"city\": \"Mena\",\r\n    \"region\": \"Arkansas\",\r\n    \"country\": \"US\",\r\n    \"country_name\": \"United States\",\r\n    \"loc\": \"34.5862,-94.2397\",\r\n    \"org\": \"AS8560 1\\u00261 IONOS SE\",\r\n    \"postal\": \"71953\",\r\n    \"timezone\": \"America/Chicago\",\r\n    \"asn\": {\r\n      \"asn\": \"AS8560\",\r\n      \"name\": \"1\\u00261 IONOS SE\",\r\n      \"domain\": \"ionos.com\",\r\n      \"route\": \"74.208.0.0/16\",\r\n:\e[K"
+  - delay: 162
+    content: "\r\e[K \e[KESC\b\b\bESC\e[K[\b[\e[K6\b6\e[K~\b~\r\e[K      \"type\": \"hosting\"\r\n    },\r\n    \"company\": {\r\n      \"name\": \"1\\u00261 IONOS Inc.\",\r\n      \"domain\": \"ionos.com\",\r\n      \"type\": \"hosting\"\r\n    },\r\n    \"privacy\": {\r\n      \"vpn\": false,\r\n      \"proxy\": false,\r\n      \"tor\": false,\r\n      \"hosting\": true\r\n    },\r\n    \"abuse\": {\r\n      \"address\": \"US, PA, Chesterbrook, 701 Lee Road, Suite 300, 19087\",\r\n      \"country\": \"US\",\r\n      \"country_name\": \"United States\",\r\n      \"email\": \"abuse@1and1.com\",\r\n      \"name\": \"1and1 Abuse Department\",\r\n      \"network\": \"74.208.0.0/16\",\r\n      \"phone\": \"+1-877-206-4253\"\r\n    },\r\n    \"domains\": {\r\n      \"ip\": \"74.208.255.134\",\r\n      \"total\": 7018,\r\n      \"domains\": [\r\n        \"ionos.com\",\r\n        \"1and1.com\",\r\n        \"togodiets.com\",\r\n        \"mywebsitepersonal.info\",\r\n        \"pogi.us\"\r\n      ]\r\n    }\r\n  },\r\n  \"8.8.8.8\": {\r\n    \"ip\": \"8.8.8.8\",\r\n    \"hostname\": \"dns.google\",\r\n    \"anycast\": true,\r\n    \"city\": \"Mountain View\",\r\n    \"region\": \"California\",\r\n    \"country\": \"US\",\r\n    \"country_name\": \"United States\",\r\n    \"loc\": \"37.4056,-122.0775\",\r\n    \"org\": \"AS15169 Google LLC\",\r\n    \"postal\": \"94043\",\r\n    \"timezone\": \"America/Los_Angeles\",\r\n    \"asn\": {\r\n      \"asn\": \"AS15169\",\r\n      \"name\": \"Google LLC\",\r\n      \"domain\": \"google.com\",\r\n      \"route\": \"8.8.8.0/24\",\r\n      \"type\": \"business\"\r\n:\e[K"
+  - delay: 163
+    content: "\r\e[K \e[KESC\b\b\bESC\e[K[\b[\e[K6\b6\e[K~\b~\r\e[K    },\r\n    \"company\": {\r\n      \"name\": \"Google LLC\",\r\n      \"domain\": \"google.com\",\r\n      \"type\": \"business\"\r\n    },\r\n    \"privacy\": {\r\n      \"vpn\": false,\r\n      \"proxy\": false,\r\n      \"tor\": false,\r\n      \"hosting\": false\r\n    },\r\n    \"abuse\": {\r\n      \"address\": \"US, CA, Mountain View, 1600 Amphitheatre Parkway, 94043\",\r\n      \"country\": \"US\",\r\n      \"country_name\": \"United States\",\r\n      \"email\": \"network-abuse@google.com\",\r\n      \"name\": \"Abuse\",\r\n      \"network\": \"8.8.8.0/24\",\r\n      \"phone\": \"+1-650-253-0000\"\r\n    },\r\n    \"domains\": {\r\n      \"ip\": \"8.8.8.8\",\r\n      \"total\": 12692,\r\n      \"domains\": [\r\n        \"41.cn\",\r\n        \"ctempurl.com\",\r\n        \"dtempurl.com\",\r\n        \"itempurl.com\",\r\n        \"etempurl.com\"\r\n      ]\r\n    }\r\n  },\r\n  \"83.223.52.211\": {\r\n    \"ip\": \"83.223.52.211\",\r\n    \"hostname\": \"karisimbi.proxy.verotel.com\",\r\n    \"city\": \"Amsterdam\",\r\n    \"region\": \"North Holland\",\r\n    \"country\": \"NL\",\r\n    \"country_name\": \"Netherlands\",\r\n    \"loc\": \"52.3740,4.8897\",\r\n    \"org\": \"AS24971 Master Internet s.r.o.\",\r\n    \"postal\": \"1012\",\r\n    \"timezone\": \"Europe/Amsterdam\",\r\n    \"asn\": {\r\n      \"asn\": \"AS24971\",\r\n      \"name\": \"Master Internet s.r.o.\",\r\n      \"domain\": \"master.cz\",\r\n      \"route\": \"83.223.52.0/24\",\r\n      \"type\": \"hosting\"\r\n    },\r\n    \"company\": {\r\n:\e[K"
+  - delay: 364
+    content: "\r\e[K \e[KESC\b\b\bESC\e[K[\b[\e[K6\b6\e[K~\b~\r\e[K      \"name\": \"Verotel International B.V.\",\r\n      \"domain\": \"verotel.com\",\r\n      \"type\": \"business\"\r\n    },\r\n    \"privacy\": {\r\n      \"vpn\": false,\r\n      \"proxy\": false,\r\n      \"tor\": false,\r\n      \"hosting\": false\r\n    },\r\n    \"abuse\": {\r\n      \"address\": \"Verotel International B.V., Singel 540, 1017 AZ Amsterdam, Netherlands\",\r\n      \"country\": \"NL\",\r\n      \"country_name\": \"Netherlands\",\r\n      \"email\": \"joost.zuurbier@verotel.com\",\r\n      \"name\": \"Abuse-C Role\",\r\n      \"network\": \"83.223.52.0/24\",\r\n      \"phone\": \"+31 20 5315757\"\r\n    },\r\n    \"domains\": {\r\n      \"ip\": \"83.223.52.211\",\r\n      \"total\": 2,\r\n      \"domains\": [\r\n        \"verotel.com\",\r\n        \"bitsafepay.com\"\r\n      ]\r\n    }\r\n  },\r\n  \"88.198.255.177\": {\r\n    \"ip\": \"88.198.255.177\",\r\n    \"hostname\": \"static.88.198.255.177.clients.your-server.de\",\r\n    \"city\": \"Opheusden\",\r\n    \"region\": \"Gelderland\",\r\n    \"country\": \"NL\",\r\n    \"country_name\": \"Netherlands\",\r\n    \"loc\": \"51.9317,5.6319\",\r\n    \"org\": \"AS24940 Hetzner Online GmbH\",\r\n    \"postal\": \"4043\",\r\n    \"timezone\": \"Europe/Amsterdam\",\r\n    \"asn\": {\r\n      \"asn\": \"AS24940\",\r\n      \"name\": \"Hetzner Online GmbH\",\r\n      \"domain\": \"hetzner.de\",\r\n      \"route\": \"88.198.0.0/16\",\r\n      \"type\": \"hosting\"\r\n    },\r\n    \"company\": {\r\n      \"name\": \"Hetzner Online GmbH\",\r\n      \"domain\": \"hetzner.com\",\r\n      \"type\": \"hosting\"\r\n    },\r\n    \"privacy\": {\r\n:\e[K"
+  - delay: 1086
+    content: "\r\e[K \e[KESC\b\b\bESC\e[K[\b[\e[K6\b6\e[K~\b~\r\e[K      \"vpn\": false,\r\n      \"proxy\": false,\r\n      \"tor\": false,\r\n      \"hosting\": true\r\n    },\r\n    \"abuse\": {\r\n      \"address\": \"Hetzner Online GmbH, Industriestrasse 25, D-91710 Gunzenhausen, Germany\",\r\n      \"country\": \"DE\",\r\n      \"country_name\": \"Germany\",\r\n      \"email\": \"abuse@hetzner.com\",\r\n      \"name\": \"Hetzner Online GmbH - Contact Role\",\r\n      \"network\": \"88.198.0.0/16\",\r\n      \"phone\": \"+49 9831 505-0\"\r\n    },\r\n    \"domains\": {\r\n      \"ip\": \"88.198.255.177\",\r\n      \"total\": 121,\r\n      \"domains\": [\r\n        \"your-server.de\",\r\n        \"hetzner.cloud\",\r\n        \"hetzner.com\",\r\n        \"hetzner.de\",\r\n        \"tvs-saar.de\"\r\n      ]\r\n    }\r\n  },\r\n  \"9.9.9.9\": {\r\n    \"ip\": \"9.9.9.9\",\r\n    \"hostname\": \"dns9.quad9.net\",\r\n    \"anycast\": true,\r\n    \"city\": \"Ashburn\",\r\n    \"region\": \"Virginia\",\r\n    \"country\": \"US\",\r\n    \"country_name\": \"United States\",\r\n    \"loc\": \"39.0437,-77.4875\",\r\n    \"org\": \"AS19281 Quad9\",\r\n    \"postal\": \"20149\",\r\n    \"timezone\": \"America/New_York\",\r\n    \"asn\": {\r\n      \"asn\": \"AS19281\",\r\n      \"name\": \"Quad9\",\r\n      \"domain\": \"quad9.net\",\r\n      \"route\": \"9.9.9.0/24\",\r\n      \"type\": \"business\"\r\n    },\r\n    \"company\": {\r\n      \"name\": \"Quad9\",\r\n      \"domain\": \"quad9.net\",\r\n      \"type\": \"business\"\r\n    },\r\n    \"privacy\": {\r\n      \"vpn\": false,\r\n:\e[K"
+  - delay: 353
+    content: "\r\e[K \e[KESC\b\b\bESC\e[K[\b[\e[K6\b6\e[K~\b~\r\e[K      \"proxy\": false,\r\n      \"tor\": false,\r\n      \"hosting\": false\r\n    },\r\n    \"abuse\": {\r\n      \"address\": \"US, CA, Berkeley, 1442 A Walnut Street Ste 501, 94709\",\r\n      \"country\": \"US\",\r\n      \"country_name\": \"United States\",\r\n      \"email\": \"abuse@quad9.net\",\r\n      \"name\": \"Quad9 Abuse\",\r\n      \"network\": \"9.9.9.0/24\",\r\n      \"phone\": \"+1-415-831-3129\"\r\n    },\r\n    \"domains\": {\r\n      \"ip\": \"9.9.9.9\",\r\n      \"total\": 145,\r\n      \"domains\": [\r\n        \"http715zh.xyz\",\r\n        \"1024808.com\",\r\n        \"slapcode.com\",\r\n        \"xn--e1ajhaglkh.xn--p1acf\",\r\n        \"woose.io\"\r\n      ]\r\n    }\r\n  }\r\n}\r\n\e[7m(END)\e[27m\e[K"
+  - delay: 303
+    content: "\r\e[K \e[KESC\b\b\bESC\e[K[\b[\e[K6\b6\e[K~\b~\r\e[K\a\r\e[K\e[7m(END)\e[27m\e[K"
+  - delay: 1865
+    content: "\r\e[K\e[?1l\e>\e[?1049l\e[23;0;0t\e]0;$ "
+  - delay: 3000
+    content: "exit\r\n"

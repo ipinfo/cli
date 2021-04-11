@@ -109,41 +109,7 @@ Replace `<path>` with the required location.
 
 By default, invoking the CLI shows a help message:
 
-```bash
-$ ipinfo
-Usage: ipinfo <cmd> [<opts>] [<args>]
-
-Commands:
-  <ip>        look up details for an IP address, e.g. 8.8.8.8.
-  <asn>       look up details for an ASN, e.g. AS123 or as123.
-  myip        get details for your IP.
-  bulk        get details for multiple IPs in bulk.
-  summarize   get summarized data for a group of IPs.
-  prips       print IP list from CIDR or range.
-  login       save an API token session.
-  logout      delete your current API token session.
-  version     show current version.
-
-Options:
-  General:
-    --token <tok>, -t <tok>
-      use <tok> as API token.
-    --help, -h
-      show help.
-
-  Outputs:
-    --field, -f
-      lookup only a specific field in the output.
-      field names correspond to JSON keys, e.g. 'hostname' or 'company.type'.
-
-  Formats:
-    --pretty, -p
-      output pretty format.
-    --json, -j
-      output JSON format.
-    --csv, -c
-      output CSV format.
-```
+[ipinfo](gif/default.gif)
 
 If you have a token, log in with it first. You can continue without a token,
 but there will be limited data output and some features (like bulk lookups)
@@ -156,37 +122,40 @@ $ ipinfo login
 
 You can quickly look up details of your own IP with `myip`:
 
-```bash
-$ ipinfo myip
-```
+[ipinfo myip](gif/myip.gif)
 
 Or of another IP by specifying it:
 
-```bash
-$ ipinfo 8.8.8.8
-```
+[ipinfo myip](gif/ip8.8.8.8.gif)
 
-You can change the format of the output to JSON:
+You can change the format of the output to JSON using the `--json` flag or to
+CSV using the `--csv` flag. See `ipinfo <ip> --help` (given some IP) for
+details.
 
-```bash
-$ ipinfo 8.8.8.8 --json
-```
+You can pipe IPs in and get their results in bulk (this requires a token):
 
-And in case you only needed a single field:
+[cat ips.txt | ipinfo](gif/cat.gif)
 
-```bash
-$ ipinfo 8.8.8.8 -f hostname
-```
+You can see the CSV version of that:
 
-And if you have the need to input IPs from `stdin`, just pipe it in (this will
-require having a token!):
+[cat ips.txt | ipinfo -c](gif/cat-csv.gif)
 
-```bash
-$ cat ip-list.txt | ipinfo --json
-```
+In case you only needed a single field from a bunch of IPs:
 
-There are **many** more features available, so for full details, consult the
-`-h` or `--help` message for each command. For example:
+[cat ips.txt | ipinfo](gif/hostname.gif)
+
+The above commands implicitly run the `bulk` subcommand on the input. You can
+manually specify bulk and input IPs on the command line:
+
+[ipinfo bulk](gif/bulk.gif)
+
+IP details can be summarized similar to what's provided by
+https://ipinfo.io/summarize-ips:
+
+[ipinfo summarize](gif/summarize.gif)
+
+There are many more features available, so for full details, consult the `-h`
+or `--help` message for each command. For example:
 
 ```bash
 $ ipinfo 8.8.8.8 --help
