@@ -109,7 +109,7 @@ Replace `<path>` with the required location.
 
 By default, invoking the CLI shows a help message:
 
-[ipinfo](gif/default.gif)
+![ipinfo](gif/default.gif)
 
 If you have a token, log in with it first. You can continue without a token,
 but there will be limited data output and some features (like bulk lookups)
@@ -122,11 +122,11 @@ $ ipinfo login
 
 You can quickly look up details of your own IP with `myip`:
 
-[ipinfo myip](gif/myip.gif)
+![ipinfo myip](gif/myip.gif)
 
 Or of another IP by specifying it:
 
-[ipinfo myip](gif/ip8.8.8.8.gif)
+![ipinfo myip](gif/ip8.8.8.8.gif)
 
 You can change the format of the output to JSON using the `--json` flag or to
 CSV using the `--csv` flag. See `ipinfo <ip> --help` (given some IP) for
@@ -134,25 +134,25 @@ details.
 
 You can pipe IPs in and get their results in bulk (this requires a token):
 
-[cat ips.txt | ipinfo](gif/cat.gif)
+![cat ips.txt | ipinfo](gif/cat.gif)
 
 You can see the CSV version of that:
 
-[cat ips.txt | ipinfo -c](gif/cat-csv.gif)
+![cat ips.txt | ipinfo -c](gif/cat-csv.gif)
 
 In case you only needed a single field from a bunch of IPs:
 
-[cat ips.txt | ipinfo](gif/hostname.gif)
+![cat ips.txt | ipinfo](gif/hostname.gif)
 
 The above commands implicitly run the `bulk` subcommand on the input. You can
 manually specify bulk and input IPs on the command line:
 
-[ipinfo bulk](gif/bulk.gif)
+![ipinfo bulk](gif/bulk.gif)
 
 IP details can be summarized similar to what's provided by
 https://ipinfo.io/summarize-ips:
 
-[ipinfo summarize](gif/summarize.gif)
+![ipinfo summarize](gif/summarize.gif)
 
 There are many more features available, so for full details, consult the `-h`
 or `--help` message for each command. For example:
