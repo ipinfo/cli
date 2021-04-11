@@ -8,18 +8,6 @@ allowing you to:
 - Summarize the details of up to 1000 IPs at a time.
 - Sign up for a IPinfo API token.
 
-## Table of Contents
-
-* [Installation](#installation)
-    + [Using `curl`/`wget`](#using-curlwget)
-    + [Using Homebrew](#using-homebrew)
-    + [Using `.deb`](#using-deb)
-    + [Using Linux package managers](#using-linux-package-managers)
-    + [Using `git`](#using-git)
-* [Quick Start](#quick-start)
-* [Other IPinfo Tools](#other-ipinfo-tools)
-* [About IPinfo](#about-ipinfo)
-
 ## Installation
 
 All CLI tools (e.g. `ipinfo`, `grepip`) are available for download from
