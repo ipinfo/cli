@@ -20,6 +20,7 @@ Commands:
   myip        get details for your IP.
   bulk        get details for multiple IPs in bulk.
   summarize   get summarized data for a group of IPs.
+  map         open a URL to a map showing the locations of a group of IPs.
   prips       print IP list from CIDR or range.
   grepip      grep for IPs matching criteria from any source.
   login       save an API token session.
@@ -84,17 +85,13 @@ func cmdDefault() (err error) {
 		return nil
 	}
 
-	if err := prepareIpinfoClient(fTok); err != nil {
-		return err
-	}
-
 	ips = lib.IPsFromStdin()
-
 	if len(ips) == 0 {
 		fmt.Println("no input ips")
 		return nil
 	}
 
+	ii = prepareIpinfoClient(fTok)
 	data, err := ii.GetIPInfoBatch(ips, ipinfo.BatchReqOpts{})
 	if err != nil {
 		return err

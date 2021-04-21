@@ -3,13 +3,11 @@ package main
 import (
 	"fmt"
 	"net"
-	"os"
 	"sort"
 	"strconv"
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
 )
@@ -70,80 +68,16 @@ func cmdSum() (err error) {
 		return nil
 	}
 
-	if err := prepareIpinfoClient(fTok); err != nil {
+	ips, err = getInputIPs(pflag.Args()[1:])
+	if err != nil {
 		return err
 	}
-
-	args := pflag.Args()[1:]
-
-	// check for stdin, implied or explicit.
-	if len(args) == 0 || (len(args) == 1 && args[0] == "-") {
-		stat, _ := os.Stdin.Stat()
-		if (stat.Mode() & os.ModeCharDevice) != 0 {
-			fmt.Println("** manual input mode **")
-			fmt.Println("Enter all IPs, one per line:")
-		}
-		ips = lib.IPsFromStdin()
-
-		goto lookup
-	}
-
-	// check for IP range.
-	if lib.IsIP(args[0]) {
-		if len(args) != 2 {
-			return lib.ErrIPRangeRequiresTwoIPs
-		}
-		if !lib.IsIP(args[1]) {
-			return lib.ErrNotIP
-		}
-
-		ips, err = lib.IPsFromRange(args[0], args[1])
-		if err != nil {
-			return err
-		}
-
-		goto lookup
-	}
-
-	// check for all CIDRs.
-	if lib.IsCIDR(args[0]) {
-		for _, arg := range args[1:] {
-			if !lib.IsCIDR(arg) {
-				return lib.ErrNotCIDR
-			}
-		}
-
-		ips, err = lib.IPsFromCIDRs(args)
-		if err != nil {
-			return err
-		}
-
-		goto lookup
-	}
-
-	// check for all filepaths.
-	if fileExists(args[0]) {
-		for _, arg := range args[1:] {
-			if !fileExists(arg) {
-				return lib.ErrNotFile
-			}
-		}
-
-		ips, err = lib.IPsFromFiles(args)
-		if err != nil {
-			return err
-		}
-
-		goto lookup
-	}
-
-lookup:
-
 	if len(ips) == 0 {
 		fmt.Println("no input ips")
 		return nil
 	}
 
+	ii = prepareIpinfoClient(fTok)
 	d, err := ii.GetIPSummary(ips)
 	if err != nil {
 		return err

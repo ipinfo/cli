@@ -54,10 +54,7 @@ func cmdMyIP() error {
 		return nil
 	}
 
-	if err := prepareIpinfoClient(fTok); err != nil {
-		return err
-	}
-
+	ii = prepareIpinfoClient(fTok)
 	data, err := ii.GetIPInfo(nil)
 	if err != nil {
 		return err

@@ -46,10 +46,7 @@ func cmdASN(asn string) error {
 		return nil
 	}
 
-	if err := prepareIpinfoClient(fTok); err != nil {
-		return err
-	}
-
+	ii = prepareIpinfoClient(fTok)
 	data, err := ii.GetASNDetails(asn)
 	if err != nil {
 		return err

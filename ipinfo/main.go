@@ -12,21 +12,23 @@ import (
 )
 
 var progBase = filepath.Base(os.Args[0])
-var version = "1.0.0"
+var version = "1.1.0"
 
 var ii *ipinfo.Client
 
-func prepareIpinfoClient(tok string) error {
+func prepareIpinfoClient(tok string) *ipinfo.Client {
+	var _ii *ipinfo.Client
+
 	if tok == "" {
 		tok, _ = restoreToken()
 	}
 
-	ii = ipinfo.NewClient(nil, nil, tok)
-	ii.UserAgent = fmt.Sprintf(
+	_ii = ipinfo.NewClient(nil, nil, tok)
+	_ii.UserAgent = fmt.Sprintf(
 		"IPinfoCli/%s (os/%s - arch/%s)",
 		version, runtime.GOOS, runtime.GOARCH,
 	)
-	return nil
+	return _ii
 }
 
 func main() {
@@ -49,6 +51,8 @@ func main() {
 		err = cmdBulk()
 	case cmd == "summarize":
 		err = cmdSum()
+	case cmd == "map":
+		err = cmdMap()
 	case cmd == "prips":
 		err = cmdPrips()
 	case cmd == "grepip":
