@@ -1,0 +1,26 @@
+version: "{build}"
+
+clone_folder: c:\projects\src\github.com\jszwec\csvutil
+
+environment:
+ PATH: c:\projects\bin;%PATH%
+ GOPATH: c:\projects
+ GOVERSION: 1.11
+
+install:
+ - rmdir c:\go /s /q
+ - appveyor DownloadFile https://storage.googleapis.com/golang/go%GOVERSION%.windows-amd64.zip
+ - 7z x go%GOVERSION%.windows-amd64.zip -y -oC:\ > NUL
+
+ - cd %APPVEYOR_BUILD_FOLDER%
+ - go version
+ - go get -v -t ./...
+
+build_script:
+ - go tool vet -all .
+ - go install ./...
+ - go test -race -v ./...
+
+test: off
+
+deploy: off
