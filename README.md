@@ -16,6 +16,23 @@ allowing you to:
 All CLI tools (e.g. `ipinfo`, `grepip`) are available for download from
 multiple mechanisms.
 
+### macOS
+
+Just run this in your terminal:
+
+```bash
+$ curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.0/macos.sh | sh
+```
+
+### Using `.deb`
+
+The `ipinfo` binary will be installed in `/usr/local/bin/ipinfo`:
+
+```bash
+$ curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.0/ipinfo_1.1.0.deb
+$ sudo dpkg -i ipinfo_1.1.0.deb
+```
+
 ### Using `curl`/`wget`
 
 The pre-built binaries for all platforms are available on GitHub via artifacts
@@ -52,15 +69,6 @@ $ mv ipinfo_1.1.0_${PLAT} /usr/local/bin/ipinfo
 ### Using Homebrew
 
 [Coming soon!](https://github.com/ipinfo/cli/issues/3)
-
-### Using `.deb`
-
-The `ipinfo` binary will be installed in `/usr/local/bin/ipinfo`:
-
-```bash
-$ curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.0/ipinfo_1.1.0.deb
-$ sudo dpkg -i ipinfo_1.1.0.deb
-```
 
 ### Using Linux package managers
 
