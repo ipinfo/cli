@@ -13,20 +13,22 @@ allowing you to:
 
 ## Installation
 
-All CLI tools (e.g. `ipinfo`, `grepip`) are available for download from
+All CLI tools (e.g. `ipinfo`, `grepip`) are available for download via
 multiple mechanisms.
 
 ### macOS
-
-Just run this in your terminal:
 
 ```bash
 $ curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.0/macos.sh | sh
 ```
 
-### Using `.deb`
+### Debian / Ubuntu
 
-The `ipinfo` binary will be installed in `/usr/local/bin/ipinfo`:
+```bash
+$ curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.0/deb.sh | sh
+```
+
+OR
 
 ```bash
 $ curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.0/ipinfo_1.1.0.deb
@@ -65,14 +67,6 @@ $ wget https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.0/ipinfo_1.1.0
 $ tar -xvf ipinfo_1.1.0_${PLAT}.tar.gz
 $ mv ipinfo_1.1.0_${PLAT} /usr/local/bin/ipinfo
 ```
-
-### Using Homebrew
-
-[Coming soon!](https://github.com/ipinfo/cli/issues/3)
-
-### Using Linux package managers
-
-[Coming soon!](https://github.com/ipinfo/cli/issues/3)
 
 ### Using `git`
 
