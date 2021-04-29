@@ -41,4 +41,5 @@ gh release create ipinfo-${VSN}                                               \
     -t "ipinfo-${VSN}"                                                        \
     $ROOT/build/ipinfo_*.tar.gz                                               \
     $ROOT/build/ipinfo_*.zip                                                  \
-    $ROOT/build/ipinfo_*.deb
+    $ROOT/build/ipinfo_*.deb                                                  \
+    $ROOT/ipinfo/macos.sh
