@@ -41,8 +41,7 @@ After choosing a platform `PLAT` from above, run:
 
 ```bash
 # for Windows, use ".zip" instead of ".tar.gz"
-$ curl -LO
-https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.0/ipinfo_1.1.0_${PLAT}.tar.gz
+$ curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.0/ipinfo_1.1.0_${PLAT}.tar.gz
 # OR
 $ wget https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.0/ipinfo_1.1.0_${PLAT}.tar.gz
 
@@ -59,8 +58,7 @@ $ mv ipinfo_1.1.0_${PLAT} /usr/local/bin/ipinfo
 The `ipinfo` binary will be installed in `/usr/local/bin/ipinfo`:
 
 ```bash
-$ curl -LO
-https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.0/ipinfo_1.1.0.deb
+$ curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.0/ipinfo_1.1.0.deb
 $ sudo dpkg -i ipinfo_1.1.0.deb
 ```
 
