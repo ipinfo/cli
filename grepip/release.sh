@@ -42,4 +42,5 @@ gh release create grepip-${VSN}                                               \
     $ROOT/build/grepip_*.tar.gz                                               \
     $ROOT/build/grepip_*.zip                                                  \
     $ROOT/build/grepip_*.deb                                                  \
-    $ROOT/grepip/macos.sh
+    $ROOT/grepip/macos.sh                                                     \
+    $ROOT/grepip/deb.sh
