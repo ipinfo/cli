@@ -35,6 +35,26 @@ $ curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.0/ipinfo_1
 $ sudo dpkg -i ipinfo_1.1.0.deb
 ```
 
+### Windows via PowerShell
+
+Here's how to download and unpack the ipinfo CLI tool on Windows using PowerShell:
+
+```powershell              
+# Get info about the latest release from GitHUb 
+$latestRelease = (Invoke-RestMethod https://github.com/ipinfo/cli/releases/latest -Headers @{"Accept"="application/json" } -UseBasicParsing).tag_name 
+
+# Parse the version number
+$version=($latestRelease -split '-')[1]
+
+# build the filename for the Zip archive
+$zipFileName = "ipinfo_$($version)_windows_amd64.zip"
+
+Invoke-WebRequest -Uri "https://github.com/ipinfo/cli/releases/download/ipinfo-$version/$zipFileName" -UseBasicParsing -OutFile ./$zipFileName
+Unblock-File ./$zipFileName
+Expand-Archive -Path ./$zipFileName  -DestinationPath $env:LOCALAPPDATA\ipinfo -Force
+Remove-Item -Path ./$zipFileName
+```
+
 ### Using `curl`/`wget`
 
 The pre-built binaries for all platforms are available on GitHub via artifacts
@@ -51,7 +71,7 @@ freebsd_amd64
 linux_amd64
 netbsd_amd64
 openbsd_amd64
-plan9_amd64
+plan9_amd64§
 solaris_amd64
 windows_amd64
 ```
