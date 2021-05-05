@@ -35,6 +35,12 @@ $ curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.0/ipinfo_1
 $ sudo dpkg -i ipinfo_1.1.0.deb
 ```
 
+### Using `go get`
+
+```bash
+$ go get github.com/ipinfo/cli/ipinfo
+```
+
 ### Using `curl`/`wget`
 
 The pre-built binaries for all platforms are available on GitHub via artifacts
