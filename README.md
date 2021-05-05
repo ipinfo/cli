@@ -16,13 +16,13 @@ allowing you to:
 All CLI tools (e.g. `ipinfo`, `grepip`) are available for download via
 multiple mechanisms.
 
-### macOS
+### macOS (amd64)
 
 ```bash
 $ curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.1/macos.sh | sh
 ```
 
-### Debian / Ubuntu
+### Debian / Ubuntu (amd64)
 
 ```bash
 $ curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.1/deb.sh | sh
