@@ -186,6 +186,12 @@ or `--help` message for each command. For example:
 $ ipinfo 8.8.8.8 --help
 ```
 
+## Disabling Color Output
+
+All our CLIs respect either the `--nocolor` flag or the
+[`NO_COLOR`](https://no-color.org/)  environment variable to disable color
+output.
+
 ## Other IPinfo Tools
 
 There are official IPinfo client libraries available for many languages including PHP, Python, Go, Java, Ruby, and many popular frameworks such as Django, Rails and Laravel. There are also many third party libraries and integrations available for our API.
