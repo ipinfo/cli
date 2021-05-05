@@ -37,6 +37,9 @@ $ sudo dpkg -i ipinfo_1.1.0.deb
 
 ### Using `go get`
 
+Make sure that `$GOPATH/bin` is in your `$PATH`, because that's where this gets
+installed:
+
 ```bash
 $ go get github.com/ipinfo/cli/ipinfo
 ```
