@@ -42,6 +42,10 @@ Options:
     --help, -h
       show help.
 
+  Outputs:
+    --nocolor
+      disable colored output.
+
   Formats:
     --pretty, -p
       output pretty format. (default)
@@ -56,12 +60,18 @@ func cmdSum() (err error) {
 	var fHelp bool
 	var fPretty bool
 	var fJSON bool
+	var fNoColor bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.BoolVarP(&fPretty, "pretty", "p", true, "output pretty format. (default)")
 	pflag.BoolVarP(&fJSON, "json", "j", false, "output JSON format.")
+	pflag.BoolVarP(&fNoColor, "nocolor", "", false, "disable color output.")
 	pflag.Parse()
+
+	if fNoColor {
+		color.NoColor = true
+	}
 
 	if fHelp {
 		printHelpSum()

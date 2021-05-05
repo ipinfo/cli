@@ -22,6 +22,7 @@ type CmdGrepIPFlags struct {
 	NoFilename   bool
 	NoRecurse    bool
 	Help         bool
+	NoColor      bool
 	V4           bool
 	V6           bool
 	ExclRes      bool
@@ -53,6 +54,11 @@ func (f *CmdGrepIPFlags) Init() {
 		"show help.",
 	)
 	pflag.BoolVarP(
+		&f.NoColor,
+		"nocolor", "", false,
+		"disable color output.",
+	)
+	pflag.BoolVarP(
 		&f.V4,
 		"ipv4", "4", false,
 		"print only IPv4 matches.",
@@ -71,6 +77,10 @@ func (f *CmdGrepIPFlags) Init() {
 
 // CmdGrepIP is the common core logic for the `grepip` command-line utility.
 func CmdGrepIP(f CmdGrepIPFlags, args []string, printHelp func()) error {
+	if f.NoColor {
+		color.NoColor = true
+	}
+
 	if f.Help {
 		printHelp()
 		return nil

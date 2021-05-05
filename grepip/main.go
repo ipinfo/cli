@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib"
 	"github.com/spf13/pflag"
 )
@@ -28,6 +29,10 @@ Options:
       show binary release number.
     --help
       show help.
+
+  Outputs:
+    --nocolor
+      disable colored output.
 
   Filters:
     --ipv4, -4
@@ -57,6 +62,11 @@ func cmd() error {
 }
 
 func main() {
+	// obey NO_COLOR env var.
+	if os.Getenv("NO_COLOR") != "" {
+		color.NoColor = true
+	}
+
 	if err := cmd(); err != nil {
 		fmt.Printf("err: %v\n", err)
 	}

@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 
+	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
@@ -38,6 +39,8 @@ Options:
     --field, -f
       lookup only a specific field in the output.
       field names correspond to JSON keys, e.g. 'hostname' or 'company.type'.
+    --nocolor
+      disable colored output.
 
   Formats:
     --pretty, -p
@@ -57,6 +60,7 @@ func cmdDefault() (err error) {
 	var fPretty bool
 	var fJSON bool
 	var fCSV bool
+	var fNoColor bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
@@ -65,6 +69,10 @@ func cmdDefault() (err error) {
 	pflag.BoolVarP(&fJSON, "json", "j", true, "output JSON format. (default)")
 	pflag.BoolVarP(&fCSV, "csv", "c", false, "output CSV format.")
 	pflag.Parse()
+
+	if fNoColor {
+		color.NoColor = true
+	}
 
 	if fHelp {
 		printHelpDefault()

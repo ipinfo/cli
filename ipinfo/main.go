@@ -7,6 +7,7 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/go/v2/ipinfo"
 )
@@ -34,6 +35,11 @@ func prepareIpinfoClient(tok string) *ipinfo.Client {
 func main() {
 	var err error
 	var cmd string
+
+	// obey NO_COLOR env var.
+	if os.Getenv("NO_COLOR") != "" {
+		color.NoColor = true
+	}
 
 	if len(os.Args) > 1 {
 		cmd = os.Args[1]

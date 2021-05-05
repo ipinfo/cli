@@ -22,6 +22,10 @@ Options:
     --help
       show help.
 
+  Outputs:
+    --nocolor
+      disable colored output.
+
   Filters:
     --ipv4, -4
       match only IPv4 addresses.
