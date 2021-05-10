@@ -16,23 +16,29 @@ allowing you to:
 All CLI tools (e.g. `ipinfo`, `grepip`) are available for download via
 multiple mechanisms.
 
-### macOS (amd64)
+### macOS
 
 ```bash
-$ curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.1/macos.sh | sh
+brew install ipinfo/tap/ipinfo-cli
+```
+
+OR to install the latest `amd64` version without automatic updates:
+
+```bash
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.1/macos.sh | sh
 ```
 
 ### Debian / Ubuntu (amd64)
 
 ```bash
-$ curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.1/deb.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.1/deb.sh | sh
 ```
 
 OR
 
 ```bash
-$ curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.1/ipinfo_1.1.1.deb
-$ sudo dpkg -i ipinfo_1.1.1.deb
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.1/ipinfo_1.1.1.deb
+sudo dpkg -i ipinfo_1.1.1.deb
 ```
 
 ### Using `go get`
@@ -41,7 +47,7 @@ Make sure that `$GOPATH/bin` is in your `$PATH`, because that's where this gets
 installed:
 
 ```bash
-$ go get github.com/ipinfo/cli/ipinfo
+go get github.com/ipinfo/cli/ipinfo
 ```
 
 ### Using `curl`/`wget`
@@ -80,12 +86,12 @@ After choosing a platform `PLAT` from above, run:
 
 ```bash
 # for Windows, use ".zip" instead of ".tar.gz"
-$ curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.1/ipinfo_1.1.1_${PLAT}.tar.gz
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.1/ipinfo_1.1.1_${PLAT}.tar.gz
 # OR
-$ wget https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.1/ipinfo_1.1.1_${PLAT}.tar.gz
+wget https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.1/ipinfo_1.1.1_${PLAT}.tar.gz
 
-$ tar -xvf ipinfo_1.1.1_${PLAT}.tar.gz
-$ mv ipinfo_1.1.1_${PLAT} /usr/local/bin/ipinfo
+tar -xvf ipinfo_1.1.1_${PLAT}.tar.gz
+mv ipinfo_1.1.1_${PLAT} /usr/local/bin/ipinfo
 ```
 
 ### Using `git`
@@ -98,10 +104,10 @@ Once the correct Golang version is installed, simply clone the repository and
 install the binary:
 
 ```bash
-$ git clone https://github.com/ipinfo/cli ipinfo-cli
-$ cd ipinfo-cli
-$ go install ./ipinfo/
-$ $GOPATH/bin/ipinfo
+git clone https://github.com/ipinfo/cli ipinfo-cli
+cd ipinfo-cli
+go install ./ipinfo/
+$GOPATH/bin/ipinfo
 ```
 
 You can add `$GOPATH/bin` to your `$PATH` to access `ipinfo` directly from
@@ -111,9 +117,9 @@ Alternatively, you can do the following to output the binary somewhere
 specific:
 
 ```bash
-$ git clone https://github.com/ipinfo/cli ipinfo-cli
-$ cd ipinfo-cli
-$ go build -o <path> ./ipinfo/
+git clone https://github.com/ipinfo/cli ipinfo-cli
+cd ipinfo-cli
+go build -o <path> ./ipinfo/
 ```
 
 Replace `<path>` with the required location.
@@ -134,7 +140,7 @@ will not be available. Get your token for free at
 [https://ipinfo.io/signup](https://ipinfo.io/signup?ref=cli).
 
 ```bash
-$ ipinfo login
+ipinfo login
 ```
 
 ### My IP
@@ -183,7 +189,7 @@ There are many more features available, so for full details, consult the `-h`
 or `--help` message for each command. For example:
 
 ```bash
-$ ipinfo 8.8.8.8 --help
+ipinfo 8.8.8.8 --help
 ```
 
 ## Disabling Color Output
