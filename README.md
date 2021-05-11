@@ -124,6 +124,23 @@ go build -o <path> ./ipinfo/
 
 Replace `<path>` with the required location.
 
+### Using docker.
+Clone the git repository. 
+```
+git clone https://github.com/ipinfo/cli ipinfo-cli
+cd ipinfo-cli
+```
+
+Build the image
+```
+docker build -t ipinfo-cli:latest .
+```
+
+Run the docker image
+```
+docker run -it ipinfo-cli:latest sh
+```
+
 ## Quick Start
 
 ### Default Help Message
