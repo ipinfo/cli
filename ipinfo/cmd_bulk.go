@@ -90,6 +90,13 @@ func cmdBulk() (err error) {
 	}
 
 	ii = prepareIpinfoClient(fTok)
+
+	// require token for bulk.
+	if ii.Token == "" {
+		fmt.Println("bulk lookups require a token")
+		return nil
+	}
+
 	data, err := ii.GetIPInfoBatch(ips, ipinfo.BatchReqOpts{})
 	if err != nil {
 		return err
