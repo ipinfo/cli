@@ -192,6 +192,17 @@ or `--help` message for each command. For example:
 ipinfo 8.8.8.8 --help
 ```
 
+## Data
+
+The amount of data you get back per lookup depends upon how much data you have
+enabled on your token via the https://ipinfo.io site.
+
+If you have an account, see our
+[plans](https://ipinfo.io/account/billing/upgrade) and
+[addons](https://ipinfo.io/account/addons).
+
+All examples in this document use a token with all data enabled.
+
 ## Disabling Color Output
 
 All our CLIs respect either the `--nocolor` flag or the
