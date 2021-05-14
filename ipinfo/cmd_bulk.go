@@ -7,6 +7,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
+	"github.com/ipinfo/cli/lib"
 )
 
 func printHelpBulk() {
@@ -80,7 +81,7 @@ func cmdBulk() (err error) {
 		return nil
 	}
 
-	ips, err = getInputIPs(pflag.Args()[1:])
+	ips, err = lib.IPsFromAllSources(pflag.Args()[1:])
 	if err != nil {
 		return err
 	}

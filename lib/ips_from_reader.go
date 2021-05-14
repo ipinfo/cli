@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"io"
 	"net"
+	"strings"
 )
 
 // IPsFromReader returns a list of IPs after reading from a reader; the reader
@@ -12,7 +13,7 @@ func IPsFromReader(r io.Reader) []net.IP {
 	ips := make([]net.IP, 0, 10000)
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
-		ipStr := scanner.Text()
+		ipStr := strings.TrimSpace(scanner.Text())
 		if ipStr == "" {
 			break
 		}
