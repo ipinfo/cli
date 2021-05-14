@@ -55,7 +55,7 @@ func main() {
 		err = cmdMyIP()
 	case cmd == "bulk":
 		err = cmdBulk()
-	case cmd == "summarize":
+	case cmd == "summarize" || cmd == "sum":
 		err = cmdSum()
 	case cmd == "map":
 		err = cmdMap()
@@ -67,7 +67,7 @@ func main() {
 		err = cmdLogin()
 	case cmd == "logout":
 		err = cmdLogout()
-	case cmd == "version":
+	case cmd == "version" || cmd == "vsn" || cmd == "v":
 		err = cmdVersion()
 	default:
 		err = cmdDefault()
