@@ -48,37 +48,5 @@ func cmdPrips() error {
 		return nil
 	}
 
-	// ensure we only have CIDRs or IPs, but not both.
-	hasCIDR := false
-	for _, arg := range args {
-		if lib.IsCIDR(arg) {
-			hasCIDR = true
-		} else if !lib.IsIP(arg) {
-			return lib.ErrNotIP
-		} else if hasCIDR {
-			return lib.ErrCannotMixCIDRAndIPs
-		}
-	}
-
-	// output CIDRs if that's what we have.
-	if hasCIDR {
-		for _, arg := range args {
-			if err := lib.OutputIPsFromCIDR(arg); err != nil {
-				return err
-			}
-		}
-		return nil
-	}
-
-	// IP range input requires 2 IPs.
-	if len(args) != 2 {
-		return lib.ErrIPRangeRequiresTwoIPs
-	}
-
-	// now we definitely have 2 IPs only.
-	if err := lib.OutputIPsFromRange(args[0], args[1]); err != nil {
-		return err
-	}
-
-	return nil
+	return lib.OutputIPsFrom(args, true, true)
 }
