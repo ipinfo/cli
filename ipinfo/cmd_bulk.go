@@ -12,10 +12,10 @@ import (
 
 func printHelpBulk() {
 	fmt.Printf(
-		`Usage: %s bulk [<opts>] <paths or '-' or cidrs or ip-range>
+		`Usage: %s bulk [<opts>] <ip | ip-range | cidr | filepath>
 
 Description:
-  Accepts file paths, '-' for stdin, CIDRs and IP ranges.
+  Accepts IPs, IP ranges, CIDRs and file paths.
 
   # Lookup all IPs from stdin ('-' can be implied).
   $ %[1]s prips 8.8.8.0/24 | %[1]s bulk
@@ -31,7 +31,10 @@ Description:
   $ %[1]s bulk 8.8.8.0/24 8.8.2.0/24 8.8.1.0/24
 
   # Lookup all IPs in an IP range.
-  $ %[1]s bulk 8.8.8.0 8.8.8.255
+  $ %[1]s bulk 8.8.8.0-8.8.8.255
+
+  # Lookup all IPs from multiple sources simultaneously.
+  $ %[1]s bulk 8.8.8.0-8.8.8.255 1.1.1.0/30 123.123.123.123 ips.txt
 
 Options:
   General:
