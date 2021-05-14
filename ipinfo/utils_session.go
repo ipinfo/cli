@@ -74,10 +74,3 @@ func restoreToken() (string, error) {
 
 	return string(tok[:]), nil
 }
-
-func fileExists(pathToFile string) bool {
-	if _, err := os.Stat(pathToFile); os.IsNotExist(err) {
-		return false
-	}
-	return true
-}
