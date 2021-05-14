@@ -29,7 +29,7 @@ func IPsFrom(
 		stat, _ := os.Stdin.Stat()
 
 		isPiped := (stat.Mode() & os.ModeNamedPipe) != 0
-		isTyping := (stat.Mode() & os.ModeCharDevice) != 0 && len(inputs) == 0
+		isTyping := (stat.Mode()&os.ModeCharDevice) != 0 && len(inputs) == 0
 
 		if isTyping {
 			fmt.Println("** manual input mode **")

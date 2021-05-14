@@ -1,8 +1,8 @@
 package lib
 
 import (
-	"strings"
 	"net"
+	"strings"
 )
 
 // IPRangeStrPartsFromRangeStr returns the two IP parts (start and end) of an

@@ -5,9 +5,9 @@ import (
 	"net"
 
 	"github.com/fatih/color"
+	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
-	"github.com/ipinfo/cli/lib"
 )
 
 func printHelpBulk() {

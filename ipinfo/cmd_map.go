@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/ipinfo/cli/lib"
 	"github.com/pkg/browser"
 	"github.com/spf13/pflag"
-	"github.com/ipinfo/cli/lib"
 )
 
 func printHelpMap() {
