@@ -9,10 +9,10 @@ import (
 
 func printHelpPrips() {
 	fmt.Printf(
-		`Usage: %s prips [<opts>] <cidrs or ip-range>
+		`Usage: %s prips [<opts>] <ip-range | cidr>
 
 Description:
-  Accepts CIDRs (e.g. 8.8.8.0/24) or an IP range (e.g. 8.8.8.0 8.8.8.255).
+  Accepts CIDRs (e.g. 8.8.8.0/24) and IP ranges (e.g. 8.8.8.0-8.8.8.255).
 
   # List all IPs in a CIDR.
   $ %[1]s prips 8.8.8.0/24
@@ -21,7 +21,10 @@ Description:
   $ %[1]s prips 8.8.8.0/24 8.8.2.0/24 8.8.1.0/24
 
   # List all IPs in an IP range.
-  $ %[1]s prips 8.8.8.0 8.8.8.255
+  $ %[1]s prips 8.8.8.0-8.8.8.255
+
+  # List all IPs in multiple CIDRs and IP ranges.
+  $ %[1]s prips 1.1.1.0/30 8.8.8.0-8.8.8.255 2.2.2.0/30 7.7.7.0,7.7.7.10
 
 Options:
   --help, -h
