@@ -19,7 +19,7 @@ multiple mechanisms.
 ### macOS
 
 ```bash
-brew install ipinfo/tap/ipinfo-cli
+brew install ipinfo-cli
 ```
 
 OR to install the latest `amd64` version without automatic updates:
