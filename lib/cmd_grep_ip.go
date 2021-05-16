@@ -230,11 +230,19 @@ func CmdGrepIP(f CmdGrepIPFlags, args []string, printHelp func()) error {
 
 	// actual scanner.
 	scanrdr := func(src string, r io.Reader) {
+		var hitEOF bool
 		buf := bufio.NewReader(r)
 
 		for {
+			if hitEOF {
+				return
+			}
+
 			d, err := buf.ReadString('\n')
-			if err != nil {
+			if err == io.EOF && len(d) > 0 {
+				// do one more loop on remaining content.
+				hitEOF = true
+			} else if err != nil {
 				// TODO print error but have a `-q` flag to be quiet.
 				return
 			}
