@@ -56,6 +56,13 @@ func cmdASN(asn string) error {
 	}
 
 	ii = prepareIpinfoClient(fTok)
+
+	// require token for ASN API.
+	if ii.Token == "" {
+		fmt.Println("ASN lookups require a token")
+		return nil
+	}
+
 	data, err := ii.GetASNDetails(asn)
 	if err != nil {
 		return err
