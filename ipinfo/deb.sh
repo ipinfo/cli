@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VSN=1.1.4
+VSN=1.1.5
 
 curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-${VSN}/ipinfo_${VSN}.deb
 sudo dpkg -i ipinfo_${VSN}.deb

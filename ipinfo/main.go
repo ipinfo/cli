@@ -13,7 +13,7 @@ import (
 )
 
 var progBase = filepath.Base(os.Args[0])
-var version = "1.1.4"
+var version = "1.1.5"
 
 var ii *ipinfo.Client
 
