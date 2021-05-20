@@ -25,20 +25,20 @@ brew install ipinfo-cli
 OR to install the latest `amd64` version without automatic updates:
 
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.3/macos.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.5/macos.sh | sh
 ```
 
 ### Debian / Ubuntu (amd64)
 
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.3/deb.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.5/deb.sh | sh
 ```
 
 OR
 
 ```bash
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.3/ipinfo_1.1.3.deb
-sudo dpkg -i ipinfo_1.1.3.deb
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.5/ipinfo_1.1.5.deb
+sudo dpkg -i ipinfo_1.1.5.deb
 ```
 
 ### Using `go get`
@@ -63,21 +63,27 @@ on here, please open an issue):
 darwin_amd64
 darwin_arm64
 dragonfly_amd64
+freebsd_386
 freebsd_amd64
 freebsd_arm
 freebsd_arm64
+linux_386
 linux_amd64
 linux_arm
 linux_arm64
+netbsd_386
 netbsd_amd64
 netbsd_arm
 netbsd_arm64
+openbsd_386
 openbsd_amd64
 openbsd_arm
 openbsd_arm64
+plan9_386
 plan9_amd64
 plan9_arm
 solaris_amd64
+windows_386
 windows_amd64
 windows_arm
 ```
@@ -86,12 +92,12 @@ After choosing a platform `PLAT` from above, run:
 
 ```bash
 # for Windows, use ".zip" instead of ".tar.gz"
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.3/ipinfo_1.1.3_${PLAT}.tar.gz
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.5/ipinfo_1.1.5_${PLAT}.tar.gz
 # OR
-wget https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.3/ipinfo_1.1.3_${PLAT}.tar.gz
+wget https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.5/ipinfo_1.1.5_${PLAT}.tar.gz
 
-tar -xvf ipinfo_1.1.3_${PLAT}.tar.gz
-mv ipinfo_1.1.3_${PLAT} /usr/local/bin/ipinfo
+tar -xvf ipinfo_1.1.5_${PLAT}.tar.gz
+mv ipinfo_1.1.5_${PLAT} /usr/local/bin/ipinfo
 ```
 
 ### Using `git`
