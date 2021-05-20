@@ -10,6 +10,8 @@ import (
 	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/go/v2/ipinfo"
+	"github.com/ipinfo/complete/v3"
+	"github.com/ipinfo/complete/v3/predict"
 )
 
 var progBase = filepath.Base(os.Args[0])
@@ -35,6 +37,91 @@ func prepareIpinfoClient(tok string) *ipinfo.Client {
 func main() {
 	var err error
 	var cmd string
+
+	// TODO split each subcommand's subtree to its own file and use it here.
+	completions := &complete.Command{
+		Sub: map[string]*complete.Command{
+			"myip": &complete.Command{
+				Flags: map[string]complete.Predictor{
+					"-h": predict.Nothing,
+					"--help": predict.Nothing,
+				},
+			},
+			"bulk": &complete.Command{
+				Flags: map[string]complete.Predictor{
+					"-t": predict.Nothing,
+					"--token": predict.Nothing,
+					"-h": predict.Nothing,
+					"--help": predict.Nothing,
+					"-f": predict.Nothing,
+					"--field": predict.Nothing,
+					"--nocolor": predict.Nothing,
+					"-j": predict.Nothing,
+					"--json": predict.Nothing,
+					"-c": predict.Nothing,
+					"--csv": predict.Nothing,
+				},
+			},
+			"summarize": &complete.Command{
+				Flags: map[string]complete.Predictor{
+					"-t": predict.Nothing,
+					"--token": predict.Nothing,
+					"-h": predict.Nothing,
+					"--help": predict.Nothing,
+					"--nocolor": predict.Nothing,
+					"-p": predict.Nothing,
+					"--pretty": predict.Nothing,
+					"-j": predict.Nothing,
+					"--json": predict.Nothing,
+				},
+			},
+			"map": &complete.Command{
+				Flags: map[string]complete.Predictor{
+					"-h": predict.Nothing,
+					"--help": predict.Nothing,
+				},
+			},
+			"prips": &complete.Command{
+				Flags: map[string]complete.Predictor{
+					"-h": predict.Nothing,
+					"--help": predict.Nothing,
+				},
+			},
+			"grepip": &complete.Command{
+				Flags: map[string]complete.Predictor{
+					"-o": predict.Nothing,
+					"--only-matching": predict.Nothing,
+					"-h": predict.Nothing,
+					"--no-filename": predict.Nothing,
+					"--no-recurse": predict.Nothing,
+					"--help": predict.Nothing,
+					"--nocolor": predict.Nothing,
+					"-4": predict.Nothing,
+					"--ipv4": predict.Nothing,
+					"-6": predict.Nothing,
+					"--ipv6": predict.Nothing,
+					"-x": predict.Nothing,
+					"--exclude-reserved": predict.Nothing,
+				},
+			},
+			"login": &complete.Command{
+				Flags: map[string]complete.Predictor{
+					"-t": predict.Nothing,
+					"--token": predict.Nothing,
+					"-h": predict.Nothing,
+					"--help": predict.Nothing,
+				},
+			},
+			"logout": &complete.Command{
+				Flags: map[string]complete.Predictor{
+					"-h": predict.Nothing,
+					"--help": predict.Nothing,
+				},
+			},
+			"version": &complete.Command{},
+		},
+	}
+	completions.Complete(progBase)
 
 	// obey NO_COLOR env var.
 	if os.Getenv("NO_COLOR") != "" {

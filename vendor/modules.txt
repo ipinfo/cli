@@ -1,8 +1,22 @@
 # github.com/davecgh/go-spew v1.1.1
+## explicit
 github.com/davecgh/go-spew/spew
 # github.com/fatih/color v1.10.0
 ## explicit
 github.com/fatih/color
+# github.com/hashicorp/errwrap v1.1.0
+## explicit
+github.com/hashicorp/errwrap
+# github.com/hashicorp/go-multierror v1.1.1
+## explicit
+github.com/hashicorp/go-multierror
+# github.com/ipinfo/complete/v3 v3.0.0-20210520232003-9002493567e7
+## explicit
+github.com/ipinfo/complete/v3
+github.com/ipinfo/complete/v3/install
+github.com/ipinfo/complete/v3/internal/arg
+github.com/ipinfo/complete/v3/internal/tokener
+github.com/ipinfo/complete/v3/predict
 # github.com/ipinfo/go/v2 v2.4.0
 ## explicit
 github.com/ipinfo/go/v2/ipinfo
@@ -21,11 +35,11 @@ github.com/patrickmn/go-cache
 github.com/pkg/browser
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
+# github.com/posener/script v1.1.5
+github.com/posener/script
 # github.com/spf13/pflag v1.0.5
 ## explicit
 github.com/spf13/pflag
-# github.com/stretchr/objx v0.3.0
-## explicit
 # github.com/stretchr/testify v1.7.0
 ## explicit
 github.com/stretchr/testify/assert
