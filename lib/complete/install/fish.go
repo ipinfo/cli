@@ -33,6 +33,7 @@ func (f fish) Install(cmd, bin string) error {
 		return err
 	}
 
+	fmt.Printf("installing in %s\n", completionFile)
 	return createFile(completionFile, completeCmd)
 }
 

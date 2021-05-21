@@ -6,7 +6,7 @@ import "fmt"
 // basically adds/remove from .zshrc:
 //
 // autoload -U +X bashcompinit && bashcompinit"
-// complete -C </path/to/completion/command> <command>
+// complete -o default -C </path/to/completion/command> <command>
 type zsh struct {
 	rc string
 }
@@ -27,6 +27,7 @@ func (z zsh) Install(cmd, bin string) error {
 		completeCmd = bashCompInit + "\n" + completeCmd
 	}
 
+	fmt.Printf("installing in %s\n", z.rc)
 	return appendFile(z.rc, completeCmd)
 }
 

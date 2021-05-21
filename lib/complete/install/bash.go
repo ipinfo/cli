@@ -5,7 +5,7 @@ import "fmt"
 // (un)install in bash
 // basically adds/remove from .bashrc:
 //
-// complete -C </path/to/completion/command> <command>
+// complete -C </path/to/completion/command> -o default <command>
 type bash struct {
 	rc string
 }
@@ -20,6 +20,7 @@ func (b bash) Install(cmd, bin string) error {
 		return fmt.Errorf("already installed in %s", b.rc)
 	}
 	completeCmd := b.cmd(cmd, bin)
+	fmt.Printf("installing in %s\n", b.rc)
 	return appendFile(b.rc, completeCmd)
 }
 
