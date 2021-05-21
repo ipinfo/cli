@@ -87,7 +87,7 @@ func Complete(name string, cmd Completer) {
 	}
 	i, err := strconv.Atoi(point)
 	if err != nil {
-		panic("COMP_POINT env should be integer, got: " + point)
+		i = len(line)
 	}
 	if i > len(line) {
 		i = len(line)
