@@ -171,6 +171,13 @@ func (c completer) suggestLeafCommandOptions() (options []string) {
 	}
 
 	if arg.Completed {
+		// on a flag such as `--flag <val>` where `val` is currently empty?
+		if arg.HasFlag && !arg.HasValue {
+			if opts := c.suggestFlagValue(arg.Flag, arg.Value); opts != nil {
+				return opts
+			}
+		}
+
 		return []string{}
 	}
 
