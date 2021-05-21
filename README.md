@@ -198,6 +198,15 @@ or `--help` message for each command. For example:
 ipinfo 8.8.8.8 --help
 ```
 
+## Auto-Completion
+
+Installing auto-completions is as simple as running one command (works for
+`bash`, `zsh` and `fish` shells):
+
+```bash
+ipinfo completion
+```
+
 ## Data
 
 The amount of data you get back per lookup depends upon how much data you have

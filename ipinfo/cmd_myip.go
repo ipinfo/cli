@@ -4,9 +4,29 @@ import (
 	"fmt"
 
 	"github.com/fatih/color"
+	"github.com/ipinfo/cli/lib/complete"
+	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
 )
+
+var completionsMyIP = &complete.Command{
+	Flags: map[string]complete.Predictor{
+		"-t":        predict.Nothing,
+		"--token":   predict.Nothing,
+		"-h":        predict.Nothing,
+		"--help":    predict.Nothing,
+		"-f":        predict.Set(coreFields),
+		"--field":   predict.Set(coreFields),
+		"--nocolor": predict.Nothing,
+		"-p":        predict.Nothing,
+		"--pretty":  predict.Nothing,
+		"-j":        predict.Nothing,
+		"--json":    predict.Nothing,
+		"-c":        predict.Nothing,
+		"--csv":     predict.Nothing,
+	},
+}
 
 func printHelpMyIP() {
 	fmt.Printf(
@@ -20,7 +40,7 @@ Options:
       show help.
 
   Outputs:
-    --field, -f
+    --field <field>, -f <field>
       lookup only a specific field in the output.
       field names correspond to JSON keys, e.g. 'hostname' or 'company.type'.
     --nocolor

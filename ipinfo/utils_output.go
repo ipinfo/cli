@@ -11,6 +11,65 @@ import (
 	"github.com/jszwec/csvutil"
 )
 
+var coreFields = []string{
+	"ip",
+	"hostname",
+	"anycast",
+	"city",
+	"region",
+	"country",
+	"country_name",
+	"loc",
+	"org",
+	"postal",
+	"timezone",
+	"asn",
+	"asn.id",
+	"asn.name",
+	"asn.asn",
+	"asn.domain",
+	"asn.route",
+	"asn.type",
+	"company",
+	"company.name",
+	"company.domain",
+	"company.type",
+	"carrier",
+	"carrier.name",
+	"carrier.mcc",
+	"carrier.mnc",
+	"privacy",
+	"privacy.vpn",
+	"privacy.proxy",
+	"privacy.tor",
+	"privacy.hosting",
+	"abuse",
+	"abuse.address",
+	"abuse.country",
+	"abuse.country_name",
+	"abuse.email",
+	"abuse.name",
+	"abuse.network",
+	"abuse.phone",
+	"domains",
+	"domains.total",
+}
+
+var asnFields = []string{
+	"name",
+	"country",
+	"country_name",
+	"allocated",
+	"registry",
+	"domain",
+	"num_ips",
+	"prefixes",
+	"prefixes6",
+	"peers",
+	"upstreams",
+	"downstreams",
+}
+
 func outputJSON(d interface{}) error {
 	jsonEnc := json.NewEncoder(os.Stdout)
 	jsonEnc.SetIndent("", "  ")

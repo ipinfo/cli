@@ -41,6 +41,8 @@ func main() {
 		color.NoColor = true
 	}
 
+	handleCompletions()
+
 	if len(os.Args) > 1 {
 		cmd = os.Args[1]
 	}
@@ -67,6 +69,8 @@ func main() {
 		err = cmdLogin()
 	case cmd == "logout":
 		err = cmdLogout()
+	case cmd == "completion":
+		err = cmdCompletion()
 	case cmd == "version" || cmd == "vsn" || cmd == "v":
 		err = cmdVersion()
 	default:

@@ -9,9 +9,25 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib"
+	"github.com/ipinfo/cli/lib/complete"
+	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
 )
+
+var completionsSummarize = &complete.Command{
+	Flags: map[string]complete.Predictor{
+		"-t":        predict.Nothing,
+		"--token":   predict.Nothing,
+		"-h":        predict.Nothing,
+		"--help":    predict.Nothing,
+		"--nocolor": predict.Nothing,
+		"-p":        predict.Nothing,
+		"--pretty":  predict.Nothing,
+		"-j":        predict.Nothing,
+		"--json":    predict.Nothing,
+	},
+}
 
 func printHelpSum() {
 	fmt.Printf(

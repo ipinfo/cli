@@ -5,9 +5,18 @@ import (
 	"net"
 
 	"github.com/ipinfo/cli/lib"
+	"github.com/ipinfo/cli/lib/complete"
+	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/pkg/browser"
 	"github.com/spf13/pflag"
 )
+
+var completionsMap = &complete.Command{
+	Flags: map[string]complete.Predictor{
+		"-h":     predict.Nothing,
+		"--help": predict.Nothing,
+	},
+}
 
 func printHelpMap() {
 	fmt.Printf(
