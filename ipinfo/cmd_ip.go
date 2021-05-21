@@ -21,7 +21,7 @@ Options:
       show help.
 
   Outputs:
-    --field, -f
+    --field <field>, -f <field>
       lookup only a specific field in the output.
       field names correspond to JSON keys, e.g. 'hostname' or 'company.type'.
     --nocolor

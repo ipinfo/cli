@@ -67,6 +67,8 @@ func main() {
 		color.NoColor = true
 	}
 
+	handleCompletions()
+
 	if err := cmd(); err != nil {
 		fmt.Printf("err: %v\n", err)
 	}

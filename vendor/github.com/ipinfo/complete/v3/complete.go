@@ -172,46 +172,33 @@ func (c completer) suggestLeafCommandOptions() (options []string) {
 		before = c.args[len(c.args)-2]
 	}
 
-	if !arg.Completed {
-		// Complete value being typed.
-		if arg.HasValue {
-			// Complete value of current flag.
-			if arg.HasFlag {
-				return c.suggestFlagValue(arg.Flag, arg.Value)
-			}
-			// Complete value of flag in a previous argument.
-			if before.HasFlag && !before.HasValue {
-				return c.suggestFlagValue(before.Flag, arg.Value)
-			}
-		}
-
-		// no val; suggest a flag.
-		if !arg.HasValue {
-			options = c.suggestFlag(arg.Flag)
-		}
-		// no flag; suggest positional arg.
-		if !arg.HasFlag {
-			options = append(options, c.suggestArgsValue(arg.Value)...)
-		}
-
-		return options
+	if arg.Completed {
+		return []string{}
 	}
 
-	// Has a value that was already completed. Suggest all flags and positional
-	// arguments.
+	// Complete value being typed.
 	if arg.HasValue {
-		options = c.suggestFlag("")
-		if !arg.HasFlag {
-			options = append(options, c.suggestArgsValue("")...)
+		// Complete value of current flag.
+		if arg.HasFlag {
+			return c.suggestFlagValue(arg.Flag, arg.Value)
 		}
-		return options
+		// Complete value of flag in a previous argument.
+		if before.HasFlag && !before.HasValue {
+			return c.suggestFlagValue(before.Flag, arg.Value)
+		}
 	}
-	// A flag without a value. Suggest a value or suggest any flag.
-	options = c.suggestFlagValue(arg.Flag, "")
-	if len(options) > 0 {
-		return options
+
+	// no val; suggest a flag if dashes started.
+	if !arg.HasValue && arg.HasFlag {
+		options = c.suggestFlag(arg.Flag)
 	}
-	return c.suggestFlag("")
+
+	// no flag; suggest positional arg.
+	if !arg.HasFlag {
+		options = append(options, c.suggestArgsValue(arg.Value)...)
+	}
+
+	return options
 }
 
 func (c completer) suggestFlag(prefix string) []string {

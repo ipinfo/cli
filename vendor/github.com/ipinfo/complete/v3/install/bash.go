@@ -33,5 +33,5 @@ func (b bash) Uninstall(cmd, bin string) error {
 }
 
 func (bash) cmd(cmd, bin string) string {
-	return fmt.Sprintf("complete -C %s %s", bin, cmd)
+	return fmt.Sprintf("complete -C %s -o default %s", bin, cmd)
 }

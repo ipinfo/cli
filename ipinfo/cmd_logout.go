@@ -3,8 +3,17 @@ package main
 import (
 	"fmt"
 
+	"github.com/ipinfo/complete/v3"
+	"github.com/ipinfo/complete/v3/predict"
 	"github.com/spf13/pflag"
 )
+
+var completionsLogout = &complete.Command{
+	Flags: map[string]complete.Predictor{
+		"-h":     predict.Nothing,
+		"--help": predict.Nothing,
+	},
+}
 
 func printHelpLogout() {
 	fmt.Printf(

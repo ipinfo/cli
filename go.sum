@@ -9,8 +9,8 @@ github.com/hashicorp/errwrap v1.1.0/go.mod h1:YH+1FKiLXxHSkmPseP+kNlulaMuP3n2brv
 github.com/hashicorp/go-multierror v1.0.0/go.mod h1:dHtQlpGsu+cZNNAkkCN/P3hoUDHhCYQXV3UM06sGGrk=
 github.com/hashicorp/go-multierror v1.1.1 h1:H5DkEtf6CXdFp0N0Em5UCwQpXMWke8IA0+lD48awMYo=
 github.com/hashicorp/go-multierror v1.1.1/go.mod h1:iw975J/qwKPdAO1clOe2L8331t/9/fmwbPZ6JB6eMoM=
-github.com/ipinfo/complete/v3 v3.0.0-20210520232003-9002493567e7 h1:jNiLv10QipiKz1CUMkcsUkxG5T8QbRbI6opY/ZTw6tY=
-github.com/ipinfo/complete/v3 v3.0.0-20210520232003-9002493567e7/go.mod h1:CNoInit7ihI3rhjHQ3+owRDuUmjh5RmRcXJYDoP3uAE=
+github.com/ipinfo/complete/v3 v3.0.0-20210521012920-00d5ead0277f h1:2Viuq2I2TXb/C7UCAyYhOEg+0pxoYaaMjYvawqmtnkc=
+github.com/ipinfo/complete/v3 v3.0.0-20210521012920-00d5ead0277f/go.mod h1:CNoInit7ihI3rhjHQ3+owRDuUmjh5RmRcXJYDoP3uAE=
 github.com/ipinfo/go/v2 v2.4.0 h1:I83YiC4e6YZmUc7Z40311vLcJF0DJPV0MBhxg6AX6Ew=
 github.com/ipinfo/go/v2 v2.4.0/go.mod h1:2MrJVdUamrTc5VdC7yrbKGbsOOxMtdUpnpBJmtZgA8o=
 github.com/jszwec/csvutil v1.4.0 h1:ro7gZN8PRsyNUEX8qE/eYPE5/kffEXMs+4eRcOd1oUk=

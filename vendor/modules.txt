@@ -10,7 +10,7 @@ github.com/hashicorp/errwrap
 # github.com/hashicorp/go-multierror v1.1.1
 ## explicit
 github.com/hashicorp/go-multierror
-# github.com/ipinfo/complete/v3 v3.0.0-20210520232003-9002493567e7
+# github.com/ipinfo/complete/v3 v3.0.0-20210521012920-00d5ead0277f
 ## explicit
 github.com/ipinfo/complete/v3
 github.com/ipinfo/complete/v3/install
