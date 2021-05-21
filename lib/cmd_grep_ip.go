@@ -13,8 +13,8 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/ipinfo/complete/v3"
-	"github.com/ipinfo/complete/v3/predict"
+	"github.com/ipinfo/cli/lib/complete"
+	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/spf13/pflag"
 )
 

@@ -10,13 +10,6 @@ github.com/hashicorp/errwrap
 # github.com/hashicorp/go-multierror v1.1.1
 ## explicit
 github.com/hashicorp/go-multierror
-# github.com/ipinfo/complete/v3 v3.0.0-20210521012920-00d5ead0277f
-## explicit
-github.com/ipinfo/complete/v3
-github.com/ipinfo/complete/v3/install
-github.com/ipinfo/complete/v3/internal/arg
-github.com/ipinfo/complete/v3/internal/tokener
-github.com/ipinfo/complete/v3/predict
 # github.com/ipinfo/go/v2 v2.4.0
 ## explicit
 github.com/ipinfo/go/v2/ipinfo
@@ -36,6 +29,7 @@ github.com/pkg/browser
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
 # github.com/posener/script v1.1.5
+## explicit
 github.com/posener/script
 # github.com/spf13/pflag v1.0.5
 ## explicit

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ipinfo/complete/v3"
-	"github.com/ipinfo/complete/v3/predict"
+	"github.com/ipinfo/cli/lib/complete"
+	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/spf13/pflag"
 	"golang.org/x/term"
 )

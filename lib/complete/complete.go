@@ -7,9 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ipinfo/complete/v3/install"
-	"github.com/ipinfo/complete/v3/internal/arg"
-	"github.com/ipinfo/complete/v3/internal/tokener"
+	"github.com/ipinfo/cli/lib/complete/install"
 )
 
 // Completer is an interface that a command line should implement in order to
@@ -96,7 +94,7 @@ func Complete(name string, cmd Completer) {
 	}
 
 	// Parse the command line up to the completion point.
-	args := arg.Parse(line[:i])
+	args := Parse(line[:i])
 
 	// The first word is the current command name.
 	args = args[1:]
@@ -115,7 +113,7 @@ func Complete(name string, cmd Completer) {
 
 type completer struct {
 	Completer
-	args  []arg.Arg
+	args  []Arg
 	stack []Completer
 }
 
@@ -124,7 +122,7 @@ type completer struct {
 // Otherwise complete flags and positional arguments.
 func (c completer) complete() ([]string, error) {
 reset:
-	arg := arg.Arg{}
+	arg := Arg{}
 	if len(c.args) > 0 {
 		arg = c.args[0]
 	}
@@ -164,7 +162,7 @@ func (c completer) suggestSubCommands(prefix string) []string {
 }
 
 func (c completer) suggestLeafCommandOptions() (options []string) {
-	arg, before := arg.Arg{}, arg.Arg{}
+	arg, before := Arg{}, Arg{}
 	if len(c.args) > 0 {
 		arg = c.args[len(c.args)-1]
 	}
@@ -277,7 +275,7 @@ func filterByPrefix(prefix string, options ...string) []string {
 // spaces, and return s in the form of the given prefix.
 func hasPrefix(s, prefix string) (string, bool) {
 	var (
-		token  tokener.Tokener
+		token  Tokener
 		si, pi int
 	)
 	for ; pi < len(prefix); pi++ {

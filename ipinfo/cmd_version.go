@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/ipinfo/complete/v3"
+	"github.com/ipinfo/cli/lib/complete"
 )
 
 var completionsVersion = &complete.Command{}

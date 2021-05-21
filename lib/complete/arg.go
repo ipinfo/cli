@@ -1,9 +1,7 @@
-package arg
+package complete
 
 import (
 	"strings"
-
-	"github.com/ipinfo/complete/v3/internal/tokener"
 )
 
 // Arg is typed a command line argument.
@@ -45,7 +43,7 @@ func next(line string) (arg Arg, after string) {
 	var start, end int
 
 	// Stack of quote marks met during the paring of the argument.
-	var token tokener.Tokener
+	var token Tokener
 
 	// Skip prefix spaces.
 	for start = 0; start < len(line); start++ {

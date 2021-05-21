@@ -3,15 +3,13 @@ package complete
 import (
 	"sort"
 	"testing"
-
-	"github.com/ipinfo/complete/v3/internal/arg"
 )
 
 // Test is a testing helper function for testing bash completion of a given
 // completer.
 func Test(t *testing.T, cmp Completer, args string, want []string) {
 	t.Helper()
-	got, err := completer{Completer: cmp, args: arg.Parse(args)}.complete()
+	got, err := completer{Completer: cmp, args: Parse(args)}.complete()
 	if err != nil {
 		t.Fatal(err)
 	}
