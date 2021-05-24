@@ -15,16 +15,16 @@ func assertCIDRsFromIPRangeStr(
 ) {
 	var _cidrs []string
 
-	_cidrs = lib.CIDRsFromIPRangeStr(start+"-"+end)
+	_cidrs = lib.CIDRsFromIPRangeStr(start + "-" + end)
 	assert.Equal(t, len(cidrs), len(_cidrs))
 	for i := 0; i < len(cidrs); i++ {
 		assert.Equal(t, cidrs[i], _cidrs[i])
 	}
 
 	// test reverse direction
-	_cidrs = lib.CIDRsFromIPRangeStr(end+"-"+start)
+	_cidrs = lib.CIDRsFromIPRangeStr(end + "-" + start)
 	assert.Equal(t, len(cidrs), len(_cidrs))
-	for i := len(cidrs)-1; i >= 0; i-- {
+	for i := len(cidrs) - 1; i >= 0; i-- {
 		assert.Equal(t, cidrs[i], _cidrs[(len(cidrs)-1)-i])
 	}
 }

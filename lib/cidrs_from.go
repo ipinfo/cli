@@ -11,10 +11,10 @@ func CIDRsFromIPRange(
 	start uint32,
 	end uint32,
 ) []string {
-	subnetMasks := SubnetMasksWithinRange(start, end)
-	cidrStrs := make([]string, len(subnetMasks))
-	for i, subnetMask := range subnetMasks {
-		cidrStrs[i] = subnetMask.ToCIDR()
+	subnets := SubnetsWithinRange(start, end)
+	cidrStrs := make([]string, len(subnets))
+	for i, subnet := range subnets {
+		cidrStrs[i] = subnet.ToCIDR()
 	}
 	return cidrStrs
 }
@@ -36,9 +36,9 @@ func CIDRsFromIPRangeStr(
 	end := binary.BigEndian.Uint32(net.ParseIP(endStr).To4())
 	if start <= end {
 		return CIDRsFromIPRange(start, end)
-	} else {
-		cidrStrs := CIDRsFromIPRange(end, start)
-		ReverseSliceString(cidrStrs)
-		return cidrStrs
 	}
+
+	cidrStrs := CIDRsFromIPRange(end, start)
+	ReverseSliceString(cidrStrs)
+	return cidrStrs
 }
