@@ -31,9 +31,15 @@ func assertCIDRsFromIPRangeStr(
 
 func TestCIDRsFromIPRangeStr(t *testing.T) {
 	assertCIDRsFromIPRangeStr(
-		t, "1.1.1.0", "1.1.1.3",
+		t, "1.1.1.0", "1.1.1.0",
 		[]string{
-			"1.1.1.0/30",
+			"1.1.1.0/32",
+		},
+	)
+	assertCIDRsFromIPRangeStr(
+		t, "1.1.1.0", "1.1.1.1",
+		[]string{
+			"1.1.1.0/31",
 		},
 	)
 	assertCIDRsFromIPRangeStr(
@@ -41,6 +47,12 @@ func TestCIDRsFromIPRangeStr(t *testing.T) {
 		[]string{
 			"1.1.1.0/31",
 			"1.1.1.2/32",
+		},
+	)
+	assertCIDRsFromIPRangeStr(
+		t, "1.1.1.0", "1.1.1.3",
+		[]string{
+			"1.1.1.0/30",
 		},
 	)
 	assertCIDRsFromIPRangeStr(
