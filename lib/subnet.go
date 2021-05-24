@@ -26,7 +26,7 @@ type Subnet struct {
 	HiIP uint32
 }
 
-// NetAndHostMasks returns a network and host masks where the `size`
+// NetAndHostMasks returns network and host masks where the `size`
 // most-significant bits are set to 1 and the rest set to 0 in the network
 // mask, and the host mask is the bitwise-negation of the network mask.
 func NetAndHostMasks(size uint32) (uint32, uint32) {
