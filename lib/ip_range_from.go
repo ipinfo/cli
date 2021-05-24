@@ -5,9 +5,9 @@ import (
 	"net"
 )
 
-// IPRangeStartEndFromCIDR returns the start and end IPs in big endian byte
-// order of a CIDR in string form.
-func IPRangeStartEndFromCIDR(cidrStr string) (uint32, uint32, error) {
+// IPRangeFromCIDR returns the start and end IPs in big endian byte order of a
+// CIDR in string form.
+func IPRangeFromCIDR(cidrStr string) (uint32, uint32, error) {
 	_, ipnet, err := net.ParseCIDR(cidrStr)
 	if err != nil {
 		return 0, 0, err

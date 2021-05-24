@@ -5,9 +5,9 @@ import (
 	"net"
 )
 
-// IP6RangeStartEndFromCIDR returns the start and end IPs in big endian byte
-// order of a CIDR in string form.
-func IP6RangeStartEndFromCIDR(cidrStr string) (IP6u128, IP6u128, error) {
+// IP6RangeFromCIDR returns the start and end IPs in big endian byte order of a
+// CIDR in string form.
+func IP6RangeFromCIDR(cidrStr string) (IP6u128, IP6u128, error) {
 	_, ipnet, err := net.ParseCIDR(cidrStr)
 	if err != nil {
 		return IP6u128{}, IP6u128{}, err

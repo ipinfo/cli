@@ -48,9 +48,9 @@ func main() {
 	}
 
 	switch {
-	case lib.IsIP(cmd):
+	case lib.StrIsIP(cmd):
 		err = cmdIP(cmd)
-	case lib.IsASN(cmd):
+	case lib.StrIsASN(cmd):
 		asn := strings.ToUpper(cmd)
 		err = cmdASN(asn)
 	case cmd == "myip":

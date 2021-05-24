@@ -1,13 +1,14 @@
 package lib
 
 import (
+	"net"
 	"strconv"
 	"strings"
 )
 
-// IsASN checks whether an ASN string really is an ASN of the form "asX" or
+// StrIsASN checks whether an ASN string really is an ASN of the form "asX" or
 // "ASX" where "X" is the ASN's number.
-func IsASN(asn string) bool {
+func StrIsASN(asn string) bool {
 	// check length.
 	if len(asn) < 3 {
 		return false
@@ -25,4 +26,15 @@ func IsASN(asn string) bool {
 	}
 
 	return true
+}
+
+// StrIsCIDR checks whether a string is in proper CIDR form.
+func StrIsCIDR(cidrStr string) bool {
+	_, _, err := net.ParseCIDR(cidrStr)
+	return err == nil
+}
+
+// StrIsIP checks whether a string is an IP.
+func StrIsIP(ipStr string) bool {
+	return net.ParseIP(ipStr) != nil
 }

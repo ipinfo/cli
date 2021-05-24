@@ -177,7 +177,7 @@ func CmdGrepIP(f CmdGrepIPFlags, args []string, printHelp func()) error {
 		}
 		exclRanges4 = make([]iprange4, len(exclRanges4Str))
 		for i, bogonRangeStr := range exclRanges4Str {
-			start, end, err := IPRangeStartEndFromCIDR(bogonRangeStr)
+			start, end, err := IPRangeFromCIDR(bogonRangeStr)
 			if err != nil {
 				panic(err)
 			}
@@ -234,7 +234,7 @@ func CmdGrepIP(f CmdGrepIPFlags, args []string, printHelp func()) error {
 		}
 		exclRanges6 = make([]iprange6, len(exclRanges6Str))
 		for i, bogonRangeStr := range exclRanges6Str {
-			start, end, err := IP6RangeStartEndFromCIDR(bogonRangeStr)
+			start, end, err := IP6RangeFromCIDR(bogonRangeStr)
 			if err != nil {
 				panic(err)
 			}
