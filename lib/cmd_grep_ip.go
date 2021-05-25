@@ -96,8 +96,12 @@ func (f *CmdGrepIPFlags) Init() {
 	)
 }
 
-// CmdGrepIP is the common core logic for the `grepip` command-line utility.
-func CmdGrepIP(f CmdGrepIPFlags, args []string, printHelp func()) error {
+// CmdGrepIP is the common core logic for the grepip command.
+func CmdGrepIP(
+	f CmdGrepIPFlags,
+	args []string,
+	printHelp func(),
+) error {
 	if f.NoColor {
 		color.NoColor = true
 	}
