@@ -30,7 +30,11 @@ func cmd() error {
 
 	f := lib.CmdCIDR2RangeFlags{}
 	f.Init()
-	pflag.BoolVarP(&fVsn, "version", "v", false, "print binary release number.")
+	pflag.BoolVarP(
+		&fVsn,
+		"version", "v", false,
+		"print binary release number.",
+	)
 	pflag.Parse()
 
 	if fVsn {
