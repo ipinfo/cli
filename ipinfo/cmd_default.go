@@ -24,6 +24,8 @@ Commands:
   map         open a URL to a map showing the locations of a group of IPs.
   prips       print IP list from CIDR or range.
   grepip      grep for IPs matching criteria from any source.
+  cidr2range  convert CIDRs to IP ranges.
+  range2cidr  convert IP ranges to CIDRs.
   login       save an API token session.
   logout      delete your current API token session.
   version     show current version.

@@ -5,7 +5,7 @@ import (
 	"github.com/ipinfo/cli/lib/complete"
 )
 
-var completions = lib.CompletionsGrepIP
+var completions = lib.CompletionsRange2CIDR
 
 func handleCompletions() {
 	completions.Complete(progBase)

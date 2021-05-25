@@ -9,4 +9,4 @@ ROOT=$DIR/..
 
 VSN=$1
 
-$ROOT/scripts/build-all-platforms.sh "ipinfo" $VSN
+$ROOT/scripts/build-all-platforms.sh "range2cidr" $VSN

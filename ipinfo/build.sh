@@ -2,9 +2,9 @@
 
 # Build local binary.
 
+set -e
+
 DIR=`dirname $0`
 ROOT=$DIR/..
 
-go build                                                                      \
-    -o $ROOT/build/ipinfo                                                     \
-    $ROOT/ipinfo
+$ROOT/scripts/build.sh "ipinfo"
