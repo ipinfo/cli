@@ -23,7 +23,7 @@ Description:
   to IP ranges.
 
   If a file is input, it is assumed that the CIDR to convert is the first entry
-  of each line (separated by '\n'). All other data remains the same.
+  of each line. Other data is allowed and copied transparently.
 
   The IP range output is of the form "<start>-<end>" where "<start>" comes
   before or is equal to "<end>" in numeric value.

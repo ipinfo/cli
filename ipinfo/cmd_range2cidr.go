@@ -25,7 +25,7 @@ Description:
   them all to CIDRs (and multiple CIDRs if required).
 
   If a file is input, it is assumed that the IP range to convert is the first
-  entry of each line (separated by '\n'). All other data remains the same.
+  entry of each line. Other data is allowed and copied transparently.
 
   If multiple CIDRs are needed to represent an IP range on a line with other
   data, the data is copied per CIDR required. For example:
