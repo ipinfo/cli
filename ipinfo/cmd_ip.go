@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/fatih/color"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
 )
@@ -20,9 +21,11 @@ Options:
       show help.
 
   Outputs:
-    --field, -f
+    --field <field>, -f <field>
       lookup only a specific field in the output.
       field names correspond to JSON keys, e.g. 'hostname' or 'company.type'.
+    --nocolor
+      disable colored output.
 
   Formats:
     --pretty, -p
@@ -41,6 +44,7 @@ func cmdIP(ipStr string) error {
 	var fPretty bool
 	var fJSON bool
 	var fCSV bool
+	var fNoColor bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
@@ -48,7 +52,12 @@ func cmdIP(ipStr string) error {
 	pflag.BoolVarP(&fPretty, "pretty", "p", true, "output pretty format.")
 	pflag.BoolVarP(&fJSON, "json", "j", false, "output JSON format.")
 	pflag.BoolVarP(&fCSV, "csv", "c", false, "output CSV format.")
+	pflag.BoolVarP(&fNoColor, "nocolor", "", false, "disable color output.")
 	pflag.Parse()
+
+	if fNoColor {
+		color.NoColor = true
+	}
 
 	if fHelp {
 		printHelpIP(ipStr)

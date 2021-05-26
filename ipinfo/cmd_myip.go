@@ -3,9 +3,30 @@ package main
 import (
 	"fmt"
 
+	"github.com/fatih/color"
+	"github.com/ipinfo/cli/lib/complete"
+	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
 )
+
+var completionsMyIP = &complete.Command{
+	Flags: map[string]complete.Predictor{
+		"-t":        predict.Nothing,
+		"--token":   predict.Nothing,
+		"-h":        predict.Nothing,
+		"--help":    predict.Nothing,
+		"-f":        predict.Set(coreFields),
+		"--field":   predict.Set(coreFields),
+		"--nocolor": predict.Nothing,
+		"-p":        predict.Nothing,
+		"--pretty":  predict.Nothing,
+		"-j":        predict.Nothing,
+		"--json":    predict.Nothing,
+		"-c":        predict.Nothing,
+		"--csv":     predict.Nothing,
+	},
+}
 
 func printHelpMyIP() {
 	fmt.Printf(
@@ -19,9 +40,11 @@ Options:
       show help.
 
   Outputs:
-    --field, -f
+    --field <field>, -f <field>
       lookup only a specific field in the output.
       field names correspond to JSON keys, e.g. 'hostname' or 'company.type'.
+    --nocolor
+      disable colored output.
 
   Formats:
     --pretty, -p
@@ -40,6 +63,7 @@ func cmdMyIP() error {
 	var fPretty bool
 	var fJSON bool
 	var fCSV bool
+	var fNoColor bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
@@ -47,7 +71,12 @@ func cmdMyIP() error {
 	pflag.BoolVarP(&fPretty, "pretty", "p", true, "output pretty format.")
 	pflag.BoolVarP(&fJSON, "json", "j", false, "output JSON format.")
 	pflag.BoolVarP(&fCSV, "csv", "c", false, "output CSV format.")
+	pflag.BoolVarP(&fNoColor, "nocolor", "", false, "disable color output.")
 	pflag.Parse()
+
+	if fNoColor {
+		color.NoColor = true
+	}
 
 	if fHelp {
 		printHelpMyIP()

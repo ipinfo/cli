@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 
+	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
@@ -23,6 +24,8 @@ Commands:
   map         open a URL to a map showing the locations of a group of IPs.
   prips       print IP list from CIDR or range.
   grepip      grep for IPs matching criteria from any source.
+  cidr2range  convert CIDRs to IP ranges.
+  range2cidr  convert IP ranges to CIDRs.
   login       save an API token session.
   logout      delete your current API token session.
   version     show current version.
@@ -35,9 +38,11 @@ Options:
       show help.
 
   Outputs:
-    --field, -f
+    --field <field>, -f <field>
       lookup only a specific field in the output.
       field names correspond to JSON keys, e.g. 'hostname' or 'company.type'.
+    --nocolor
+      disable colored output.
 
   Formats:
     --pretty, -p
@@ -57,6 +62,7 @@ func cmdDefault() (err error) {
 	var fPretty bool
 	var fJSON bool
 	var fCSV bool
+	var fNoColor bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
@@ -65,6 +71,10 @@ func cmdDefault() (err error) {
 	pflag.BoolVarP(&fJSON, "json", "j", true, "output JSON format. (default)")
 	pflag.BoolVarP(&fCSV, "csv", "c", false, "output CSV format.")
 	pflag.Parse()
+
+	if fNoColor {
+		color.NoColor = true
+	}
 
 	if fHelp {
 		printHelpDefault()
@@ -92,6 +102,13 @@ func cmdDefault() (err error) {
 	}
 
 	ii = prepareIpinfoClient(fTok)
+
+	// require token for bulk.
+	if ii.Token == "" {
+		fmt.Println("bulk lookups require a token")
+		return nil
+	}
+
 	data, err := ii.GetIPInfoBatch(ips, ipinfo.BatchReqOpts{})
 	if err != nil {
 		return err

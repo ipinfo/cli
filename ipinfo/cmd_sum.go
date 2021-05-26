@@ -8,32 +8,53 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/ipinfo/cli/lib"
+	"github.com/ipinfo/cli/lib/complete"
+	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
 )
 
+var completionsSummarize = &complete.Command{
+	Flags: map[string]complete.Predictor{
+		"-t":        predict.Nothing,
+		"--token":   predict.Nothing,
+		"-h":        predict.Nothing,
+		"--help":    predict.Nothing,
+		"--nocolor": predict.Nothing,
+		"-p":        predict.Nothing,
+		"--pretty":  predict.Nothing,
+		"-j":        predict.Nothing,
+		"--json":    predict.Nothing,
+	},
+}
+
 func printHelpSum() {
 	fmt.Printf(
-		`Usage: %s summarize [<opts>] <paths or '-' or cidrs or ip-range>
+		`Usage: %s summarize [<opts>] <ip | ip-range | cidr | filepath>
 
 Description:
-  Accepts file paths, '-' for stdin, CIDRs and IP ranges.
+  Accepts IPs, IP ranges, CIDRs and file paths.
 
-  # Lookup all IPs from stdin ('-' can be implied).
+Examples:
+  # Summarize all IPs from stdin ('-' can be implied).
   $ %[1]s prips 8.8.8.0/24 | %[1]s summarize
   $ %[1]s prips 8.8.8.0/24 | %[1]s summarize -
 
-  # Lookup all IPs in 2 files.
+  # Summarize all IPs in 2 files.
   $ %[1]s summarize /path/to/iplist1.txt /path/to/iplist2.txt
 
-  # Lookup all IPs from CIDR.
+  # Summarize all IPs from CIDR.
   $ %[1]s summarize 8.8.8.0/24
 
-  # Lookup all IPs from multiple CIDRs.
+  # Summarize all IPs from multiple CIDRs.
   $ %[1]s summarize 8.8.8.0/24 8.8.2.0/24 8.8.1.0/24
 
-  # Lookup all IPs in an IP range.
-  $ %[1]s summarize 8.8.8.0 8.8.8.255
+  # Summarize all IPs in an IP range.
+  $ %[1]s summarize 8.8.8.0-8.8.8.255
+
+  # Summarize all IPs from multiple sources simultaneously.
+  $ %[1]s summarize 8.8.8.0-8.8.8.255 1.1.1.0/30 123.123.123.123 ips.txt
 
 Options:
   General:
@@ -41,6 +62,10 @@ Options:
       use <tok> as API token.
     --help, -h
       show help.
+
+  Outputs:
+    --nocolor
+      disable colored output.
 
   Formats:
     --pretty, -p
@@ -56,19 +81,25 @@ func cmdSum() (err error) {
 	var fHelp bool
 	var fPretty bool
 	var fJSON bool
+	var fNoColor bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.BoolVarP(&fPretty, "pretty", "p", true, "output pretty format. (default)")
 	pflag.BoolVarP(&fJSON, "json", "j", false, "output JSON format.")
+	pflag.BoolVarP(&fNoColor, "nocolor", "", false, "disable color output.")
 	pflag.Parse()
+
+	if fNoColor {
+		color.NoColor = true
+	}
 
 	if fHelp {
 		printHelpSum()
 		return nil
 	}
 
-	ips, err = getInputIPs(pflag.Args()[1:])
+	ips, err = lib.IPsFromAllSources(pflag.Args()[1:])
 	if err != nil {
 		return err
 	}
