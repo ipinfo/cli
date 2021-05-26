@@ -4,9 +4,20 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ipinfo/cli/lib/complete"
+	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/spf13/pflag"
 	"golang.org/x/term"
 )
+
+var completionsLogin = &complete.Command{
+	Flags: map[string]complete.Predictor{
+		"-t":      predict.Nothing,
+		"--token": predict.Nothing,
+		"-h":      predict.Nothing,
+		"--help":  predict.Nothing,
+	},
+}
 
 func printHelpLogin() {
 	fmt.Printf(

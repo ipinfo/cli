@@ -13,7 +13,7 @@ import (
 )
 
 var progBase = filepath.Base(os.Args[0])
-var version = "1.1.5"
+var version = "2.0.0"
 
 var ii *ipinfo.Client
 
@@ -41,21 +41,23 @@ func main() {
 		color.NoColor = true
 	}
 
+	handleCompletions()
+
 	if len(os.Args) > 1 {
 		cmd = os.Args[1]
 	}
 
 	switch {
-	case lib.IsIP(cmd):
+	case lib.StrIsIP(cmd):
 		err = cmdIP(cmd)
-	case lib.IsASN(cmd):
+	case lib.StrIsASN(cmd):
 		asn := strings.ToUpper(cmd)
 		err = cmdASN(asn)
 	case cmd == "myip":
 		err = cmdMyIP()
 	case cmd == "bulk":
 		err = cmdBulk()
-	case cmd == "summarize":
+	case cmd == "summarize" || cmd == "sum":
 		err = cmdSum()
 	case cmd == "map":
 		err = cmdMap()
@@ -63,11 +65,17 @@ func main() {
 		err = cmdPrips()
 	case cmd == "grepip":
 		err = cmdGrepIP()
+	case cmd == "cidr2range":
+		err = cmdCIDR2Range()
+	case cmd == "range2cidr":
+		err = cmdRange2CIDR()
 	case cmd == "login":
 		err = cmdLogin()
 	case cmd == "logout":
 		err = cmdLogout()
-	case cmd == "version":
+	case cmd == "completion":
+		err = cmdCompletion()
+	case cmd == "version" || cmd == "vsn" || cmd == "v":
 		err = cmdVersion()
 	default:
 		err = cmdDefault()

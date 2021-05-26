@@ -2,4 +2,9 @@
 
 # Lint all files in the project.
 
-golint ./...
+golint                                                                        \
+    ./lib/...                                                                 \
+    ./ipinfo/...                                                              \
+    ./grepip/...                                                              \
+    ./cidr2range/...                                                          \
+    ./range2cidr/...

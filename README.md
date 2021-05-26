@@ -25,20 +25,20 @@ brew install ipinfo-cli
 OR to install the latest `amd64` version without automatic updates:
 
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.5/macos.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.0.0/macos.sh | sh
 ```
 
 ### Debian / Ubuntu (amd64)
 
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.5/deb.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.0.0/deb.sh | sh
 ```
 
 OR
 
 ```bash
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.5/ipinfo_1.1.5.deb
-sudo dpkg -i ipinfo_1.1.5.deb
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.0.0/ipinfo_2.0.0.deb
+sudo dpkg -i ipinfo_2.0.0.deb
 ```
 
 ### Using `go get`
@@ -92,12 +92,12 @@ After choosing a platform `PLAT` from above, run:
 
 ```bash
 # for Windows, use ".zip" instead of ".tar.gz"
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.5/ipinfo_1.1.5_${PLAT}.tar.gz
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.0.0/ipinfo_2.0.0_${PLAT}.tar.gz
 # OR
-wget https://github.com/ipinfo/cli/releases/download/ipinfo-1.1.5/ipinfo_1.1.5_${PLAT}.tar.gz
+wget https://github.com/ipinfo/cli/releases/download/ipinfo-2.0.0/ipinfo_2.0.0_${PLAT}.tar.gz
 
-tar -xvf ipinfo_1.1.5_${PLAT}.tar.gz
-mv ipinfo_1.1.5_${PLAT} /usr/local/bin/ipinfo
+tar -xvf ipinfo_2.0.0_${PLAT}.tar.gz
+mv ipinfo_2.0.0_${PLAT} /usr/local/bin/ipinfo
 ```
 
 ### Using `git`
@@ -197,6 +197,52 @@ or `--help` message for each command. For example:
 ```bash
 ipinfo 8.8.8.8 --help
 ```
+
+## Auto-Completion
+
+Auto-completion is supported for at least the following shells:
+
+```
+bash
+zsh
+fish
+```
+
+NOTE: it may work for other shells as well because the implementation is in
+Golang and is not necessarily shell-specific.
+
+### Installation
+
+Installing auto-completions is as simple as running one command (works for
+`bash`, `zsh` and `fish` shells):
+
+```bash
+ipinfo completion install
+```
+
+If you want to customize the installation process (e.g. in case the
+auto-installation doesn't work as expected), you can request the actual
+completion script for each shell:
+
+```bash
+# get bash completion script
+ipinfo completion bash
+
+# get zsh completion script
+ipinfo completion zsh
+
+# get fish completion script
+ipinfo completion fish
+```
+
+### Shell not listed?
+
+If your shell is not listed here, you can open an issue.
+
+Note that as long as the `COMP_LINE` environment variable is provided to the
+binary itself, it will output completion results. So if your shell provides a
+way to pass `COMP_LINE` on auto-completion attempts to a binary, then have your
+shell do that with the `ipinfo` binary itself (or any of our binaries).
 
 ## Data
 

@@ -2,9 +2,9 @@
 
 # Build local binary.
 
+set -e
+
 DIR=`dirname $0`
 ROOT=$DIR/..
 
-go build                                                                      \
-    -o $ROOT/build/grepip                                                     \
-    $ROOT/grepip
+$ROOT/scripts/build.sh "grepip"
