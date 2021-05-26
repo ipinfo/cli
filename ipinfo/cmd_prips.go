@@ -23,6 +23,7 @@ func printHelpPrips() {
 Description:
   Accepts CIDRs (e.g. 8.8.8.0/24) and IP ranges (e.g. 8.8.8.0-8.8.8.255).
 
+Examples:
   # List all IPs in a CIDR.
   $ %[1]s prips 8.8.8.0/24
 

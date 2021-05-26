@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
 )
@@ -13,9 +12,9 @@ var completions = &complete.Command{
 		"summarize":  completionsSummarize,
 		"map":        completionsMap,
 		"prips":      completionsPrips,
-		"grepip":     lib.CompletionsGrepIP,
-		"cidr2range": lib.CompletionsCIDR2Range,
-		"range2cidr": lib.CompletionsRange2CIDR,
+		"grepip":     completionsGrepIP,
+		"cidr2range": completionsCIDR2Range,
+		"range2cidr": completionsRange2CIDR,
 		"login":      completionsLogin,
 		"logout":     completionsLogout,
 		"completion": completionsCompletion,

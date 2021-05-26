@@ -1,6 +1,9 @@
 package install
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 // (un)install in zsh
 // basically adds/remove from .zshrc:
@@ -11,35 +14,47 @@ type zsh struct {
 	rc string
 }
 
-func (z zsh) IsInstalled(cmd, bin string) bool {
-	completeCmd := z.cmd(cmd, bin)
+func (z zsh) IsInstalled(cmd string) bool {
+	completeCmd, err := ZshCmd(cmd)
+	if err != nil {
+		return false
+	}
+
 	return lineInFile(z.rc, completeCmd)
 }
 
-func (z zsh) Install(cmd, bin string) error {
-	if z.IsInstalled(cmd, bin) {
+func (z zsh) Install(cmd string) error {
+	if z.IsInstalled(cmd) {
 		return fmt.Errorf("already installed in %s", z.rc)
 	}
 
-	completeCmd := z.cmd(cmd, bin)
-	bashCompInit := "autoload -U +X bashcompinit && bashcompinit"
-	if !lineInFile(z.rc, bashCompInit) {
-		completeCmd = bashCompInit + "\n" + completeCmd
+	completeCmd, err := ZshCmd(cmd)
+	if err != nil {
+		return err
 	}
 
 	fmt.Printf("installing in %s\n", z.rc)
 	return appendFile(z.rc, completeCmd)
 }
 
-func (z zsh) Uninstall(cmd, bin string) error {
-	if !z.IsInstalled(cmd, bin) {
-		return fmt.Errorf("does not installed in %s", z.rc)
+func (z zsh) Uninstall(cmd string) error {
+	if !z.IsInstalled(cmd) {
+		return fmt.Errorf("not installed in %s", z.rc)
 	}
 
-	completeCmd := z.cmd(cmd, bin)
+	completeCmd, err := ZshCmd(cmd)
+	if err != nil {
+		return err
+	}
+
 	return removeFromFile(z.rc, completeCmd)
 }
 
-func (zsh) cmd(cmd, bin string) string {
-	return fmt.Sprintf("complete -o default -C %s %s", bin, cmd)
+func ZshCmd(cmd string) (string, error) {
+	if binPath == "" {
+		return "", errors.New("err: could not get binary path")
+	}
+
+	return "autoload -U +X bashcompinit && bashcompinit" +
+		"\n" + fmt.Sprintf("complete -o default -C %s %s", binPath, cmd), nil
 }

@@ -200,12 +200,49 @@ ipinfo 8.8.8.8 --help
 
 ## Auto-Completion
 
+Auto-completion is supported for at least the following shells:
+
+```
+bash
+zsh
+fish
+```
+
+NOTE: it may work for other shells as well because the implementation is in
+Golang and is not necessarily shell-specific.
+
+### Installation
+
 Installing auto-completions is as simple as running one command (works for
 `bash`, `zsh` and `fish` shells):
 
 ```bash
-ipinfo completion
+ipinfo completion install
 ```
+
+If you want to customize the installation process (e.g. in case the
+auto-installation doesn't work as expected), you can request the actual
+completion script for each shell:
+
+```bash
+# get bash completion script
+ipinfo completion bash
+
+# get zsh completion script
+ipinfo completion zsh
+
+# get fish completion script
+ipinfo completion fish
+```
+
+### Shell not listed?
+
+If your shell is not listed here, you can open an issue.
+
+Note that as long as the `COMP_LINE` environment variable is provided to the
+binary itself, it will output completion results. So if your shell provides a
+way to pass `COMP_LINE` on auto-completion attempts to a binary, then have your
+shell do that with the `ipinfo` binary itself (or any of our binaries).
 
 ## Data
 

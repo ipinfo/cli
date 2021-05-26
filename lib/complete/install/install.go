@@ -14,6 +14,12 @@ import (
 	"github.com/hashicorp/go-multierror"
 )
 
+var binPath string
+
+func init() {
+	binPath, _ = getBinaryPath()
+}
+
 func Run(name string, uninstall, yes bool, out io.Writer, in io.Reader) {
 	action := "install"
 	if uninstall {
@@ -45,25 +51,21 @@ func Run(name string, uninstall, yes bool, out io.Writer, in io.Reader) {
 }
 
 type installer interface {
-	IsInstalled(cmd, bin string) bool
-	Install(cmd, bin string) error
-	Uninstall(cmd, bin string) error
+	IsInstalled(cmd string) bool
+	Install(cmd string) error
+	Uninstall(cmd string) error
 }
 
 // Install complete command given:
 // cmd: is the command name
-func Install(cmd string) error {
+func Install(cmd string) (err error) {
 	is := installers()
 	if len(is) == 0 {
 		return errors.New("Did not find any shells to install")
 	}
-	bin, err := getBinaryPath()
-	if err != nil {
-		return err
-	}
 
 	for _, i := range is {
-		errI := i.Install(cmd, bin)
+		errI := i.Install(cmd)
 		if errI != nil {
 			err = multierror.Append(err, errI)
 		}
@@ -75,13 +77,8 @@ func Install(cmd string) error {
 // IsInstalled returns true if the completion
 // for the given cmd is installed.
 func IsInstalled(cmd string) bool {
-	bin, err := getBinaryPath()
-	if err != nil {
-		return false
-	}
-
 	for _, i := range installers() {
-		installed := i.IsInstalled(cmd, bin)
+		installed := i.IsInstalled(cmd)
 		if installed {
 			return true
 		}
@@ -92,18 +89,14 @@ func IsInstalled(cmd string) bool {
 
 // Uninstall complete command given:
 // cmd: is the command name
-func Uninstall(cmd string) error {
+func Uninstall(cmd string) (err error) {
 	is := installers()
 	if len(is) == 0 {
 		return errors.New("Did not find any shells to uninstall")
 	}
-	bin, err := getBinaryPath()
-	if err != nil {
-		return err
-	}
 
 	for _, i := range is {
-		errI := i.Uninstall(cmd, bin)
+		errI := i.Uninstall(cmd)
 		if errI != nil {
 			err = multierror.Append(err, errI)
 		}

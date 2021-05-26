@@ -1,6 +1,9 @@
 package install
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 // (un)install in bash
 // basically adds/remove from .bashrc:
@@ -10,29 +13,46 @@ type bash struct {
 	rc string
 }
 
-func (b bash) IsInstalled(cmd, bin string) bool {
-	completeCmd := b.cmd(cmd, bin)
+func (b bash) IsInstalled(cmd string) bool {
+	completeCmd, err := BashCmd(cmd)
+	if err != nil {
+		return false
+	}
+
 	return lineInFile(b.rc, completeCmd)
 }
 
-func (b bash) Install(cmd, bin string) error {
-	if b.IsInstalled(cmd, bin) {
+func (b bash) Install(cmd string) error {
+	if b.IsInstalled(cmd) {
 		return fmt.Errorf("already installed in %s", b.rc)
 	}
-	completeCmd := b.cmd(cmd, bin)
+
+	completeCmd, err := BashCmd(cmd)
+	if err != nil {
+		return err
+	}
+
 	fmt.Printf("installing in %s\n", b.rc)
 	return appendFile(b.rc, completeCmd)
 }
 
-func (b bash) Uninstall(cmd, bin string) error {
-	if !b.IsInstalled(cmd, bin) {
-		return fmt.Errorf("does not installed in %s", b.rc)
+func (b bash) Uninstall(cmd string) error {
+	if !b.IsInstalled(cmd) {
+		return fmt.Errorf("not installed in %s", b.rc)
 	}
 
-	completeCmd := b.cmd(cmd, bin)
+	completeCmd, err := BashCmd(cmd)
+	if err != nil {
+		return err
+	}
+
 	return removeFromFile(b.rc, completeCmd)
 }
 
-func (bash) cmd(cmd, bin string) string {
-	return fmt.Sprintf("complete -C %s -o default %s", bin, cmd)
+func BashCmd(cmd string) (string, error) {
+	if binPath == "" {
+		return "", errors.New("err: could not get binary path")
+	}
+
+	return fmt.Sprintf("complete -C %s -o default %s", binPath, cmd), nil
 }

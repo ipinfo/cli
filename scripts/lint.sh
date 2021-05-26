@@ -5,4 +5,6 @@
 golint                                                                        \
     ./lib/...                                                                 \
     ./ipinfo/...                                                              \
-    ./grepip/...
+    ./grepip/...                                                              \
+    ./cidr2range/...                                                          \
+    ./range2cidr/...

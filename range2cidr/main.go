@@ -7,6 +7,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib"
+	"github.com/ipinfo/cli/lib/complete/install"
 	"github.com/spf13/pflag"
 )
 
@@ -18,12 +19,11 @@ func printHelp() {
 		`Usage: %s [<opts>] <ip-range | filepath>
 
 Description:
-
   Accepts IP ranges and file paths to files containing IP ranges, converting
   them all to CIDRs (and multiple CIDRs if required).
 
   If a file is input, it is assumed that the IP range to convert is the first
-  entry of each line (separated by '\n'). All other data remains the same.
+  entry of each line. Other data is allowed and copied transparently.
 
   If multiple CIDRs are needed to represent an IP range on a line with other
   data, the data is copied per CIDR required. For example:
@@ -37,7 +37,6 @@ Description:
   the resulting CIDRs are printed in the order they cover the range.
 
 Examples:
-
   # Get all CIDRs for range 1.1.1.0-1.1.1.2.
   $ %[1]s 1.1.1.0-1.1.1.2
   $ %[1]s 1.1.1.0,1.1.1.2
@@ -52,15 +51,30 @@ Examples:
   $ cat /path/to/file1.txt | %[1]s /path/to/file2.txt
 
 Options:
-  --version, -v
-    show binary release number.
-  --help, -h
-    show help.
+  General:
+    --version, -v
+      show binary release number.
+    --help, -h
+      show help.
+
+  Completions:
+    --completions-install
+      attempt completions auto-installation for any supported shell.
+    --completions-bash
+      output auto-completion script for bash for manual installation.
+    --completions-zsh
+      output auto-completion script for zsh for manual installation.
+    --completions-fish
+      output auto-completion script for fish for manual installation.
 `, progBase)
 }
 
 func cmd() error {
 	var fVsn bool
+	var fCompletionsInstall bool
+	var fCompletionsBash bool
+	var fCompletionsZsh bool
+	var fCompletionsFish bool
 
 	f := lib.CmdRange2CIDRFlags{}
 	f.Init()
@@ -69,10 +83,58 @@ func cmd() error {
 		"version", "v", false,
 		"print binary release number.",
 	)
+	pflag.BoolVarP(
+		&fCompletionsInstall,
+		"completions-install", "", false,
+		"attempt completions auto-installation for any supported shell.",
+	)
+	pflag.BoolVarP(
+		&fCompletionsBash,
+		"completions-bash", "", false,
+		"output auto-completion script for bash for manual installation.",
+	)
+	pflag.BoolVarP(
+		&fCompletionsZsh,
+		"completions-zsh", "", false,
+		"output auto-completion script for zsh for manual installation.",
+	)
+	pflag.BoolVarP(
+		&fCompletionsFish,
+		"completions-fish", "", false,
+		"output auto-completion script for fish for manual installation.",
+	)
 	pflag.Parse()
 
 	if fVsn {
 		fmt.Println(version)
+		return nil
+	}
+
+	if fCompletionsInstall {
+		return install.Install(progBase)
+	}
+	if fCompletionsBash {
+		installStr, err := install.BashCmd(progBase)
+		if err != nil {
+			return err
+		}
+		fmt.Println(installStr)
+		return nil
+	}
+	if fCompletionsZsh {
+		installStr, err := install.ZshCmd(progBase)
+		if err != nil {
+			return err
+		}
+		fmt.Println(installStr)
+		return nil
+	}
+	if fCompletionsFish {
+		installStr, err := install.FishCmd(progBase)
+		if err != nil {
+			return err
+		}
+		fmt.Println(installStr)
 		return nil
 	}
 

@@ -25,6 +25,7 @@ func printHelpMap() {
 Description:
   Accepts IPs, IP ranges, CIDRs and file paths.
 
+Examples:
   # Map all IPs from stdin ('-' can be implied).
   $ %[1]s prips 8.8.8.0/24 | %[1]s map
   $ %[1]s prips 8.8.8.0/24 | %[1]s map -

@@ -7,6 +7,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib"
+	"github.com/ipinfo/cli/lib/complete/install"
 	"github.com/spf13/pflag"
 )
 
@@ -18,7 +19,6 @@ func printHelp() {
 		`Usage: %s [<opts>] <cidr | filepath>
 
 Description:
-
   Accepts CIDRs and file paths to files containing CIDRs, converting them all
   to IP ranges.
 
@@ -29,7 +29,6 @@ Description:
   before or is equal to "<end>" in numeric value.
 
 Examples:
-
   # Get the range for CIDR 1.1.1.0/30.
   $ %[1]s 1.1.1.0/30
 
@@ -43,15 +42,30 @@ Examples:
   $ cat /path/to/file1.txt | %[1]s /path/to/file2.txt
 
 Options:
-  --version, -v
-    show binary release number.
-  --help, -h
-    show help.
+  General:
+    --version, -v
+      show binary release number.
+    --help, -h
+      show help.
+
+  Completions:
+    --completions-install
+      attempt completions auto-installation for any supported shell.
+    --completions-bash
+      output auto-completion script for bash for manual installation.
+    --completions-zsh
+      output auto-completion script for zsh for manual installation.
+    --completions-fish
+      output auto-completion script for fish for manual installation.
 `, progBase)
 }
 
 func cmd() error {
 	var fVsn bool
+	var fCompletionsInstall bool
+	var fCompletionsBash bool
+	var fCompletionsZsh bool
+	var fCompletionsFish bool
 
 	f := lib.CmdCIDR2RangeFlags{}
 	f.Init()
@@ -60,10 +74,58 @@ func cmd() error {
 		"version", "v", false,
 		"print binary release number.",
 	)
+	pflag.BoolVarP(
+		&fCompletionsInstall,
+		"completions-install", "", false,
+		"attempt completions auto-installation for any supported shell.",
+	)
+	pflag.BoolVarP(
+		&fCompletionsBash,
+		"completions-bash", "", false,
+		"output auto-completion script for bash for manual installation.",
+	)
+	pflag.BoolVarP(
+		&fCompletionsZsh,
+		"completions-zsh", "", false,
+		"output auto-completion script for zsh for manual installation.",
+	)
+	pflag.BoolVarP(
+		&fCompletionsFish,
+		"completions-fish", "", false,
+		"output auto-completion script for fish for manual installation.",
+	)
 	pflag.Parse()
 
 	if fVsn {
 		fmt.Println(version)
+		return nil
+	}
+
+	if fCompletionsInstall {
+		return install.Install(progBase)
+	}
+	if fCompletionsBash {
+		installStr, err := install.BashCmd(progBase)
+		if err != nil {
+			return err
+		}
+		fmt.Println(installStr)
+		return nil
+	}
+	if fCompletionsZsh {
+		installStr, err := install.ZshCmd(progBase)
+		if err != nil {
+			return err
+		}
+		fmt.Println(installStr)
+		return nil
+	}
+	if fCompletionsFish {
+		installStr, err := install.FishCmd(progBase)
+		if err != nil {
+			return err
+		}
+		fmt.Println(installStr)
 		return nil
 	}
 

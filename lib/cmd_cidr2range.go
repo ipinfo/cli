@@ -7,18 +7,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ipinfo/cli/lib/complete"
-	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/spf13/pflag"
 )
-
-// CompletionsCIDR2Range are the completions for the cidr2range command.
-var CompletionsCIDR2Range = &complete.Command{
-	Flags: map[string]complete.Predictor{
-		"-h":     predict.Nothing,
-		"--help": predict.Nothing,
-	},
-}
 
 // CmdCIDR2RangeFlags are flags expected by CmdCIDR2Range.
 type CmdCIDR2RangeFlags struct {

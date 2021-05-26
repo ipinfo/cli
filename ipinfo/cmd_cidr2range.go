@@ -4,26 +4,33 @@ import (
 	"fmt"
 
 	"github.com/ipinfo/cli/lib"
+	"github.com/ipinfo/cli/lib/complete"
+	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/spf13/pflag"
 )
+
+var completionsCIDR2Range = &complete.Command{
+	Flags: map[string]complete.Predictor{
+		"-h":     predict.Nothing,
+		"--help": predict.Nothing,
+	},
+}
 
 func printHelpCIDR2Range() {
 	fmt.Printf(
 		`Usage: %s cidr2range [<opts>] <cidr | filepath>
 
 Description:
-
   Accepts CIDRs and file paths to files containing CIDRs, converting them all
   to IP ranges.
 
   If a file is input, it is assumed that the CIDR to convert is the first entry
-  of each line (separated by '\n'). All other data remains the same.
+  of each line. Other data is allowed and copied transparently.
 
   The IP range output is of the form "<start>-<end>" where "<start>" comes
   before or is equal to "<end>" in numeric value.
 
 Examples:
-
   # Get the range for CIDR 1.1.1.0/30.
   $ %[1]s cidr2range 1.1.1.0/30
 
