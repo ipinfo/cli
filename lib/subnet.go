@@ -1,7 +1,6 @@
 package lib
 
 import (
-	"net"
 	"strconv"
 )
 
@@ -101,12 +100,7 @@ func SubnetsWithinRange(
 
 // ToCIDR converts a Subnet to CIDR notation.
 func (s Subnet) ToCIDR() string {
-	loIPStr := net.IPv4(
-		byte(s.LoIP>>24),
-		byte(s.LoIP>>16),
-		byte(s.LoIP>>8),
-		byte(s.LoIP),
-	).String()
+	loIPStr := IPStrFromIPBE(s.LoIP)
 	netBitCntStr := strconv.Itoa(int(s.NetBitCnt))
 	return loIPStr + "/" + netBitCntStr
 }

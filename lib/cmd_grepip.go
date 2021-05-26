@@ -264,7 +264,11 @@ func CmdGrepIP(
 			}
 
 			d, err := buf.ReadString('\n')
-			if err == io.EOF && len(d) > 0 {
+			if err == io.EOF {
+				if len(d) == 0 {
+					return
+				}
+
 				// do one more loop on remaining content.
 				hitEOF = true
 			} else if err != nil {

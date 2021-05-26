@@ -26,19 +26,19 @@ func CIDRsFromIPRange(
 //	<ip_range_start>,<ip_range_end>
 func CIDRsFromIPRangeStr(
 	r string,
-) []string {
+) ([]string, error) {
 	startStr, endStr, err := IPRangeStrFromRangeStr(r)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	start := binary.BigEndian.Uint32(net.ParseIP(startStr).To4())
 	end := binary.BigEndian.Uint32(net.ParseIP(endStr).To4())
 	if start <= end {
-		return CIDRsFromIPRange(start, end)
+		return CIDRsFromIPRange(start, end), nil
 	}
 
 	cidrStrs := CIDRsFromIPRange(end, start)
 	ReverseSliceString(cidrStrs)
-	return cidrStrs
+	return cidrStrs, nil
 }
