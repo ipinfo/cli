@@ -38,3 +38,12 @@ func StrIsCIDR(cidrStr string) bool {
 func StrIsIP(ipStr string) bool {
 	return net.ParseIP(ipStr) != nil
 }
+
+// StrIsIPRange checks whether a string is an IP range.
+// The string must be of any of these forms to be considered an IP range:
+//	<ip_range_start>-<ip_range_end>
+//	<ip_range_start>,<ip_range_end>
+func StrIsIPRange(r string) bool {
+	_, _, err := IPRangeStrFromRangeStr(r)
+	return err == nil
+}

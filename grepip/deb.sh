@@ -9,4 +9,6 @@ rm grepip_${VSN}.deb
 echo
 echo 'You can now run `grepip`'.
 
-rm $0
+if [ -f "$0" ]; then
+    rm $0
+fi

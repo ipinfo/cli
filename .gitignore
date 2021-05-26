@@ -1,5 +1,9 @@
 .vim/
 ipinfo/dist/
 grepip/dist/
+cidr2range/dist/
+range2cidr/dist/
 !ipinfo/dist/DEBIAN/
 !grepip/dist/DEBIAN/
+!cidr2range/dist/DEBIAN/
+!range2cidr/dist/DEBIAN/

@@ -65,6 +65,10 @@ func main() {
 		err = cmdPrips()
 	case cmd == "grepip":
 		err = cmdGrepIP()
+	case cmd == "cidr2range":
+		err = cmdCIDR2Range()
+	case cmd == "range2cidr":
+		err = cmdRange2CIDR()
 	case cmd == "login":
 		err = cmdLogin()
 	case cmd == "logout":

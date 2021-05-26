@@ -23,3 +23,13 @@ func IPRangeStrFromRangeStr(r string) (string, string, error) {
 
 	return rStart, rEnd, nil
 }
+
+// IPRangeStrFromCIDR returns the start and end IP strings of a CIDR.
+func IPRangeStrFromCIDR(cidrStr string) (string, string, error) {
+	start, end, err := IPRangeFromCIDR(cidrStr)
+	if err != nil {
+		return "", "", err
+	}
+
+	return IPStrFromIPBE(start), IPStrFromIPBE(end), nil
+}

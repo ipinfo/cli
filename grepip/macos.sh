@@ -11,4 +11,6 @@ mv grepip_${VSN}_${PLAT} /usr/local/bin/grepip
 echo
 echo 'You can now run `grepip`'.
 
-rm $0
+if [ -f "$0" ]; then
+    rm $0
+fi

@@ -9,4 +9,4 @@ ROOT=$DIR/..
 
 VSN=$1
 
-$ROOT/scripts/release.sh "ipinfo" $VSN
+$ROOT/scripts/release.sh "range2cidr" $VSN
