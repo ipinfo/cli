@@ -28,6 +28,7 @@ Commands:
   range2cidr  convert IP ranges to CIDRs.
   login       save an API token session.
   logout      delete your current API token session.
+  completion  install or output shell auto-completion script.
   version     show current version.
 
 Options:
