@@ -100,7 +100,7 @@ func (c *Client) GetIPInfo(ip net.IP) (*Core, error) {
 
 	// perform cache lookup.
 	if c.Cache != nil {
-		if res, err := c.Cache.Get(relURL); err == nil {
+		if res, err := c.Cache.Get(cacheKey(relURL)); err == nil {
 			return res.(*Core), nil
 		}
 	}
@@ -122,7 +122,7 @@ func (c *Client) GetIPInfo(ip net.IP) (*Core, error) {
 
 	// cache req result
 	if c.Cache != nil {
-		if err := c.Cache.Set(relURL, v); err != nil {
+		if err := c.Cache.Set(cacheKey(relURL), v); err != nil {
 			// NOTE: still return the value even if the cache fails.
 			return v, err
 		}

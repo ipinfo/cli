@@ -8,7 +8,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fatih/color v1.10.0
 	github.com/hashicorp/errwrap v1.1.0 // indirect
-	github.com/ipinfo/go/v2 v2.4.0
+	github.com/ipinfo/go/v2 v2.5.1
 	github.com/jszwec/csvutil v1.4.0
 	github.com/pkg/browser v0.0.0-20210115035449-ce105d075bb4
 	github.com/spf13/pflag v1.0.5
