@@ -21,8 +21,10 @@ var completions = &complete.Command{
 		"version":    completionsVersion,
 	},
 	Flags: map[string]complete.Predictor{
-		"-h":     predict.Nothing,
-		"--help": predict.Nothing,
+		"-v":        predict.Nothing,
+		"--version": predict.Nothing,
+		"-h":        predict.Nothing,
+		"--help":    predict.Nothing,
 	},
 }
 

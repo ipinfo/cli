@@ -35,6 +35,8 @@ Options:
   General:
     --token <tok>, -t <tok>
       use <tok> as API token.
+    --version, -v
+      show binary release number.
     --help, -h
       show help.
 
@@ -58,6 +60,7 @@ Options:
 func cmdDefault() (err error) {
 	var ips []net.IP
 	var fTok string
+	var fVsn bool
 	var fHelp bool
 	var fField string
 	var fPretty bool
@@ -66,6 +69,7 @@ func cmdDefault() (err error) {
 	var fNoColor bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
+	pflag.BoolVarP(&fVsn, "version", "v", false, "print binary release number.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.StringVarP(&fField, "field", "f", "", "specific field to lookup.")
 	pflag.BoolVarP(&fPretty, "pretty", "p", true, "output pretty format.")
@@ -79,6 +83,11 @@ func cmdDefault() (err error) {
 
 	if fHelp {
 		printHelpDefault()
+		return nil
+	}
+
+	if fVsn {
+		fmt.Println(version)
 		return nil
 	}
 
