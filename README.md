@@ -13,8 +13,7 @@ allowing you to:
 
 ## Installation
 
-All CLI tools (e.g. `ipinfo`, `grepip`) are available for download via
-multiple mechanisms.
+The `ipinfo` CLI is available for download via multiple mechanisms.
 
 ### macOS
 
@@ -130,7 +129,26 @@ go build -o <path> ./ipinfo/
 
 Replace `<path>` with the required location.
 
+## Additional CLIs
+
+The `ipinfo` CLI has some subcommands like `grepip`, `cidr2range` and
+`range2cidr` which are also shipped as standalone binaries.
+
+These binaries are available via all the **same installation methods** as
+mentioned above for `ipinfo`, except you must change only the name to the name
+of the subcommand, and choose the appropriate version.
+
+Currently these subcommands are separately shipped:
+
+| CLI        | Version |
+| ---------- | ------- |
+| grepip     | [1.1.0](https://github.com/ipinfo/cli/releases/tag/grepip-1.1.0) |
+| cidr2range | [1.0.0](https://github.com/ipinfo/cli/releases/tag/cidr2range-1.0.0) |
+| range2cidr | [1.0.0](https://github.com/ipinfo/cli/releases/tag/range2cidr-1.0.0) |
+
 ## Quick Start
+
+This will help you quickly get started with the `ipinfo` CLI.
 
 ### Default Help Message
 
