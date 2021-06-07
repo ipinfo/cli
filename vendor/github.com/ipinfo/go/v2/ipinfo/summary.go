@@ -20,6 +20,7 @@ type IPSummary struct {
 	Routes    map[string]uint64 `json:"routes"`
 	Carriers  map[string]uint64 `json:"carriers"`
 	Mobile    uint64            `json:"mobile"`
+	Domains   map[string]uint64 `json:"domains"`
 	Privacy   struct {
 		VPN     uint64 `json:"vpn"`
 		Proxy   uint64 `json:"proxy"`

@@ -4,6 +4,6 @@ package ipinfo
 var DefaultClient *Client
 
 func init() {
-	/* Create a global, default client. */
+	// create a global, default client.
 	DefaultClient = NewClient(nil, nil, "")
 }

@@ -61,7 +61,7 @@ func (c *Client) GetASNDetails(asn string) (*ASNDetails, error) {
 
 	// perform cache lookup.
 	if c.Cache != nil {
-		if res, err := c.Cache.Get(asn); err == nil {
+		if res, err := c.Cache.Get(cacheKey(asn)); err == nil {
 			return res.(*ASNDetails), nil
 		}
 	}
@@ -83,7 +83,7 @@ func (c *Client) GetASNDetails(asn string) (*ASNDetails, error) {
 
 	// cache req result
 	if c.Cache != nil {
-		if err := c.Cache.Set(asn, v); err != nil {
+		if err := c.Cache.Set(cacheKey(asn), v); err != nil {
 			return v, err
 		}
 	}

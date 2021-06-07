@@ -96,7 +96,7 @@ func (c *Client) GetBatch(
 	if c.Cache != nil {
 		lookupUrls = make([]string, 0, len(urls)/2)
 		for _, url := range urls {
-			if res, err := c.Cache.Get(url); err == nil {
+			if res, err := c.Cache.Get(cacheKey(url)); err == nil {
 				result[url] = res
 			} else {
 				lookupUrls = append(lookupUrls, url)
@@ -226,7 +226,7 @@ func (c *Client) GetBatch(
 	if c.Cache != nil {
 		for _, url := range lookupUrls {
 			if v, exists := result[url]; exists {
-				if err := c.Cache.Set(url, v); err != nil {
+				if err := c.Cache.Set(cacheKey(url), v); err != nil {
 					// NOTE: still return the result even if the cache fails.
 					return result, err
 				}

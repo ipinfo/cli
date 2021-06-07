@@ -267,6 +267,29 @@ func cmdSum() (err error) {
 		}
 	}
 
+	if len(d.Domains) > 0 && d.Domains["total"] > 0 {
+		fmt.Println()
+		header.Println("Top Domains")
+
+		// cache `totalDomains` and delete from map; don't let it interfere
+		// with topDomains/entryLen calculations.
+		totalDomains := d.Domains["total"]
+		delete(d.Domains, "total")
+
+		topDomains := orderSummaryMapping(d.Domains)
+		entryLen = strconv.Itoa(longestKeyLen(topDomains))
+		for _, domainsSum := range topDomains {
+			k := domainsSum.k
+			v := domainsSum.v
+			pct := (float64(v) / float64(totalDomains)) * 100
+			fmt.Printf(
+				"- %v %v\n",
+				entry.Sprintf("%-"+entryLen+"s", k),
+				num.Sprintf("%v (%.1f%%)", v, pct),
+			)
+		}
+	}
+
 	return nil
 }
 
