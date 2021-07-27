@@ -3,7 +3,6 @@ package ipinfo
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"net"
 )
 
@@ -32,27 +31,19 @@ type IPSummary struct {
 }
 
 // GetIPSummary returns summarized results for a group of IPs.
-//
-// `ips` must contain at least 10 unique IPs, and a total maximum of 1000.
 func GetIPSummary(ips []net.IP) (*IPSummary, error) {
 	return DefaultClient.GetIPSummary(ips)
 }
 
 // GetIPSummary returns summarized results for a group of IPs.
-//
-// `ips` must contain at least 10 unique IPs, and a total maximum of 1000.
 func (c *Client) GetIPSummary(ips []net.IP) (*IPSummary, error) {
-	if len(ips) < 10 || len(ips) > 1000 {
-		return nil, errors.New("unique ip count must be >10 && <1000")
-	}
-
 	jsonArrStr, err := json.Marshal(ips)
 	if err != nil {
 		return nil, err
 	}
 	jsonBuf := bytes.NewBuffer(jsonArrStr)
 
-	req, err := c.newRequest(nil, "POST", "summarize", jsonBuf)
+	req, err := c.newRequest(nil, "POST", "summarize?cli=1", jsonBuf)
 	if err != nil {
 		return nil, err
 	}
