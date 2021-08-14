@@ -1,4 +1,5 @@
 .vim/
+tmp/
 ipinfo/dist/
 grepip/dist/
 cidr2range/dist/
