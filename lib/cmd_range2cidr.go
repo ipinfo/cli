@@ -80,7 +80,7 @@ func CmdRange2CIDR(
 				// if so, try again against the next delim.
 				if sepIdx != len(d)-1 &&
 					d[sepIdx] == ',' &&
-					!StrIsIPRange(d[:sepIdx]) {
+					!StrIsIPRangeStr(d[:sepIdx]) {
 					nextSepIdx := strings.IndexAny(d[sepIdx+1:], ",\n")
 					if nextSepIdx == -1 {
 						sepIdx = len(d)
@@ -95,7 +95,7 @@ func CmdRange2CIDR(
 			}
 
 			rangeStr := d[:sepIdx]
-			if cidrs, err := CIDRsFromIPRangeStr(rangeStr); err == nil {
+			if cidrs, err := CIDRsFromIPRangeStrRaw(rangeStr); err == nil {
 				for _, cidr := range cidrs {
 					fmt.Printf("%s%s", cidr, rem)
 				}
@@ -118,7 +118,7 @@ func CmdRange2CIDR(
 		f, err := os.Open(arg)
 		if err != nil {
 			// is it an IP range?
-			if cidrs, err := CIDRsFromIPRangeStr(arg); err == nil {
+			if cidrs, err := CIDRsFromIPRangeStrRaw(arg); err == nil {
 				for _, cidr := range cidrs {
 					fmt.Println(cidr)
 				}

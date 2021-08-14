@@ -105,7 +105,7 @@ func cmdDefault() (err error) {
 		return nil
 	}
 
-	ips = lib.IPsFromStdin()
+	ips = lib.IPListFromStdin()
 	if len(ips) == 0 {
 		fmt.Println("no input ips")
 		return nil

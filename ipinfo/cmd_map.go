@@ -64,7 +64,7 @@ func cmdMap() (err error) {
 		return nil
 	}
 
-	ips, err = lib.IPsFromAllSources(pflag.Args()[1:])
+	ips, err = lib.IPListFromAllSrcs(pflag.Args()[1:])
 	if err != nil {
 		return err
 	}

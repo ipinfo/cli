@@ -80,8 +80,8 @@ func CmdCIDR2Range(
 			}
 
 			cidrStr := d[:sepIdx]
-			if startStr, endStr, err := IPRangeStrFromCIDR(cidrStr); err == nil {
-				fmt.Printf("%s%s", startStr+"-"+endStr, rem)
+			if r, err := IPRangeStrFromCIDR(cidrStr); err == nil {
+				fmt.Printf("%s%s", r.String(), rem)
 			} else {
 				fmt.Printf("%s", d)
 				if sepIdx == len(d) {
@@ -101,8 +101,8 @@ func CmdCIDR2Range(
 		f, err := os.Open(arg)
 		if err != nil {
 			// is it a CIDR?
-			if startStr, endStr, err := IPRangeStrFromCIDR(arg); err == nil {
-				fmt.Println(startStr + "-" + endStr)
+			if r, err := IPRangeStrFromCIDR(arg); err == nil {
+				fmt.Println(r.String())
 				continue
 			}
 
