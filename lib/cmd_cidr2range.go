@@ -80,13 +80,26 @@ func CmdCIDR2Range(
 			}
 
 			cidrStr := d[:sepIdx]
-			if r, err := IPRangeStrFromCIDR(cidrStr); err == nil {
-				fmt.Printf("%s%s", r.String(), rem)
-			} else {
-				fmt.Printf("%s", d)
-				if sepIdx == len(d) {
-					fmt.Println()
+			if strings.IndexByte(cidrStr, ':') == -1 {
+				if r, err := IPRangeStrFromCIDR(cidrStr); err == nil {
+					fmt.Printf("%s%s", r.String(), rem)
+				} else {
+					goto noip
 				}
+			} else {
+				if r, err := IP6RangeStrFromCIDR(cidrStr); err == nil {
+					fmt.Printf("%s%s", r.String(), rem)
+				} else {
+					goto noip
+				}
+			}
+
+			continue
+
+		noip:
+			fmt.Printf("%s", d)
+			if sepIdx == len(d) {
+				fmt.Println()
 			}
 		}
 	}

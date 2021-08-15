@@ -17,6 +17,10 @@ var (
 	// ErrNotIPRange is returned when the input is not in proper IP range form.
 	ErrNotIPRange = errors.New("not ip range")
 
+	// ErrNotIP6Range is returned when the input is not in proper IPv6 range
+	// form.
+	ErrNotIP6Range = errors.New("not ipv6 range")
+
 	// ErrNotFile is returned when the input is not an actual file.
 	ErrNotFile = errors.New("not file")
 

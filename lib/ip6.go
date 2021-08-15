@@ -58,6 +58,29 @@ func IP6FromIP4Bytes(a uint8, b uint8, c uint8, d uint8) IP6 {
 	}}
 }
 
+// To16Bytes returns the 16-byte array representation of an IPv6 address in
+// big-endian byte order.
+func (ip IP6) To16Bytes() [16]byte {
+	var b [16]byte
+	binary.BigEndian.PutUint64(b[:8], ip.N.Hi)
+	binary.BigEndian.PutUint64(b[8:], ip.N.Lo)
+	return b
+}
+
+// To16ByteSlice returns the 16-byte slice representation of an IPv6 address in
+// big-endian byte order.
+func (ip IP6) To16ByteSlice() []byte {
+	b := make([]byte, 16)
+	binary.BigEndian.PutUint64(b[:8], ip.N.Hi)
+	binary.BigEndian.PutUint64(b[8:], ip.N.Lo)
+	return b
+}
+
+// ToStdIP returns the 16-byte slice standard library IPv6 representation.
+func (ip IP6) ToStdIP() net.IP {
+	return net.IP(ip.To16ByteSlice())
+}
+
 // Cmp compares `ip1` and `ip2` and returns:
 //
 // - -1 if `ip1<ip2`
@@ -90,4 +113,9 @@ func (ip1 IP6) Lt(ip2 IP6) bool {
 // Lte returns whether `ip1 <= ip2` numerically.
 func (ip1 IP6) Lte(ip2 IP6) bool {
 	return ip1.N.Lte(ip2.N)
+}
+
+// String returns the IPv6 string representation of `ip`.
+func (ip IP6) String() string {
+	return ip.ToStdIP().String()
 }
