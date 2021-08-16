@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VSN=2.0.2
+VSN=2.1.0
 PLAT=darwin_amd64
 
 curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-${VSN}/ipinfo_${VSN}_${PLAT}.tar.gz
