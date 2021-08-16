@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func assertCIDRsFromIPRangeStr(
+func assertCIDRsFromIPRangeStrRaw(
 	t *testing.T,
 	start string,
 	end string,
@@ -16,7 +16,7 @@ func assertCIDRsFromIPRangeStr(
 	var _cidrs []string
 	var err error
 
-	_cidrs, err = lib.CIDRsFromIPRangeStr(start + "-" + end)
+	_cidrs, err = lib.CIDRsFromIPRangeStrRaw(start + "-" + end)
 	assert.Nil(t, err)
 	assert.Equal(t, len(cidrs), len(_cidrs))
 	for i := 0; i < len(cidrs); i++ {
@@ -24,7 +24,7 @@ func assertCIDRsFromIPRangeStr(
 	}
 
 	// test reverse direction
-	_cidrs, err = lib.CIDRsFromIPRangeStr(end + "-" + start)
+	_cidrs, err = lib.CIDRsFromIPRangeStrRaw(end + "-" + start)
 	assert.Nil(t, err)
 	assert.Equal(t, len(cidrs), len(_cidrs))
 	for i := len(cidrs) - 1; i >= 0; i-- {
@@ -32,33 +32,33 @@ func assertCIDRsFromIPRangeStr(
 	}
 }
 
-func TestCIDRsFromIPRangeStr(t *testing.T) {
-	assertCIDRsFromIPRangeStr(
+func TestCIDRsFromIPRangeStrRaw(t *testing.T) {
+	assertCIDRsFromIPRangeStrRaw(
 		t, "1.1.1.0", "1.1.1.0",
 		[]string{
 			"1.1.1.0/32",
 		},
 	)
-	assertCIDRsFromIPRangeStr(
+	assertCIDRsFromIPRangeStrRaw(
 		t, "1.1.1.0", "1.1.1.1",
 		[]string{
 			"1.1.1.0/31",
 		},
 	)
-	assertCIDRsFromIPRangeStr(
+	assertCIDRsFromIPRangeStrRaw(
 		t, "1.1.1.0", "1.1.1.2",
 		[]string{
 			"1.1.1.0/31",
 			"1.1.1.2/32",
 		},
 	)
-	assertCIDRsFromIPRangeStr(
+	assertCIDRsFromIPRangeStrRaw(
 		t, "1.1.1.0", "1.1.1.3",
 		[]string{
 			"1.1.1.0/30",
 		},
 	)
-	assertCIDRsFromIPRangeStr(
+	assertCIDRsFromIPRangeStrRaw(
 		t, "1.1.1.5", "1.1.1.55",
 		[]string{
 			"1.1.1.5/32",
@@ -69,7 +69,7 @@ func TestCIDRsFromIPRangeStr(t *testing.T) {
 			"1.1.1.48/29",
 		},
 	)
-	assertCIDRsFromIPRangeStr(
+	assertCIDRsFromIPRangeStrRaw(
 		t, "24.24.24.24", "50.50.50.50",
 		[]string{
 			"24.24.24.24/29",
@@ -105,7 +105,7 @@ func TestCIDRsFromIPRangeStr(t *testing.T) {
 			"50.50.50.50/32",
 		},
 	)
-	assertCIDRsFromIPRangeStr(
+	assertCIDRsFromIPRangeStrRaw(
 		t, "0.0.0.0", "255.255.255.254",
 		[]string{
 			"0.0.0.0/1",
@@ -142,13 +142,13 @@ func TestCIDRsFromIPRangeStr(t *testing.T) {
 			"255.255.255.254/32",
 		},
 	)
-	assertCIDRsFromIPRangeStr(
+	assertCIDRsFromIPRangeStrRaw(
 		t, "0.0.0.0", "255.255.255.255",
 		[]string{
 			"0.0.0.0/0",
 		},
 	)
-	assertCIDRsFromIPRangeStr(
+	assertCIDRsFromIPRangeStrRaw(
 		t, "0.0.0.1", "255.255.255.254",
 		[]string{
 			"0.0.0.1/32",

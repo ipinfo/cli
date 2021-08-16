@@ -61,5 +61,5 @@ func cmdPrips() error {
 		return nil
 	}
 
-	return lib.OutputIPsFrom(args, true, true)
+	return lib.IPListFromWrite(args, true, true)
 }

@@ -2,7 +2,6 @@ package lib
 
 import (
 	"bufio"
-	"encoding/binary"
 	"fmt"
 	"io"
 	"io/fs"
@@ -129,16 +128,8 @@ func CmdGrepIP(
 	}
 
 	// prepare bogon/localhost ranges
-	type iprange4 struct {
-		start uint32
-		end   uint32
-	}
-	type iprange6 struct {
-		start IP6u128
-		end   IP6u128
-	}
-	var exclRanges4 []iprange4
-	var exclRanges6 []iprange6
+	var exclRanges4 []IPRange
+	var exclRanges6 []IP6Range
 	if f.ExclRes {
 		// v4
 		exclRanges4Str := []string{
@@ -158,17 +149,14 @@ func CmdGrepIP(
 			"240.0.0.0/4",
 			"255.255.255.255/32",
 		}
-		exclRanges4 = make([]iprange4, len(exclRanges4Str))
+		exclRanges4 = make([]IPRange, len(exclRanges4Str))
 		for i, bogonRangeStr := range exclRanges4Str {
-			start, end, err := IPRangeFromCIDR(bogonRangeStr)
+			r, err := IPRangeFromCIDR(bogonRangeStr)
 			if err != nil {
 				panic(err)
 			}
 
-			exclRanges4[i] = iprange4{
-				start: start,
-				end:   end,
-			}
+			exclRanges4[i] = r
 		}
 
 		// v6
@@ -215,17 +203,14 @@ func CmdGrepIP(
 			"2001:0:f000::/36",
 			"2001:0:ffff:ffff::/64",
 		}
-		exclRanges6 = make([]iprange6, len(exclRanges6Str))
+		exclRanges6 = make([]IP6Range, len(exclRanges6Str))
 		for i, bogonRangeStr := range exclRanges6Str {
-			start, end, err := IP6RangeFromCIDR(bogonRangeStr)
+			r, err := IP6RangeFromCIDR(bogonRangeStr)
 			if err != nil {
 				panic(err)
 			}
 
-			exclRanges6[i] = iprange6{
-				start: start,
-				end:   end,
-			}
+			exclRanges6[i] = r
 		}
 	}
 
@@ -266,22 +251,16 @@ func CmdGrepIP(
 					mIPStr := d[m[0]:m[1]]
 					mIP := net.ParseIP(mIPStr)
 					if strings.Contains(mIPStr, ":") {
-						ip := mIP.To16()
-						ip128 := IP6u128{
-							Hi: binary.BigEndian.Uint64(ip[:8]),
-							Lo: binary.BigEndian.Uint64(ip[8:]),
-						}
-
+						ip, _ := IP6FromStdIP(mIP.To16())
 						for _, r := range exclRanges6 {
-							if ip128.Gte(r.start) && ip128.Lte(r.end) {
+							if ip.Gte(r.Start) && ip.Lte(r.End) {
 								goto next_match
 							}
 						}
 					} else {
-						ip := binary.BigEndian.Uint32(mIP.To4())
-
+						ip := IPFromStdIP(mIP)
 						for _, r := range exclRanges4 {
-							if ip >= r.start && ip <= r.end {
+							if ip >= r.Start && ip <= r.End {
 								goto next_match
 							}
 						}
