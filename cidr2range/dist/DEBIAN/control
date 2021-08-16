@@ -1,6 +1,6 @@
 Source: cidr2range
 Section: utils
-Version: 1.1.0
+Version: 1.1.1
 Priority: optional
 Maintainer: IPinfo <support@ipinfo.io>
 Vcs-Git: https://github.com/ipinfo/cli
