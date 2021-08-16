@@ -114,9 +114,16 @@ func CmdCIDR2Range(
 		f, err := os.Open(arg)
 		if err != nil {
 			// is it a CIDR?
-			if r, err := IPRangeStrFromCIDR(arg); err == nil {
-				fmt.Println(r.String())
-				continue
+			if strings.IndexByte(arg, ':') == -1 {
+				if r, err := IPRangeStrFromCIDR(arg); err == nil {
+					fmt.Println(r.String())
+					continue
+				}
+			} else {
+				if r, err := IP6RangeStrFromCIDR(arg); err == nil {
+					fmt.Println(r.String())
+					continue
+				}
 			}
 
 			// invalid file arg.
