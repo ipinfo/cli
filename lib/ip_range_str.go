@@ -72,21 +72,21 @@ func (r IPRangeStr) ToIPRange() IPRange {
 
 // ToCIDRs returns a list of CIDR strings which cover the full range specified
 // in the IP range string `r`.
-func (r IPRangeStr) ToCIDRs() []string {
-	cidrStrs := r.ToIPRange().ToCIDRs()
+func (rStr IPRangeStr) ToCIDRs() []string {
+	r := rStr.ToIPRange()
+	cidrStrs := r.ToCIDRs()
 	if r.Start > r.End {
 		StringSliceRev(cidrStrs)
 	}
-
 	return cidrStrs
 }
 
 // String returns the IP range string as `<start>-<end>`.
 func (r IPRangeStr) String() string {
-	return r.Start+"-"+r.End
+	return r.Start + "-" + r.End
 }
 
 // StringDelim is the same as String but allows a custom delimiter.
 func (r IPRangeStr) StringDelim(d string) string {
-	return r.Start+d+r.End
+	return r.Start + d + r.End
 }

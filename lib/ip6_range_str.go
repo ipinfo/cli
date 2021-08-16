@@ -60,12 +60,33 @@ func IP6RangeStrFromCIDR(cidrStr string) (IP6RangeStr, error) {
 	return NewIP6RangeStr(r.Start.String(), r.End.String()), nil
 }
 
+// ToIP6Range converts the string form of the range into a numerical form.
+func (r IP6RangeStr) ToIP6Range() IP6Range {
+	start, _ := IP6FromStdIP(net.ParseIP(r.Start).To16())
+	end, _ := IP6FromStdIP(net.ParseIP(r.End).To16())
+	if start.Lte(end) {
+		return NewIP6Range(start, end)
+	}
+	return NewIP6Range(end, start)
+}
+
+// ToCIDRs returns a list of CIDR strings which cover the full range specified
+// in the IP range string `r`.
+func (rStr IP6RangeStr) ToCIDRs() []string {
+	r := rStr.ToIP6Range()
+	cidrStrs := r.ToCIDRs()
+	if r.Start.Gt(r.End) {
+		StringSliceRev(cidrStrs)
+	}
+	return cidrStrs
+}
+
 // String returns the IPv6 range string as `<start>-<end>`.
 func (r IP6RangeStr) String() string {
-	return r.Start+"-"+r.End
+	return r.Start + "-" + r.End
 }
 
 // StringDelim is the same as String but allows a custom delimiter.
 func (r IP6RangeStr) StringDelim(d string) string {
-	return r.Start+d+r.End
+	return r.Start + d + r.End
 }

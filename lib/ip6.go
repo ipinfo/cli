@@ -18,6 +18,11 @@ func NewIP6(hi uint64, lo uint64) IP6 {
 	return IP6{N: U128{Hi: hi, Lo: lo}}
 }
 
+// IP6FromU128 returns a new IP6 from a U128 number.
+func IP6FromU128(n U128) IP6 {
+	return IP6{N: n}
+}
+
 // IP6FromStdIP returns a new IP6 from a standard library `net.IP`, and whether
 // the conversion succeeded.
 func IP6FromStdIP(ip net.IP) (IP6, bool) {

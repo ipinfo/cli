@@ -80,7 +80,7 @@ func CmdRange2CIDR(
 				// if so, try again against the next delim.
 				if sepIdx != len(d)-1 &&
 					d[sepIdx] == ',' &&
-					!StrIsIPRangeStr(d[:sepIdx]) {
+					(!StrIsIPRangeStr(d[:sepIdx]) || !StrIsIP6RangeStr(d[:sepIdx])) {
 					nextSepIdx := strings.IndexAny(d[sepIdx+1:], ",\n")
 					if nextSepIdx == -1 {
 						sepIdx = len(d)
@@ -95,15 +95,30 @@ func CmdRange2CIDR(
 			}
 
 			rangeStr := d[:sepIdx]
-			if cidrs, err := CIDRsFromIPRangeStrRaw(rangeStr); err == nil {
-				for _, cidr := range cidrs {
-					fmt.Printf("%s%s", cidr, rem)
+			if strings.IndexByte(rangeStr, ':') == -1 {
+				if cidrs, err := CIDRsFromIPRangeStrRaw(rangeStr); err == nil {
+					for _, cidr := range cidrs {
+						fmt.Printf("%s%s", cidr, rem)
+					}
+				} else {
+					goto noip
 				}
 			} else {
-				fmt.Printf("%s", d)
-				if sepIdx == len(d) {
-					fmt.Println()
+				if cidrs, err := CIDRsFromIP6RangeStrRaw(rangeStr); err == nil {
+					for _, cidr := range cidrs {
+						fmt.Printf("%s%s", cidr, rem)
+					}
+				} else {
+					goto noip
 				}
+			}
+
+			continue
+
+		noip:
+			fmt.Printf("%s", d)
+			if sepIdx == len(d) {
+				fmt.Println()
 			}
 		}
 	}
@@ -118,11 +133,20 @@ func CmdRange2CIDR(
 		f, err := os.Open(arg)
 		if err != nil {
 			// is it an IP range?
-			if cidrs, err := CIDRsFromIPRangeStrRaw(arg); err == nil {
-				for _, cidr := range cidrs {
-					fmt.Println(cidr)
+			if strings.IndexByte(arg, ':') == -1 {
+				if cidrs, err := CIDRsFromIPRangeStrRaw(arg); err == nil {
+					for _, cidr := range cidrs {
+						fmt.Println(cidr)
+					}
+					continue
 				}
-				continue
+			} else {
+				if cidrs, err := CIDRsFromIP6RangeStrRaw(arg); err == nil {
+					for _, cidr := range cidrs {
+						fmt.Println(cidr)
+					}
+					continue
+				}
 			}
 
 			// invalid file arg.
