@@ -50,8 +50,8 @@ dpkg-deb --build ${ROOT}/${CLI}/dist build/${CLI}_${VSN}.deb
 gh release create ${CLI}-${VSN}                                               \
     -R ipinfo/cli                                                             \
     -t "${CLI}-${VSN}"                                                        \
-    $ROOT/build/${CLI}_*.tar.gz                                               \
-    $ROOT/build/${CLI}_*.zip                                                  \
-    $ROOT/build/${CLI}_*.deb                                                  \
+    $ROOT/build/${CLI}_${VSN}*.tar.gz                                         \
+    $ROOT/build/${CLI}_${VSN}*.zip                                            \
+    $ROOT/build/${CLI}_${VSN}*.deb                                            \
     $ROOT/${CLI}/macos.sh                                                     \
     $ROOT/${CLI}/deb.sh
