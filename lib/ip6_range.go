@@ -76,7 +76,6 @@ func (r IP6Range) LargestIP6Subnet() IP6Subnet {
 
 // ToIP6Subnets returns a list of subnet masks which cover the full IP range.
 func (r IP6Range) ToIP6Subnets() []IP6Subnet {
-	// use u64 versions so we don't have overflow when doing some arithmetic.
 	start := r.Start.N
 	end := r.End.N
 	subnets := make([]IP6Subnet, 0)

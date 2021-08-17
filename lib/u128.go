@@ -5,7 +5,7 @@ import (
 	"math/bits"
 )
 
-// U128 is a unsigned 128-bit number type in big-endian form.
+// U128 is an unsigned 128-bit number type in big-endian form.
 //
 // The endianness of `Hi` and `Lo` themselves is machine-dependent.
 type U128 struct {
@@ -14,8 +14,9 @@ type U128 struct {
 }
 
 // Copyright 2021 The Inet.Af AUTHORS. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
+// Use of this source code is governed by a BSD-style license that can be found
+// in the LICENSE file at
+// https://github.com/inetaf/netaddr/blob/main/LICENSE
 //
 // U128BitMasks are bitmasks with the topmost n bits of a 128-bit number, where
 // n is the array index.
