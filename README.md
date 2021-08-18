@@ -33,6 +33,12 @@ curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.1.1/macos.sh |
 curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.1.1/deb.sh | sh
 ```
 
+### FreeBSD
+
+```bash
+cd /usr/ports/net/ipinfo-cli && make install clean
+```
+
 OR
 
 ```bash
