@@ -52,7 +52,7 @@ func cmdIP(ipStr string) error {
 	pflag.BoolVarP(&fPretty, "pretty", "p", true, "output pretty format.")
 	pflag.BoolVarP(&fJSON, "json", "j", false, "output JSON format.")
 	pflag.BoolVarP(&fCSV, "csv", "c", false, "output CSV format.")
-	pflag.BoolVarP(&fNoColor, "nocolor", "", false, "disable color output.")
+	pflag.BoolVar(&fNoColor, "nocolor", false, "disable color output.")
 	pflag.Parse()
 
 	if fNoColor {

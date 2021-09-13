@@ -91,7 +91,7 @@ func cmdBulk() (err error) {
 	pflag.StringVarP(&fField, "field", "f", "", "specific field to lookup.")
 	pflag.BoolVarP(&fJSON, "json", "j", true, "output JSON format. (default)")
 	pflag.BoolVarP(&fCSV, "csv", "c", false, "output CSV format.")
-	pflag.BoolVarP(&fNoColor, "nocolor", "", false, "disable color output.")
+	pflag.BoolVar(&fNoColor, "nocolor", false, "disable color output.")
 	pflag.Parse()
 
 	if fNoColor {

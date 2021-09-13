@@ -75,6 +75,7 @@ func cmdDefault() (err error) {
 	pflag.BoolVarP(&fPretty, "pretty", "p", true, "output pretty format.")
 	pflag.BoolVarP(&fJSON, "json", "j", true, "output JSON format. (default)")
 	pflag.BoolVarP(&fCSV, "csv", "c", false, "output CSV format.")
+	pflag.BoolVar(&fNoColor, "nocolor", false, "disable colored output.")
 	pflag.Parse()
 
 	if fNoColor {

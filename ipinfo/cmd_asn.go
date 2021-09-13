@@ -43,7 +43,7 @@ func cmdASN(asn string) error {
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.StringVarP(&fField, "field", "f", "", "specific field to lookup.")
 	pflag.BoolVarP(&fJSON, "json", "j", true, "output JSON format. (default)")
-	pflag.BoolVarP(&fNoColor, "nocolor", "", false, "disable color output.")
+	pflag.BoolVar(&fNoColor, "nocolor", false, "disable color output.")
 	pflag.Parse()
 
 	if fNoColor {

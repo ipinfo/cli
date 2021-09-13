@@ -87,7 +87,7 @@ func cmdSum() (err error) {
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.BoolVarP(&fPretty, "pretty", "p", true, "output pretty format. (default)")
 	pflag.BoolVarP(&fJSON, "json", "j", false, "output JSON format.")
-	pflag.BoolVarP(&fNoColor, "nocolor", "", false, "disable color output.")
+	pflag.BoolVar(&fNoColor, "nocolor", false, "disable color output.")
 	pflag.Parse()
 
 	if fNoColor {
