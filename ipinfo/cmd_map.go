@@ -78,10 +78,9 @@ func cmdMap() (err error) {
 	if err != nil {
 		return err
 	}
-	if err := browser.OpenURL(d.ReportURL); err != nil {
-		// if it fails, just print the URL.
-		fmt.Println(d.ReportURL)
-	}
+
+	browser.OpenURL(d.ReportURL)
+	fmt.Println(d.ReportURL)
 
 	return nil
 }
