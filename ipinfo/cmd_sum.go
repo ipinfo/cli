@@ -150,7 +150,7 @@ func cmdSum() (err error) {
 	for _, asnSum := range topASNs {
 		k := asnSum.k
 		v := asnSum.v
-		pct := (float64(v) / float64(d.Unique)) * 100
+		pct := (float64(v) / float64(d.Total)) * 100
 		fmt.Printf(
 			"- %v %v\n",
 			entry.Sprintf("%-"+entryLen+"s", k),
@@ -170,7 +170,7 @@ func cmdSum() (err error) {
 			k = strings.Title(k)
 		}
 		v := usageTypeSum.v
-		pct := (float64(v) / float64(d.Unique)) * 100
+		pct := (float64(v) / float64(d.Total)) * 100
 		fmt.Printf(
 			"- %v %v\n",
 			entry.Sprintf("%-"+entryLen+"s", k),
@@ -188,7 +188,7 @@ func cmdSum() (err error) {
 		routeParts := strings.SplitN(k, " ", 2)
 		asn := routeParts[0]
 		route := routeParts[1]
-		pct := (float64(v) / float64(d.Unique)) * 100
+		pct := (float64(v) / float64(d.Total)) * 100
 		fmt.Printf(
 			"- %v %v\n",
 			entry.Sprintf(
@@ -212,7 +212,7 @@ func cmdSum() (err error) {
 	for _, countriesSum := range topCountries {
 		k := countriesSum.k
 		v := countriesSum.v
-		pct := (float64(v) / float64(d.Unique)) * 100
+		pct := (float64(v) / float64(d.Total)) * 100
 		fmt.Printf(
 			"- %v %v\n",
 			entry.Sprintf("%-"+entryLen+"s", ipinfo.GetCountryName(k)),
@@ -227,7 +227,7 @@ func cmdSum() (err error) {
 	for _, citiesSum := range topCities {
 		k := citiesSum.k
 		v := citiesSum.v
-		pct := (float64(v) / float64(d.Unique)) * 100
+		pct := (float64(v) / float64(d.Total)) * 100
 		fmt.Printf(
 			"- %v %v\n",
 			entry.Sprintf("%-"+entryLen+"s", k),
@@ -242,7 +242,7 @@ func cmdSum() (err error) {
 	for _, regionsSum := range topRegions {
 		k := regionsSum.k
 		v := regionsSum.v
-		pct := (float64(v) / float64(d.Unique)) * 100
+		pct := (float64(v) / float64(d.Total)) * 100
 		fmt.Printf(
 			"- %v %v\n",
 			entry.Sprintf("%-"+entryLen+"s", k),
