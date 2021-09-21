@@ -1,8 +1,12 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"io"
+	"net/http"
 	"os"
+	"strings"
 
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
@@ -58,6 +62,15 @@ func cmdLogin() error {
 		tok = string(tokraw[:])
 	}
 
+	tokenOk, err := checkToken(tok)
+	if err != nil {
+		return err
+	}
+
+	if !tokenOk {
+		return errors.New("invalid token")
+	}
+
 	// save token to file.
 	if err := saveToken(tok); err != nil {
 		return err
@@ -66,4 +79,21 @@ func cmdLogin() error {
 	fmt.Println("logged in")
 
 	return nil
+}
+
+func checkToken(tok string) (bool, error) {
+	// Make a request to the /me ep
+	res, err := http.Get("https://ipinfo.io/me?token=" + tok)
+	if err != nil {
+		return false, err
+	}
+
+	// Read the body of the response
+	b, err := io.ReadAll(res.Body)
+	if err != nil {
+		return false, err
+	}
+
+	// The response should not contain the "error" field.
+	return !strings.Contains(string(b), "error"), nil
 }
