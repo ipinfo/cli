@@ -1,7 +1,10 @@
 package main
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/ipinfo/cli/lib/complete"
@@ -58,6 +61,15 @@ func cmdLogin() error {
 		tok = string(tokraw[:])
 	}
 
+	tokenOk, err := isTokenReal(tok)
+	if err != nil {
+		return err
+	}
+
+	if !tokenOk {
+		return errors.New("invalid token")
+	}
+
 	// save token to file.
 	if err := saveToken(tok); err != nil {
 		return err
@@ -66,4 +78,28 @@ func cmdLogin() error {
 	fmt.Println("logged in")
 
 	return nil
+}
+
+// Custom struct for the response of /me
+type MeResponse struct {
+	Error string `json:"error"`
+	Token string `json:"token"`
+}
+
+func isTokenReal(tok string) (bool, error) {
+	// Make a request to the /me ep
+	res, err := http.Get("https://ipinfo.io/me?token=" + tok)
+	if err != nil {
+		return false, err
+	}
+
+	// Read the body of the response
+	me := &MeResponse{}
+
+	if err := json.NewDecoder(res.Body).Decode(me); err != nil {
+		return false, err
+	}
+
+	// If no errors then me.Error should be empty
+	return len(me.Error) == 0, nil
 }
