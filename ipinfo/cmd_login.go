@@ -1,12 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
@@ -62,7 +61,7 @@ func cmdLogin() error {
 		tok = string(tokraw[:])
 	}
 
-	tokenOk, err := checkToken(tok)
+	tokenOk, err := isTokenReal(tok)
 	if err != nil {
 		return err
 	}
@@ -81,7 +80,13 @@ func cmdLogin() error {
 	return nil
 }
 
-func checkToken(tok string) (bool, error) {
+// Custom struct for the response of /me
+type MeResponse struct {
+	Error string `json:"error"`
+	Token string `json:"token"`
+}
+
+func isTokenReal(tok string) (bool, error) {
 	// Make a request to the /me ep
 	res, err := http.Get("https://ipinfo.io/me?token=" + tok)
 	if err != nil {
@@ -89,11 +94,12 @@ func checkToken(tok string) (bool, error) {
 	}
 
 	// Read the body of the response
-	b, err := io.ReadAll(res.Body)
-	if err != nil {
+	me := &MeResponse{}
+
+	if err := json.NewDecoder(res.Body).Decode(me); err != nil {
 		return false, err
 	}
 
-	// The response should not contain the "error" field.
-	return !strings.Contains(string(b), "error"), nil
+	// If no errors then me.Error should be empty
+	return len(me.Error) == 0, nil
 }
