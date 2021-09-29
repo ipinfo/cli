@@ -18,7 +18,7 @@ var completionsPrips = &complete.Command{
 
 func printHelpPrips() {
 	fmt.Printf(
-		`Usage: %s prips [<opts>] <ip-range | cidr>
+		`Usage: %s prips [<opts>] <ip | ip-range | cidr | file>
 
 Description:
   Accepts CIDRs (e.g. 8.8.8.0/24) and IP ranges (e.g. 8.8.8.0-8.8.8.255).
@@ -36,6 +36,9 @@ Examples:
   # List all IPs in multiple CIDRs and IP ranges.
   $ %[1]s prips 1.1.1.0/30 8.8.8.0-8.8.8.255 2.2.2.0/30 7.7.7.0,7.7.7.10
 
+  # List all IPs from stdin input (newline-separated).
+  $ echo '1.1.1.0/30\n8.8.8.0-8.8.8.255\n7.7.7.0,7.7.7.10' | %[1]s prips
+
 Options:
   --help, -h
     show help.
@@ -43,23 +46,9 @@ Options:
 }
 
 func cmdPrips() error {
-	var fHelp bool
-
-	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
+	f := lib.CmdPripsFlags{}
+	f.Init()
 	pflag.Parse()
 
-	if fHelp {
-		printHelpPrips()
-		return nil
-	}
-
-	args := pflag.Args()[1:]
-
-	// require args.
-	if len(args) == 0 {
-		printHelpPrips()
-		return nil
-	}
-
-	return lib.IPListFromWrite(args, true, true)
+	return lib.CmdPrips(f, pflag.Args()[1:], printHelpPrips)
 }
