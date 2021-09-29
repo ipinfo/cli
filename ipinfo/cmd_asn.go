@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/fatih/color"
@@ -59,8 +60,7 @@ func cmdASN(asn string) error {
 
 	// require token for ASN API.
 	if ii.Token == "" {
-		fmt.Println("ASN lookups require a token")
-		return nil
+		return errors.New("ASN lookups require a token; login via `ipinfo login`.")
 	}
 
 	data, err := ii.GetASNDetails(asn)

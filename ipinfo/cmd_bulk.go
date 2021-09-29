@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net"
 
@@ -116,8 +117,7 @@ func cmdBulk() (err error) {
 
 	// require token for bulk.
 	if ii.Token == "" {
-		fmt.Println("bulk lookups require a token")
-		return nil
+		return errors.New("bulk lookups require a token; login via `ipinfo login`.")
 	}
 
 	data, err := ii.GetIPInfoBatch(ips, ipinfo.BatchReqOpts{})
