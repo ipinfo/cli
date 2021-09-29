@@ -135,6 +135,21 @@ go build -o <path> ./ipinfo/
 
 Replace `<path>` with the required location.
 
+### Note for windows users
+
+If you're using Windows you can also run the following command to enable color support for Command Prompt
+
+```cmd
+REG ADD HKCU\CONSOLE /f /v VirtualTerminalLevel /t REG_DWORD /d 1
+```
+
+This enables [`Console Virtual Terminal Sequences`](https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences) for Command Prompt that allows color to be printed.\
+You can disable this by running
+
+```cmd
+REG DELETE HKCU\CONSOLE /f /v VirtualTerminalLevel
+```
+
 ## Additional CLIs
 
 The `ipinfo` CLI has some subcommands like `grepip`, `cidr2range` and
