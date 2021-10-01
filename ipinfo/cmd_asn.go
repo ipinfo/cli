@@ -22,8 +22,9 @@ Options:
 
   Outputs:
     --field <field>, -f <field>
-      lookup only a specific field in the output.
-      field names correspond to JSON keys, e.g. 'hostname' or 'company.type'.
+      lookup only specific fields in the output.
+      field names correspond to JSON keys, e.g. 'registry' or 'allocated'.
+      multiple field names must be separated by commas.
     --nocolor
       disable colored output.
 
@@ -36,13 +37,13 @@ Options:
 func cmdASN(asn string) error {
 	var fTok string
 	var fHelp bool
-	var fField string
+	var fField []string
 	var fJSON bool
 	var fNoColor bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
-	pflag.StringVarP(&fField, "field", "f", "", "specific field to lookup.")
+	pflag.StringSliceVarP(&fField, "field", "f", nil, "specific field to lookup.")
 	pflag.BoolVarP(&fJSON, "json", "j", true, "output JSON format. (default)")
 	pflag.BoolVar(&fNoColor, "nocolor", false, "disable color output.")
 	pflag.Parse()
@@ -68,10 +69,10 @@ func cmdASN(asn string) error {
 		return err
 	}
 
-	if fField != "" {
+	if len(fField) > 0 {
 		d := make(ipinfo.BatchASNDetails, 1)
 		d[data.ASN] = data
-		return outputFieldBatchASNDetails(d, fField, false, true)
+		return outputFieldBatchASNDetails(d, fField, false, false)
 	}
 
 	return outputJSON(data)

@@ -65,8 +65,9 @@ Options:
 
   Outputs:
     --field <field>, -f <field>
-      lookup only a specific field in the output.
+      lookup only specific fields in the output.
       field names correspond to JSON keys, e.g. 'hostname' or 'company.type'.
+      multiple field names must be separated by commas.
     --nocolor
       disable colored output.
 
@@ -82,14 +83,14 @@ func cmdBulk() (err error) {
 	var ips []net.IP
 	var fTok string
 	var fHelp bool
-	var fField string
+	var fField []string
 	var fJSON bool
 	var fCSV bool
 	var fNoColor bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
-	pflag.StringVarP(&fField, "field", "f", "", "specific field to lookup.")
+	pflag.StringSliceVarP(&fField, "field", "f", nil, "specific field to lookup.")
 	pflag.BoolVarP(&fJSON, "json", "j", true, "output JSON format. (default)")
 	pflag.BoolVarP(&fCSV, "csv", "c", false, "output CSV format.")
 	pflag.BoolVar(&fNoColor, "nocolor", false, "disable color output.")
@@ -125,8 +126,8 @@ func cmdBulk() (err error) {
 		return err
 	}
 
-	if fField != "" {
-		return outputFieldBatchCore(data, fField, true, false)
+	if len(fField) > 0 {
+		return outputFieldBatchCore(data, fField, true, true)
 	}
 
 	if fCSV {
