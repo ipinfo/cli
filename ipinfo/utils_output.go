@@ -225,7 +225,7 @@ func outputFieldBatchCore(
 		}
 		if !hasField {
 			errStr := "field '%v' is invalid; the following are allowed:"
-			errStr += "  "+strings.Join(coreFields, "\n  ")
+			errStr += "  " + strings.Join(coreFields, "\n  ")
 			return fmt.Errorf(errStr, f)
 		}
 	}
@@ -406,7 +406,7 @@ func outputFieldBatchASNDetails(
 		}
 		if !hasField {
 			errStr := "field '%v' is invalid; the following are allowed:"
-			errStr += "  "+strings.Join(asnFields, "\n  ")
+			errStr += "  " + strings.Join(asnFields, "\n  ")
 			return fmt.Errorf(errStr, f)
 		}
 	}
