@@ -92,17 +92,17 @@ func CmdGrepIP(
 	// require args.
 	stat, _ := os.Stdin.Stat()
 	isStdin := (stat.Mode() & os.ModeCharDevice) == 0
-	if len(args) == 0 && !isStdin {
+	srcCnt := len(args)
+	if isStdin {
+		srcCnt += 1
+	}
+	if srcCnt == 0 {
 		printHelp()
 		return nil
 	}
 
 	// if user hasn't forced no-filename, and we have more than 1 source, then
 	// output file
-	srcCnt := len(args)
-	if isStdin {
-		srcCnt += 1
-	}
 	if !f.NoFilename && srcCnt > 1 {
 		f.NoFilename = false
 	} else {
