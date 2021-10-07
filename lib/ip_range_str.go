@@ -64,18 +64,22 @@ func IPRangeStrFromCIDR(cidrStr string) (IPRangeStr, error) {
 func (r IPRangeStr) ToIPRange() IPRange {
 	start := binary.BigEndian.Uint32(net.ParseIP(r.Start).To4())
 	end := binary.BigEndian.Uint32(net.ParseIP(r.End).To4())
-	if start <= end {
-		return NewIPRange(IP(start), IP(end))
-	}
-	return NewIPRange(IP(end), IP(start))
+	return NewIPRange(IP(start), IP(end))
 }
 
 // ToCIDRs returns a list of CIDR strings which cover the full range specified
 // in the IP range string `r`.
 func (rStr IPRangeStr) ToCIDRs() []string {
+	rev := false
 	r := rStr.ToIPRange()
-	cidrStrs := r.ToCIDRs()
 	if r.Start > r.End {
+		rev = true
+		tmp := r.Start
+		r.Start = r.End
+		r.End = tmp
+	}
+	cidrStrs := r.ToCIDRs()
+	if rev {
 		StringSliceRev(cidrStrs)
 	}
 	return cidrStrs
