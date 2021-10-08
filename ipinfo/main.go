@@ -29,7 +29,7 @@ func prepareIpinfoClient(tok string) *ipinfo.Client {
 	var cache *ipinfo.Cache
 	boltdbCache, err := NewBoltdbCache()
 	if err != nil {
-		fmt.Printf("warn: cache will not be used: %w", err)
+		fmt.Printf("warn: cache will not be used: %v", err)
 	} else {
 		cache = ipinfo.NewCache(boltdbCache)
 	}
