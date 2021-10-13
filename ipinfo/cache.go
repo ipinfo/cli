@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"sort"
 	"time"
 
 	"github.com/ipinfo/go/v2/ipinfo"
@@ -27,23 +28,27 @@ type BoltdbCache struct {
 }
 
 type CacheItemString struct {
-	TimeStamp time.Time `json:"ts"`
-	Data      string    `json:"d"`
+	LastAccessed time.Time `json:"lat"`
+	TimeStamp    time.Time `json:"ts"`
+	Data         string    `json:"d"`
 }
 
 type CacheItemMap struct {
-	TimeStamp time.Time              `json:"ts"`
-	Data      map[string]interface{} `json:"d"`
+	LastAccessed time.Time              `json:"lat"`
+	TimeStamp    time.Time              `json:"ts"`
+	Data         map[string]interface{} `json:"d"`
 }
 
 type CacheItemCore struct {
-	TimeStamp time.Time    `json:"ts"`
-	Data      *ipinfo.Core `json:"d"`
+	LastAccessed time.Time    `json:"lat"`
+	TimeStamp    time.Time    `json:"ts"`
+	Data         *ipinfo.Core `json:"d"`
 }
 
 type CacheItemASN struct {
-	TimeStamp time.Time          `json:"ts"`
-	Data      *ipinfo.ASNDetails `json:"d"`
+	LastAccessed time.Time          `json:"lat"`
+	TimeStamp    time.Time          `json:"ts"`
+	Data         *ipinfo.ASNDetails `json:"d"`
 }
 
 // Create a new Boltdb-based cache.
@@ -80,7 +85,14 @@ func NewBoltdbCache() (*BoltdbCache, error) {
 //
 // This implements `Set` from the IPinfo Go SDK cache interface.
 func (c *BoltdbCache) Set(key string, val interface{}) error {
-	d, err := c.encode(time.Now(), val)
+	isFull, err := c.isFull()
+	if err != nil {
+		return err
+	}
+	if isFull {
+		c.delBulk()
+	}
+	d, err := c.encode(time.Now(), time.Now(), val)
 	if err != nil {
 		return err
 	}
@@ -108,13 +120,14 @@ func (c *BoltdbCache) Get(key string) (interface{}, error) {
 		}
 
 		var err error
-		ts, i, err = c.decode(val)
+		_, ts, i, err = c.decode(val)
+
 		return err
 	})
 	if err != nil {
 		return nil, err
 	}
-
+	c.SetLAT(ts, key, i)
 	if isOlderThanOneDay(ts) {
 		err := c.delCache(key)
 		if err != nil {
@@ -126,23 +139,23 @@ func (c *BoltdbCache) Get(key string) (interface{}, error) {
 }
 
 // Encodes some data into raw bytes for the cache.
-func (c *BoltdbCache) encode(ts time.Time, d interface{}) ([]byte, error) {
+func (c *BoltdbCache) encode(lat time.Time, ts time.Time, d interface{}) ([]byte, error) {
 	// get the right output type.
 	var t byte
 	var i interface{}
 	switch dConcrete := d.(type) {
 	case string:
 		t = II_CACHE_VTYPE_STRING
-		i = CacheItemString{TimeStamp: ts, Data: dConcrete}
+		i = CacheItemString{LastAccessed: lat, TimeStamp: ts, Data: dConcrete}
 	case map[string]interface{}:
 		t = II_CACHE_VTYPE_MAP
-		i = CacheItemMap{TimeStamp: ts, Data: dConcrete}
+		i = CacheItemMap{LastAccessed: lat, TimeStamp: ts, Data: dConcrete}
 	case *ipinfo.ASNDetails:
 		t = II_CACHE_VTYPE_ASN
-		i = CacheItemASN{TimeStamp: ts, Data: dConcrete}
+		i = CacheItemASN{LastAccessed: lat, TimeStamp: ts, Data: dConcrete}
 	case *ipinfo.Core:
 		t = II_CACHE_VTYPE_CORE
-		i = CacheItemCore{TimeStamp: ts, Data: dConcrete}
+		i = CacheItemCore{LastAccessed: lat, TimeStamp: ts, Data: dConcrete}
 	default:
 		return nil, fmt.Errorf("unrecognized type '%v' in cache encoding", reflect.TypeOf(d))
 	}
@@ -160,7 +173,7 @@ func (c *BoltdbCache) encode(ts time.Time, d interface{}) ([]byte, error) {
 }
 
 // function to decode rawdata and return
-func (c *BoltdbCache) decode(data []byte) (time.Time, interface{}, error) {
+func (c *BoltdbCache) decode(data []byte) (time.Time, time.Time, interface{}, error) {
 	ts := time.Now()
 
 	// last byte contains type info.
@@ -175,32 +188,32 @@ func (c *BoltdbCache) decode(data []byte) (time.Time, interface{}, error) {
 		i := CacheItemString{}
 		err := json.Unmarshal(data, &i)
 		if err != nil {
-			return ts, i, err
+			return ts, ts, i, err
 		}
-		return i.TimeStamp, i.Data, nil
+		return i.LastAccessed, i.TimeStamp, i.Data, nil
 	case II_CACHE_VTYPE_MAP:
 		i := CacheItemMap{}
 		err := json.Unmarshal(data, &i)
 		if err != nil {
-			return ts, i, err
+			return ts, ts, i, err
 		}
-		return i.TimeStamp, i.Data, nil
+		return i.LastAccessed, i.TimeStamp, i.Data, nil
 	case II_CACHE_VTYPE_CORE:
 		i := CacheItemCore{}
 		err := json.Unmarshal(data, &i)
 		if err != nil {
-			return ts, i, err
+			return ts, ts, i, err
 		}
-		return i.TimeStamp, i.Data, nil
+		return i.LastAccessed, i.TimeStamp, i.Data, nil
 	case II_CACHE_VTYPE_ASN:
 		i := CacheItemASN{}
 		err := json.Unmarshal(data, &i)
 		if err != nil {
-			return ts, i, err
+			return ts, ts, i, err
 		}
-		return i.TimeStamp, i.Data, nil
+		return i.LastAccessed, i.TimeStamp, i.Data, nil
 	default:
-		return ts, nil, fmt.Errorf("unrecognized type '%v' in cache decoding", t)
+		return ts, ts, nil, fmt.Errorf("unrecognized type '%v' in cache decoding", t)
 	}
 }
 
@@ -216,4 +229,81 @@ func (c *BoltdbCache) delCache(key string) error {
 		}
 		return nil
 	})
+}
+func (c *BoltdbCache) SetLAT(ttl time.Time, key string, val interface{}) error {
+	d, err := c.encode(time.Now(), ttl, val)
+	if err != nil {
+		return err
+	}
+
+	return c.db.Update(func(t *bbolt.Tx) error {
+		err := t.Bucket(II_CACHE_BUCKET).Put([]byte(key), d)
+		if err != nil {
+			return fmt.Errorf("error in adding data: %w", err)
+		}
+
+		return nil
+	})
+}
+
+func (c *BoltdbCache) isFull() (bool, error) {
+	var tKey int
+	err := c.db.View(func(t *bbolt.Tx) error {
+		tKey = t.Bucket(II_CACHE_BUCKET).Stats().KeyN
+		return nil
+	})
+	if err != nil {
+		return false, err
+	}
+	if tKey > 5 {
+		return true, nil
+	}
+	return false, nil
+}
+
+type latKeys struct {
+	k   string
+	lat time.Time
+}
+
+type latKeysArr []latKeys
+
+func (s latKeysArr) Len() int {
+	return len(s)
+}
+
+func (s latKeysArr) Less(i, j int) bool {
+	return s[i].lat.Before(s[j].lat)
+}
+
+func (s latKeysArr) Swap(i, j int) {
+	tmp := s[i]
+	s[i] = tmp
+	s[j] = tmp
+}
+
+func (c *BoltdbCache) delBulk() {
+	var latCustom latKeysArr
+	c.db.Update(func(t *bbolt.Tx) error {
+		err := t.Bucket(II_CACHE_BUCKET).ForEach(func(k, v []byte) error {
+			ltime, _, _, _ := c.decode(v)
+			latCustom = append(latCustom, latKeys{
+				k:   string(k),
+				lat: ltime,
+			})
+			return nil
+		})
+		if err != nil {
+			return err
+		}
+		sort.Sort(latCustom)
+		for i := 0; i < 5; i++ {
+			err := t.Bucket(II_CACHE_BUCKET).Delete([]byte(latCustom[i].k))
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+
 }
