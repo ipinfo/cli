@@ -36,6 +36,8 @@ Options:
   General:
     --token <tok>, -t <tok>
       use <tok> as API token.
+    --nocache
+      do not use the cache.
     --version, -v
       show binary release number.
     --help, -h
@@ -63,14 +65,13 @@ func cmdDefault() (err error) {
 	var ips []net.IP
 	var fTok string
 	var fVsn bool
-	var fHelp bool
 	var fField []string
 	var fPretty bool
 	var fJSON bool
 	var fCSV bool
-	var fNoColor bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
+	pflag.BoolVar(&fNoCache, "nocache", false, "disable the cache.")
 	pflag.BoolVarP(&fVsn, "version", "v", false, "print binary release number.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.StringSliceVarP(&fField, "field", "f", nil, "specific field to lookup.")

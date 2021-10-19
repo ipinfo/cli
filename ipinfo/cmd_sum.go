@@ -78,10 +78,8 @@ Options:
 func cmdSum() (err error) {
 	var ips []net.IP
 	var fTok string
-	var fHelp bool
 	var fPretty bool
 	var fJSON bool
-	var fNoColor bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")

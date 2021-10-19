@@ -154,7 +154,7 @@ func (c *BoltdbCache) encode(
 	// get the right output type.
 	cacheItem := CacheItem{
 		LastAccessed: lat,
-		Created:    created,
+		Created:      created,
 	}
 	switch dConcrete := d.(type) {
 	case string:

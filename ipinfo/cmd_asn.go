@@ -17,6 +17,8 @@ Options:
   General:
     --token <tok>, -t <tok>
       use <tok> as API token.
+    --nocache
+      do not use the cache.
     --help, -h
       show help.
 
@@ -36,12 +38,11 @@ Options:
 
 func cmdASN(asn string) error {
 	var fTok string
-	var fHelp bool
 	var fField []string
 	var fJSON bool
-	var fNoColor bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
+	pflag.BoolVar(&fNoCache, "nocache", false, "disable the cache.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.StringSliceVarP(&fField, "field", "f", nil, "specific field to lookup.")
 	pflag.BoolVarP(&fJSON, "json", "j", true, "output JSON format. (default)")

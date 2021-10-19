@@ -38,8 +38,6 @@ Options:
 }
 
 func cmdCache() error {
-	var fHelp bool
-
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.Parse()
 

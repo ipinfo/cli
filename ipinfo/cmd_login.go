@@ -42,7 +42,6 @@ Options:
 func cmdLogin() error {
 	var fTok string
 	var fNoCheck bool
-	var fHelp bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to save.")
 	pflag.BoolVar(&fNoCheck, "no-check", false, "disable checking if token is valid.")
