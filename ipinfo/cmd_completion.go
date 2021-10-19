@@ -61,7 +61,7 @@ func cmdCompletion() error {
 	pflag.Parse()
 
 	args := pflag.Args()[1:]
-	if fHelp || len(args) == 0 || len(args) > 1 {
+	if fHelp || len(args) != 1 {
 		printHelpCompletion()
 		return nil
 	}

@@ -121,7 +121,9 @@ func cmdBulk() (err error) {
 		return errors.New("bulk lookups require a token; login via `ipinfo login`.")
 	}
 
-	data, err := ii.GetIPInfoBatch(ips, ipinfo.BatchReqOpts{})
+	data, err := ii.GetIPInfoBatch(ips, ipinfo.BatchReqOpts{
+		TimeoutPerBatch: 60*30, // 30min
+	})
 	if err != nil {
 		return err
 	}

@@ -4,43 +4,14 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 
 	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib"
-	"github.com/ipinfo/go/v2/ipinfo"
 )
 
 var progBase = filepath.Base(os.Args[0])
 var version = "2.1.1"
-
-var ii *ipinfo.Client
-
-func prepareIpinfoClient(tok string) *ipinfo.Client {
-	var _ii *ipinfo.Client
-
-	// get token from persistent store.
-	if tok == "" {
-		tok, _ = restoreToken()
-	}
-
-	// attempt to init cache; don't force require it, though.
-	var cache *ipinfo.Cache
-	boltdbCache, err := NewBoltdbCache()
-	if err != nil {
-		fmt.Printf("warn: cache will not be used: %v", err)
-	} else {
-		cache = ipinfo.NewCache(boltdbCache)
-	}
-
-	_ii = ipinfo.NewClient(nil, cache, tok)
-	_ii.UserAgent = fmt.Sprintf(
-		"IPinfoCli/%s (os/%s - arch/%s)",
-		version, runtime.GOOS, runtime.GOARCH,
-	)
-	return _ii
-}
 
 func main() {
 	var err error
@@ -81,6 +52,8 @@ func main() {
 		err = cmdCIDR2Range()
 	case cmd == "range2cidr":
 		err = cmdRange2CIDR()
+	case cmd == "cache":
+		err = cmdCache()
 	case cmd == "login":
 		err = cmdLogin()
 	case cmd == "logout":
