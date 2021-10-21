@@ -50,6 +50,10 @@ func CmdRange2CIDR(
 	scanrdr := func(r io.Reader) {
 		var rem string
 		var hitEOF bool
+		var tmp string
+
+		// will use this var temporarily to help us convert header.
+		headerData := 0
 
 		buf := bufio.NewReader(r)
 		for {
@@ -97,6 +101,12 @@ func CmdRange2CIDR(
 			rangeStr := d[:sepIdx]
 			if strings.IndexByte(rangeStr, ':') == -1 {
 				if cidrs, err := CIDRsFromIPRangeStrRaw(rangeStr); err == nil {
+					if headerData == 1 {
+						headerData = 2
+
+						fmt.Printf("cidr%s", tmp)
+					}
+
 					for _, cidr := range cidrs {
 						fmt.Printf("%s%s", cidr, rem)
 					}
@@ -105,6 +115,12 @@ func CmdRange2CIDR(
 				}
 			} else {
 				if cidrs, err := CIDRsFromIP6RangeStrRaw(rangeStr); err == nil {
+					if headerData == 1 {
+						headerData = 2
+
+						fmt.Printf("cidr%s", tmp)
+					}
+
 					for _, cidr := range cidrs {
 						fmt.Printf("%s%s", cidr, rem)
 					}
@@ -116,7 +132,19 @@ func CmdRange2CIDR(
 			continue
 
 		noip:
-			fmt.Printf("%s", d)
+			if headerData == 0 {
+				headerData = 1
+
+				// temporarily buffer the remaining line, which is the part of
+				// the header that we still care about.
+				//
+				// in the next iter, we'll be able to determine whether the
+				// range input is `-` or `,` separated, which then tells us
+				// what to print as the prefix.
+				tmp = rem
+			} else {
+				fmt.Printf("%s", d)
+			}
 			if sepIdx == len(d) {
 				fmt.Println()
 			}
