@@ -27,6 +27,7 @@ Commands:
   grepip      grep for IPs matching criteria from any source.
   cidr2range  convert CIDRs to IP ranges.
   range2cidr  convert IP ranges to CIDRs.
+  cache       manage the cache.
   login       save an API token session.
   logout      delete your current API token session.
   completion  install or output shell auto-completion script.
