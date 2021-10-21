@@ -84,9 +84,6 @@ openbsd_386
 openbsd_amd64
 openbsd_arm
 openbsd_arm64
-plan9_386
-plan9_amd64
-plan9_arm
 solaris_amd64
 windows_386
 windows_amd64
