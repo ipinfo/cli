@@ -84,7 +84,7 @@ func CmdRange2CIDR(
 				// if so, try again against the next delim.
 				if sepIdx != len(d)-1 &&
 					d[sepIdx] == ',' &&
-					(!StrIsIPRangeStr(d[:sepIdx]) || !StrIsIP6RangeStr(d[:sepIdx])) {
+					StrIsIPStr(d[:sepIdx]) {
 					nextSepIdx := strings.IndexAny(d[sepIdx+1:], ",\n")
 					if nextSepIdx == -1 {
 						sepIdx = len(d)
