@@ -92,14 +92,18 @@ func CmdGrepIP(
 	// require args.
 	stat, _ := os.Stdin.Stat()
 	isStdin := (stat.Mode() & os.ModeCharDevice) == 0
-	if len(args) == 0 && !isStdin {
+	srcCnt := len(args)
+	if isStdin {
+		srcCnt += 1
+	}
+	if srcCnt == 0 {
 		printHelp()
 		return nil
 	}
 
 	// if user hasn't forced no-filename, and we have more than 1 source, then
 	// output file
-	if !f.NoFilename && !(len(args) == 0 || (len(args) == 1 && !isStdin)) {
+	if !f.NoFilename && srcCnt > 1 {
 		f.NoFilename = false
 	} else {
 		f.NoFilename = true
@@ -117,7 +121,7 @@ func CmdGrepIP(
 
 	// prepare regexp
 	var rexp *regexp.Regexp
-	rexp4 := "([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})"
+	rexp4 := "((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)"
 	rexp6 := "(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))"
 	if ipv == 4 {
 		rexp = regexp.MustCompile(rexp4)
@@ -271,6 +275,7 @@ func CmdGrepIP(
 				}
 			}
 
+			// no match?
 			if len(matches) == 0 {
 				continue
 			}
@@ -278,33 +283,35 @@ func CmdGrepIP(
 			// print line up to last match.
 			prevMatchEnd := 0
 			for _, m := range matches {
-				// print source.
+				// print source if requested, but only if we're printing
+				// 1 match per line, or this is the first match of the line.
 				if !f.NoFilename && (prevMatchEnd == 0 || f.OnlyMatching) {
 					fmtSrc.Printf("%s:", src)
 				}
 
-				// print pre-match.
+				// print everything up to the current match.
 				if !f.OnlyMatching {
 					fmt.Printf("%s", d[prevMatchEnd:m[0]])
 				}
 
-				// print match.
+				// print the match itself.
 				fmtMatch.Printf("%s", d[m[0]:m[1]])
-				if f.OnlyMatching && prevMatchEnd == 0 && len(matches) > 1 {
+
+				if f.OnlyMatching {
 					fmt.Printf("\n")
 				}
 
 				prevMatchEnd = m[1]
 			}
 
-			// print remaining portion and a newline.
+			// print remaining portion and a newline, if any, and only if we
+			// need to print it.
 			if !f.OnlyMatching {
 				m := matches[len(matches)-1]
 				if m[1] < len(d) {
-					fmt.Printf("%s", d[m[1]:len(d)-1])
+					fmt.Printf("%s", d[m[1]:])
 				}
 			}
-			fmt.Printf("\n")
 		}
 	}
 

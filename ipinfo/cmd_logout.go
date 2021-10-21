@@ -26,8 +26,6 @@ Options:
 }
 
 func cmdLogout() error {
-	var fHelp bool
-
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.Parse()
 

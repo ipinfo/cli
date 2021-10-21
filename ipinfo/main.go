@@ -4,33 +4,19 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 
 	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib"
-	"github.com/ipinfo/go/v2/ipinfo"
 )
 
 var progBase = filepath.Base(os.Args[0])
-var version = "2.1.1"
+var version = "2.2.0"
 
-var ii *ipinfo.Client
-
-func prepareIpinfoClient(tok string) *ipinfo.Client {
-	var _ii *ipinfo.Client
-
-	if tok == "" {
-		tok, _ = restoreToken()
-	}
-
-	_ii = ipinfo.NewClient(nil, nil, tok)
-	_ii.UserAgent = fmt.Sprintf(
-		"IPinfoCli/%s (os/%s - arch/%s)",
-		version, runtime.GOOS, runtime.GOARCH,
-	)
-	return _ii
-}
+// global flags.
+var fHelp bool
+var fNoCache bool
+var fNoColor bool
 
 func main() {
 	var err error
@@ -53,6 +39,8 @@ func main() {
 	case lib.StrIsASNStr(cmd):
 		asn := strings.ToUpper(cmd)
 		err = cmdASN(asn)
+	case len(cmd) >= 3 && strings.IndexByte(cmd, '.') != -1:
+		err = cmdDomain(cmd)
 	case cmd == "myip":
 		err = cmdMyIP()
 	case cmd == "bulk":
@@ -69,6 +57,8 @@ func main() {
 		err = cmdCIDR2Range()
 	case cmd == "range2cidr":
 		err = cmdRange2CIDR()
+	case cmd == "cache":
+		err = cmdCache()
 	case cmd == "login":
 		err = cmdLogin()
 	case cmd == "logout":

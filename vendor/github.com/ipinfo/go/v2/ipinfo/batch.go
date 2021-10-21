@@ -149,11 +149,17 @@ func (c *Client) GetBatch(
 
 			// prepare request.
 
-			ctx, cancel := context.WithTimeout(
-				ctx,
-				time.Duration(timeoutPerBatch)*time.Second,
-			)
-			defer cancel()
+			var timeoutPerBatchCtx context.Context
+			var timeoutPerBatchCancel context.CancelFunc
+			if timeoutPerBatch > 0 {
+				timeoutPerBatchCtx, timeoutPerBatchCancel = context.WithTimeout(
+					ctx,
+					time.Duration(timeoutPerBatch)*time.Second,
+				)
+				defer timeoutPerBatchCancel()
+			} else {
+				timeoutPerBatchCtx = context.Background()
+			}
 
 			if opts.Filter {
 				postURL = "batch?filter=1"
@@ -167,7 +173,7 @@ func (c *Client) GetBatch(
 			}
 			jsonBuf := bytes.NewBuffer(jsonArrStr)
 
-			req, err := c.newRequest(ctx, "POST", postURL, jsonBuf)
+			req, err := c.newRequest(timeoutPerBatchCtx, "POST", postURL, jsonBuf)
 			if err != nil {
 				return err
 			}

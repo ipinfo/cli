@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net"
 
@@ -16,6 +17,7 @@ var completionsBulk = &complete.Command{
 	Flags: map[string]complete.Predictor{
 		"-t":        predict.Nothing,
 		"--token":   predict.Nothing,
+		"--nocache": predict.Nothing,
 		"-h":        predict.Nothing,
 		"--help":    predict.Nothing,
 		"-f":        predict.Set(coreFields),
@@ -59,13 +61,16 @@ Options:
   General:
     --token <tok>, -t <tok>
       use <tok> as API token.
+    --nocache
+      do not use the cache.
     --help, -h
       show help.
 
   Outputs:
     --field <field>, -f <field>
-      lookup only a specific field in the output.
+      lookup only specific fields in the output.
       field names correspond to JSON keys, e.g. 'hostname' or 'company.type'.
+      multiple field names must be separated by commas.
     --nocolor
       disable colored output.
 
@@ -80,15 +85,14 @@ Options:
 func cmdBulk() (err error) {
 	var ips []net.IP
 	var fTok string
-	var fHelp bool
-	var fField string
+	var fField []string
 	var fJSON bool
 	var fCSV bool
-	var fNoColor bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
+	pflag.BoolVar(&fNoCache, "nocache", false, "disable the cache.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
-	pflag.StringVarP(&fField, "field", "f", "", "specific field to lookup.")
+	pflag.StringSliceVarP(&fField, "field", "f", nil, "specific field to lookup.")
 	pflag.BoolVarP(&fJSON, "json", "j", true, "output JSON format. (default)")
 	pflag.BoolVarP(&fCSV, "csv", "c", false, "output CSV format.")
 	pflag.BoolVar(&fNoColor, "nocolor", false, "disable color output.")
@@ -116,17 +120,18 @@ func cmdBulk() (err error) {
 
 	// require token for bulk.
 	if ii.Token == "" {
-		fmt.Println("bulk lookups require a token")
-		return nil
+		return errors.New("bulk lookups require a token; login via `ipinfo login`.")
 	}
 
-	data, err := ii.GetIPInfoBatch(ips, ipinfo.BatchReqOpts{})
+	data, err := ii.GetIPInfoBatch(ips, ipinfo.BatchReqOpts{
+		TimeoutPerBatch: 60 * 30, // 30min
+	})
 	if err != nil {
 		return err
 	}
 
-	if fField != "" {
-		return outputFieldBatchCore(data, fField, true, false)
+	if len(fField) > 0 {
+		return outputFieldBatchCore(data, fField, true, true)
 	}
 
 	if fCSV {

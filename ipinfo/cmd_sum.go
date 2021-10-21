@@ -78,10 +78,8 @@ Options:
 func cmdSum() (err error) {
 	var ips []net.IP
 	var fTok string
-	var fHelp bool
 	var fPretty bool
 	var fJSON bool
-	var fNoColor bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
@@ -150,7 +148,7 @@ func cmdSum() (err error) {
 	for _, asnSum := range topASNs {
 		k := asnSum.k
 		v := asnSum.v
-		pct := (float64(v) / float64(d.Unique)) * 100
+		pct := (float64(v) / float64(d.Total)) * 100
 		fmt.Printf(
 			"- %v %v\n",
 			entry.Sprintf("%-"+entryLen+"s", k),
@@ -170,7 +168,7 @@ func cmdSum() (err error) {
 			k = strings.Title(k)
 		}
 		v := usageTypeSum.v
-		pct := (float64(v) / float64(d.Unique)) * 100
+		pct := (float64(v) / float64(d.Total)) * 100
 		fmt.Printf(
 			"- %v %v\n",
 			entry.Sprintf("%-"+entryLen+"s", k),
@@ -188,7 +186,7 @@ func cmdSum() (err error) {
 		routeParts := strings.SplitN(k, " ", 2)
 		asn := routeParts[0]
 		route := routeParts[1]
-		pct := (float64(v) / float64(d.Unique)) * 100
+		pct := (float64(v) / float64(d.Total)) * 100
 		fmt.Printf(
 			"- %v %v\n",
 			entry.Sprintf(
@@ -212,7 +210,7 @@ func cmdSum() (err error) {
 	for _, countriesSum := range topCountries {
 		k := countriesSum.k
 		v := countriesSum.v
-		pct := (float64(v) / float64(d.Unique)) * 100
+		pct := (float64(v) / float64(d.Total)) * 100
 		fmt.Printf(
 			"- %v %v\n",
 			entry.Sprintf("%-"+entryLen+"s", ipinfo.GetCountryName(k)),
@@ -227,7 +225,7 @@ func cmdSum() (err error) {
 	for _, citiesSum := range topCities {
 		k := citiesSum.k
 		v := citiesSum.v
-		pct := (float64(v) / float64(d.Unique)) * 100
+		pct := (float64(v) / float64(d.Total)) * 100
 		fmt.Printf(
 			"- %v %v\n",
 			entry.Sprintf("%-"+entryLen+"s", k),
@@ -242,7 +240,7 @@ func cmdSum() (err error) {
 	for _, regionsSum := range topRegions {
 		k := regionsSum.k
 		v := regionsSum.v
-		pct := (float64(v) / float64(d.Unique)) * 100
+		pct := (float64(v) / float64(d.Total)) * 100
 		fmt.Printf(
 			"- %v %v\n",
 			entry.Sprintf("%-"+entryLen+"s", k),
@@ -258,7 +256,7 @@ func cmdSum() (err error) {
 		for _, carriersSum := range topCarriers {
 			k := carriersSum.k
 			v := carriersSum.v
-			pct := (float64(v) / float64(d.Mobile)) * 100
+			pct := (float64(v) / float64(d.Total)) * 100
 			fmt.Printf(
 				"- %v %v\n",
 				entry.Sprintf("%-"+entryLen+"s", k),
@@ -271,9 +269,8 @@ func cmdSum() (err error) {
 		fmt.Println()
 		header.Println("Top Domains")
 
-		// cache `totalDomains` and delete from map; don't let it interfere
-		// with topDomains/entryLen calculations.
-		totalDomains := d.Domains["total"]
+		// don't let the 'total' key interfere with topDomains/entryLen
+		// calculations.
 		delete(d.Domains, "total")
 
 		topDomains := orderSummaryMapping(d.Domains)
@@ -281,7 +278,7 @@ func cmdSum() (err error) {
 		for _, domainsSum := range topDomains {
 			k := domainsSum.k
 			v := domainsSum.v
-			pct := (float64(v) / float64(totalDomains)) * 100
+			pct := (float64(v) / float64(d.Total)) * 100
 			fmt.Printf(
 				"- %v %v\n",
 				entry.Sprintf("%-"+entryLen+"s", k),

@@ -64,18 +64,22 @@ func IP6RangeStrFromCIDR(cidrStr string) (IP6RangeStr, error) {
 func (r IP6RangeStr) ToIP6Range() IP6Range {
 	start, _ := IP6FromStdIP(net.ParseIP(r.Start).To16())
 	end, _ := IP6FromStdIP(net.ParseIP(r.End).To16())
-	if start.Lte(end) {
-		return NewIP6Range(start, end)
-	}
-	return NewIP6Range(end, start)
+	return NewIP6Range(start, end)
 }
 
 // ToCIDRs returns a list of CIDR strings which cover the full range specified
 // in the IP range string `r`.
 func (rStr IP6RangeStr) ToCIDRs() []string {
+	rev := false
 	r := rStr.ToIP6Range()
-	cidrStrs := r.ToCIDRs()
 	if r.Start.Gt(r.End) {
+		rev = true
+		tmp := r.Start
+		r.Start = r.End
+		r.End = tmp
+	}
+	cidrStrs := r.ToCIDRs()
+	if rev {
 		StringSliceRev(cidrStrs)
 	}
 	return cidrStrs
