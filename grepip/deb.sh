@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VSN=1.1.0
+VSN=1.2.0
 
 curl -LO https://github.com/ipinfo/cli/releases/download/grepip-${VSN}/grepip_${VSN}.deb
 sudo dpkg -i grepip_${VSN}.deb

@@ -1,4 +1,4 @@
-Source: grepip
+Source: range2cidr
 Section: utils
 Version: 1.2.0
 Priority: optional
@@ -6,6 +6,6 @@ Maintainer: IPinfo <support@ipinfo.io>
 Vcs-Git: https://github.com/ipinfo/cli
 Vcs-browser: https://github.com/ipinfo/cli
 Homepage: https://ipinfo.io
-Package: grepip
+Package: range2cidr
 Architecture: amd64
-Description: A grep-like tool for filtering IPv4 and IPv6 addresses.
+Description: A simple tool for converting from IP ranges to CIDRs.
