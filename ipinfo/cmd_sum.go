@@ -140,6 +140,7 @@ func cmdSum() (err error) {
 	headerPrint("Proxy", d.Privacy.Proxy)
 	headerPrint("Hosting", d.Privacy.Hosting)
 	headerPrint("Tor", d.Privacy.Tor)
+	headerPrint("Relay", d.Privacy.Relay)
 	fmt.Println()
 
 	header.Println("Top ASNs")

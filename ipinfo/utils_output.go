@@ -43,7 +43,9 @@ var coreFields = []string{
 	"privacy.vpn",
 	"privacy.proxy",
 	"privacy.tor",
+	"privacy.relay",
 	"privacy.hosting",
+	"privacy.service",
 	"abuse",
 	"abuse.address",
 	"abuse.country",
@@ -177,7 +179,9 @@ func outputFriendlyCore(d *ipinfo.Core) {
 		printline("VPN", fmt.Sprintf("%v", d.Privacy.VPN))
 		printline("Proxy", fmt.Sprintf("%v", d.Privacy.Proxy))
 		printline("Tor", fmt.Sprintf("%v", d.Privacy.Tor))
+		printline("Relay", fmt.Sprintf("%v", d.Privacy.Relay))
 		printline("Hosting", fmt.Sprintf("%v", d.Privacy.Hosting))
+		printline("Service", fmt.Sprintf("%v", d.Privacy.Service))
 	}
 	if d.Abuse != nil {
 		fmt.Println()
@@ -356,8 +360,12 @@ func outputFieldBatchCore(
 			rowFuncs = append(rowFuncs, outputFieldCorePrivacyProxy)
 		case "privacy.tor":
 			rowFuncs = append(rowFuncs, outputFieldCorePrivacyTor)
+		case "privacy.relay":
+			rowFuncs = append(rowFuncs, outputFieldCorePrivacyRelay)
 		case "privacy.hosting":
 			rowFuncs = append(rowFuncs, outputFieldCorePrivacyHosting)
+		case "privacy.service":
+			rowFuncs = append(rowFuncs, outputFieldCorePrivacyService)
 		case "abuse.address":
 			rowFuncs = append(rowFuncs, outputFieldCoreAbuseAddress)
 		case "abuse.country":
@@ -634,14 +642,16 @@ func outputFieldCoreCarrierMNC(core *ipinfo.Core) string {
 
 func outputFieldCorePrivacy(core *ipinfo.Core) string {
 	if core.Privacy == nil {
-		return ",,,"
+		return ",,,,,"
 	}
 	return fmt.Sprintf(
-		"%v,%v,%v,%v",
+		"%v,%v,%v,%v,%v,%v",
 		core.Privacy.VPN,
 		core.Privacy.Proxy,
 		core.Privacy.Tor,
+		core.Privacy.Relay,
 		core.Privacy.Hosting,
+		core.Privacy.Service,
 	)
 }
 
@@ -666,11 +676,25 @@ func outputFieldCorePrivacyTor(core *ipinfo.Core) string {
 	return fmt.Sprintf("%v", core.Privacy.Tor)
 }
 
+func outputFieldCorePrivacyRelay(core *ipinfo.Core) string {
+	if core.Privacy == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Privacy.Relay)
+}
+
 func outputFieldCorePrivacyHosting(core *ipinfo.Core) string {
 	if core.Privacy == nil {
 		return ""
 	}
 	return fmt.Sprintf("%v", core.Privacy.Hosting)
+}
+
+func outputFieldCorePrivacyService(core *ipinfo.Core) string {
+	if core.Privacy == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Privacy.Service)
 }
 
 func outputFieldCoreAbuse(core *ipinfo.Core) string {
