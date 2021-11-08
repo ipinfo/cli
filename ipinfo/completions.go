@@ -15,6 +15,7 @@ var completions = &complete.Command{
 		"grepip":     completionsGrepIP,
 		"cidr2range": completionsCIDR2Range,
 		"range2cidr": completionsRange2CIDR,
+		"range2ip":   completionsRange2IP,
 		"cache":      completionsCache,
 		"login":      completionsLogin,
 		"logout":     completionsLogout,
