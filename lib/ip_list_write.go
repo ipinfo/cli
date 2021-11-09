@@ -39,7 +39,7 @@ func IPListWriteFrom(
 		}
 
 		if isPiped || isTyping || stat.Size() > 0 {
-			IPListWriteFromStdin()
+			IPListWriteFromStdin(ip, iprange, cidr)
 		}
 	}
 
@@ -63,11 +63,10 @@ func IPListWriteFrom(
 		}
 
 		if file && FileExists(input) {
-			if err := IPListWriteFromFile(input); err == nil {
+			if err := IPListWriteFromFile(input, ip, iprange, cidr); err == nil {
 				continue
 			}
 		}
-
 		return ErrInvalidInput
 	}
 
@@ -80,8 +79,8 @@ func IPListWriteFromAllSrcs(inputs []string) error {
 	return IPListWriteFrom(inputs, true, true, true, true, true)
 }
 
-// IPListFromCIDRWrite is the same as IPListFromCIDR with O(1) memory by discarding
-// IPs after printing.
+// IPListFromCIDRWrite is the same as IPListFromCIDR with O(1) memory
+// by discarding IPs after printing.
 func IPListWriteFromCIDR(cidrStr string) error {
 	_, ipnet, err := net.ParseCIDR(cidrStr)
 	if err != nil {
@@ -161,25 +160,37 @@ func IPListWriteFromIPRangeStr(rStr string) error {
 
 // IPListWriteFromReader returns a list of IPs after reading from a reader; the
 // reader should have IPs per-line.
-func IPListWriteFromReader(r io.Reader) {
+func IPListWriteAllFromReader(r io.Reader) {
+	IPListWriteFromReader(r, true, true, true)
+}
+
+// IPListWriteFromReader returns a list of IPs after reading from a reader
+// from selected sources; the reader should have IPs per-line.
+func IPListWriteFromReader(
+	r io.Reader,
+	ip bool,
+	iprange bool,
+	cidr bool) {
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
-		ipStr := strings.TrimSpace(scanner.Text())
-		if ipStr == "" {
+		input := strings.TrimSpace(scanner.Text())
+		if input == "" {
 			break
 		}
 
-		if err := IPListWriteFromIPRangeStr(ipStr); err == nil {
+		if iprange {
+			if err := IPListWriteFromIPRangeStr(input); err == nil {
+				continue
+			}
+		}
+
+		if ip && StrIsIPStr(input) {
+			fmt.Println(input)
 			continue
 		}
 
-		if StrIsIPStr(ipStr) {
-			fmt.Println(ipStr)
-			continue
-		}
-
-		if StrIsCIDRStr(ipStr) {
-			if err := IPListWriteFromCIDR(ipStr); err == nil {
+		if cidr && StrIsCIDRStr(input) {
+			if err := IPListWriteFromCIDR(input); err == nil {
 				continue
 			}
 		}
@@ -190,25 +201,56 @@ func IPListWriteFromReader(r io.Reader) {
 
 // IPListWriteFromStdin returns a list of IPs from a stdin; the IPs should be 1
 // per line.
-func IPListWriteFromStdin() {
-	IPListWriteFromReader(os.Stdin)
+func IPListWriteAllFromStdin() {
+	IPListWriteAllFromReader(os.Stdin)
+}
+
+// IPListWriteFromStdin returns a list of IPs from a stdin from selected
+// sources; the IPs should be 1 per line.
+func IPListWriteFromStdin(
+	ip bool,
+	iprange bool,
+	cidr bool) {
+	IPListWriteFromReader(os.Stdin, ip, iprange, cidr)
 }
 
 // IPListWriteFromFile returns a list of IPs found in a file.
-func IPListWriteFromFile(pathToFile string) error {
+func IPListWriteAllFromFile(pathToFile string) error {
+	return IPListWriteFromFile(pathToFile, true, true, true)
+}
+
+// IPListWriteFromSrcFile returns a list of IPs from selected sources found
+// in a file.
+func IPListWriteFromFile(
+	pathToFile string,
+	ip bool,
+	iprange bool,
+	cidr bool,
+) error {
 	f, err := os.Open(pathToFile)
 	if err != nil {
 		return err
 	}
-
-	IPListWriteFromReader(f)
+	IPListWriteFromReader(f, ip, iprange, cidr)
 	return nil
 }
 
-// IPListWriteFromFiles returns a list of IPs found in a list of files.
-func IPListWriteFromFiles(paths []string) error {
+// IPListWriteFromFiles returns a list of IPs found in a list of files from
+// all sources.
+func IPListWriteAllFromFiles(paths []string) error {
+	return IPListWriteFromFiles(paths, true, true, true)
+}
+
+// IPListWriteFromFiles returns a list of IPs found in a list of files from
+// select sources.
+func IPListWriteFromFiles(
+	paths []string,
+	ip bool,
+	iprange bool,
+	cidr bool,
+) error {
 	for _, p := range paths {
-		if err := IPListWriteFromFile(p); err != nil {
+		if err := IPListWriteFromFile(p, ip, iprange, cidr); err != nil {
 			return err
 		}
 	}

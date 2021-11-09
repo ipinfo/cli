@@ -7,4 +7,5 @@ golint                                                                        \
     ./ipinfo/...                                                              \
     ./grepip/...                                                              \
     ./cidr2range/...                                                          \
-    ./range2cidr/...
+    ./range2cidr/...                                                          \
+    ./range2ip/...

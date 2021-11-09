@@ -1,0 +1,11 @@
+Source: range2ip
+Section: utils
+Version: 1.0.0
+Priority: optional
+Maintainer: IPinfo <support@ipinfo.io>
+Vcs-Git: https://github.com/ipinfo/cli
+Vcs-browser: https://github.com/ipinfo/cli
+Homepage: https://ipinfo.io
+Package: range2ip
+Architecture: amd64
+Description: A simple tool for converting IP ranges to individual IPs within those ranges.
