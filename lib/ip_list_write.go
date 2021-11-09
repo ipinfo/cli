@@ -173,26 +173,25 @@ func IPListWriteFromReader(
 	cidr bool) {
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
-		ipStr := strings.TrimSpace(scanner.Text())
-		if ipStr == "" {
+		input := strings.TrimSpace(scanner.Text())
+		if input == "" {
 			break
 		}
+
 		if iprange {
-			if err := IPListWriteFromIPRangeStr(ipStr); err == nil {
+			if err := IPListWriteFromIPRangeStr(input); err == nil {
 				continue
 			}
 		}
-		if ip {
-			if StrIsIPStr(ipStr) {
-				fmt.Println(ipStr)
-				continue
-			}
+
+		if ip && StrIsIPStr(input) {
+			fmt.Println(input)
+			continue
 		}
-		if cidr {
-			if StrIsCIDRStr(ipStr) {
-				if err := IPListWriteFromCIDR(ipStr); err == nil {
-					continue
-				}
+
+		if cidr && StrIsCIDRStr(input) {
+			if err := IPListWriteFromCIDR(input); err == nil {
+				continue
 			}
 		}
 
@@ -207,7 +206,7 @@ func IPListWriteAllFromStdin() {
 }
 
 // IPListWriteFromStdin returns a list of IPs from a stdin from selected
-//sources; the IPs should be 1 per line.
+// sources; the IPs should be 1 per line.
 func IPListWriteFromStdin(
 	ip bool,
 	iprange bool,
@@ -217,21 +216,17 @@ func IPListWriteFromStdin(
 
 // IPListWriteFromFile returns a list of IPs found in a file.
 func IPListWriteAllFromFile(pathToFile string) error {
-	f, err := os.Open(pathToFile)
-	if err != nil {
-		return err
-	}
-
-	IPListWriteAllFromReader(f)
-	return nil
+	return IPListWriteFromFile(pathToFile, true, true, true)
 }
 
 // IPListWriteFromSrcFile returns a list of IPs from selected sources found
 // in a file.
-func IPListWriteFromFile(pathToFile string,
+func IPListWriteFromFile(
+	pathToFile string,
 	ip bool,
 	iprange bool,
-	cidr bool) error {
+	cidr bool,
+) error {
 	f, err := os.Open(pathToFile)
 	if err != nil {
 		return err
@@ -241,24 +236,21 @@ func IPListWriteFromFile(pathToFile string,
 }
 
 // IPListWriteFromFiles returns a list of IPs found in a list of files from
-// select sources.
-func IPListWriteFromFiles(paths []string,
-	ip bool,
-	iprange bool,
-	cidr bool) error {
-	for _, p := range paths {
-		if err := IPListWriteFromFile(p, ip, iprange, cidr); err != nil {
-			return err
-		}
-	}
-	return nil
+// all sources.
+func IPListWriteAllFromFiles(paths []string) error {
+	return IPListWriteFromFiles(paths, true, true, true)
 }
 
 // IPListWriteFromFiles returns a list of IPs found in a list of files from
-// all sources.
-func IPListWriteAllFromFiles(paths []string) error {
+// select sources.
+func IPListWriteFromFiles(
+	paths []string,
+	ip bool,
+	iprange bool,
+	cidr bool,
+) error {
 	for _, p := range paths {
-		if err := IPListWriteAllFromFile(p); err != nil {
+		if err := IPListWriteFromFile(p, ip, iprange, cidr); err != nil {
 			return err
 		}
 	}

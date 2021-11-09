@@ -36,5 +36,6 @@ func CmdRange2IP(f CmdRange2IPFlags, args []string, printHelp func()) error {
 		printHelp()
 		return nil
 	}
+
 	return IPListWriteFrom(args, true, true, true, false, true)
 }

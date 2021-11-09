@@ -134,8 +134,8 @@ Replace `<path>` with the required location.
 
 ## Additional CLIs
 
-The `ipinfo` CLI has some subcommands like `grepip`, `cidr2range` and
-`range2cidr` which are also shipped as standalone binaries.
+The `ipinfo` CLI has some subcommands like `grepip`, `cidr2range` ,
+`range2cidr` and `range2ip` which are also shipped as standalone binaries.
 
 These binaries are available via all the **same installation methods** as
 mentioned above for `ipinfo`, except you must change only the name to the name
@@ -148,6 +148,7 @@ Currently these subcommands are separately shipped:
 | grepip     | [1.2.0](https://github.com/ipinfo/cli/releases/tag/grepip-1.2.0) |
 | cidr2range | [1.2.0](https://github.com/ipinfo/cli/releases/tag/cidr2range-1.2.0) |
 | range2cidr | [1.2.0](https://github.com/ipinfo/cli/releases/tag/range2cidr-1.2.0) |
+| range2ip   | [1.0.0](https://github.com/ipinfo/cli/releases/tag/range2ip-1.0.0) |
 
 ## Quick Start
 
