@@ -11,4 +11,4 @@ gofmt -w                                                                      \
     $ROOT/grepip                                                              \
     $ROOT/cidr2range                                                          \
     $ROOT/range2cidr                                                          \
-    $ROOT/range2ip                                                            
+    $ROOT/range2ip
