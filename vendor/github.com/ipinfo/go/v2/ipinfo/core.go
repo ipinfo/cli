@@ -51,10 +51,12 @@ type CoreCarrier struct {
 
 // CorePrivacy represents privacy data for the Core API.
 type CorePrivacy struct {
-	VPN     bool `json:"vpn" csv:"vpn"`
-	Proxy   bool `json:"proxy" csv:"proxy"`
-	Tor     bool `json:"tor" csv:"tor"`
-	Hosting bool `json:"hosting" csv:"hosting"`
+	VPN     bool   `json:"vpn" csv:"vpn"`
+	Proxy   bool   `json:"proxy" csv:"proxy"`
+	Tor     bool   `json:"tor" csv:"tor"`
+	Relay   bool   `json:"relay" csv:"relay"`
+	Hosting bool   `json:"hosting" csv:"hosting"`
+	Service string `json:"service" csv:"service"`
 }
 
 // CoreAbuse represents abuse data for the Core API.

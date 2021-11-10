@@ -140,6 +140,7 @@ func cmdSum() (err error) {
 	headerPrint("Proxy", d.Privacy.Proxy)
 	headerPrint("Hosting", d.Privacy.Hosting)
 	headerPrint("Tor", d.Privacy.Tor)
+	headerPrint("Relay", d.Privacy.Relay)
 	fmt.Println()
 
 	header.Println("Top ASNs")
@@ -256,6 +257,23 @@ func cmdSum() (err error) {
 		for _, carriersSum := range topCarriers {
 			k := carriersSum.k
 			v := carriersSum.v
+			pct := (float64(v) / float64(d.Total)) * 100
+			fmt.Printf(
+				"- %v %v\n",
+				entry.Sprintf("%-"+entryLen+"s", k),
+				num.Sprintf("%v (%.1f%%)", v, pct),
+			)
+		}
+	}
+
+	if len(d.PrivacyServices) > 0 {
+		fmt.Println()
+		header.Println("Top Privacy Services")
+		topPrivacyServices := orderSummaryMapping(d.PrivacyServices)
+		entryLen = strconv.Itoa(longestKeyLen(topPrivacyServices))
+		for _, privacyServicesSum := range topPrivacyServices {
+			k := privacyServicesSum.k
+			v := privacyServicesSum.v
 			pct := (float64(v) / float64(d.Total)) * 100
 			fmt.Printf(
 				"- %v %v\n",

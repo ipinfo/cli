@@ -6,7 +6,7 @@ import (
 	"github.com/ipinfo/go/v2/ipinfo/cache"
 )
 
-const cacheKeyVsn = "1"
+const cacheKeyVsn = "2"
 
 // Cache represents the internal cache used by the IPinfo client.
 type Cache struct {
