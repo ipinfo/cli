@@ -285,7 +285,9 @@ func outputFieldBatchCore(
 				"privacy_vpn",
 				"privacy_proxy",
 				"privacy_tor",
+				"privacy_relay",
 				"privacy_hosting",
+				"privacy_service",
 			)
 			rowFuncs = append(rowFuncs, outputFieldCorePrivacy)
 		case "abuse":
