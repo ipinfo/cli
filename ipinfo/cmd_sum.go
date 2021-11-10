@@ -266,6 +266,23 @@ func cmdSum() (err error) {
 		}
 	}
 
+	if len(d.PrivacyServices) > 0 {
+		fmt.Println()
+		header.Println("Top Privacy Services")
+		topPrivacyServices := orderSummaryMapping(d.PrivacyServices)
+		entryLen = strconv.Itoa(longestKeyLen(topPrivacyServices))
+		for _, privacyServicesSum := range topPrivacyServices {
+			k := privacyServicesSum.k
+			v := privacyServicesSum.v
+			pct := (float64(v) / float64(d.Total)) * 100
+			fmt.Printf(
+				"- %v %v\n",
+				entry.Sprintf("%-"+entryLen+"s", k),
+				num.Sprintf("%v (%.1f%%)", v, pct),
+			)
+		}
+	}
+
 	if len(d.Domains) > 0 && d.Domains["total"] > 0 {
 		fmt.Println()
 		header.Println("Top Domains")
