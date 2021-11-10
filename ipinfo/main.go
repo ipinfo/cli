@@ -59,6 +59,8 @@ func main() {
 		err = cmdRange2CIDR()
 	case cmd == "range2ip":
 		err = cmdRange2IP()
+	case cmd == "cidr2ip":
+		err = cmdCIDR2IP()
 	case cmd == "cache":
 		err = cmdCache()
 	case cmd == "login":

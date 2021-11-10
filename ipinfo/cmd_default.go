@@ -28,6 +28,7 @@ Commands:
   cidr2range  convert CIDRs to IP ranges.
   range2cidr  convert IP ranges to CIDRs.
   range2ip    convert IP ranges to individual IPs within those ranges.
+  cidr2ip     convert CIDRs to individual IPs within those ranges.
   cache       manage the cache.
   login       save an API token session.
   logout      delete your current API token session.
