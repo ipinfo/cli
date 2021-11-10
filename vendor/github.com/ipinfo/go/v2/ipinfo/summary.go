@@ -24,10 +24,12 @@ type IPSummary struct {
 		VPN     uint64 `json:"vpn"`
 		Proxy   uint64 `json:"proxy"`
 		Hosting uint64 `json:"hosting"`
+		Relay   uint64 `json:"relay"`
 		Tor     uint64 `json:"tor"`
 	} `json:"privacy"`
-	Anycast uint64 `json:"anycast"`
-	Bogon   uint64 `json:"bogon"`
+	PrivacyServices map[string]uint64 `json:"privacyServices"`
+	Anycast         uint64            `json:"anycast"`
+	Bogon           uint64            `json:"bogon"`
 }
 
 // GetIPSummary returns summarized results for a group of IPs.
