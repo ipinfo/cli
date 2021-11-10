@@ -19,13 +19,13 @@ func printHelp() {
 		`Usage: %s [<opts>] <ip-range | filepath>
 
 Description:
-	Accepts IP ranges and file paths to files containing IP ranges, converting
-	them all to individual IPs within those ranges.
+  Accepts IP ranges and file paths to files containing IP ranges, converting
+  them all to individual IPs within those ranges.
 	  
-	$ %[1]s 8.8.8.0-8.8.8.255
+  $ %[1]s 8.8.8.0-8.8.8.255
 	  
-	IP ranges can be of the form "<start><sep><end>" where "<sep>" can be "," or
-	"-", and "<start>" and "<end>" can be any 2 IPs; order does not matter.
+  IP ranges can be of the form "<start><sep><end>" where "<sep>" can be "," or
+  "-", and "<start>" and "<end>" can be any 2 IPs; order does not matter.
 
 Options:
   General:
