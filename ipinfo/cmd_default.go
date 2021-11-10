@@ -26,6 +26,7 @@ Commands:
   prips       print IP list from CIDR or range.
   grepip      grep for IPs matching criteria from any source.
   cidr2range  convert CIDRs to IP ranges.
+  cidr2ip     convert CIDRs to individual IPs within those CIDRs.
   range2cidr  convert IP ranges to CIDRs.
   range2ip    convert IP ranges to individual IPs within those ranges.
   cache       manage the cache.

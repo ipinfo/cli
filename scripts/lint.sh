@@ -8,4 +8,5 @@ golint                                                                        \
     ./grepip/...                                                              \
     ./cidr2range/...                                                          \
     ./range2cidr/...                                                          \
-    ./range2ip/...
+    ./range2ip/...                                                            \
+    ./cidr2ip/...
