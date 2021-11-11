@@ -59,8 +59,7 @@ func CmdRandIP(f CmdRandIPFlags, args []string, printHelp func()) error {
 	rand.Seed(time.Now().Unix())
 	if f.IPv4 {
 		RandIP4ListWrite(f.N)
-	}
-	if f.IPv6 {
+	} else if f.IPv6 {
 		RandIP6ListWrite(f.N)
 	}
 	return nil

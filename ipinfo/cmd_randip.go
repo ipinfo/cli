@@ -31,15 +31,19 @@ Description:
   By default, generates 1 random IPv4 address, but can be configured to generate
   any number of a combination of IPv4/IPv6 addresses.
 
-  $ %[1]s randip -t ipv4 -n 5
+  $ %[1]s randip
+  $ %[1]s randip --ipv6 --count 5
+  $ %[1]s randip -4 -n 10
 
 Options:
   --help, -h
     show help.
   --count, -n 
     number of IPs to generate.
-  --type, -t
-    type of IP to generate IPv4/IPv6
+  --ipv4, -4
+    generates IPv4 IPs.
+  --ipv6, -6
+    generates IPv6 IPs.
 `, progBase)
 }
 

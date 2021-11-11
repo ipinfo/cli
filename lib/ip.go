@@ -53,7 +53,7 @@ func IPFromStdIP(ip net.IP) IP {
 func RandIP6() net.IP {
 	ip := [16]byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	binary.BigEndian.PutUint64(ip[0:], rand.Uint64())
-	binary.BigEndian.PutUint64(ip[7:], rand.Uint64())
+	binary.BigEndian.PutUint64(ip[8:], rand.Uint64())
 	return net.IP(ip[:])
 }
 
