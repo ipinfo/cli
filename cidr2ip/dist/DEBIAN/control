@@ -8,4 +8,4 @@ Vcs-browser: https://github.com/ipinfo/cli
 Homepage: https://ipinfo.io
 Package: cidr2ip
 Architecture: amd64
-Description: A simple tool for converting from CIDRs to to individual IPs within those CIDR.
+Description: A simple tool for converting from CIDRs to to individual IPs within those CIDRs.

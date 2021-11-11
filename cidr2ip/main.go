@@ -22,7 +22,7 @@ Description:
   Accepts CIDRs and file paths to files containing CIDRs, converting
   them all to individual IPs within those CIDRs.
 	  
-	$ %[1]s 8.8.8.0/24
+  $ %[1]s 8.8.8.0/24
 
 Options:
   General:
