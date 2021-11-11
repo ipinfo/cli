@@ -41,9 +41,9 @@ Options:
   --count, -n 
     number of IPs to generate.
   --ipv4, -4
-    generates IPv4 IPs.
+    generates IPv4 IP/IPs.
   --ipv6, -6
-    generates IPv6 IPs.
+    generates IPv6 IP/IPs.
 `, progBase)
 }
 
