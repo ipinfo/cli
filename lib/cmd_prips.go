@@ -23,7 +23,7 @@ func (f *CmdPripsFlags) Init() {
 	)
 }
 
-// CmdPrips is the common core logic for the range2cidr command.
+// CmdPrips is the common core logic for the prips command.
 func CmdPrips(
 	f CmdPripsFlags,
 	args []string,
