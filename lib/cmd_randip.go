@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -10,8 +11,9 @@ import (
 // CmdRandIPFlags are flags expected by CmdRandIP.
 type CmdRandIPFlags struct {
 	Help bool
-	n    int
-	Type string
+	N    int
+	IPv4 bool
+	IPv6 bool
 }
 
 // Init initializes the common flags available to CmdRandIP with sensible
@@ -25,14 +27,19 @@ func (f *CmdRandIPFlags) Init() {
 		"show help.",
 	)
 	pflag.IntVarP(
-		&f.n,
+		&f.N,
 		"count", "n", 1,
 		"number of IPs to generate",
 	)
-	pflag.StringVarP(
-		&f.Type,
-		"type", "t", "ipv4",
-		"ipv4/ipv6",
+	pflag.BoolVarP(
+		&f.IPv4,
+		"ipv4", "4", false,
+		"generates ipv4 IPs",
+	)
+	pflag.BoolVarP(
+		&f.IPv6,
+		"ipv6", "6", false,
+		"generates ipv6 IPs",
 	)
 
 }
@@ -43,11 +50,18 @@ func CmdRandIP(f CmdRandIPFlags, args []string, printHelp func()) error {
 		return nil
 	}
 
+	if f.IPv4 && f.IPv6 {
+		return fmt.Errorf("only ipv4 or ipv6 allowed, but not both")
+	} else if !f.IPv4 && !f.IPv6 {
+		f.IPv4 = true
+	}
+
 	rand.Seed(time.Now().Unix())
-	if f.Type == "ipv4" || f.Type == "IPV4" {
-		RandIP4Write(f.n)
-	} else {
-		printHelp()
+	if f.IPv4 {
+		RandIP4ListWrite(f.N)
+	}
+	if f.IPv6 {
+		RandIP6ListWrite(f.N)
 	}
 	return nil
 }

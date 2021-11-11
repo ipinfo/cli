@@ -20,7 +20,9 @@ func printHelp() {
 
 Description:
   Generates random IP/IPs.
-  Generates 1 IPv4 without providing any arguments. 
+  By default, generates 1 random IPv4 address, but can be configured to generate
+  any number of a combination of IPv4/IPv6 addresses.
+
 
   $ %[1]s -t ipv4 -n 5
 
