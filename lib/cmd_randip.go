@@ -10,10 +10,12 @@ import (
 
 // CmdRandIPFlags are flags expected by CmdRandIP.
 type CmdRandIPFlags struct {
-	Help bool
-	N    int
-	IPv4 bool
-	IPv6 bool
+	Help    bool
+	N       int
+	IPv4    bool
+	IPv6    bool
+	StartIP string
+	EndIP   string
 }
 
 // Init initializes the common flags available to CmdRandIP with sensible
@@ -41,7 +43,16 @@ func (f *CmdRandIPFlags) Init() {
 		"ipv6", "6", false,
 		"generates ipv6 IPs",
 	)
-
+	pflag.StringVarP(
+		&f.StartIP,
+		"start", "s", "",
+		"starting range of IPs",
+	)
+	pflag.StringVarP(
+		&f.EndIP,
+		"end", "e", "",
+		"ending range of IPs",
+	)
 }
 
 func CmdRandIP(f CmdRandIPFlags, args []string, printHelp func()) error {
@@ -58,9 +69,27 @@ func CmdRandIP(f CmdRandIPFlags, args []string, printHelp func()) error {
 
 	rand.Seed(time.Now().Unix())
 	if f.IPv4 {
-		RandIP4ListWrite(f.N)
+		if f.StartIP == "" {
+			f.StartIP = "0.0.0.0"
+		}
+		if f.EndIP == "" {
+			f.EndIP = "255.255.255.255"
+		}
+		err := RandIP4RangeListWrite(f.StartIP, f.EndIP, f.N)
+		if err != nil {
+			return err
+		}
 	} else if f.IPv6 {
-		RandIP6ListWrite(f.N)
+		if f.StartIP == "" {
+			f.StartIP = "::"
+		}
+		if f.EndIP == "" {
+			f.EndIP = "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"
+		}
+		err := RandIP6RangeListWrite(f.StartIP, f.EndIP, f.N)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
