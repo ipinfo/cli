@@ -24,13 +24,13 @@ brew install ipinfo-cli
 OR to install the latest `amd64` version without automatic updates:
 
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.4.0/macos.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.4.1/macos.sh | sh
 ```
 
 ### Debian / Ubuntu (amd64)
 
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.4.0/deb.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.4.1/deb.sh | sh
 ```
 
 ### FreeBSD
@@ -42,8 +42,8 @@ cd /usr/ports/net/ipinfo-cli && make install clean
 OR
 
 ```bash
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.4.0/ipinfo_2.4.0.deb
-sudo dpkg -i ipinfo_2.4.0.deb
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.4.1/ipinfo_2.4.1.deb
+sudo dpkg -i ipinfo_2.4.1.deb
 ```
 
 ### Using `go get`
@@ -94,12 +94,12 @@ After choosing a platform `PLAT` from above, run:
 
 ```bash
 # for Windows, use ".zip" instead of ".tar.gz"
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.4.0/ipinfo_2.4.0_${PLAT}.tar.gz
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.4.1/ipinfo_2.4.1_${PLAT}.tar.gz
 # OR
-wget https://github.com/ipinfo/cli/releases/download/ipinfo-2.4.0/ipinfo_2.4.0_${PLAT}.tar.gz
+wget https://github.com/ipinfo/cli/releases/download/ipinfo-2.4.1/ipinfo_2.4.1_${PLAT}.tar.gz
 
-tar -xvf ipinfo_2.4.0_${PLAT}.tar.gz
-mv ipinfo_2.4.0_${PLAT} /usr/local/bin/ipinfo
+tar -xvf ipinfo_2.4.1_${PLAT}.tar.gz
+mv ipinfo_2.4.1_${PLAT} /usr/local/bin/ipinfo
 ```
 
 ### Using `git`

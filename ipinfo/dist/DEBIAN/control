@@ -1,6 +1,6 @@
 Source: ipinfo
 Section: utils
-Version: 2.4.0
+Version: 2.4.1
 Priority: optional
 Maintainer: IPinfo <support@ipinfo.io>
 Vcs-Git: https://github.com/ipinfo/cli
