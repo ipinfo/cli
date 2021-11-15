@@ -34,10 +34,13 @@ Description:
   Generates random IP/IPs.
   By default, generates 1 random IPv4 address with starting range 0.0.0.0 and 
   ending range 255.255.255.255, but can be configured to generate any number of 
-  a combination of IPv4/IPv6 addresses.
-  --ipv6 or -6 without any starting or ending range will generate a IP between 
-  range of :: to ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+  a combination of IPv4/IPv6 addresses within any range.
 
+  Using --ipv6 or -6 without any starting or ending range will generate a IP 
+  between range of :: to ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff.
+
+  Note that only IPv4 or IPv6 IPs can be generated, but not both.
+ 
   $ %[1]s randip
   $ %[1]s randip --ipv6 --count 5
   $ %[1]s randip -4 -n 10
@@ -51,11 +54,12 @@ Options:
   --count, -n 
     number of IPs to generate.
   --ipv4, -4
-    generates IPv4 IPs.
+    generate IPv4 IPs.
   --ipv6, -6
-    generates IPv6 IPs.
+    generate IPv6 IPs.
   --start, -s 
     starting range of IPs.
+	default: minimum IP possible for IP type selected.
   --end, -e
     ending range of IPs.
 `, progBase)

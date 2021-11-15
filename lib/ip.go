@@ -2,6 +2,7 @@ package lib
 
 import (
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"math/big"
 	"math/rand"
@@ -14,6 +15,18 @@ type IP uint32
 
 // IPStr is a string representation of an IPv4 address.
 type IPStr string
+
+// IP4Range is a numerical representation of an IPv4 range.
+type IP4Range struct {
+	startIP IP
+	endIP   IP
+}
+
+// IP6Range is a numerical representation of an IPv4 range.
+type IP6RangeInt struct {
+	startIP *big.Int
+	endIP   *big.Int
+}
 
 // NewIP returns a new IPv4 address representation.
 // `ip` must already be in big-endian form.
@@ -37,34 +50,93 @@ func RandIP4List(n int) []net.IP {
 	return ips
 }
 
-// RandIP4Range returns a list of randomly generated IPv4 addresses within
-// starting and ending IPrange.
+// EvalIP4Range checks if the starting and ending IP range is valid or not.
+//
+// note: starting and ending IPs must be valid IPv4 string formats.
+func EvalIP4Range(
+	startIP string,
+	endIP string,
+) (IP4Range, error) {
+	startIPRaw := net.ParseIP(startIP).To4()
+	if len(startIPRaw) == 0 || len(startIPRaw) > net.IPv4len {
+		return IP4Range{}, errors.New("invalid range start IP")
+	}
 
-// note: starting and ending IPs should be in format of "1.1.1.1"
-func RandIP4Range(startIP, EndIP string) (net.IP, error) {
-	StartIPRaw := net.ParseIP(startIP).To4()
-	if len(StartIPRaw) == 0 || len(StartIPRaw) > net.IPv4len {
-		return nil, fmt.Errorf("range is Invalid")
+	startIPInt := binary.BigEndian.Uint32(startIPRaw.To4())
+	endIPRaw := net.ParseIP(endIP).To4()
+	if len(endIPRaw) == 0 || len(endIPRaw) > net.IPv4len {
+		return IP4Range{}, errors.New("invalid range end IP")
 	}
-	StartIPInt := binary.BigEndian.Uint32(StartIPRaw.To4())
-	EndIPRaw := net.ParseIP(EndIP).To4()
-	if len(EndIPRaw) == 0 || len(EndIPRaw) > net.IPv4len {
-		return nil, fmt.Errorf("range is Invalid")
+
+	endIPInt := binary.BigEndian.Uint32(endIPRaw.To4())
+
+	// ensure valid range
+	if startIPInt > endIPInt {
+		return IP4Range{}, fmt.Errorf("invalid range: %v > %v", startIP, endIP)
 	}
-	EndIPInt := binary.BigEndian.Uint32(EndIPRaw.To4())
-	if StartIPInt > EndIPInt {
-		return nil, fmt.Errorf("range is Invalid")
+	return IP4Range{
+		startIP: IP(startIPInt),
+		endIP:   IP(endIPInt),
+	}, nil
+}
+
+// EvalIP6Range checks if the starting and ending IP range is valid or not.
+//
+// note: starting and ending IPs must be valid IPv6 string formats.
+func EvalIP6Range(
+	startIP string,
+	endIP string,
+) (IP6RangeInt, error) {
+	StartIPByte := [16]byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	EndIPByte := [16]byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+
+	startIPRaw := net.ParseIP(startIP).To16()
+	if len(startIPRaw) == 0 {
+		return IP6RangeInt{}, errors.New("invalid range start IP")
 	}
-	rangeIP := binary.BigEndian.Uint32(RandIP4().To4())
-	temp := EndIPInt - StartIPInt
-	if temp <= 0 {
-		return nil, fmt.Errorf("range is Invalid")
+
+	endIPRaw := net.ParseIP(endIP)
+	if len(endIPRaw) == 0 {
+		return IP6RangeInt{}, errors.New("invalid range end IP")
 	}
-	rangeIP %= (EndIPInt - StartIPInt)
-	rangeIP += StartIPInt
-	rangeIPbyte := [4]byte{0, 0, 0, 0}
-	binary.BigEndian.PutUint32(rangeIPbyte[:], rangeIP)
-	return net.IP(rangeIPbyte[:]), nil
+	copy(StartIPByte[:], []byte(startIPRaw.To16()))
+	copy(EndIPByte[:], []byte(endIPRaw.To16()))
+
+	startIPInt := new(big.Int)
+	endIPInt := new(big.Int)
+	startIPInt.SetBytes(StartIPByte[:])
+	endIPInt.SetBytes(EndIPByte[:])
+
+	// ensure valid range
+	if startIPInt.Cmp(endIPInt) > 0 {
+		return IP6RangeInt{}, fmt.Errorf("invalid range: %v > %v", startIP, endIP)
+	}
+	return IP6RangeInt{
+		startIP: startIPInt,
+		endIP:   endIPInt,
+	}, nil
+}
+
+// RandIP4Range returns a list of randomly generated IPv4 addresses within
+// the range specified by `startIP` and `endIP`.
+//
+// note: `EvalIP4` must be called before this function as this function assumes
+// `startIP` and `endIP` is a correct range.
+func RandIP4Range(iprange IP4Range) (net.IP, error) {
+	temp := iprange.endIP - iprange.startIP
+	if temp == 0 {
+		tempIP := [4]byte{0, 0, 0, 0}
+		binary.BigEndian.PutUint32(tempIP[:], uint32(iprange.startIP))
+		return tempIP[:], nil
+	}
+
+	// get random IP and adjust it to fit range.
+	randIP := binary.BigEndian.Uint32(RandIP4().To4())
+	randIP %= (uint32(iprange.endIP) - uint32(iprange.startIP))
+	randIP += uint32(iprange.startIP)
+	randIPbyte := [4]byte{0, 0, 0, 0}
+	binary.BigEndian.PutUint32(randIPbyte[:], randIP)
+	return net.IP(randIPbyte[:]), nil
 }
 
 // RandIP4ListWrite prints a list of new randomly generated IPv4 addresses.
@@ -76,9 +148,13 @@ func RandIP4ListWrite(n int) {
 
 // RandIP4ListWrite prints a list of new randomly generated IPv4 addresses
 // within starting and IPs ending range.
-func RandIP4RangeListWrite(min, max string, n int) error {
+func RandIP4RangeListWrite(startIP, endIP string, n int) error {
+	ipRange, err := EvalIP4Range(startIP, endIP)
+	if err != nil {
+		return err
+	}
 	for i := 0; i < n; i++ {
-		ip, err := RandIP4Range(min, max)
+		ip, err := RandIP4Range(ipRange)
 		if err != nil {
 			return err
 		}
@@ -102,32 +178,23 @@ func RandIP6() net.IP {
 }
 
 // RandIP6Range returns a list of randomly generated IPv6 addresses within
-// starting and ending IPrange.
-func RandIP6Range(StartIP, EndIP string) (net.IP, error) {
-	StartIPByte := [16]byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	EndIPByte := [16]byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-
-	StartIPRaw := net.ParseIP(StartIP)
-	EndIPRaw := net.ParseIP(EndIP)
-	copy(StartIPByte[:], []byte(StartIPRaw.To16()))
-	copy(EndIPByte[:], []byte(EndIPRaw.To16()))
-
-	min_ip := new(big.Int)
-	max_ip := new(big.Int)
-	min_ip.SetBytes(StartIPByte[:])
-	max_ip.SetBytes(EndIPByte[:])
-	if min_ip.Cmp(max_ip) > 0 {
-		return nil, fmt.Errorf("range is Invalid")
-	}
+// the range specified by `startIP` and `endIP`.
+//
+// note: `EvalIP6` must be called before this function as this function assumes
+// `startIP` and `endIP` is a correct range.
+func RandIP6Range(ipRange IP6RangeInt) (net.IP, error) {
 	randIP := new(big.Int)
 	randIP.SetBytes(RandIP6())
 	tmp := new(big.Int)
-	tmp.Sub(max_ip, min_ip)
+	tmp.Sub(ipRange.endIP, ipRange.startIP)
 	if tmp.Cmp(big.NewInt(0)) <= 0 {
-		return nil, fmt.Errorf("range is Invalid")
+		randIPBytes := [16]byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+		randIPBigIntBytes := ipRange.startIP.Bytes()
+		copy(randIPBytes[16-len(randIPBigIntBytes):], randIPBigIntBytes)
+		return net.IP(randIPBytes[:]), nil
 	}
 	randIP.Mod(randIP, tmp)
-	randIP.Add(randIP, min_ip)
+	randIP.Add(randIP, ipRange.startIP)
 	randIPBytes := [16]byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	randIPBigIntBytes := randIP.Bytes()
 	copy(randIPBytes[16-len(randIPBigIntBytes):], randIPBigIntBytes)
@@ -152,9 +219,13 @@ func RandIP6ListWrite(n int) {
 
 // RandIP6ListWrite prints a list of new randomly generated IPv6 addresses
 // withing starting and ending IPs range.
-func RandIP6RangeListWrite(min, max string, n int) error {
+func RandIP6RangeListWrite(startIP, endIP string, n int) error {
+	ipRange, err := EvalIP6Range(startIP, endIP)
+	if err != nil {
+		return err
+	}
 	for i := 0; i < n; i++ {
-		ip, err := RandIP6Range(min, max)
+		ip, err := RandIP6Range(ipRange)
 		if err != nil {
 			return err
 		}

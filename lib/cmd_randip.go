@@ -75,8 +75,7 @@ func CmdRandIP(f CmdRandIPFlags, args []string, printHelp func()) error {
 		if f.EndIP == "" {
 			f.EndIP = "255.255.255.255"
 		}
-		err := RandIP4RangeListWrite(f.StartIP, f.EndIP, f.N)
-		if err != nil {
+		if err := RandIP4RangeListWrite(f.StartIP, f.EndIP, f.N); err != nil {
 			return err
 		}
 	} else if f.IPv6 {
@@ -86,8 +85,7 @@ func CmdRandIP(f CmdRandIPFlags, args []string, printHelp func()) error {
 		if f.EndIP == "" {
 			f.EndIP = "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"
 		}
-		err := RandIP6RangeListWrite(f.StartIP, f.EndIP, f.N)
-		if err != nil {
+		if err := RandIP6RangeListWrite(f.StartIP, f.EndIP, f.N); err != nil {
 			return err
 		}
 	}
