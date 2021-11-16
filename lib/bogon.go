@@ -110,7 +110,6 @@ func IsBogonIP6(ip6 U128) bool {
 		if (ip6.Cmp(bogonIP.Start.N) >= 0) && (ip6.Cmp(bogonIP.End.N) <= 0) {
 			return true
 		}
-		continue
 	}
 	return false
 }
