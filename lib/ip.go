@@ -35,17 +35,22 @@ func NewIP(ip uint32) IP {
 }
 
 // RandIP4 returns a new randomly generated IPv4 address.
-func RandIP4() net.IP {
-	ip := [4]byte{0, 0, 0, 0}
-	binary.BigEndian.PutUint32(ip[:], rand.Uint32())
-	return net.IPv4(ip[0], ip[1], ip[2], ip[3])
+func RandIP4(exclude bool) net.IP {
+	ipBytes := [4]byte{0, 0, 0, 0}
+IP:
+	binary.BigEndian.PutUint32(ipBytes[:], rand.Uint32())
+	ip := binary.BigEndian.Uint32(ipBytes[:])
+	if exclude && IsBogonIP4(ip) {
+		goto IP
+	}
+	return net.IPv4(ipBytes[0], ipBytes[1], ipBytes[2], ipBytes[3])
 }
 
 // RandIP4List returns a list of new randomly generated IPv4 addresses.
-func RandIP4List(n int) []net.IP {
+func RandIP4List(n int, exclude bool) []net.IP {
 	ips := make([]net.IP, n)
 	for i := 0; i < n; i++ {
-		ips[i] = RandIP4()
+		ips[i] = RandIP4(exclude)
 	}
 	return ips
 }
@@ -123,7 +128,7 @@ func NewIP6RangeInt(
 //
 // note: `EvalIP4` must be called before this function as this function assumes
 // `startIP` and `endIP` is a correct range.
-func RandIP4Range(iprange IP4Range) (net.IP, error) {
+func RandIP4Range(iprange IP4Range, exclude bool) (net.IP, error) {
 	tmp := iprange.endIP - iprange.startIP
 	if tmp == 0 {
 		tmpIP := [4]byte{0, 0, 0, 0}
@@ -132,7 +137,7 @@ func RandIP4Range(iprange IP4Range) (net.IP, error) {
 	}
 
 	// get random IP and adjust it to fit range.
-	randIP := binary.BigEndian.Uint32(RandIP4().To4())
+	randIP := binary.BigEndian.Uint32(RandIP4(exclude).To4())
 	randIP %= (uint32(iprange.endIP) - uint32(iprange.startIP))
 	randIP += uint32(iprange.startIP)
 	randIPbyte := [4]byte{0, 0, 0, 0}
@@ -141,21 +146,21 @@ func RandIP4Range(iprange IP4Range) (net.IP, error) {
 }
 
 // RandIP4ListWrite prints a list of new randomly generated IPv4 addresses.
-func RandIP4ListWrite(n int) {
+func RandIP4ListWrite(n int, exclude bool) {
 	for i := 0; i < n; i++ {
-		fmt.Println(RandIP4())
+		fmt.Println(RandIP4(exclude))
 	}
 }
 
 // RandIP4ListWrite prints a list of new randomly generated IPv4 addresses
 // within starting and IPs ending range.
-func RandIP4RangeListWrite(startIP, endIP string, n int) error {
+func RandIP4RangeListWrite(startIP, endIP string, n int, exclude bool) error {
 	ipRange, err := NewIP4Range(startIP, endIP)
 	if err != nil {
 		return err
 	}
 	for i := 0; i < n; i++ {
-		ip, err := RandIP4Range(ipRange)
+		ip, err := RandIP4Range(ipRange, exclude)
 		if err != nil {
 			return err
 		}
@@ -171,10 +176,17 @@ func IPFromStdIP(ip net.IP) IP {
 }
 
 // RandIP6 returns a new randomly generated IPv6 address.
-func RandIP6() net.IP {
+func RandIP6(exclude bool) net.IP {
 	ip := [16]byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+IP:
 	binary.BigEndian.PutUint64(ip[0:], rand.Uint64())
 	binary.BigEndian.PutUint64(ip[8:], rand.Uint64())
+	var ip6 U128
+	ip6.Hi = binary.BigEndian.Uint64(ip[0:])
+	ip6.Lo = binary.BigEndian.Uint64(ip[8:])
+	if exclude && IsBogonIP6(ip6) {
+		goto IP
+	}
 	return net.IP(ip[:])
 }
 
@@ -183,9 +195,9 @@ func RandIP6() net.IP {
 //
 // note: `EvalIP6` must be called before this function as this function assumes
 // `startIP` and `endIP` is a correct range.
-func RandIP6Range(ipRange IP6RangeInt) (net.IP, error) {
+func RandIP6Range(ipRange IP6RangeInt, exclude bool) (net.IP, error) {
 	randIP := new(big.Int)
-	randIP.SetBytes(RandIP6())
+	randIP.SetBytes(RandIP6(exclude))
 	tmp := new(big.Int)
 	tmp.Sub(ipRange.endIP, ipRange.startIP)
 	if tmp.Cmp(big.NewInt(0)) <= 0 {
@@ -203,30 +215,30 @@ func RandIP6Range(ipRange IP6RangeInt) (net.IP, error) {
 }
 
 // RandIP6List returns a list of new randomly generated IPv6 addresses.
-func RandIP6List(n int) []net.IP {
+func RandIP6List(n int, exclude bool) []net.IP {
 	ips := make([]net.IP, n)
 	for i := 0; i < n; i++ {
-		ips[i] = RandIP6()
+		ips[i] = RandIP6(exclude)
 	}
 	return ips
 }
 
 // RandIP6ListWrite prints a list of randomly generated IPv6 addresses.
-func RandIP6ListWrite(n int) {
+func RandIP6ListWrite(n int, exclude bool) {
 	for i := 0; i < n; i++ {
-		fmt.Println(RandIP6())
+		fmt.Println(RandIP6(exclude))
 	}
 }
 
 // RandIP6ListWrite prints a list of new randomly generated IPv6 addresses
 // withing starting and ending IPs range.
-func RandIP6RangeListWrite(startIP, endIP string, n int) error {
+func RandIP6RangeListWrite(startIP, endIP string, n int, exclude bool) error {
 	ipRange, err := NewIP6RangeInt(startIP, endIP)
 	if err != nil {
 		return err
 	}
 	for i := 0; i < n; i++ {
-		ip, err := RandIP6Range(ipRange)
+		ip, err := RandIP6Range(ipRange, exclude)
 		if err != nil {
 			return err
 		}

@@ -50,6 +50,9 @@ Options:
   --end, -e
     ending range of IPs.
 	default: maximum IP possible for IP type selected.
+  --exclude-reserved, -x
+    exclude reserved/bogon IPs.
+    full list can be found at https://ipinfo.io/bogon.
 
   Completions:
     --completions-install

@@ -11,18 +11,20 @@ import (
 
 var completionsRandIP = &complete.Command{
 	Flags: map[string]complete.Predictor{
-		"-h":      predict.Nothing,
-		"--help":  predict.Nothing,
-		"-n":      predict.Nothing,
-		"--count": predict.Nothing,
-		"-4":      predict.Nothing,
-		"--ipv4":  predict.Nothing,
-		"-6":      predict.Nothing,
-		"--ipv6":  predict.Nothing,
-		"-s":      predict.Nothing,
-		"--start": predict.Nothing,
-		"-e":      predict.Nothing,
-		"--end":   predict.Nothing,
+		"-h":                 predict.Nothing,
+		"--help":             predict.Nothing,
+		"-n":                 predict.Nothing,
+		"--count":            predict.Nothing,
+		"-4":                 predict.Nothing,
+		"--ipv4":             predict.Nothing,
+		"-6":                 predict.Nothing,
+		"--ipv6":             predict.Nothing,
+		"-s":                 predict.Nothing,
+		"--start":            predict.Nothing,
+		"-e":                 predict.Nothing,
+		"--end":              predict.Nothing,
+		"-x":                 predict.Nothing,
+		"--exclude-reserved": predict.Nothing,
 	},
 }
 
@@ -63,6 +65,9 @@ Options:
   --end, -e
     ending range of IPs.
     default: maximum IP possible for IP type selected.
+  --exclude-reserved, -x
+    exclude reserved/bogon IPs.
+    full list can be found at https://ipinfo.io/bogon.
 `, progBase)
 }
 
