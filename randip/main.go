@@ -49,6 +49,7 @@ Options:
 	default: minimum IP possible for IP type selected.
   --end, -e
     ending range of IPs.
+	default: maximum IP possible for IP type selected.
 
   Completions:
     --completions-install
