@@ -81,15 +81,15 @@ func NewIP4Range(
 	}, nil
 }
 
-// EvalIP6Range checks if the starting and ending IP range is valid or not.
+// NewIP6RangeInt checks if the starting and ending IP range is valid or not.
 //
 // note: starting and ending IPs must be valid IPv6 string formats.
-func EvalIP6Range(
+func NewIP6RangeInt(
 	startIP string,
 	endIP string,
 ) (IP6RangeInt, error) {
-	StartIPByte := [16]byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	EndIPByte := [16]byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	startIPByte := [16]byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	endIPByte := [16]byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 
 	startIPRaw := net.ParseIP(startIP).To16()
 	if len(startIPRaw) == 0 {
@@ -100,13 +100,13 @@ func EvalIP6Range(
 	if len(endIPRaw) == 0 {
 		return IP6RangeInt{}, errors.New("invalid range end IP")
 	}
-	copy(StartIPByte[:], []byte(startIPRaw.To16()))
-	copy(EndIPByte[:], []byte(endIPRaw.To16()))
+	copy(startIPByte[:], []byte(startIPRaw.To16()))
+	copy(endIPByte[:], []byte(endIPRaw.To16()))
 
 	startIPInt := new(big.Int)
 	endIPInt := new(big.Int)
-	startIPInt.SetBytes(StartIPByte[:])
-	endIPInt.SetBytes(EndIPByte[:])
+	startIPInt.SetBytes(startIPByte[:])
+	endIPInt.SetBytes(endIPByte[:])
 
 	// ensure valid range
 	if startIPInt.Cmp(endIPInt) > 0 {
@@ -221,7 +221,7 @@ func RandIP6ListWrite(n int) {
 // RandIP6ListWrite prints a list of new randomly generated IPv6 addresses
 // withing starting and ending IPs range.
 func RandIP6RangeListWrite(startIP, endIP string, n int) error {
-	ipRange, err := EvalIP6Range(startIP, endIP)
+	ipRange, err := NewIP6RangeInt(startIP, endIP)
 	if err != nil {
 		return err
 	}
