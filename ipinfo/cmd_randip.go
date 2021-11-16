@@ -59,9 +59,10 @@ Options:
     generate IPv6 IPs.
   --start, -s 
     starting range of IPs.
-	default: minimum IP possible for IP type selected.
+    default: minimum IP possible for IP type selected.
   --end, -e
     ending range of IPs.
+    default: maximum IP possible for IP type selected.
 `, progBase)
 }
 

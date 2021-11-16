@@ -22,7 +22,7 @@ type IP4Range struct {
 	endIP   IP
 }
 
-// IP6Range is a numerical representation of an IPv4 range.
+// IP6Range is a numerical representation of an IPv6 range.
 type IP6RangeInt struct {
 	startIP *big.Int
 	endIP   *big.Int
@@ -50,10 +50,10 @@ func RandIP4List(n int) []net.IP {
 	return ips
 }
 
-// EvalIP4Range checks if the starting and ending IP range is valid or not.
+// NewIP4Range returns a new IP4Range addresses representation.
 //
 // note: starting and ending IPs must be valid IPv4 string formats.
-func EvalIP4Range(
+func NewIP4Range(
 	startIP string,
 	endIP string,
 ) (IP4Range, error) {
@@ -62,18 +62,19 @@ func EvalIP4Range(
 		return IP4Range{}, errors.New("invalid range start IP")
 	}
 
-	startIPInt := binary.BigEndian.Uint32(startIPRaw.To4())
 	endIPRaw := net.ParseIP(endIP).To4()
 	if len(endIPRaw) == 0 || len(endIPRaw) > net.IPv4len {
 		return IP4Range{}, errors.New("invalid range end IP")
 	}
 
-	endIPInt := binary.BigEndian.Uint32(endIPRaw.To4())
+	startIPInt := binary.BigEndian.Uint32(startIPRaw)
+	endIPInt := binary.BigEndian.Uint32(endIPRaw)
 
-	// ensure valid range
+	// ensure valid range.
 	if startIPInt > endIPInt {
 		return IP4Range{}, fmt.Errorf("invalid range: %v > %v", startIP, endIP)
 	}
+
 	return IP4Range{
 		startIP: IP(startIPInt),
 		endIP:   IP(endIPInt),
@@ -123,11 +124,11 @@ func EvalIP6Range(
 // note: `EvalIP4` must be called before this function as this function assumes
 // `startIP` and `endIP` is a correct range.
 func RandIP4Range(iprange IP4Range) (net.IP, error) {
-	temp := iprange.endIP - iprange.startIP
-	if temp == 0 {
-		tempIP := [4]byte{0, 0, 0, 0}
-		binary.BigEndian.PutUint32(tempIP[:], uint32(iprange.startIP))
-		return tempIP[:], nil
+	tmp := iprange.endIP - iprange.startIP
+	if tmp == 0 {
+		tmpIP := [4]byte{0, 0, 0, 0}
+		binary.BigEndian.PutUint32(tmpIP[:], uint32(iprange.startIP))
+		return tmpIP[:], nil
 	}
 
 	// get random IP and adjust it to fit range.
@@ -149,7 +150,7 @@ func RandIP4ListWrite(n int) {
 // RandIP4ListWrite prints a list of new randomly generated IPv4 addresses
 // within starting and IPs ending range.
 func RandIP4RangeListWrite(startIP, endIP string, n int) error {
-	ipRange, err := EvalIP4Range(startIP, endIP)
+	ipRange, err := NewIP4Range(startIP, endIP)
 	if err != nil {
 		return err
 	}
