@@ -80,7 +80,6 @@ func GetBogonRange4() []IPRange {
 
 // IsBogonIP4 returns true if IPv4 is a BogonIP.
 func IsBogonIP4(ip uint32) bool {
-	bogonIP4List := GetBogonRange4()
 	for _, bogonIP := range bogonIP4List {
 		if ip >= uint32(bogonIP.Start) && ip <= uint32(bogonIP.End) {
 			return true
@@ -105,7 +104,6 @@ func GetBogonRange6() []IP6Range {
 
 // IsBogonIP6 returns true if IPv6 is a BogonIP.
 func IsBogonIP6(ip6 U128) bool {
-	bogonIP6List := GetBogonRange6()
 	for _, bogonIP := range bogonIP6List {
 		if (ip6.Cmp(bogonIP.Start.N) >= 0) && (ip6.Cmp(bogonIP.End.N) <= 0) {
 			return true

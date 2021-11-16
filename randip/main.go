@@ -38,7 +38,7 @@ Description:
 Options:
   --help, -h
     show help.
-  --count, -n 
+  --num, -n 
     number of IPs to generate.
   --ipv4, -4
     generates IPv4 IPs.
@@ -46,10 +46,10 @@ Options:
     generates IPv6 IPs.
   --start, -s 
     starting range of IPs.
-	default: minimum IP possible for IP type selected.
+    default: minimum IP possible for IP type selected.
   --end, -e
     ending range of IPs.
-	default: maximum IP possible for IP type selected.
+    default: maximum IP possible for IP type selected.
   --exclude-reserved, -x
     exclude reserved/bogon IPs.
     full list can be found at https://ipinfo.io/bogon.

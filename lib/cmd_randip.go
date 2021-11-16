@@ -31,7 +31,7 @@ func (f *CmdRandIPFlags) Init() {
 	)
 	pflag.IntVarP(
 		&f.N,
-		"count", "n", 1,
+		"num", "n", 1,
 		"number of IPs to generate",
 	)
 	pflag.BoolVarP(

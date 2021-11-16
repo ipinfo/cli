@@ -131,14 +131,6 @@ func CmdGrepIP(
 		rexp = regexp.MustCompile(rexp4 + "|" + rexp6)
 	}
 
-	// prepare bogon/localhost ranges
-	var exclRanges4 []IPRange
-	var exclRanges6 []IP6Range
-	if f.ExclRes {
-		exclRanges4 = GetBogonRange4()
-		exclRanges6 = GetBogonRange6()
-	}
-
 	fmtSrc := color.New(color.FgMagenta)
 	fmtMatch := color.New(color.Bold, color.FgRed)
 
@@ -177,14 +169,14 @@ func CmdGrepIP(
 					mIP := net.ParseIP(mIPStr)
 					if strings.Contains(mIPStr, ":") {
 						ip, _ := IP6FromStdIP(mIP.To16())
-						for _, r := range exclRanges6 {
+						for _, r := range bogonIP6List {
 							if ip.Gte(r.Start) && ip.Lte(r.End) {
 								goto next_match
 							}
 						}
 					} else {
 						ip := IPFromStdIP(mIP)
-						for _, r := range exclRanges4 {
+						for _, r := range bogonIP4List {
 							if ip >= r.Start && ip <= r.End {
 								goto next_match
 							}

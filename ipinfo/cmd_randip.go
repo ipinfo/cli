@@ -53,7 +53,7 @@ Description:
 Options:
   --help, -h
     show help.
-  --count, -n 
+  --num, -n 
     number of IPs to generate.
   --ipv4, -4
     generate IPv4 IPs.
