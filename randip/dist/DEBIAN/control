@@ -8,4 +8,4 @@ Vcs-browser: https://github.com/ipinfo/cli
 Homepage: https://ipinfo.io
 Package: randip
 Architecture: amd64
-Description: A simple tool for converting from IP ranges to CIDRs.
+Description: A tool for generating random IPs.
