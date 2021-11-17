@@ -9,6 +9,7 @@ gofmt -w                                                                      \
     $ROOT/lib                                                                 \
     $ROOT/ipinfo                                                              \
     $ROOT/grepip                                                              \
+    $ROOT/prips                                                               \
     $ROOT/cidr2range                                                          \
     $ROOT/range2cidr                                                          \
     $ROOT/range2ip                                                            \
