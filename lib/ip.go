@@ -125,10 +125,10 @@ func NewIP6RangeInt(
 }
 
 // RandIP4Range returns a list of randomly generated IPv4 addresses within
-// the range specified by `startIP` and `endIP`.
+// the range specified by `IP4Range`.
 //
 // note: `NewIP4Range` must be called before this function as this function
-// assumes `startIP` and `endIP` is a correct range.
+// assumes `IP4Range` provided to the function is a correct range.
 func RandIP4Range(iprange IP4Range, noBogon bool) (net.IP, error) {
 	tmp := iprange.endIP - iprange.startIP
 	if tmp == 0 {
@@ -153,7 +153,7 @@ func RandIP4ListWrite(n int, noBogon bool) {
 	}
 }
 
-// RandIP4ListWrite prints a list of randomly generated IPv4 addresses.
+// RandIP4RangeListWrite prints a list of randomly generated IPv4 addresses.
 // `startIP` and `endIP` are the start & end IPs to generate IPs between.
 // `n` is the number of IPs to generate.
 // `noBogon`, if true, will ensure that none of the generated IPs are bogons.
@@ -199,17 +199,16 @@ IP:
 }
 
 // RandIP6Range returns a list of randomly generated IPv6 addresses within
-// the range specified by `startIP` and `endIP`.
+// the range specified by `IP6RangeInt`.
 //
 // note: `NewIP6RangeInt` must be called before this function as this function
-// assumes `startIP` and `endIP` is a correct range.
+// assumes `IP6RangeInt` provided to the function is a correct range.
 func RandIP6Range(ipRange IP6RangeInt, noBogon bool) net.IP {
 	randIP := new(big.Int)
 	randIP.SetBytes(RandIP6(noBogon))
 	tmp := new(big.Int)
 	tmp.Sub(ipRange.endIP, ipRange.startIP)
 	if tmp.Cmp(big.NewInt(0)) == 0 {
-
 		// convert multi-precision byte form into 16-byte IPv6 form.
 		randIPBytes := [16]byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 		randIPBigIntBytes := ipRange.startIP.Bytes()
@@ -218,6 +217,7 @@ func RandIP6Range(ipRange IP6RangeInt, noBogon bool) net.IP {
 	}
 	randIP.Mod(randIP, tmp)
 	randIP.Add(randIP, ipRange.startIP)
+	// convert multi-precision byte form into 16-byte IPv6 form.
 	randIPBytes := [16]byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	randIPBigIntBytes := randIP.Bytes()
 	copy(randIPBytes[16-len(randIPBigIntBytes):], randIPBigIntBytes)

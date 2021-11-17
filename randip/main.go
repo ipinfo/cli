@@ -29,7 +29,7 @@ Description:
 
   Note that only IPv4 or IPv6 IPs can be generated, but not both.
 
-  $ %[1]s  --ipv6 --count 5
+  $ %[1]s  --ipv6 --num 5
   $ %[1]s  -4 -n 10
   $ %[1]s  -4 -s 1.1.1.1 -e 10.10.10.10
   $ %[1]s  -6 --start 9c61:f71e:656d:d12e:98a3:9814:38cf:5592
