@@ -29,6 +29,7 @@ Commands:
   cidr2ip     convert CIDRs to individual IPs within those CIDRs.
   range2cidr  convert IP ranges to CIDRs.
   range2ip    convert IP ranges to individual IPs within those ranges.
+  randip      Generates random IPs.
   cache       manage the cache.
   login       save an API token session.
   logout      delete your current API token session.

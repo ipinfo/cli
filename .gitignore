@@ -6,9 +6,11 @@ cidr2range/dist/
 cidr2ip/dist/
 range2cidr/dist/
 range2ip/dist/
+randip/dist/
 !ipinfo/dist/DEBIAN/
 !grepip/dist/DEBIAN/
 !cidr2range/dist/DEBIAN/
 !cidr2ip/dist/DEBIAN/
 !range2cidr/dist/DEBIAN/
 !range2ip/dist/DEBIAN/
+!randip/dist/DEBIAN/

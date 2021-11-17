@@ -17,6 +17,7 @@ var completions = &complete.Command{
 		"cidr2ip":    completionsCIDR2IP,
 		"range2cidr": completionsRange2CIDR,
 		"range2ip":   completionsRange2IP,
+		"randip":     completionsRandIP,
 		"cache":      completionsCache,
 		"login":      completionsLogin,
 		"logout":     completionsLogout,
