@@ -19,7 +19,7 @@ func printHelp() {
 		`Usage: %s [<opts>] 
 
 Description:
-  Generates random IP/IPs.
+  Generate random IP/IPs.
   By default, generates 1 random IPv4 address with starting range 0.0.0.0 and 
   ending range 255.255.255.255, but can be configured to generate any number of 
   a combination of IPv4/IPv6 addresses within any range.

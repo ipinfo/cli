@@ -1,5 +1,9 @@
 package lib
 
+// these lists are initialized on startup inside this pkg's `init`.
+var bogonIP4List []IPRange
+var bogonIP6List []IP6Range
+
 // list of bogon IPv4 IPs.
 var BogonRange4Str []string = []string{
 	"0.0.0.0/8",
