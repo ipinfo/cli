@@ -139,7 +139,7 @@ func RandIP4Range(iprange IP4Range, noBogon bool) (net.IP, error) {
 
 	// get random IP and adjust it to fit range.
 	randIP := binary.BigEndian.Uint32(RandIP4(noBogon).To4())
-	randIP %= (uint32(iprange.endIP) - uint32(iprange.startIP))
+	randIP %= (uint32(iprange.endIP) - uint32(iprange.startIP)) + 1
 	randIP += uint32(iprange.startIP)
 	randIPbyte := [4]byte{0, 0, 0, 0}
 	binary.BigEndian.PutUint32(randIPbyte[:], randIP)
@@ -171,7 +171,7 @@ func RandIP4RangeListWrite(
 	}
 	if unique {
 		// ensure range is larger than number of IPs to generate.
-		if uint32(ipRange.endIP-ipRange.startIP) < uint32(n) {
+		if uint32(ipRange.endIP-ipRange.startIP+1) < uint32(n) {
 			return errors.New("range is too small for unique IPs")
 		}
 
@@ -242,6 +242,7 @@ func RandIP6Range(ipRange IP6RangeInt, noBogon bool) net.IP {
 		copy(randIPBytes[16-len(randIPBigIntBytes):], randIPBigIntBytes)
 		return net.IP(randIPBytes[:]).To16()
 	}
+	tmp.Add(tmp, big.NewInt(1))
 	randIP.Mod(randIP, tmp)
 	randIP.Add(randIP, ipRange.startIP)
 	// convert multi-precision byte form into 16-byte IPv6 form.
@@ -287,6 +288,7 @@ func RandIP6RangeListWrite(
 		// ensure range is larger than number of IPs to generate.
 		tmp := new(big.Int)
 		tmp.Sub(ipRange.endIP, ipRange.startIP)
+		tmp.Add(tmp, big.NewInt(1))
 		count := new(big.Int).SetUint64(uint64(n))
 		if tmp.Cmp(count) < 0 {
 			return errors.New("range is too small for unique IPs")
