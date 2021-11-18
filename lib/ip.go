@@ -157,22 +157,49 @@ func RandIP4ListWrite(n int, noBogon bool) {
 // `startIP` and `endIP` are the start & end IPs to generate IPs between.
 // `n` is the number of IPs to generate.
 // `noBogon`, if true, will ensure that none of the generated IPs are bogons.
+// `unique`, if true, will ensure every IP generated is unique.
 func RandIP4RangeListWrite(
 	startIP string,
 	endIP string,
 	n int,
 	noBogon bool,
+	unique bool,
 ) error {
 	ipRange, err := NewIP4Range(startIP, endIP)
 	if err != nil {
 		return err
 	}
-	for i := 0; i < n; i++ {
-		ip, err := RandIP4Range(ipRange, noBogon)
-		if err != nil {
-			return err
+	if unique {
+		// ensure range is larger than number of IPs to generate.
+		if uint32(ipRange.endIP-ipRange.startIP) < uint32(n) {
+			return errors.New("range is too small for unique IPs")
 		}
-		fmt.Println(ip)
+
+		uniqueIP := make(map[uint32]net.IP)
+		for i := 0; i < n; i++ {
+		unique:
+			ip, err := RandIP4Range(ipRange, noBogon)
+			if err != nil {
+				return err
+			}
+			// IP already exists in map.
+			ipInt := binary.BigEndian.Uint32(ip)
+			if _, ok := uniqueIP[ipInt]; ok {
+				goto unique
+			}
+			uniqueIP[ipInt] = ip
+		}
+		for _, ip := range uniqueIP {
+			fmt.Println(ip)
+		}
+	} else {
+		for i := 0; i < n; i++ {
+			ip, err := RandIP4Range(ipRange, noBogon)
+			if err != nil {
+				return err
+			}
+			fmt.Println(ip)
+		}
 	}
 	return nil
 }
@@ -240,15 +267,51 @@ func RandIP6ListWrite(n int, noBogon bool) {
 	}
 }
 
-// RandIP6ListWrite prints a list of new randomly generated IPv6 addresses
-// withing starting and ending IPs range.
-func RandIP6RangeListWrite(startIP, endIP string, n int, noBogon bool) error {
+// RandIP6RangeListWrite prints a list of randomly generated IPv6 addresses.
+// `startIP` and `endIP` are the start & end IPs to generate IPs between.
+// `n` is the number of IPs to generate.
+// `noBogon`, if true, will ensure that none of the generated IPs are bogons.
+// `unique`, if true, will ensure every IP generated is unique.
+func RandIP6RangeListWrite(
+	startIP string,
+	endIP string,
+	n int,
+	noBogon bool,
+	unique bool,
+) error {
 	ipRange, err := NewIP6RangeInt(startIP, endIP)
 	if err != nil {
 		return err
 	}
-	for i := 0; i < n; i++ {
-		fmt.Println(RandIP6Range(ipRange, noBogon))
+	if unique {
+		// ensure range is larger than number of IPs to generate.
+		tmp := new(big.Int)
+		tmp.Sub(ipRange.endIP, ipRange.startIP)
+		count := new(big.Int).SetUint64(uint64(n))
+		if tmp.Cmp(count) < 0 {
+			return errors.New("range is too small for unique IPs")
+		}
+
+		uniqueIP := make(map[IP6]net.IP)
+		for i := 0; i < n; i++ {
+		unique:
+			ip := RandIP6Range(ipRange, noBogon)
+			var ipInt IP6
+			ipInt.N.Hi = binary.BigEndian.Uint64(ip[0:])
+			ipInt.N.Lo = binary.BigEndian.Uint64(ip[8:])
+			// IP already exists in map.
+			if _, ok := uniqueIP[ipInt]; ok {
+				goto unique
+			}
+			uniqueIP[ipInt] = ip
+		}
+		for _, ip := range uniqueIP {
+			fmt.Println(ip)
+		}
+	} else {
+		for i := 0; i < n; i++ {
+			fmt.Println(RandIP6Range(ipRange, noBogon))
+		}
 	}
 	return nil
 }

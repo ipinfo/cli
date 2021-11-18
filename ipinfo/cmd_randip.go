@@ -25,6 +25,8 @@ var completionsRandIP = &complete.Command{
 		"--end":              predict.Nothing,
 		"-x":                 predict.Nothing,
 		"--exclude-reserved": predict.Nothing,
+		"-u":                 predict.Nothing,
+		"--unique":           predict.Nothing,
 	},
 }
 
@@ -43,11 +45,14 @@ Description:
   between range of :: to ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff.
 
   Note that only IPv4 or IPv6 IPs can be generated, but not both.
+
+  For unique IPs range must be greater than number of IPs to generate
  
   $ %[1]s randip
   $ %[1]s randip --ipv6 --num 5
   $ %[1]s randip -4 -n 10
   $ %[1]s randip -4 -s 1.1.1.1 -e 10.10.10.10
+  $ %[1]s randip -4 -s 1.1.1.1 -e 10.10.10.10 -n 5 -u
   $ %[1]s randip -6 --start 9c61:f71e:656d:d12e:98a3:9814:38cf:5592
   $ %[1]s randip -6 --end eedd:8977:56d9:aac3:947b:29cc:78ea:deab
 
@@ -69,6 +74,8 @@ Options:
   --exclude-reserved, -x
     exclude reserved/bogon IPs.
     full list can be found at https://ipinfo.io/bogon.
+  --unique, -u 
+    generate unique IPs.
 `, progBase)
 }
 
