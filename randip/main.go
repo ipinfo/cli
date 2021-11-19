@@ -62,15 +62,15 @@ Options:
   --unique, -u 
     generate unique IPs.
 
-  Completions:
-    --completions-install
-      attempt completions auto-installation for any supported shell.
-    --completions-bash
-      output auto-completion script for bash for manual installation.
-    --completions-zsh
-      output auto-completion script for zsh for manual installation.
-    --completions-fish
-      output auto-completion script for fish for manual installation.
+Completions:
+  --completions-install
+    attempt completions auto-installation for any supported shell.
+  --completions-bash
+    output auto-completion script for bash for manual installation.
+  --completions-zsh
+    output auto-completion script for zsh for manual installation.
+  --completions-fish
+    output auto-completion script for fish for manual installation.
 `, progBase)
 }
 
