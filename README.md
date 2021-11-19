@@ -151,7 +151,7 @@ Currently these subcommands are separately shipped:
 | cidr2ip    | [1.0.0](https://github.com/ipinfo/cli/releases/tag/cidr2ip-1.0.0) |
 | range2cidr | [1.2.0](https://github.com/ipinfo/cli/releases/tag/range2cidr-1.2.0) |
 | range2ip   | [1.0.0](https://github.com/ipinfo/cli/releases/tag/range2ip-1.0.0) |
-| randip     | [1.0.0](https://github.com/ipinfo/cli/releases/tag/randip-1.0.0) |
+| randip     | [1.1.0](https://github.com/ipinfo/cli/releases/tag/randip-1.1.0) |
 
 ## Quick Start
 

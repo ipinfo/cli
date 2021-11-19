@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VSN=1.0.0
+VSN=1.1.0
 
 curl -LO https://github.com/ipinfo/cli/releases/download/randip-${VSN}/randip_${VSN}.deb
 sudo dpkg -i randip_${VSN}.deb
