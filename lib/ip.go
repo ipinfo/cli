@@ -138,11 +138,12 @@ func RandIP4Range(iprange IP4Range, noBogon bool) (net.IP, error) {
 	}
 
 	// get random IP and adjust it to fit range.
-	randIP := binary.BigEndian.Uint32(RandIP4(noBogon).To4())
-	randIP %= (uint32(iprange.endIP) - uint32(iprange.startIP)) + 1
-	randIP += uint32(iprange.startIP)
+	var randIP uint64
+	randIP = uint64(binary.BigEndian.Uint32(RandIP4(noBogon).To4()))
+	randIP %= (uint64(iprange.endIP) - uint64(iprange.startIP)) + 1
+	randIP += uint64(iprange.startIP)
 	randIPbyte := [4]byte{0, 0, 0, 0}
-	binary.BigEndian.PutUint32(randIPbyte[:], randIP)
+	binary.BigEndian.PutUint32(randIPbyte[:], uint32(randIP))
 	return net.IP(randIPbyte[:]), nil
 }
 
