@@ -46,7 +46,8 @@ Description:
 
   Note that only IPv4 or IPv6 IPs can be generated, but not both.
 
-  For unique IPs range must be greater than number of IPs to generate
+  When generating unique IPs, the range size must not be less than the desired 
+  number of random IPs.
  
   $ %[1]s randip
   $ %[1]s randip --ipv6 --num 5

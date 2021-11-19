@@ -175,21 +175,19 @@ func RandIP4RangeListWrite(
 			return errors.New("range is too small for unique IPs")
 		}
 
-		uniqueIP := make(map[uint32]net.IP)
+		uniqueIP := make(map[uint32]struct{})
 		for i := 0; i < n; i++ {
 		unique:
 			ip, err := RandIP4Range(ipRange, noBogon)
 			if err != nil {
 				return err
 			}
-			// IP already exists in map.
+			// does IP already exist? if so try again.
 			ipInt := binary.BigEndian.Uint32(ip)
 			if _, ok := uniqueIP[ipInt]; ok {
 				goto unique
 			}
-			uniqueIP[ipInt] = ip
-		}
-		for _, ip := range uniqueIP {
+			uniqueIP[ipInt] = struct{}{}
 			fmt.Println(ip)
 		}
 	} else {
@@ -294,20 +292,18 @@ func RandIP6RangeListWrite(
 			return errors.New("range is too small for unique IPs")
 		}
 
-		uniqueIP := make(map[IP6]net.IP)
+		uniqueIP := make(map[IP6]struct{})
 		for i := 0; i < n; i++ {
 		unique:
 			ip := RandIP6Range(ipRange, noBogon)
 			var ipInt IP6
 			ipInt.N.Hi = binary.BigEndian.Uint64(ip[0:])
 			ipInt.N.Lo = binary.BigEndian.Uint64(ip[8:])
-			// IP already exists in map.
+			// does IP already exist? if so try again.
 			if _, ok := uniqueIP[ipInt]; ok {
 				goto unique
 			}
-			uniqueIP[ipInt] = ip
-		}
-		for _, ip := range uniqueIP {
+			uniqueIP[ipInt] = struct{}{}
 			fmt.Println(ip)
 		}
 	} else {
