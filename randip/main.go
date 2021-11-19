@@ -30,11 +30,16 @@ Description:
 
   Note that only IPv4 or IPv6 IPs can be generated, but not both.
 
-  $ %[1]s  --ipv6 --num 5
-  $ %[1]s  -4 -n 10
-  $ %[1]s  -4 -s 1.1.1.1 -e 10.10.10.10
-  $ %[1]s  -6 --start 9c61:f71e:656d:d12e:98a3:9814:38cf:5592
-  $ %[1]s  -6 --end eedd:8977:56d9:aac3:947b:29cc:78ea:deab
+  When generating unique IPs, the range size must not be less than the desired 
+  number of random IPs.
+
+  $ %[1]s
+  $ %[1]s --ipv6 --num 5
+  $ %[1]s -4 -n 10
+  $ %[1]s -4 -s 1.1.1.1 -e 10.10.10.10
+  $ %[1]s -4 -s 1.1.1.1 -e 10.10.10.10 -n 5 -u
+  $ %[1]s -6 --start 9c61:f71e:656d:d12e:98a3:9814:38cf:5592
+  $ %[1]s -6 --end eedd:8977:56d9:aac3:947b:29cc:78ea:deab
 
 Options:
   --help, -h
@@ -54,6 +59,8 @@ Options:
   --exclude-reserved, -x
     exclude reserved/bogon IPs.
     full list can be found at https://ipinfo.io/bogon.
+  --unique, -u 
+    generate unique IPs.
 
   Completions:
     --completions-install

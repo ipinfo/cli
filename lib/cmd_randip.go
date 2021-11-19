@@ -15,6 +15,7 @@ type CmdRandIPFlags struct {
 	IPv4       bool
 	IPv6       bool
 	ExcludeRes bool
+	Unique     bool
 	StartIP    string
 	EndIP      string
 }
@@ -49,6 +50,11 @@ func (f *CmdRandIPFlags) Init() {
 		"exclude-reserved", "x", false,
 		"exclude reserved/bogon IPs.",
 	)
+	pflag.BoolVarP(
+		&f.Unique,
+		"unique", "u", false,
+		"generates only unique IPs.",
+	)
 	pflag.StringVarP(
 		&f.StartIP,
 		"start", "s", "",
@@ -81,7 +87,7 @@ func CmdRandIP(f CmdRandIPFlags, args []string, printHelp func()) error {
 		if f.EndIP == "" {
 			f.EndIP = "255.255.255.255"
 		}
-		if err := RandIP4RangeListWrite(f.StartIP, f.EndIP, f.N, f.ExcludeRes); err != nil {
+		if err := RandIP4RangeListWrite(f.StartIP, f.EndIP, f.N, f.ExcludeRes, f.Unique); err != nil {
 			return err
 		}
 	} else if f.IPv6 {
@@ -91,7 +97,7 @@ func CmdRandIP(f CmdRandIPFlags, args []string, printHelp func()) error {
 		if f.EndIP == "" {
 			f.EndIP = "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"
 		}
-		if err := RandIP6RangeListWrite(f.StartIP, f.EndIP, f.N, f.ExcludeRes); err != nil {
+		if err := RandIP6RangeListWrite(f.StartIP, f.EndIP, f.N, f.ExcludeRes, f.Unique); err != nil {
 			return err
 		}
 	}

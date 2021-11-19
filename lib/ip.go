@@ -138,11 +138,12 @@ func RandIP4Range(iprange IP4Range, noBogon bool) (net.IP, error) {
 	}
 
 	// get random IP and adjust it to fit range.
-	randIP := binary.BigEndian.Uint32(RandIP4(noBogon).To4())
-	randIP %= (uint32(iprange.endIP) - uint32(iprange.startIP))
-	randIP += uint32(iprange.startIP)
+	var randIP uint64
+	randIP = uint64(binary.BigEndian.Uint32(RandIP4(noBogon).To4()))
+	randIP %= (uint64(iprange.endIP) - uint64(iprange.startIP)) + 1
+	randIP += uint64(iprange.startIP)
 	randIPbyte := [4]byte{0, 0, 0, 0}
-	binary.BigEndian.PutUint32(randIPbyte[:], randIP)
+	binary.BigEndian.PutUint32(randIPbyte[:], uint32(randIP))
 	return net.IP(randIPbyte[:]), nil
 }
 
@@ -157,22 +158,47 @@ func RandIP4ListWrite(n int, noBogon bool) {
 // `startIP` and `endIP` are the start & end IPs to generate IPs between.
 // `n` is the number of IPs to generate.
 // `noBogon`, if true, will ensure that none of the generated IPs are bogons.
+// `unique`, if true, will ensure every IP generated is unique.
 func RandIP4RangeListWrite(
 	startIP string,
 	endIP string,
 	n int,
 	noBogon bool,
+	unique bool,
 ) error {
 	ipRange, err := NewIP4Range(startIP, endIP)
 	if err != nil {
 		return err
 	}
-	for i := 0; i < n; i++ {
-		ip, err := RandIP4Range(ipRange, noBogon)
-		if err != nil {
-			return err
+	if unique {
+		// ensure range is larger than number of IPs to generate.
+		if uint64(uint64(ipRange.endIP)-uint64(ipRange.startIP)+1) < uint64(n) {
+			return errors.New("range is too small for unique IPs")
 		}
-		fmt.Println(ip)
+
+		uniqueIP := make(map[uint32]struct{})
+		for i := 0; i < n; i++ {
+		unique:
+			ip, err := RandIP4Range(ipRange, noBogon)
+			if err != nil {
+				return err
+			}
+			// does IP already exist? if so try again.
+			ipInt := binary.BigEndian.Uint32(ip)
+			if _, ok := uniqueIP[ipInt]; ok {
+				goto unique
+			}
+			uniqueIP[ipInt] = struct{}{}
+			fmt.Println(ip)
+		}
+	} else {
+		for i := 0; i < n; i++ {
+			ip, err := RandIP4Range(ipRange, noBogon)
+			if err != nil {
+				return err
+			}
+			fmt.Println(ip)
+		}
 	}
 	return nil
 }
@@ -215,6 +241,7 @@ func RandIP6Range(ipRange IP6RangeInt, noBogon bool) net.IP {
 		copy(randIPBytes[16-len(randIPBigIntBytes):], randIPBigIntBytes)
 		return net.IP(randIPBytes[:]).To16()
 	}
+	tmp.Add(tmp, big.NewInt(1))
 	randIP.Mod(randIP, tmp)
 	randIP.Add(randIP, ipRange.startIP)
 	// convert multi-precision byte form into 16-byte IPv6 form.
@@ -240,15 +267,50 @@ func RandIP6ListWrite(n int, noBogon bool) {
 	}
 }
 
-// RandIP6ListWrite prints a list of new randomly generated IPv6 addresses
-// withing starting and ending IPs range.
-func RandIP6RangeListWrite(startIP, endIP string, n int, noBogon bool) error {
+// RandIP6RangeListWrite prints a list of randomly generated IPv6 addresses.
+// `startIP` and `endIP` are the start & end IPs to generate IPs between.
+// `n` is the number of IPs to generate.
+// `noBogon`, if true, will ensure that none of the generated IPs are bogons.
+// `unique`, if true, will ensure every IP generated is unique.
+func RandIP6RangeListWrite(
+	startIP string,
+	endIP string,
+	n int,
+	noBogon bool,
+	unique bool,
+) error {
 	ipRange, err := NewIP6RangeInt(startIP, endIP)
 	if err != nil {
 		return err
 	}
-	for i := 0; i < n; i++ {
-		fmt.Println(RandIP6Range(ipRange, noBogon))
+	if unique {
+		// ensure range is larger than number of IPs to generate.
+		tmp := new(big.Int)
+		tmp.Sub(ipRange.endIP, ipRange.startIP)
+		tmp.Add(tmp, big.NewInt(1))
+		count := new(big.Int).SetUint64(uint64(n))
+		if tmp.Cmp(count) < 0 {
+			return errors.New("range is too small for unique IPs")
+		}
+
+		uniqueIP := make(map[IP6]struct{})
+		for i := 0; i < n; i++ {
+		unique:
+			ip := RandIP6Range(ipRange, noBogon)
+			var ipInt IP6
+			ipInt.N.Hi = binary.BigEndian.Uint64(ip[0:])
+			ipInt.N.Lo = binary.BigEndian.Uint64(ip[8:])
+			// does IP already exist? if so try again.
+			if _, ok := uniqueIP[ipInt]; ok {
+				goto unique
+			}
+			uniqueIP[ipInt] = struct{}{}
+			fmt.Println(ip)
+		}
+	} else {
+		for i := 0; i < n; i++ {
+			fmt.Println(RandIP6Range(ipRange, noBogon))
+		}
 	}
 	return nil
 }
