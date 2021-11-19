@@ -172,7 +172,7 @@ func RandIP4RangeListWrite(
 	}
 	if unique {
 		// ensure range is larger than number of IPs to generate.
-		if uint32(ipRange.endIP-ipRange.startIP+1) < uint32(n) {
+		if uint64(uint64(ipRange.endIP)-uint64(ipRange.startIP)+1) < uint64(n) {
 			return errors.New("range is too small for unique IPs")
 		}
 
