@@ -6,19 +6,22 @@ import (
 	"path/filepath"
 )
 
+func getTokenFilePath() (string, error) {
+	confDir, err := getConfigDir()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(confDir, "token"), nil
+}
+
 func saveToken(tok string) error {
-	// create ipinfo config directory.
-	cdir, err := os.UserConfigDir()
+	tokFilePath, err := getTokenFilePath()
 	if err != nil {
 		return err
 	}
-	iiCdir := filepath.Join(cdir, "ipinfo")
-	if err := os.MkdirAll(iiCdir, 0700); err != nil {
-		return err
-	}
 
-	// open token file.
-	tokFilePath := filepath.Join(iiCdir, "token")
+	// open/create if necessary.
 	tokFile, err := os.OpenFile(
 		tokFilePath,
 		os.O_RDWR|os.O_CREATE|os.O_TRUNC,
@@ -39,12 +42,10 @@ func saveToken(tok string) error {
 }
 
 func deleteToken() error {
-	// get token file path.
-	cdir, err := os.UserConfigDir()
+	tokFilePath, err := getTokenFilePath()
 	if err != nil {
 		return err
 	}
-	tokFilePath := filepath.Join(cdir, "ipinfo", "token")
 
 	// remove token file.
 	if err := os.Remove(tokFilePath); err != nil {
@@ -55,12 +56,11 @@ func deleteToken() error {
 }
 
 func restoreToken() (string, error) {
-	// open token file.
-	cdir, err := os.UserConfigDir()
+	tokFilePath, err := getTokenFilePath()
 	if err != nil {
 		return "", err
 	}
-	tokFilePath := filepath.Join(cdir, "ipinfo", "token")
+
 	tokFile, err := os.Open(tokFilePath)
 	defer tokFile.Close()
 	if err != nil {

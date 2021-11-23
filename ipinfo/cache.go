@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"os"
 	"path/filepath"
 	"reflect"
 	"sort"
@@ -54,18 +53,17 @@ type CacheItemASN struct {
 
 // Returns the path to the cache database file.
 func BoltdbCachePath() (string, error) {
-	path, err := os.UserConfigDir()
+	confDir, err := getConfigDir()
 	if err != nil {
 		return "", err
 	}
 
-	path = filepath.Join(filepath.Join(path, "ipinfo"), "cache.boltdb")
-	return path, nil
+	return filepath.Join(confDir, "cache.boltdb"), nil
 }
 
 // Create a new Boltdb-based cache.
 func NewBoltdbCache() (*BoltdbCache, error) {
-	// get path to database file (<os-dependent-prefix>/ipinfo/cache.boltdb).
+	// get path to database file.
 	path, err := BoltdbCachePath()
 	if err != nil {
 		return nil, err
