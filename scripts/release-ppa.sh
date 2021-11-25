@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Build and upload IPinfo offical PPA.
+# Build and to upload IPinfo offical PPA.
 
 DIR=`dirname $0`
 ROOT=$DIR/..
