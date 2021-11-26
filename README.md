@@ -29,13 +29,18 @@ curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.6.1/macos.sh |
 
 ### Ubuntu PPA
 
+*Note*: this installs our full suite of binaries and keeps them up-to-date.
+
 ```bash
 sudo add-apt-repository ppa:ipinfo/ppa
 sudo apt update
 sudo apt install ipinfo
 ```
 
-### Debian (amd64)
+### Debian / Ubuntu (amd64)
+
+*Note*: this is a one-time installation; updates are not automatic. Use the PPA
+for automatic updates.
 
 ```bash
 curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.6.1/deb.sh | sh
