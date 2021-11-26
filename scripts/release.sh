@@ -54,4 +54,5 @@ gh release create ${CLI}-${VSN}                                               \
     $ROOT/build/${CLI}_${VSN}*.zip                                            \
     $ROOT/build/${CLI}_${VSN}*.deb                                            \
     $ROOT/${CLI}/macos.sh                                                     \
+    $ROOT/${CLI}/windows.ps1                                                  \
     $ROOT/${CLI}/deb.sh
