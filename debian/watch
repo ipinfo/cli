@@ -1,0 +1,5 @@
+version=4
+opts="filenamemangle=s%(?:.*?)?v?(\d[\d.]*)\.tar\.gz%golang-github-ipinfo-cli-$1.tar.gz%,\
+      uversionmangle=s/(\d)[_\.\-\+]?(RC|rc|pre|dev|beta|alpha)[.]?(\d*)$/\$1~\$2\$3/,\
+      dversionmangle=s/\+ds\d*$//,repacksuffix=+ds1" \
+  https://github.com/ipinfo/cli/tags .*/v?(\d\S*)\.tar\.gz debian

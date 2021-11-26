@@ -1,13 +1,6 @@
 .vim/
 tmp/
-ipinfo/dist/
-grepip/dist/
-prips/dist/
-cidr2range/dist/
-cidr2ip/dist/
-range2cidr/dist/
-range2ip/dist/
-randip/dist/
+
 !ipinfo/dist/DEBIAN/
 !grepip/dist/DEBIAN/
 !prips/dist/DEBIAN/
@@ -16,3 +9,11 @@ randip/dist/
 !range2cidr/dist/DEBIAN/
 !range2ip/dist/DEBIAN/
 !randip/dist/DEBIAN/
+ipinfo/dist/
+grepip/dist/
+prips/dist/
+cidr2range/dist/
+cidr2ip/dist/
+range2cidr/dist/
+range2ip/dist/
+randip/dist/

@@ -27,7 +27,15 @@ OR to install the latest `amd64` version without automatic updates:
 curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.6.1/macos.sh | sh
 ```
 
-### Debian / Ubuntu (amd64)
+### Ubuntu PPA
+
+```bash
+sudo add-apt-repository ppa:ipinfo/ppa
+sudo apt update
+sudo apt install ipinfo
+```
+
+### Debian (amd64)
 
 ```bash
 curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.6.1/deb.sh | sh
