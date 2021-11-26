@@ -34,3 +34,4 @@ $VSN = "1.2.0"
  # cleaning files
  Remove-Item -Path ./$ZipFileName
  "You can use cidr2range now"
+ 
