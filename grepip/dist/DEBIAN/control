@@ -1,0 +1,11 @@
+Source: grepip
+Section: utils
+Version: 1.2.1
+Priority: optional
+Maintainer: IPinfo <support@ipinfo.io>
+Vcs-Git: https://github.com/ipinfo/cli
+Vcs-browser: https://github.com/ipinfo/cli
+Homepage: https://ipinfo.io
+Package: grepip
+Architecture: amd64
+Description: A grep-like tool for filtering IPv4 and IPv6 addresses.

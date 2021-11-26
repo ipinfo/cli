@@ -1,0 +1,11 @@
+Source: cidr2range
+Section: utils
+Version: 1.2.0
+Priority: optional
+Maintainer: IPinfo <support@ipinfo.io>
+Vcs-Git: https://github.com/ipinfo/cli
+Vcs-browser: https://github.com/ipinfo/cli
+Homepage: https://ipinfo.io
+Package: cidr2range
+Architecture: amd64
+Description: A simple tool for converting from CIDRs to IP ranges.
