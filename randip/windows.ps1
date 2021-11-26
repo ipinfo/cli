@@ -5,18 +5,32 @@ $FileName ="randip_$($VSN)_windows_amd64"
 $ZipFileName = "$($FileName).zip"
 
 # download and extract zip
-Invoke-WebRequest -Uri "https://github.com/randip/cli/releases/download/randip-$VSN/$FileName.zip" -OutFile ./$ZipFileName
+Invoke-WebRequest -Uri "https://github.com/ipinfo/cli/releases/download/randip-$VSN/$FileName.zip" -OutFile ./$ZipFileName
 Unblock-File ./$ZipFileName
-Expand-Archive -Path ./$ZipFileName  -DestinationPath $env:LOCALAPPDATA\randip -Force
+Expand-Archive -Path ./$ZipFileName  -DestinationPath $env:LOCALAPPDATA\ipinfo -Force
 
 # delete if already exists
-if (Test-Path "$env:LOCALAPPDATA\randip\randip.exe") {
-    Remove-Item "$env:LOCALAPPDATA\randip\randip.exe"
+if (Test-Path "$env:LOCALAPPDATA\ipinfo\randip.exe") {
+    Remove-Item "$env:LOCALAPPDATA\ipinfo\randip.exe"
 }
-Rename-Item -Path "$env:LOCALAPPDATA\randip\$FileName.exe" -NewName "randip.exe"
+Rename-Item -Path "$env:LOCALAPPDATA\ipinfo\$FileName.exe" -NewName "randip.exe"
 
-# setting up env. and cleaning files 
-[System.Environment]::SetEnvironmentVariable("PATH", $Env:Path + ";$env:LOCALAPPDATA\randip", "Machine")
-$env:PATH="$env:PATH;$env:LOCALAPPDATA\randip"
+# setting up env. 
+$PathContent = [Environment]::GetEnvironmentVariable('path', 'Machine')
+$IPinfoPath = "$env:LOCALAPPDATA\ipinfo"
+
+# if Path already exists
+if ($PathContent -ne $null)
+{
+if (-Not($PathContent -split ';'  -contains  $IPinfoPath))
+{
+    [System.Environment]::SetEnvironmentVariable("PATH", $Env:Path + ";$env:LOCALAPPDATA\ipinfo", "Machine")
+}
+}
+else {
+    [System.Environment]::SetEnvironmentVariable("PATH", $Env:Path + ";$env:LOCALAPPDATA\ipinfo", "Machine")
+}
+
+# cleaning files
 Remove-Item -Path ./$ZipFileName
 "You can use randip now"

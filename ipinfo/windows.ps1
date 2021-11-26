@@ -15,8 +15,22 @@ if (Test-Path "$env:LOCALAPPDATA\ipinfo\ipinfo.exe") {
 }
 Rename-Item -Path "$env:LOCALAPPDATA\ipinfo\$FileName.exe" -NewName "ipinfo.exe"
 
-# setting up env. and cleaning files 
-[System.Environment]::SetEnvironmentVariable("PATH", $Env:Path + ";$env:LOCALAPPDATA\ipinfo", "Machine")
-$env:PATH="$env:PATH;$env:LOCALAPPDATA\ipinfo"
+# setting up env. 
+$PathContent = [Environment]::GetEnvironmentVariable('path', 'Machine')
+$IPinfoPath = "$env:LOCALAPPDATA\ipinfo"
+
+# if Path already exists
+if ($PathContent -ne $null)
+{
+  if (-Not($PathContent -split ';'  -contains  $IPinfoPath))
+  {
+    [System.Environment]::SetEnvironmentVariable("PATH", $Env:Path + ";$env:LOCALAPPDATA\ipinfo", "Machine")
+  }
+}
+else {
+    [System.Environment]::SetEnvironmentVariable("PATH", $Env:Path + ";$env:LOCALAPPDATA\ipinfo", "Machine")
+}
+
+# cleaning files
 Remove-Item -Path ./$ZipFileName
 "You can use ipinfo now"
