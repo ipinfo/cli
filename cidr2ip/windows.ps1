@@ -32,4 +32,3 @@ else {
 # cleaning files
 Remove-Item -Path ./$ZipFileName
 "You can use cidr2ip now."
-    
