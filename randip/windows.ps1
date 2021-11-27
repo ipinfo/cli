@@ -1,7 +1,7 @@
 $VSN = "1.1.0"
 
 # build the filename for the Zip archive and exe file
-$FileName ="randip_$($VSN)_windows_amd64"
+$FileName = "randip_$($VSN)_windows_amd64"
 $ZipFileName = "$($FileName).zip"
 
 # download and extract zip
@@ -20,12 +20,10 @@ $PathContent = [Environment]::GetEnvironmentVariable('path', 'Machine')
 $IPinfoPath = "$env:LOCALAPPDATA\ipinfo"
 
 # if Path already exists
-if ($PathContent -ne $null)
-{
-if (-Not($PathContent -split ';'  -contains  $IPinfoPath))
-{
-    [System.Environment]::SetEnvironmentVariable("PATH", $Env:Path + ";$env:LOCALAPPDATA\ipinfo", "Machine")
-}
+if ($PathContent -ne $null) {
+    if (-Not($PathContent -split ';' -contains $IPinfoPath)) {
+        [System.Environment]::SetEnvironmentVariable("PATH", $Env:Path + ";$env:LOCALAPPDATA\ipinfo", "Machine")
+    }
 }
 else {
     [System.Environment]::SetEnvironmentVariable("PATH", $Env:Path + ";$env:LOCALAPPDATA\ipinfo", "Machine")
@@ -33,4 +31,4 @@ else {
 
 # cleaning files
 Remove-Item -Path ./$ZipFileName
-"You can use randip now"
+"You can use randip now."
