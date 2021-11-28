@@ -15,14 +15,6 @@ allowing you to:
 
 The `ipinfo` CLI is available for download via multiple mechanisms.
 
-### Windows Powershell
-
-*Note*: run powershell as administrator before executing this command.
-
-```bash
-iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-2.6.1/windows.ps1 | iex
-```
-
 ### macOS
 
 ```bash
@@ -52,6 +44,14 @@ for automatic updates.
 
 ```bash
 curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.6.1/deb.sh | sh
+```
+
+### Windows Powershell
+
+*Note*: run powershell as administrator before executing this command.
+
+```bash
+iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-2.6.1/windows.ps1 | iex
 ```
 
 ### FreeBSD
