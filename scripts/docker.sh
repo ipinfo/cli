@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Build and upload (to Dockerhub) for cli $1 & version $2.
-# run this script with sudo 
-# note: docker should be loggedin in your terminal before running this script
+# Build (and optionally upload to Dockerhub) for CLI $1 & version $2.
+# additionally --release, -r to release container to Dockerhub
+# note: if you want to release as well, you should be logged in with `docker`.
 
 set -e
 
@@ -11,6 +11,7 @@ ROOT=$DIR/..
 
 CLI=$1
 VSN=$2
+RELEASE=$3
 
 if [ -z "$CLI" ]; then
     echo "require cli as first parameter" 2>&1
@@ -24,6 +25,7 @@ fi
 
 
 # build
+# disable CGO to make static binary
 CGO_ENABLED=0 go build                                                        \
     -o $ROOT/${CLI}/build/$CLI                                                \
     $ROOT/${CLI}
@@ -31,8 +33,10 @@ CGO_ENABLED=0 go build                                                        \
 # docker container
 sudo docker build --tag ipinfo/$CLI:$VSN $ROOT/$CLI/
 
-# push on docker hub
-docker push ipinfo/$CLI:$VSN
+if [ "$RELEASE" = "-r" ] || [ "$RELEASE" = "--release" ]; then
+    # push on docker hub
+    sudo docker push ipinfo/$CLI:$VSN
 
-# cleanup 
-sudo rm -rf $ROOT/$CLI/build
+    # cleanup 
+    rm -rf $ROOT/$CLI/build
+fi

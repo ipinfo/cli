@@ -53,6 +53,7 @@ curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.6.1/deb.sh | s
 ```bash
 iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-2.6.1/windows.ps1 | iex
 ```
+
 ### Docker
 
 ```bash

@@ -8,5 +8,6 @@ DIR=`dirname $0`
 ROOT=$DIR/..
 
 VSN=$1
+RELEASE=$2
 
-$ROOT/scripts/docker.sh "prips" $VSN
+$ROOT/scripts/docker.sh "prips" $VSN $RELEASE
