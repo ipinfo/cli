@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Build (and optionally upload to Dockerhub) for CLI $1 & version $2.
-# additionally --release, -r to release container to Dockerhub
+# version ($2) will be set to `latest` in case not provided.
+# additionally --release, -r to release container to Dockerhub.
 # note: if you want to release as well, you should be logged in with `docker`.
 
 set -e
@@ -19,8 +20,7 @@ if [ -z "$CLI" ]; then
 fi
 
 if [ -z "$VSN" ]; then
-    echo "require version as second parameter" 2>&1
-    exit 1
+    VSN="latest"
 fi
 
 
@@ -33,10 +33,10 @@ CGO_ENABLED=0 go build                                                        \
 # docker container
 sudo docker build --tag ipinfo/$CLI:$VSN $ROOT/$CLI/
 
+# cleanup 
+rm -r $ROOT/$CLI/build
+
 if [ "$RELEASE" = "-r" ] || [ "$RELEASE" = "--release" ]; then
     # push on docker hub
     sudo docker push ipinfo/$CLI:$VSN
-
-    # cleanup 
-    rm -rf $ROOT/$CLI/build
 fi

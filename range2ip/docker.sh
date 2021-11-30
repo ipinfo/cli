@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Build and upload (to Dockerhub) for all platforms for version $1.
+# Use `-r` or `--release` after the version to also push to Dockerhub.
 
 set -e
 
