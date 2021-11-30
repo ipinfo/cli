@@ -31,12 +31,12 @@ CGO_ENABLED=0 go build                                                        \
     $ROOT/${CLI}
 
 # docker container
-sudo docker build --tag ipinfo/$CLI:$VSN $ROOT/$CLI/
+docker build --tag ipinfo/$CLI:$VSN $ROOT/$CLI/
 
 # cleanup 
 rm -r $ROOT/$CLI/build
 
 if [ "$RELEASE" = "-r" ] || [ "$RELEASE" = "--release" ]; then
     # push on docker hub
-    sudo docker push ipinfo/$CLI:$VSN
+    docker push ipinfo/$CLI:$VSN
 fi
