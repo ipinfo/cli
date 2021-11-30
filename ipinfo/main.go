@@ -18,6 +18,9 @@ var fHelp bool
 var fNoCache bool
 var fNoColor bool
 
+// global config.
+var gConfig Config
+
 func main() {
 	var err error
 	var cmd string
@@ -65,6 +68,8 @@ func main() {
 		err = cmdRandIP()
 	case cmd == "cache":
 		err = cmdCache()
+	case cmd == "config":
+		err = cmdConfig()
 	case cmd == "login":
 		err = cmdLogin()
 	case cmd == "logout":
