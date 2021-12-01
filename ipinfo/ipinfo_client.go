@@ -14,7 +14,7 @@ func prepareIpinfoClient(tok string) *ipinfo.Client {
 
 	// get token from persistent store.
 	if tok == "" {
-		tok, _ = restoreToken()
+		tok = restoreToken()
 	}
 
 	var cache *ipinfo.Cache

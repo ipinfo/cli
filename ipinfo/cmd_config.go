@@ -9,15 +9,23 @@ import (
 
 func printHelpConfig() {
 	fmt.Printf(
-		`Usage: %s config [<opts>=<enable | disable>]
+		`Usage: %s config [<key>=<value>]
 
-Options:
-    cache=<enable| disable>
-    enable or disable cache in config file
-  --help, -h
-    show help.
+Discription:
+    Change the configurations.
+    note: In token configuration, validity will not be checked.
+
 Examples:
     %[1]s config cache=disable
+    %[1]s config token=testtoken
+
+Options:
+    --help, -h
+    show help.
+
+Configurations:
+    cache=<enable| disable>
+    token=<tok>
 `, progBase)
 }
 
@@ -43,7 +51,7 @@ func cmdConfig() error {
 	arg := pflag.Arg(1)
 	configStr := strings.Split(arg, "=")
 	if len(configStr) != 2 {
-		if configStr[0] == "cache" {
+		if configStr[0] == "cache" || configStr[0] == "token" {
 			fmt.Printf("err: no value provided for %s\n\n", configStr[0])
 			printHelpConfig()
 			return nil
@@ -72,6 +80,9 @@ func cmdConfig() error {
 			printHelpConfig()
 			return nil
 		}
+	case "token":
+		saveToken(configStr[1])
+
 	default:
 		fmt.Printf("err: invalid argument %s\n\n", configStr[0])
 		printHelpConfig()

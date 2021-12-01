@@ -13,7 +13,8 @@ import (
 var gConfig Config
 
 type Config struct {
-	Cache bool `json:"cache"`
+	Cache bool   `json:"cache"`
+	Token string `json:"token"`
 }
 
 // gets the global config directory, creating it if necessary.
@@ -60,6 +61,7 @@ func ConfigPath() (string, error) {
 func NewConfig() Config {
 	return Config{
 		Cache: true,
+		Token: "",
 	}
 }
 
