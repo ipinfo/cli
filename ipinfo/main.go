@@ -18,9 +18,6 @@ var fHelp bool
 var fNoCache bool
 var fNoColor bool
 
-// global config.
-var gConfig Config
-
 func main() {
 	var err error
 	var cmd string

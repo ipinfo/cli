@@ -31,6 +31,7 @@ Commands:
   range2ip    convert IP ranges to individual IPs within those ranges.
   randip      Generates random IPs.
   cache       manage the cache.
+  config      manage the config.
   login       save an API token session.
   logout      delete your current API token session.
   completion  install or output shell auto-completion script.

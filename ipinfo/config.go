@@ -3,13 +3,32 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 
 	"github.com/ipinfo/cli/lib"
 )
 
+// global config.
+var gConfig Config
+
 type Config struct {
-	GlobalCache bool
+	Cache bool
+}
+
+// gets the global config directory, creating it if necessary.
+func getConfigDir() (string, error) {
+	cdir, err := os.UserConfigDir()
+	if err != nil {
+		return "", err
+	}
+
+	confDir := filepath.Join(cdir, "ipinfo")
+	if err := os.MkdirAll(confDir, 0700); err != nil {
+		return "", err
+	}
+
+	return confDir, nil
 }
 
 // init function
@@ -18,9 +37,12 @@ func InitConfig() error {
 	if err != nil {
 		return err
 	}
+
 	if !lib.FileExists(path) {
-		gConfig.GlobalCache = true
-		SetConfig(gConfig)
+		err := SetConfig(NewConfig())
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -34,16 +56,25 @@ func ConfigPath() (string, error) {
 	return filepath.Join(confDir, "config.json"), nil
 }
 
+// returns config file with default settings.
+func NewConfig() Config {
+	return Config{
+		Cache: true,
+	}
+}
+
 // set the values of config.
 func SetConfig(config Config) error {
 	configPath, err := ConfigPath()
 	if err != nil {
 		return err
 	}
+
 	jsonFile, err := json.Marshal(config)
 	if err != nil {
 		return err
 	}
+
 	err = ioutil.WriteFile(configPath, jsonFile, 0644)
 	if err != nil {
 		return err
@@ -57,14 +88,16 @@ func GetConfig() (Config, error) {
 	if err != nil {
 		return Config{}, err
 	}
+
 	file, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		return Config{}, err
 	}
-	var setting Config
-	err = json.Unmarshal(file, &setting)
+
+	var config Config
+	err = json.Unmarshal(file, &config)
 	if err != nil {
 		return Config{}, err
 	}
-	return Config{GlobalCache: setting.GlobalCache}, nil
+	return config, nil
 }

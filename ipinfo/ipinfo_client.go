@@ -17,10 +17,8 @@ func prepareIpinfoClient(tok string) *ipinfo.Client {
 		tok, _ = restoreToken()
 	}
 
-	// attempt to init cache; don't force require it, though.
 	var cache *ipinfo.Cache
-
-	if gConfig.GlobalCache && !fNoCache {
+	if gConfig.Cache && !fNoCache {
 		boltdbCache, err := NewBoltdbCache()
 		if err != nil {
 			fmt.Printf("warn: cache will not be used: %v", err)
