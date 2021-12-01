@@ -13,7 +13,7 @@ import (
 var gConfig Config
 
 type Config struct {
-	Cache bool
+	Cache bool `json:"cache"`
 }
 
 // gets the global config directory, creating it if necessary.
