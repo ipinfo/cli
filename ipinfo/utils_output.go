@@ -246,6 +246,7 @@ func outputFieldBatchCore(
 		}
 		if !hasIPField {
 			fmt.Printf("ip,")
+			fields = append([]string{"ip"}, fields...)
 		}
 	}
 
@@ -433,6 +434,7 @@ func outputFieldBatchASNDetails(
 		}
 		if !hasASNIdField {
 			fmt.Printf("id,")
+			fields = append([]string{"id"}, fields...)
 		}
 	}
 
