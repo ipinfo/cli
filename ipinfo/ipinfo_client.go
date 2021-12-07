@@ -14,11 +14,11 @@ func prepareIpinfoClient(tok string) *ipinfo.Client {
 
 	// get token from persistent store.
 	if tok == "" {
-		tok = restoreToken()
+		tok = gConfig.Token
 	}
 
 	var cache *ipinfo.Cache
-	if gConfig.Cache && !fNoCache {
+	if gConfig.CacheEnabled && !fNoCache {
 		boltdbCache, err := NewBoltdbCache()
 		if err != nil {
 			fmt.Printf("warn: cache will not be used: %v", err)

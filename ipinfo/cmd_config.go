@@ -9,84 +9,66 @@ import (
 
 func printHelpConfig() {
 	fmt.Printf(
-		`Usage: %s config [<key>=<value>]
+		`Usage: %s config [<key>=<value>...]
 
-Discription:
-    Change the configurations.
-    note: In token configuration, validity will not be checked.
+Description:
+  Change the configurations.
 
 Examples:
-    %[1]s config cache=disable
-    %[1]s config token=testtoken
+  $ %[1]s config cache=disable
+  $ %[1]s config token=testtoken cahce=enable
 
 Options:
-    --help, -h
+  --help, -h
     show help.
 
 Configurations:
-    cache=<enable| disable>
-    token=<tok>
+  cache=<enable | disable>
+    Control whether the cache is enabled or disabled.
+  token=<tok>
+    Save a token for use when querying the API.
+    (Token will not be validated).
 `, progBase)
 }
 
 func cmdConfig() error {
-	var fCache string
 	var fHelp bool
 
-	pflag.StringVarP(&fCache, "cache", "c", "", "cache enable | disable.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.Parse()
 
-	if fHelp {
+	// get args for config and parsing it.
+	args := pflag.Args()[1:]
+	if fHelp || len(args) < 1 {
 		printHelpConfig()
 		return nil
 	}
-
-	if len(pflag.Args()) < 2 {
-		printHelpConfig()
-		return nil
-	}
-
-	// get arg for config and parsing it.
-	arg := pflag.Arg(1)
-	configStr := strings.Split(arg, "=")
-	if len(configStr) != 2 {
-		if configStr[0] == "cache" || configStr[0] == "token" {
-			fmt.Printf("err: no value provided for %s\n\n", configStr[0])
-			printHelpConfig()
-			return nil
+	for _, arg := range args {
+		configStr := strings.Split(arg, "=")
+		if len(configStr) != 2 {
+			if configStr[0] == "cache" || configStr[0] == "token" {
+				return fmt.Errorf("err: no value provided for key %s", configStr[0])
+			}
+			return fmt.Errorf("err: invalid key argument %s", configStr[0])
 		}
-		fmt.Printf("err: invalid argument %s\n\n", configStr[0])
-		printHelpConfig()
-		return nil
-	}
-	switch strings.ToLower(configStr[0]) {
-	case "cache":
-		switch strings.ToLower(configStr[1]) {
-		case "enable":
-			gConfig.Cache = true
-			err := SetConfig(gConfig)
-			if err != nil {
-				return err
+		switch strings.ToLower(configStr[0]) {
+		case "cache":
+			switch strings.ToLower(configStr[1]) {
+			case "enable":
+				gConfig.CacheEnabled = true
+			case "disable":
+				gConfig.CacheEnabled = false
+			default:
+				return fmt.Errorf("err: invalid value %s for key cache", configStr[1])
 			}
-		case "disable":
-			gConfig.Cache = false
-			err := SetConfig(gConfig)
-			if err != nil {
-				return err
-			}
+		case "token":
+			gConfig.Token = configStr[1]
 		default:
-			fmt.Printf("err: %s invalid value for %s\n\n", configStr[1], configStr[0])
-			printHelpConfig()
-			return nil
+			return fmt.Errorf("err: invalid key argument %s", configStr[0])
 		}
-	case "token":
-		saveToken(configStr[1])
-
-	default:
-		fmt.Printf("err: invalid argument %s\n\n", configStr[0])
-		printHelpConfig()
-		return nil
+	}
+	if err := SaveConfig(gConfig); err != nil {
+		return err
 	}
 	return nil
 }

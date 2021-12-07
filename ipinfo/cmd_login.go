@@ -102,7 +102,8 @@ func cmdLogin() error {
 	}
 
 	// save token to file.
-	if err := saveToken(tok); err != nil {
+	gConfig.Token = tok
+	if err := SaveConfig(gConfig); err != nil {
 		return err
 	}
 
