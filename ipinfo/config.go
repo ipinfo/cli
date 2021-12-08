@@ -43,6 +43,8 @@ func ConfigPath() (string, error) {
 }
 
 // returns the path to the token file.
+//
+// might be deleted in future release as `token` file is deprecated.
 func TokenPath() (string, error) {
 	confDir, err := getConfigDir()
 	if err != nil {
@@ -58,14 +60,28 @@ func InitConfig() error {
 		return err
 	}
 
-	tokenpath, err := TokenPath()
-	if err != nil {
-		return err
-	}
-
 	// create default config if none yet.
 	if !lib.FileExists(configpath) {
 		gConfig = NewConfig()
+
+		tokenpath, err := TokenPath()
+		if err != nil {
+			return err
+		}
+
+		// if token exists, migrate it to the config file.
+		if lib.FileExists(tokenpath) {
+			token, err := ReadTokenFile()
+			if err != nil {
+				return err
+			}
+			gConfig.Token = token
+
+			// remove the existing token file
+			if err := os.Remove(tokenpath); err != nil {
+				return err
+			}
+		}
 	} else {
 		config, err := ReadConfig()
 		if err != nil {
@@ -74,19 +90,6 @@ func InitConfig() error {
 		gConfig = config
 	}
 
-	// if token exists, migrate it to config file.
-	if lib.FileExists(tokenpath) {
-		token, err := TokentoConfig()
-		if err != nil {
-			return err
-		}
-		gConfig.Token = token
-
-		// remove the existing token file
-		if err := os.Remove(tokenpath); err != nil {
-			return err
-		}
-	}
 	if err := SaveConfig(gConfig); err != nil {
 		return err
 	}
@@ -102,14 +105,15 @@ func NewConfig() Config {
 	}
 }
 
-// migration of token to config file.
+// reads `token` file for migration of token to config file.
 //
-// might be deleted in future release.
-func TokentoConfig() (string, error) {
+// might be deleted in future release as `token` file is deprecated.
+func ReadTokenFile() (string, error) {
 	path, err := TokenPath()
 	if err != nil {
 		return "", err
 	}
+
 	token, err := ioutil.ReadFile(path)
 	if err != nil {
 		return "", err
@@ -130,7 +134,7 @@ func SaveConfig(config Config) error {
 		return err
 	}
 
-	if err = ioutil.WriteFile(configPath, jsonData, 0644); err != nil {
+	if err := ioutil.WriteFile(configPath, jsonData, 0644); err != nil {
 		return err
 	}
 
@@ -150,7 +154,7 @@ func ReadConfig() (Config, error) {
 	}
 
 	var config Config
-	if err = json.Unmarshal(data, &config); err != nil {
+	if err := json.Unmarshal(data, &config); err != nil {
 		return Config{}, err
 	}
 

@@ -16,7 +16,7 @@ Description:
 
 Examples:
   $ %[1]s config cache=disable
-  $ %[1]s config token=testtoken cahce=enable
+  $ %[1]s config token=testtoken cache=enable
 
 Options:
   --help, -h
@@ -45,21 +45,23 @@ func cmdConfig() error {
 	}
 	for _, arg := range args {
 		configStr := strings.Split(arg, "=")
+		key := strings.ToLower(configStr[0])
 		if len(configStr) != 2 {
-			if configStr[0] == "cache" || configStr[0] == "token" {
-				return fmt.Errorf("err: no value provided for key %s", configStr[0])
+			if key == "cache" || key == "token" {
+				return fmt.Errorf("err: no value provided for key %s", key)
 			}
-			return fmt.Errorf("err: invalid key argument %s", configStr[0])
+			return fmt.Errorf("err: invalid key argument %s", key)
 		}
-		switch strings.ToLower(configStr[0]) {
+		switch key {
 		case "cache":
-			switch strings.ToLower(configStr[1]) {
+			val := strings.ToLower(configStr[1])
+			switch val {
 			case "enable":
 				gConfig.CacheEnabled = true
 			case "disable":
 				gConfig.CacheEnabled = false
 			default:
-				return fmt.Errorf("err: invalid value %s for key cache", configStr[1])
+				return fmt.Errorf("err: invalid value %s; cache must be 'enabled' or disabled", val)
 			}
 		case "token":
 			gConfig.Token = configStr[1]
@@ -67,8 +69,11 @@ func cmdConfig() error {
 			return fmt.Errorf("err: invalid key argument %s", configStr[0])
 		}
 	}
+
+	// save config in bulk.
 	if err := SaveConfig(gConfig); err != nil {
 		return err
 	}
+
 	return nil
 }

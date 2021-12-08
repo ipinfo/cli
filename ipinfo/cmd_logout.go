@@ -35,10 +35,14 @@ func cmdLogout() error {
 	}
 
 	// delete but don't return an error; just log it.
-	gConfig.Token = ""
-	if err := SaveConfig(gConfig); err != nil {
+	if gConfig.Token == "" {
 		fmt.Println("not logged in")
 		return nil
+	}
+
+	gConfig.Token = ""
+	if err := SaveConfig(gConfig); err != nil {
+		return err
 	}
 
 	fmt.Println("logged out")
