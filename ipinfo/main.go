@@ -65,6 +65,8 @@ func main() {
 		err = cmdRandIP()
 	case cmd == "cache":
 		err = cmdCache()
+	case cmd == "config":
+		err = cmdConfig()
 	case cmd == "login":
 		err = cmdLogin()
 	case cmd == "logout":
