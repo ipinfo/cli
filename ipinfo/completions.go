@@ -21,6 +21,7 @@ var completions = &complete.Command{
 		"cache":      completionsCache,
 		"login":      completionsLogin,
 		"logout":     completionsLogout,
+		"config":     completionsConfig,
 		"completion": completionsCompletion,
 		"version":    completionsVersion,
 	},

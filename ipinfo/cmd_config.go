@@ -4,8 +4,17 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/ipinfo/cli/lib/complete"
+	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/spf13/pflag"
 )
+
+var completionsConfig = &complete.Command{
+	Flags: map[string]complete.Predictor{
+		"-h":     predict.Nothing,
+		"--help": predict.Nothing,
+	},
+}
 
 func printHelpConfig() {
 	fmt.Printf(
