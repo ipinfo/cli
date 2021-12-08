@@ -34,7 +34,7 @@ func cmdLogout() error {
 		return nil
 	}
 
-	// delete but don't return an error; just log it.
+	// checks if not logged in.
 	if gConfig.Token == "" {
 		fmt.Println("not logged in")
 		return nil
