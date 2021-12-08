@@ -1,4 +1,4 @@
-$VSN = "2.6.1"
+$VSN = "2.7.0"
 
 # build the filename for the Zip archive and exe file
 $FileName = "ipinfo_$($VSN)_windows_amd64"

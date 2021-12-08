@@ -24,7 +24,7 @@ brew install ipinfo-cli
 OR to install the latest `amd64` version without automatic updates:
 
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.6.1/macos.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/macos.sh | sh
 ```
 
 ### Ubuntu PPA
@@ -43,7 +43,7 @@ sudo apt install ipinfo
 for automatic updates.
 
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.6.1/deb.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/deb.sh | sh
 ```
 
 ### Windows Powershell
@@ -51,13 +51,13 @@ curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.6.1/deb.sh | s
 *Note*: run powershell as administrator before executing this command.
 
 ```bash
-iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-2.6.1/windows.ps1 | iex
+iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/windows.ps1 | iex
 ```
 
 ### Docker
 
 ```bash
-docker run ipinfo/ipinfo:2.6.1
+docker run ipinfo/ipinfo:2.7.0
 ```
 
 ### FreeBSD
@@ -69,8 +69,8 @@ cd /usr/ports/net/ipinfo-cli && make install clean
 OR
 
 ```bash
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.6.1/ipinfo_2.6.1.deb
-sudo dpkg -i ipinfo_2.6.1.deb
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/ipinfo_2.7.0.deb
+sudo dpkg -i ipinfo_2.7.0.deb
 ```
 
 ### Using `go get`
@@ -121,12 +121,12 @@ After choosing a platform `PLAT` from above, run:
 
 ```bash
 # for Windows, use ".zip" instead of ".tar.gz"
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.6.1/ipinfo_2.6.1_${PLAT}.tar.gz
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/ipinfo_2.7.0_${PLAT}.tar.gz
 # OR
-wget https://github.com/ipinfo/cli/releases/download/ipinfo-2.6.1/ipinfo_2.6.1_${PLAT}.tar.gz
+wget https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/ipinfo_2.7.0_${PLAT}.tar.gz
 
-tar -xvf ipinfo_2.6.1_${PLAT}.tar.gz
-mv ipinfo_2.6.1_${PLAT} /usr/local/bin/ipinfo
+tar -xvf ipinfo_2.7.0_${PLAT}.tar.gz
+mv ipinfo_2.7.0_${PLAT} /usr/local/bin/ipinfo
 ```
 
 ### Using `git`
