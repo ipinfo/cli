@@ -46,18 +46,11 @@ for automatic updates.
 curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/deb.sh | sh
 ```
 
-### Windows Powershell
-
-*Note*: run powershell as administrator before executing this command.
+OR
 
 ```bash
-iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/windows.ps1 | iex
-```
-
-### Docker
-
-```bash
-docker run ipinfo/ipinfo:2.7.0
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/ipinfo_2.7.0.deb
+sudo dpkg -i ipinfo_2.7.0.deb
 ```
 
 ### FreeBSD
@@ -73,11 +66,18 @@ git clone https://aur.archlinux.org/ipinfo-cli.git
 makepkg -si
 ```
 
-OR
+### Windows Powershell
+
+*Note*: run powershell as administrator before executing this command.
 
 ```bash
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/ipinfo_2.7.0.deb
-sudo dpkg -i ipinfo_2.7.0.deb
+iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/windows.ps1 | iex
+```
+
+### Docker
+
+```bash
+docker run ipinfo/ipinfo:2.7.0
 ```
 
 ### Using `go get`
