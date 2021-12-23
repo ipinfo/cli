@@ -66,6 +66,13 @@ docker run ipinfo/ipinfo:2.7.0
 cd /usr/ports/net/ipinfo-cli && make install clean
 ```
 
+### Arch linux
+
+```bash
+git clone https://aur.archlinux.org/ipinfo-cli.git
+makepkg -si
+```
+
 OR
 
 ```bash
