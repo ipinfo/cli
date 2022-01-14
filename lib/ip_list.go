@@ -60,6 +60,21 @@ func IPListFrom(
 			continue
 		}
 
+		// Use FQDN here
+		// According to main.go, this is how
+		// you know a string is a FQDN
+		isFQDN := len(input) >= 3 && strings.IndexByte(input, '.') != -1
+		if ip && isFQDN {
+			// Get the IP address(es) of the domains
+			inputIps, err := net.LookupIP(input)
+			if err != nil {
+				continue
+			}
+			// Append the first IP of the domain
+			ips = append(ips, inputIps[0])
+			continue
+		}
+
 		if cidr && StrIsCIDRStr(input) {
 			_ips, _ := IPListFromCIDR(input)
 			ips = append(ips, _ips...)
