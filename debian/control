@@ -1,0 +1,15 @@
+Source: ipinfo
+Maintainer: IPinfo <support@ipinfo.io>
+Section: utils
+Priority: optional
+Build-Depends: debhelper-compat (= 12),
+               dh-golang,
+               golang-1.16
+Vcs-Git: https://github.com/ipinfo/cli
+Vcs-browser: https://github.com/ipinfo/cli
+Homepage: https://ipinfo.io
+XS-Go-Import-Path: github.com/ipinfo/cli
+
+Package: ipinfo
+Architecture: any
+Description: This is the official CLI for the IPinfo IP Address API.

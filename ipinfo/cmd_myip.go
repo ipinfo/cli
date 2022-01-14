@@ -14,6 +14,7 @@ var completionsMyIP = &complete.Command{
 	Flags: map[string]complete.Predictor{
 		"-t":        predict.Nothing,
 		"--token":   predict.Nothing,
+		"--nocache": predict.Nothing,
 		"-h":        predict.Nothing,
 		"--help":    predict.Nothing,
 		"-f":        predict.Set(coreFields),
@@ -36,13 +37,16 @@ Options:
   General:
     --token <tok>, -t <tok>
       use <tok> as API token.
+    --nocache
+      do not use the cache.
     --help, -h
       show help.
 
   Outputs:
     --field <field>, -f <field>
-      lookup only a specific field in the output.
+      lookup only specific fields in the output.
       field names correspond to JSON keys, e.g. 'hostname' or 'company.type'.
+      multiple field names must be separated by commas.
     --nocolor
       disable colored output.
 
@@ -58,16 +62,15 @@ Options:
 
 func cmdMyIP() error {
 	var fTok string
-	var fHelp bool
-	var fField string
+	var fField []string
 	var fPretty bool
 	var fJSON bool
 	var fCSV bool
-	var fNoColor bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
+	pflag.BoolVar(&fNoCache, "nocache", false, "disable the cache.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
-	pflag.StringVarP(&fField, "field", "f", "", "specific field to lookup.")
+	pflag.StringSliceVarP(&fField, "field", "f", nil, "specific field to lookup.")
 	pflag.BoolVarP(&fPretty, "pretty", "p", true, "output pretty format.")
 	pflag.BoolVarP(&fJSON, "json", "j", false, "output JSON format.")
 	pflag.BoolVarP(&fCSV, "csv", "c", false, "output CSV format.")
@@ -89,10 +92,10 @@ func cmdMyIP() error {
 		return err
 	}
 
-	if fField != "" {
+	if len(fField) > 0 {
 		d := make(ipinfo.BatchCore, 1)
 		d[data.IP.String()] = data
-		return outputFieldBatchCore(d, fField, false, true)
+		return outputFieldBatchCore(d, fField, false, false)
 	}
 	if fJSON {
 		return outputJSON(data)

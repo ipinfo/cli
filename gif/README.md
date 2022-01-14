@@ -1,5 +1,5 @@
 This folder contains all the metadata needed to produce the `.gif` files used
 in the root README.
 
-The program used to process the metadata is
-https://github.com/faressoft/terminalizer.
+`Asciinema` is used to generate the `.cast` files. These `.cast` files are rendered into 
+gifs with https://dstein64.github.io/gifcast/.

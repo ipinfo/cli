@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/fatih/color"
 	"github.com/ipinfo/go/v2/ipinfo"
@@ -42,7 +43,9 @@ var coreFields = []string{
 	"privacy.vpn",
 	"privacy.proxy",
 	"privacy.tor",
+	"privacy.relay",
 	"privacy.hosting",
+	"privacy.service",
 	"abuse",
 	"abuse.address",
 	"abuse.country",
@@ -56,6 +59,8 @@ var coreFields = []string{
 }
 
 var asnFields = []string{
+	"id",
+	"asn",
 	"name",
 	"country",
 	"country_name",
@@ -174,7 +179,9 @@ func outputFriendlyCore(d *ipinfo.Core) {
 		printline("VPN", fmt.Sprintf("%v", d.Privacy.VPN))
 		printline("Proxy", fmt.Sprintf("%v", d.Privacy.Proxy))
 		printline("Tor", fmt.Sprintf("%v", d.Privacy.Tor))
+		printline("Relay", fmt.Sprintf("%v", d.Privacy.Relay))
 		printline("Hosting", fmt.Sprintf("%v", d.Privacy.Hosting))
+		printline("Service", fmt.Sprintf("%v", d.Privacy.Service))
 	}
 	if d.Abuse != nil {
 		fmt.Println()
@@ -207,718 +214,187 @@ func outputFriendlyCore(d *ipinfo.Core) {
 
 func outputFieldBatchCore(
 	core ipinfo.BatchCore,
-	field string,
+	fields []string,
 	header bool,
-	fieldOnly bool,
+	inclIP bool,
 ) error {
-	csvWriter := csv.NewWriter(os.Stdout)
-	csvEnc := csvutil.NewEncoder(csvWriter)
-	csvEnc.AutoHeader = false
+	// error on bad field.
+	for _, f := range fields {
+		hasField := false
+		for _, coreF := range coreFields {
+			if coreF == f {
+				hasField = true
+				break
+			}
+		}
+		if !hasField {
+			errStr := "field '%v' is invalid; the following are allowed:"
+			errStr += "  " + strings.Join(coreFields, "\n  ")
+			return fmt.Errorf(errStr, f)
+		}
+	}
 
-	// TODO the dread of not having macros... we can simplify code length here
-	// with reflection but until then this will have to do.
-	switch field {
-	case "ip":
-		if header {
-			fmt.Printf("ip\n")
-		}
-
-		for _, d := range core {
-			fmt.Printf("%v\n", d.IP)
-		}
-	case "hostname":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
+	// see if we should include IP as well.
+	if header && inclIP {
+		// only include it automatically if not already specified in list.
+		hasIPField := false
+		for _, f := range fields {
+			if f == "ip" {
+				hasIPField = true
+				break
 			}
-			fmt.Printf("hostname\n")
 		}
-
-		for _, d := range core {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Hostname)
-		}
-	case "anycast":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("anycast\n")
-		}
-
-		for _, d := range core {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Anycast)
-		}
-	case "city":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("city\n")
-		}
-
-		for _, d := range core {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.City)
-		}
-	case "region":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("region\n")
-		}
-
-		for _, d := range core {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Region)
-		}
-	case "country":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("country\n")
-		}
-
-		for _, d := range core {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Country)
-		}
-	case "country_name":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("country_name\n")
-		}
-
-		for _, d := range core {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.CountryName)
-		}
-	case "loc":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("loc\n")
-		}
-
-		for _, d := range core {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Location)
-		}
-	case "org":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("org\n")
-		}
-
-		for _, d := range core {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Org)
-		}
-	case "postal":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("postal\n")
-		}
-
-		for _, d := range core {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Postal)
-		}
-	case "timezone":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("timezone\n")
-		}
-
-		for _, d := range core {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Timezone)
-		}
-	case "asn":
-		if !fieldOnly {
+		if !hasIPField {
 			fmt.Printf("ip,")
+			fields = append([]string{"ip"}, fields...)
 		}
-		if err := csvEnc.EncodeHeader(ipinfo.CoreASN{}); err != nil {
-			return err
-		}
-		csvWriter.Flush()
+	}
 
-		for _, d := range core {
-			if d.ASN == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			if err := csvEnc.Encode(d.ASN); err != nil {
-				return err
-			}
-			csvWriter.Flush()
-		}
-	case "asn.id":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("asn_id\n")
-		}
-
-		for _, d := range core {
-			if d.ASN == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.ASN.ASN)
-		}
-	case "asn.name", "asn.asn":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("asn_name\n")
-		}
-
-		for _, d := range core {
-			if d.ASN == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.ASN.Name)
-		}
-	case "asn.domain":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("asn_domain\n")
-		}
-
-		for _, d := range core {
-			if d.ASN == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.ASN.Domain)
-		}
-	case "asn.route":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("asn_route\n")
+	hdrs := make([]string, 0, len(fields))
+	rowFuncs := make([]func(*ipinfo.Core) string, 0, len(fields))
+	for _, f := range fields {
+		switch f {
+		case "asn":
+			hdrs = append(
+				hdrs,
+				"asn_id",
+				"asn_name",
+				"asn_domain",
+				"asn_route",
+				"asn_type",
+			)
+			rowFuncs = append(rowFuncs, outputFieldCoreASN)
+		case "company":
+			hdrs = append(
+				hdrs,
+				"company_name",
+				"company_domain",
+				"company_type",
+			)
+			rowFuncs = append(rowFuncs, outputFieldCoreCompany)
+		case "carrier":
+			hdrs = append(
+				hdrs,
+				"carrier_name",
+				"carrier_mcc",
+				"carrier_mnc",
+			)
+			rowFuncs = append(rowFuncs, outputFieldCoreCarrier)
+		case "privacy":
+			hdrs = append(
+				hdrs,
+				"privacy_vpn",
+				"privacy_proxy",
+				"privacy_tor",
+				"privacy_relay",
+				"privacy_hosting",
+				"privacy_service",
+			)
+			rowFuncs = append(rowFuncs, outputFieldCorePrivacy)
+		case "abuse":
+			hdrs = append(
+				hdrs,
+				"abuse_address",
+				"abuse_country",
+				"abuse_country_name",
+				"abuse_email",
+				"abuse_name",
+				"abuse_network",
+				"abuse_phone",
+			)
+			rowFuncs = append(rowFuncs, outputFieldCoreAbuse)
+		case "domains":
+			hdrs = append(
+				hdrs,
+				"domains_total",
+			)
+			rowFuncs = append(rowFuncs, outputFieldCoreDomains)
+		default:
+			hdrs = append(hdrs, strings.ReplaceAll(f, ".", "_"))
 		}
 
-		for _, d := range core {
-			if d.ASN == nil {
-				continue
-			}
+		// funcs now.
+		switch f {
+		case "ip":
+			rowFuncs = append(rowFuncs, outputFieldCoreIP)
+		case "hostname":
+			rowFuncs = append(rowFuncs, outputFieldCoreHostname)
+		case "anycast":
+			rowFuncs = append(rowFuncs, outputFieldCoreAnycast)
+		case "city":
+			rowFuncs = append(rowFuncs, outputFieldCoreCity)
+		case "country":
+			rowFuncs = append(rowFuncs, outputFieldCoreCountry)
+		case "country_name":
+			rowFuncs = append(rowFuncs, outputFieldCoreCountryName)
+		case "loc":
+			rowFuncs = append(rowFuncs, outputFieldCoreLoc)
+		case "org":
+			rowFuncs = append(rowFuncs, outputFieldCoreOrg)
+		case "postal":
+			rowFuncs = append(rowFuncs, outputFieldCorePostal)
+		case "timezone":
+			rowFuncs = append(rowFuncs, outputFieldCoreTimezone)
+		case "asn.id":
+			rowFuncs = append(rowFuncs, outputFieldCoreASNId)
+		case "asn.name", "asn.asn":
+			rowFuncs = append(rowFuncs, outputFieldCoreASNName)
+		case "asn.domain":
+			rowFuncs = append(rowFuncs, outputFieldCoreASNDomain)
+		case "asn.route":
+			rowFuncs = append(rowFuncs, outputFieldCoreASNRoute)
+		case "asn.type":
+			rowFuncs = append(rowFuncs, outputFieldCoreASNType)
+		case "company.name":
+			rowFuncs = append(rowFuncs, outputFieldCoreCompanyName)
+		case "company.domain":
+			rowFuncs = append(rowFuncs, outputFieldCoreCompanyDomain)
+		case "company.type":
+			rowFuncs = append(rowFuncs, outputFieldCoreCompanyType)
+		case "carrier.name":
+			rowFuncs = append(rowFuncs, outputFieldCoreCarrierName)
+		case "carrier.mcc":
+			rowFuncs = append(rowFuncs, outputFieldCoreCarrierMCC)
+		case "carrier.mnc":
+			rowFuncs = append(rowFuncs, outputFieldCoreCarrierMNC)
+		case "privacy.vpn":
+			rowFuncs = append(rowFuncs, outputFieldCorePrivacyVPN)
+		case "privacy.proxy":
+			rowFuncs = append(rowFuncs, outputFieldCorePrivacyProxy)
+		case "privacy.tor":
+			rowFuncs = append(rowFuncs, outputFieldCorePrivacyTor)
+		case "privacy.relay":
+			rowFuncs = append(rowFuncs, outputFieldCorePrivacyRelay)
+		case "privacy.hosting":
+			rowFuncs = append(rowFuncs, outputFieldCorePrivacyHosting)
+		case "privacy.service":
+			rowFuncs = append(rowFuncs, outputFieldCorePrivacyService)
+		case "abuse.address":
+			rowFuncs = append(rowFuncs, outputFieldCoreAbuseAddress)
+		case "abuse.country":
+			rowFuncs = append(rowFuncs, outputFieldCoreAbuseCountry)
+		case "abuse.country_name":
+			rowFuncs = append(rowFuncs, outputFieldCoreAbuseCountryName)
+		case "abuse.email":
+			rowFuncs = append(rowFuncs, outputFieldCoreAbuseEmail)
+		case "abuse.name":
+			rowFuncs = append(rowFuncs, outputFieldCoreAbuseName)
+		case "abuse.network":
+			rowFuncs = append(rowFuncs, outputFieldCoreAbuseNetwork)
+		case "abuse.phone":
+			rowFuncs = append(rowFuncs, outputFieldCoreAbusePhone)
+		case "domains.total":
+			rowFuncs = append(rowFuncs, outputFieldCoreDomainsTotal)
+		}
+	}
 
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.ASN.Route)
+	fmt.Println(strings.Join(hdrs, ","))
+	for _, d := range core {
+		row := make([]string, len(rowFuncs))
+		for i, rowFunc := range rowFuncs {
+			row[i] = rowFunc(d)
 		}
-	case "asn.type":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("asn_type\n")
-		}
-
-		for _, d := range core {
-			if d.ASN == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.ASN.Type)
-		}
-	case "company":
-		if !fieldOnly {
-			fmt.Printf("ip,")
-		}
-		if err := csvEnc.EncodeHeader(ipinfo.CoreCompany{}); err != nil {
-			return err
-		}
-		csvWriter.Flush()
-
-		for _, d := range core {
-			if d.Company == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			if err := csvEnc.Encode(d.Company); err != nil {
-				return err
-			}
-			csvWriter.Flush()
-		}
-	case "company.name":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("company_name\n")
-		}
-
-		for _, d := range core {
-			if d.Company == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Company.Name)
-		}
-	case "company.domain":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("company_domain\n")
-		}
-
-		for _, d := range core {
-			if d.Company == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Company.Domain)
-		}
-	case "company.type":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("company_type\n")
-		}
-
-		for _, d := range core {
-			if d.Company == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Company.Type)
-		}
-	case "carrier":
-		if !fieldOnly {
-			fmt.Printf("ip,")
-		}
-		if err := csvEnc.EncodeHeader(ipinfo.CoreCarrier{}); err != nil {
-			return err
-		}
-		csvWriter.Flush()
-
-		for _, d := range core {
-			if d.Carrier == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			if err := csvEnc.Encode(d.Carrier); err != nil {
-				return err
-			}
-			csvWriter.Flush()
-		}
-	case "carrier.name":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("carrier_name\n")
-		}
-
-		for _, d := range core {
-			if d.Carrier == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Carrier.Name)
-		}
-	case "carrier.mcc":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("carrier_mcc\n")
-		}
-
-		for _, d := range core {
-			if d.Carrier == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Carrier.MCC)
-		}
-	case "carrier.mnc":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("carrier_mnc\n")
-		}
-
-		for _, d := range core {
-			if d.Carrier == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Carrier.MNC)
-		}
-	case "privacy":
-		if !fieldOnly {
-			fmt.Printf("ip,")
-		}
-		if err := csvEnc.EncodeHeader(ipinfo.CorePrivacy{}); err != nil {
-			return err
-		}
-		csvWriter.Flush()
-
-		for _, d := range core {
-			if d.Privacy == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			if err := csvEnc.Encode(d.Privacy); err != nil {
-				return err
-			}
-			csvWriter.Flush()
-		}
-	case "privacy.vpn":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("privacy_vpn\n")
-		}
-
-		for _, d := range core {
-			if d.Privacy == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Privacy.VPN)
-		}
-	case "privacy.proxy":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("privacy_proxy\n")
-		}
-
-		for _, d := range core {
-			if d.Privacy == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Privacy.Proxy)
-		}
-	case "privacy.tor":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("privacy_tor\n")
-		}
-
-		for _, d := range core {
-			if d.Privacy == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Privacy.Tor)
-		}
-	case "privacy.hosting":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("privacy_hosting\n")
-		}
-
-		for _, d := range core {
-			if d.Privacy == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Privacy.Hosting)
-		}
-	case "abuse":
-		if !fieldOnly {
-			fmt.Printf("ip,")
-		}
-		if err := csvEnc.EncodeHeader(ipinfo.CoreAbuse{}); err != nil {
-			return err
-		}
-		csvWriter.Flush()
-
-		for _, d := range core {
-			if d.Abuse == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			if err := csvEnc.Encode(d.Abuse); err != nil {
-				return err
-			}
-			csvWriter.Flush()
-		}
-	case "abuse.address":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("abuse_address\n")
-		}
-
-		for _, d := range core {
-			if d.Abuse == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Abuse.Address)
-		}
-	case "abuse.country":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("abuse_country\n")
-		}
-
-		for _, d := range core {
-			if d.Abuse == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%s%v\"\n", d.Abuse.Country)
-		}
-	case "abuse.country_name":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("abuse_country_name\n")
-		}
-
-		for _, d := range core {
-			if d.Abuse == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Abuse.CountryName)
-		}
-	case "abuse.email":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("abuse_email\n")
-		}
-
-		for _, d := range core {
-			if d.Abuse == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Abuse.Email)
-		}
-	case "abuse.name":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("abuse_name\n")
-		}
-
-		for _, d := range core {
-			if d.Abuse == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Abuse.Name)
-		}
-	case "abuse.network":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("abuse_network\n")
-		}
-
-		for _, d := range core {
-			if d.Abuse == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Abuse.Network)
-		}
-	case "abuse.phone":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("abuse_phone\n")
-		}
-
-		for _, d := range core {
-			if d.Abuse == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Abuse.Phone)
-		}
-	case "domains":
-		if !fieldOnly {
-			fmt.Printf("ip,")
-		}
-		if err := csvEnc.EncodeHeader(ipinfo.CoreDomains{}); err != nil {
-			return err
-		}
-		csvWriter.Flush()
-
-		for _, d := range core {
-			if d.Domains == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			if err := csvEnc.Encode(d.Domains); err != nil {
-				return err
-			}
-			csvWriter.Flush()
-		}
-	case "domains.total":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("domains_total\n")
-		}
-
-		for _, d := range core {
-			if d.Domains == nil {
-				continue
-			}
-
-			if !fieldOnly {
-				fmt.Printf("%s,", d.IP)
-			}
-			fmt.Printf("%v\n", d.Domains.Total)
-		}
-	default:
-		if header {
-			if !fieldOnly {
-				fmt.Printf("ip,")
-			}
-			fmt.Printf("%s\n", field)
-		}
+		fmt.Println(strings.Join(row, ","))
 	}
 
 	return nil
@@ -926,191 +402,432 @@ func outputFieldBatchCore(
 
 func outputFieldBatchASNDetails(
 	asnDetails ipinfo.BatchASNDetails,
-	field string,
+	fields []string,
 	header bool,
-	fieldOnly bool,
+	inclASNId bool,
 ) error {
-	csvWriter := csv.NewWriter(os.Stdout)
-	csvEnc := csvutil.NewEncoder(csvWriter)
-	csvEnc.AutoHeader = false
-
-	switch field {
-	case "name":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("asn,")
+	// error on bad field.
+	for _, f := range fields {
+		hasField := false
+		for _, asnF := range asnFields {
+			if asnF == f {
+				hasField = true
+				break
 			}
-			fmt.Printf("name\n")
 		}
-
-		for _, d := range asnDetails {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.ASN)
-			}
-			fmt.Printf("%v\n", d.Name)
-		}
-	case "country":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("asn,")
-			}
-			fmt.Printf("country\n")
-		}
-
-		for _, d := range asnDetails {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.ASN)
-			}
-			fmt.Printf("%v\n", d.Country)
-		}
-	case "country_name":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("asn,")
-			}
-			fmt.Printf("country_name\n")
-		}
-
-		for _, d := range asnDetails {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.ASN)
-			}
-			fmt.Printf("%v\n", d.CountryName)
-		}
-	case "allocated":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("asn,")
-			}
-			fmt.Printf("allocated\n")
-		}
-
-		for _, d := range asnDetails {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.ASN)
-			}
-			fmt.Printf("%v\n", d.Allocated)
-		}
-	case "registry":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("asn,")
-			}
-			fmt.Printf("registry\n")
-		}
-
-		for _, d := range asnDetails {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.ASN)
-			}
-			fmt.Printf("%v\n", d.Registry)
-		}
-	case "domain":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("asn,")
-			}
-			fmt.Printf("domain\n")
-		}
-
-		for _, d := range asnDetails {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.ASN)
-			}
-			fmt.Printf("%v\n", d.Domain)
-		}
-	case "num_ips":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("asn,")
-			}
-			fmt.Printf("num_ips\n")
-		}
-
-		for _, d := range asnDetails {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.ASN)
-			}
-			fmt.Printf("%v\n", d.NumIPs)
-		}
-	case "prefixes":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("asn,")
-			}
-			fmt.Printf("prefixes\n")
-		}
-
-		for _, d := range asnDetails {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.ASN)
-			}
-			fmt.Printf("%v\n", d.Prefixes)
-		}
-	case "prefixes6":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("asn,")
-			}
-			fmt.Printf("prefixes6\n")
-		}
-
-		for _, d := range asnDetails {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.ASN)
-			}
-			fmt.Printf("%v\n", d.Prefixes6)
-		}
-	case "peers":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("asn,")
-			}
-			fmt.Printf("peers\n")
-		}
-
-		for _, d := range asnDetails {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.ASN)
-			}
-			fmt.Printf("%v\n", d.Peers)
-		}
-	case "upstreams":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("asn,")
-			}
-			fmt.Printf("upstreams\n")
-		}
-
-		for _, d := range asnDetails {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.ASN)
-			}
-			fmt.Printf("%v\n", d.Upstreams)
-		}
-	case "downstreams":
-		if header {
-			if !fieldOnly {
-				fmt.Printf("asn,")
-			}
-			fmt.Printf("downstreams\n")
-		}
-
-		for _, d := range asnDetails {
-			if !fieldOnly {
-				fmt.Printf("%s,", d.ASN)
-			}
-			fmt.Printf("%v\n", d.Downstreams)
-		}
-	default:
-		if header {
-			if !fieldOnly {
-				fmt.Printf("asn,")
-			}
-			fmt.Printf("%s\n", field)
+		if !hasField {
+			errStr := "field '%v' is invalid; the following are allowed:"
+			errStr += "  " + strings.Join(asnFields, "\n  ")
+			return fmt.Errorf(errStr, f)
 		}
 	}
 
+	// see if we should include ASN name as well.
+	if header && inclASNId {
+		// only include it automatically if not already specified in list.
+		hasASNIdField := false
+		for _, f := range fields {
+			if f == "id" || f == "asn" {
+				hasASNIdField = true
+				break
+			}
+		}
+		if !hasASNIdField {
+			fmt.Printf("id,")
+			fields = append([]string{"id"}, fields...)
+		}
+	}
+
+	hdrs := make([]string, 0, len(fields))
+	rowFuncs := make([]func(*ipinfo.ASNDetails) string, 0, len(fields))
+	for _, f := range fields {
+		hdrs = append(hdrs, strings.ReplaceAll(f, ".", "_"))
+
+		switch f {
+		case "id", "asn":
+			rowFuncs = append(rowFuncs, outputFieldASNId)
+		case "name":
+			rowFuncs = append(rowFuncs, outputFieldASNName)
+		case "country":
+			rowFuncs = append(rowFuncs, outputFieldASNCountry)
+		case "country_name":
+			rowFuncs = append(rowFuncs, outputFieldASNCountryName)
+		case "allocated":
+			rowFuncs = append(rowFuncs, outputFieldASNAllocated)
+		case "registry":
+			rowFuncs = append(rowFuncs, outputFieldASNRegistry)
+		case "domain":
+			rowFuncs = append(rowFuncs, outputFieldASNDomain)
+		case "num_ips":
+			rowFuncs = append(rowFuncs, outputFieldASNNumIPs)
+		case "prefixes":
+			rowFuncs = append(rowFuncs, outputFieldASNPrefixes)
+		case "prefixes6":
+			rowFuncs = append(rowFuncs, outputFieldASNPrefixes6)
+		case "peers":
+			rowFuncs = append(rowFuncs, outputFieldASNPeers)
+		case "upstreams":
+			rowFuncs = append(rowFuncs, outputFieldASNUpstreams)
+		case "downstreams":
+			rowFuncs = append(rowFuncs, outputFieldASNDownstreams)
+		}
+	}
+
+	fmt.Println(strings.Join(hdrs, ","))
+	for _, d := range asnDetails {
+		row := make([]string, len(rowFuncs))
+		for i, rowFunc := range rowFuncs {
+			row[i] = rowFunc(d)
+		}
+		fmt.Println(strings.Join(row, ","))
+	}
+
 	return nil
+}
+
+func outputFieldCoreIP(core *ipinfo.Core) string {
+	return fmt.Sprintf("%v", core.IP)
+}
+
+func outputFieldCoreHostname(core *ipinfo.Core) string {
+	return fmt.Sprintf("%v", core.Hostname)
+}
+
+func outputFieldCoreAnycast(core *ipinfo.Core) string {
+	return fmt.Sprintf("%v", core.Anycast)
+}
+
+func outputFieldCoreCity(core *ipinfo.Core) string {
+	return fmt.Sprintf("%v", core.City)
+}
+
+func outputFieldCoreRegion(core *ipinfo.Core) string {
+	return fmt.Sprintf("%v", core.Region)
+}
+
+func outputFieldCoreCountry(core *ipinfo.Core) string {
+	return fmt.Sprintf("%v", core.Country)
+}
+
+func outputFieldCoreCountryName(core *ipinfo.Core) string {
+	return fmt.Sprintf("%v", core.CountryName)
+}
+
+func outputFieldCoreLoc(core *ipinfo.Core) string {
+	return fmt.Sprintf("%v", core.Location)
+}
+
+func outputFieldCoreOrg(core *ipinfo.Core) string {
+	return fmt.Sprintf("%v", core.Org)
+}
+
+func outputFieldCorePostal(core *ipinfo.Core) string {
+	return fmt.Sprintf("%v", core.Postal)
+}
+
+func outputFieldCoreTimezone(core *ipinfo.Core) string {
+	return fmt.Sprintf("%v", core.Timezone)
+}
+
+func outputFieldCoreASN(core *ipinfo.Core) string {
+	if core.ASN == nil {
+		return ",,,,"
+	}
+	return fmt.Sprintf(
+		"%v,%v,%v,%v,%v",
+		core.ASN.ASN,
+		core.ASN.Name,
+		core.ASN.Domain,
+		core.ASN.Route,
+		core.ASN.Type,
+	)
+}
+
+func outputFieldCoreASNId(core *ipinfo.Core) string {
+	if core.ASN == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.ASN.ASN)
+}
+
+func outputFieldCoreASNName(core *ipinfo.Core) string {
+	if core.ASN == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.ASN.Name)
+}
+
+func outputFieldCoreASNDomain(core *ipinfo.Core) string {
+	if core.ASN == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.ASN.Domain)
+}
+
+func outputFieldCoreASNRoute(core *ipinfo.Core) string {
+	if core.ASN == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.ASN.Route)
+}
+
+func outputFieldCoreASNType(core *ipinfo.Core) string {
+	if core.ASN == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.ASN.Type)
+}
+
+func outputFieldCoreCompany(core *ipinfo.Core) string {
+	if core.Company == nil {
+		return ",,"
+	}
+	return fmt.Sprintf(
+		"%v,%v,%v",
+		core.Company.Name,
+		core.Company.Domain,
+		core.Company.Type,
+	)
+}
+
+func outputFieldCoreCompanyName(core *ipinfo.Core) string {
+	if core.Company == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Company.Name)
+}
+
+func outputFieldCoreCompanyDomain(core *ipinfo.Core) string {
+	if core.Company == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Company.Domain)
+}
+
+func outputFieldCoreCompanyType(core *ipinfo.Core) string {
+	if core.Company == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Company.Type)
+}
+
+func outputFieldCoreCarrier(core *ipinfo.Core) string {
+	if core.Carrier == nil {
+		return ",,"
+	}
+	return fmt.Sprintf(
+		"%v,%v,%v",
+		core.Carrier.Name,
+		core.Carrier.MCC,
+		core.Carrier.MNC,
+	)
+}
+
+func outputFieldCoreCarrierName(core *ipinfo.Core) string {
+	if core.Carrier == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Carrier.Name)
+}
+
+func outputFieldCoreCarrierMCC(core *ipinfo.Core) string {
+	if core.Carrier == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Carrier.MCC)
+}
+
+func outputFieldCoreCarrierMNC(core *ipinfo.Core) string {
+	if core.Carrier == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Carrier.MNC)
+}
+
+func outputFieldCorePrivacy(core *ipinfo.Core) string {
+	if core.Privacy == nil {
+		return ",,,,,"
+	}
+	return fmt.Sprintf(
+		"%v,%v,%v,%v,%v,%v",
+		core.Privacy.VPN,
+		core.Privacy.Proxy,
+		core.Privacy.Tor,
+		core.Privacy.Relay,
+		core.Privacy.Hosting,
+		core.Privacy.Service,
+	)
+}
+
+func outputFieldCorePrivacyVPN(core *ipinfo.Core) string {
+	if core.Privacy == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Privacy.VPN)
+}
+
+func outputFieldCorePrivacyProxy(core *ipinfo.Core) string {
+	if core.Privacy == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Privacy.Proxy)
+}
+
+func outputFieldCorePrivacyTor(core *ipinfo.Core) string {
+	if core.Privacy == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Privacy.Tor)
+}
+
+func outputFieldCorePrivacyRelay(core *ipinfo.Core) string {
+	if core.Privacy == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Privacy.Relay)
+}
+
+func outputFieldCorePrivacyHosting(core *ipinfo.Core) string {
+	if core.Privacy == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Privacy.Hosting)
+}
+
+func outputFieldCorePrivacyService(core *ipinfo.Core) string {
+	if core.Privacy == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Privacy.Service)
+}
+
+func outputFieldCoreAbuse(core *ipinfo.Core) string {
+	if core.Abuse == nil {
+		return ",,,,,,"
+	}
+	return fmt.Sprintf(
+		"%v,%v,%v,%v,%v,%v,%v",
+		core.Abuse.Address,
+		core.Abuse.Country,
+		core.Abuse.CountryName,
+		core.Abuse.Email,
+		core.Abuse.Name,
+		core.Abuse.Network,
+		core.Abuse.Phone,
+	)
+}
+
+func outputFieldCoreAbuseAddress(core *ipinfo.Core) string {
+	if core.Abuse == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Abuse.Address)
+}
+
+func outputFieldCoreAbuseCountry(core *ipinfo.Core) string {
+	if core.Abuse == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Abuse.Country)
+}
+
+func outputFieldCoreAbuseCountryName(core *ipinfo.Core) string {
+	if core.Abuse == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Abuse.CountryName)
+}
+
+func outputFieldCoreAbuseEmail(core *ipinfo.Core) string {
+	if core.Abuse == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Abuse.Email)
+}
+
+func outputFieldCoreAbuseName(core *ipinfo.Core) string {
+	if core.Abuse == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Abuse.Name)
+}
+
+func outputFieldCoreAbuseNetwork(core *ipinfo.Core) string {
+	if core.Abuse == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Abuse.Network)
+}
+
+func outputFieldCoreAbusePhone(core *ipinfo.Core) string {
+	if core.Abuse == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Abuse.Phone)
+}
+
+func outputFieldCoreDomains(core *ipinfo.Core) string {
+	if core.Domains == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Domains.Total)
+}
+
+func outputFieldCoreDomainsTotal(core *ipinfo.Core) string {
+	if core.Domains == nil {
+		return ""
+	}
+	return fmt.Sprintf("%v", core.Domains.Total)
+}
+
+func outputFieldASNId(d *ipinfo.ASNDetails) string {
+	return fmt.Sprintf("%v", d.ASN)
+}
+
+func outputFieldASNName(d *ipinfo.ASNDetails) string {
+	return fmt.Sprintf("%v", d.Name)
+}
+
+func outputFieldASNCountry(d *ipinfo.ASNDetails) string {
+	return fmt.Sprintf("%v", d.Country)
+}
+
+func outputFieldASNCountryName(d *ipinfo.ASNDetails) string {
+	return fmt.Sprintf("%v", d.CountryName)
+}
+
+func outputFieldASNAllocated(d *ipinfo.ASNDetails) string {
+	return fmt.Sprintf("%v", d.Allocated)
+}
+
+func outputFieldASNRegistry(d *ipinfo.ASNDetails) string {
+	return fmt.Sprintf("%v", d.Registry)
+}
+
+func outputFieldASNDomain(d *ipinfo.ASNDetails) string {
+	return fmt.Sprintf("%v", d.Domain)
+}
+
+func outputFieldASNNumIPs(d *ipinfo.ASNDetails) string {
+	return fmt.Sprintf("%v", d.NumIPs)
+}
+
+func outputFieldASNPrefixes(d *ipinfo.ASNDetails) string {
+	return fmt.Sprintf("%v", d.Prefixes)
+}
+
+func outputFieldASNPrefixes6(d *ipinfo.ASNDetails) string {
+	return fmt.Sprintf("%v", d.Prefixes6)
+}
+
+func outputFieldASNPeers(d *ipinfo.ASNDetails) string {
+	return fmt.Sprintf("%v", d.Peers)
+}
+
+func outputFieldASNUpstreams(d *ipinfo.ASNDetails) string {
+	return fmt.Sprintf("%v", d.Upstreams)
+}
+
+func outputFieldASNDownstreams(d *ipinfo.ASNDetails) string {
+	return fmt.Sprintf("%v", d.Downstreams)
 }

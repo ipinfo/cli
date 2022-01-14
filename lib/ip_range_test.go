@@ -8,7 +8,7 @@ import (
 )
 
 func TestIPRangeStrFromStr(t *testing.T) {
-	var r IPRange
+	var r lib.IPRangeStr
 	var err error
 
 	r, err = lib.IPRangeStrFromStr("-")

@@ -26,8 +26,6 @@ Options:
 }
 
 func cmdLogout() error {
-	var fHelp bool
-
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.Parse()
 
@@ -36,10 +34,15 @@ func cmdLogout() error {
 		return nil
 	}
 
-	// delete but don't return an error; just log it.
-	if err := deleteToken(); err != nil {
+	// checks if not logged in.
+	if gConfig.Token == "" {
 		fmt.Println("not logged in")
 		return nil
+	}
+
+	gConfig.Token = ""
+	if err := SaveConfig(gConfig); err != nil {
+		return err
 	}
 
 	fmt.Println("logged out")

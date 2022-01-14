@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VSN=1.1.0
+VSN=1.2.0
 PLAT=darwin_amd64
 
 curl -LO https://github.com/ipinfo/cli/releases/download/range2cidr-${VSN}/range2cidr_${VSN}_${PLAT}.tar.gz

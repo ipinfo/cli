@@ -92,14 +92,18 @@ func CmdGrepIP(
 	// require args.
 	stat, _ := os.Stdin.Stat()
 	isStdin := (stat.Mode() & os.ModeCharDevice) == 0
-	if len(args) == 0 && !isStdin {
+	srcCnt := len(args)
+	if isStdin {
+		srcCnt += 1
+	}
+	if srcCnt == 0 {
 		printHelp()
 		return nil
 	}
 
 	// if user hasn't forced no-filename, and we have more than 1 source, then
 	// output file
-	if !f.NoFilename && !(len(args) == 0 || (len(args) == 1 && !isStdin)) {
+	if !f.NoFilename && srcCnt > 1 {
 		f.NoFilename = false
 	} else {
 		f.NoFilename = true
@@ -117,101 +121,14 @@ func CmdGrepIP(
 
 	// prepare regexp
 	var rexp *regexp.Regexp
-	rexp4 := "([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})"
-	rexp6 := "(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))"
+	rexp4 := `((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)`
+	rexp6 := `(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))`
 	if ipv == 4 {
-		rexp = regexp.MustCompile(rexp4)
+		rexp = regexp.MustCompilePOSIX(rexp4)
 	} else if ipv == 6 {
-		rexp = regexp.MustCompile(rexp6)
+		rexp = regexp.MustCompilePOSIX(rexp6)
 	} else {
-		rexp = regexp.MustCompile(rexp4 + "|" + rexp6)
-	}
-
-	// prepare bogon/localhost ranges
-	var exclRanges4 []IPRange
-	var exclRanges6 []IP6Range
-	if f.ExclRes {
-		// v4
-		exclRanges4Str := []string{
-			"0.0.0.0/8",
-			"10.0.0.0/8",
-			"100.64.0.0/10",
-			"127.0.0.0/8",
-			"169.254.0.0/16",
-			"172.16.0.0/12",
-			"192.0.0.0/24",
-			"192.0.2.0/24",
-			"192.168.0.0/16",
-			"198.18.0.0/15",
-			"198.51.100.0/24",
-			"203.0.113.0/24",
-			"224.0.0.0/4",
-			"240.0.0.0/4",
-			"255.255.255.255/32",
-		}
-		exclRanges4 = make([]IPRange, len(exclRanges4Str))
-		for i, bogonRangeStr := range exclRanges4Str {
-			r, err := IPRangeFromCIDR(bogonRangeStr)
-			if err != nil {
-				panic(err)
-			}
-
-			exclRanges4[i] = r
-		}
-
-		// v6
-		exclRanges6Str := []string{
-			"::/128",
-			"::1/128",
-			"::ffff:0:0/96",
-			"::/96",
-			"100::/64",
-			"2001:10::/28",
-			"2001:db8::/32",
-			"fc00::/7",
-			"fe80::/10",
-			"fec0::/10",
-			"ff00::/8",
-			// 6to4 bogon ranges
-			"2002::/24",
-			"2002:a00::/24",
-			"2002:7f00::/24",
-			"2002:a9fe::/32",
-			"2002:ac10::/28",
-			"2002:c000::/40",
-			"2002:c000:200::/40",
-			"2002:c0a8::/32",
-			"2002:c612::/31",
-			"2002:c633:6400::/40",
-			"2002:cb00:7100::/40",
-			"2002:e000::/20",
-			"2002:f000::/20",
-			"2002:ffff:ffff::/48",
-			// teredo
-			"2001::/40",
-			"2001:0:a00::/40",
-			"2001:0:7f00::/40",
-			"2001:0:a9fe::/48",
-			"2001:0:ac10::/44",
-			"2001:0:c000::/56",
-			"2001:0:c000:200::/56",
-			"2001:0:c0a8::/48",
-			"2001:0:c612::/47",
-			"2001:0:c633:6400::/56",
-			"2001:0:cb00:7100::/56",
-			"2001:0:e000::/36",
-			"2001:0:f000::/36",
-			"2001:0:ffff:ffff::/64",
-		}
-		exclRanges6 = make([]IP6Range, len(exclRanges6Str))
-		for i, bogonRangeStr := range exclRanges6Str {
-			r, err := IP6RangeFromCIDR(bogonRangeStr)
-			if err != nil {
-				panic(err)
-			}
-
-			exclRanges6[i] = r
-		}
+		rexp = regexp.MustCompilePOSIX(rexp4 + "|" + rexp6)
 	}
 
 	fmtSrc := color.New(color.FgMagenta)
@@ -252,14 +169,14 @@ func CmdGrepIP(
 					mIP := net.ParseIP(mIPStr)
 					if strings.Contains(mIPStr, ":") {
 						ip, _ := IP6FromStdIP(mIP.To16())
-						for _, r := range exclRanges6 {
+						for _, r := range bogonIP6List {
 							if ip.Gte(r.Start) && ip.Lte(r.End) {
 								goto next_match
 							}
 						}
 					} else {
 						ip := IPFromStdIP(mIP)
-						for _, r := range exclRanges4 {
+						for _, r := range bogonIP4List {
 							if ip >= r.Start && ip <= r.End {
 								goto next_match
 							}
@@ -271,6 +188,7 @@ func CmdGrepIP(
 				}
 			}
 
+			// no match?
 			if len(matches) == 0 {
 				continue
 			}
@@ -278,33 +196,35 @@ func CmdGrepIP(
 			// print line up to last match.
 			prevMatchEnd := 0
 			for _, m := range matches {
-				// print source.
+				// print source if requested, but only if we're printing
+				// 1 match per line, or this is the first match of the line.
 				if !f.NoFilename && (prevMatchEnd == 0 || f.OnlyMatching) {
 					fmtSrc.Printf("%s:", src)
 				}
 
-				// print pre-match.
+				// print everything up to the current match.
 				if !f.OnlyMatching {
 					fmt.Printf("%s", d[prevMatchEnd:m[0]])
 				}
 
-				// print match.
+				// print the match itself.
 				fmtMatch.Printf("%s", d[m[0]:m[1]])
-				if f.OnlyMatching && prevMatchEnd == 0 && len(matches) > 1 {
+
+				if f.OnlyMatching {
 					fmt.Printf("\n")
 				}
 
 				prevMatchEnd = m[1]
 			}
 
-			// print remaining portion and a newline.
+			// print remaining portion and a newline, if any, and only if we
+			// need to print it.
 			if !f.OnlyMatching {
 				m := matches[len(matches)-1]
 				if m[1] < len(d) {
-					fmt.Printf("%s", d[m[1]:len(d)-1])
+					fmt.Printf("%s", d[m[1]:])
 				}
 			}
-			fmt.Printf("\n")
 		}
 	}
 

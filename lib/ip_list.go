@@ -129,38 +129,6 @@ func IPListFromCIDRs(cidrStrs []string) (ips []net.IP, err error) {
 	return ips, nil
 }
 
-// IPListFromFile returns a list of IPs found in a file.
-func IPListFromFile(pathToFile string) ([]net.IP, error) {
-	f, err := os.Open(pathToFile)
-	if err != nil {
-		return nil, err
-	}
-
-	return IPListFromReader(f), nil
-}
-
-// IPListFromFiles returns a list of IPs found in a list of files.
-func IPListFromFiles(paths []string) (ips []net.IP, err error) {
-	// collect IPs lists together first, then allocate a final list and do
-	// a fast transfer.
-	ipLists := make([][]net.IP, len(paths))
-	totalIPs := 0
-	for i, p := range paths {
-		ipLists[i], err = IPListFromFile(p)
-		if err != nil {
-			return nil, err
-		}
-		totalIPs += len(ipLists[i])
-	}
-
-	ips = make([]net.IP, 0, totalIPs)
-	for _, ipList := range ipLists {
-		ips = append(ips, ipList...)
-	}
-
-	return ips, nil
-}
-
 // IPListFromRange returns a list of IPs from a start and end IP string.
 func IPListFromRange(ipStrStart string, ipStrEnd string) ([]net.IP, error) {
 	var ips []net.IP
@@ -209,8 +177,8 @@ func IPListFromRangeStr(rStr string) ([]net.IP, error) {
 	return IPListFromRange(r.Start, r.End)
 }
 
-// IPListFromReader returns a list of IPs after reading from a reader; the reader
-// should have IPs per-line.
+// IPListFromReader returns a list of IPs after reading from a reader; the
+// reader should have IPs per-line.
 func IPListFromReader(r io.Reader) []net.IP {
 	ips := make([]net.IP, 0, 10000)
 	scanner := bufio.NewScanner(r)
@@ -220,13 +188,24 @@ func IPListFromReader(r io.Reader) []net.IP {
 			break
 		}
 
-		ip := net.ParseIP(ipStr)
-		if ip == nil {
-			// ignore any non-IP input.
+		_ips, err := IPListFromRangeStr(ipStr)
+		if err == nil {
+			ips = append(ips, _ips...)
 			continue
 		}
 
-		ips = append(ips, ip)
+		if StrIsIPStr(ipStr) {
+			ips = append(ips, net.ParseIP(ipStr))
+			continue
+		}
+
+		if StrIsCIDRStr(ipStr) {
+			_ips, _ := IPListFromCIDR(ipStr)
+			ips = append(ips, _ips...)
+			continue
+		}
+
+		// simply ignore anything else.
 	}
 
 	return ips
@@ -238,102 +217,34 @@ func IPListFromStdin() []net.IP {
 	return IPListFromReader(os.Stdin)
 }
 
-// IPListFromWrite outputs a list of IPs from inputs which are interpreted to
-// contain IP ranges and IP CIDRs in them, all depending upon which flags are
-// set.
-func IPListFromWrite(
-	inputs []string,
-	iprange bool,
-	cidr bool,
-) error {
-	// prevent edge cases with all flags turned off.
-	if !iprange && !cidr {
-		return nil
-	}
-
-	for _, input := range inputs {
-		if iprange {
-			if err := IPListFromIPRangeStrWrite(input); err == nil {
-				continue
-			}
-		}
-
-		if cidr && StrIsCIDRStr(input) {
-			if err := IPListFromCIDRWrite(input); err == nil {
-				continue
-			}
-		}
-
-		return ErrInvalidInput
-	}
-
-	return nil
-}
-
-// IPListFromCIDRWrite is the same as IPListFromCIDR with O(1) memory by discarding
-// IPs after printing.
-func IPListFromCIDRWrite(cidrStr string) error {
-	_, ipnet, err := net.ParseCIDR(cidrStr)
+// IPListFromFile returns a list of IPs found in a file.
+func IPListFromFile(pathToFile string) ([]net.IP, error) {
+	f, err := os.Open(pathToFile)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	mask := binary.BigEndian.Uint32(ipnet.Mask)
-	start := binary.BigEndian.Uint32(ipnet.IP)
-	end := (start & mask) | (mask ^ 0xffffffff)
-
-	for i := start; i <= end; i++ {
-		ip := make(net.IP, 4)
-		binary.BigEndian.PutUint32(ip, i)
-		fmt.Println(ip)
-	}
-
-	return nil
+	return IPListFromReader(f), nil
 }
 
-// IPListFromIPRangeWrite is the same as IPListFromRange with O(1) memory by
-// discarding IPs after printing.
-func IPListFromIPRangeWrite(ipStrStart string, ipStrEnd string) error {
-	var ipStart, ipEnd net.IP
-
-	if ipStart = net.ParseIP(ipStrStart); ipStart == nil {
-		return ErrNotIP
-	}
-	if ipEnd = net.ParseIP(ipStrEnd); ipEnd == nil {
-		return ErrNotIP
-	}
-
-	start := binary.BigEndian.Uint32(ipStart.To4())
-	end := binary.BigEndian.Uint32(ipEnd.To4())
-
-	if start > end {
-		// return decreasing list if range is flipped.
-		for i := start; i >= end; i-- {
-			ip := make(net.IP, 4)
-			binary.BigEndian.PutUint32(ip, i)
-			fmt.Println(ip)
+// IPListFromFiles returns a list of IPs found in a list of files.
+func IPListFromFiles(paths []string) (ips []net.IP, err error) {
+	// collect IPs lists together first, then allocate a final list and do
+	// a fast transfer.
+	ipLists := make([][]net.IP, len(paths))
+	totalIPs := 0
+	for i, p := range paths {
+		ipLists[i], err = IPListFromFile(p)
+		if err != nil {
+			return nil, err
 		}
-	} else {
-		for i := start; i <= end; i++ {
-			ip := make(net.IP, 4)
-			binary.BigEndian.PutUint32(ip, i)
-			fmt.Println(ip)
-		}
+		totalIPs += len(ipLists[i])
 	}
 
-	return nil
-}
-
-// IPListFromIPRangeStrWrite outputs all IPs in an IP range.
-//
-// `rStr` must be of any of these forms:
-//	<ip_range_start>-<ip_range_end>
-//	<ip_range_start>,<ip_range_end>
-func IPListFromIPRangeStrWrite(rStr string) error {
-	r, err := IPRangeStrFromStr(rStr)
-	if err != nil {
-		return err
+	ips = make([]net.IP, 0, totalIPs)
+	for _, ipList := range ipLists {
+		ips = append(ips, ipList...)
 	}
 
-	return IPListFromIPRangeWrite(r.Start, r.End)
+	return ips, nil
 }

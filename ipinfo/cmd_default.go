@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"os"
@@ -25,7 +26,12 @@ Commands:
   prips       print IP list from CIDR or range.
   grepip      grep for IPs matching criteria from any source.
   cidr2range  convert CIDRs to IP ranges.
+  cidr2ip     convert CIDRs to individual IPs within those CIDRs.
   range2cidr  convert IP ranges to CIDRs.
+  range2ip    convert IP ranges to individual IPs within those ranges.
+  randip      Generates random IPs.
+  cache       manage the cache.
+  config      manage the config.
   login       save an API token session.
   logout      delete your current API token session.
   completion  install or output shell auto-completion script.
@@ -35,6 +41,8 @@ Options:
   General:
     --token <tok>, -t <tok>
       use <tok> as API token.
+    --nocache
+      do not use the cache.
     --version, -v
       show binary release number.
     --help, -h
@@ -42,8 +50,9 @@ Options:
 
   Outputs:
     --field <field>, -f <field>
-      lookup only a specific field in the output.
+      lookup only specific fields in the output.
       field names correspond to JSON keys, e.g. 'hostname' or 'company.type'.
+      multiple field names must be separated by commas.
     --nocolor
       disable colored output.
 
@@ -61,17 +70,16 @@ func cmdDefault() (err error) {
 	var ips []net.IP
 	var fTok string
 	var fVsn bool
-	var fHelp bool
-	var fField string
+	var fField []string
 	var fPretty bool
 	var fJSON bool
 	var fCSV bool
-	var fNoColor bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
+	pflag.BoolVar(&fNoCache, "nocache", false, "disable the cache.")
 	pflag.BoolVarP(&fVsn, "version", "v", false, "print binary release number.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
-	pflag.StringVarP(&fField, "field", "f", "", "specific field to lookup.")
+	pflag.StringSliceVarP(&fField, "field", "f", nil, "specific field to lookup.")
 	pflag.BoolVarP(&fPretty, "pretty", "p", true, "output pretty format.")
 	pflag.BoolVarP(&fJSON, "json", "j", true, "output JSON format. (default)")
 	pflag.BoolVarP(&fCSV, "csv", "c", false, "output CSV format.")
@@ -116,8 +124,7 @@ func cmdDefault() (err error) {
 
 	// require token for bulk.
 	if ii.Token == "" {
-		fmt.Println("bulk lookups require a token")
-		return nil
+		return errors.New("bulk lookups require a token; login via `ipinfo login`.")
 	}
 
 	data, err := ii.GetIPInfoBatch(ips, ipinfo.BatchReqOpts{})
@@ -125,8 +132,8 @@ func cmdDefault() (err error) {
 		return err
 	}
 
-	if fField != "" {
-		return outputFieldBatchCore(data, fField, true, false)
+	if len(fField) > 0 {
+		return outputFieldBatchCore(data, fField, true, true)
 	}
 
 	if fCSV {

@@ -24,13 +24,33 @@ brew install ipinfo-cli
 OR to install the latest `amd64` version without automatic updates:
 
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.1.1/macos.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/macos.sh | sh
+```
+
+### Ubuntu PPA
+
+*Note*: this installs our full suite of binaries and keeps them up-to-date.
+
+```bash
+sudo add-apt-repository ppa:ipinfo/ppa
+sudo apt update
+sudo apt install ipinfo
 ```
 
 ### Debian / Ubuntu (amd64)
 
+*Note*: this is a one-time installation; updates are not automatic. Use the PPA
+for automatic updates.
+
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.1.1/deb.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/deb.sh | sh
+```
+
+OR
+
+```bash
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/ipinfo_2.7.0.deb
+sudo dpkg -i ipinfo_2.7.0.deb
 ```
 
 ### FreeBSD
@@ -39,11 +59,25 @@ curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.1.1/deb.sh | s
 cd /usr/ports/net/ipinfo-cli && make install clean
 ```
 
-OR
+### Arch linux
 
 ```bash
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.1.1/ipinfo_2.1.1.deb
-sudo dpkg -i ipinfo_2.1.1.deb
+git clone https://aur.archlinux.org/ipinfo-cli.git
+makepkg -si
+```
+
+### Windows Powershell
+
+*Note*: run powershell as administrator before executing this command.
+
+```bash
+iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/windows.ps1 | iex
+```
+
+### Docker
+
+```bash
+docker run ipinfo/ipinfo:2.7.0
 ```
 
 ### Using `go get`
@@ -84,9 +118,6 @@ openbsd_386
 openbsd_amd64
 openbsd_arm
 openbsd_arm64
-plan9_386
-plan9_amd64
-plan9_arm
 solaris_amd64
 windows_386
 windows_amd64
@@ -97,12 +128,12 @@ After choosing a platform `PLAT` from above, run:
 
 ```bash
 # for Windows, use ".zip" instead of ".tar.gz"
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.1.1/ipinfo_2.1.1_${PLAT}.tar.gz
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/ipinfo_2.7.0_${PLAT}.tar.gz
 # OR
-wget https://github.com/ipinfo/cli/releases/download/ipinfo-2.1.1/ipinfo_2.1.1_${PLAT}.tar.gz
+wget https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/ipinfo_2.7.0_${PLAT}.tar.gz
 
-tar -xvf ipinfo_2.1.1_${PLAT}.tar.gz
-mv ipinfo_2.1.1_${PLAT} /usr/local/bin/ipinfo
+tar -xvf ipinfo_2.7.0_${PLAT}.tar.gz
+mv ipinfo_2.7.0_${PLAT} /usr/local/bin/ipinfo
 ```
 
 ### Using `git`
@@ -137,8 +168,8 @@ Replace `<path>` with the required location.
 
 ## Additional CLIs
 
-The `ipinfo` CLI has some subcommands like `grepip`, `cidr2range` and
-`range2cidr` which are also shipped as standalone binaries.
+The `ipinfo` CLI has some subcommands like `grepip`, `prips`, `cidr2range`, `cidr2ip`,
+`range2cidr`, `range2ip` and `randip` which are also shipped as standalone binaries.
 
 These binaries are available via all the **same installation methods** as
 mentioned above for `ipinfo`, except you must change only the name to the name
@@ -148,9 +179,13 @@ Currently these subcommands are separately shipped:
 
 | CLI        | Version |
 | ---------- | ------- |
-| grepip     | [1.1.0](https://github.com/ipinfo/cli/releases/tag/grepip-1.1.0) |
-| cidr2range | [1.1.1](https://github.com/ipinfo/cli/releases/tag/cidr2range-1.1.1) |
-| range2cidr | [1.1.0](https://github.com/ipinfo/cli/releases/tag/range2cidr-1.1.0) |
+| grepip     | [1.2.1](https://github.com/ipinfo/cli/releases/tag/grepip-1.2.1) |
+| prips      | [1.0.0](https://github.com/ipinfo/cli/releases/tag/prips-1.0.0) |
+| cidr2range | [1.2.0](https://github.com/ipinfo/cli/releases/tag/cidr2range-1.2.0) |
+| cidr2ip    | [1.0.0](https://github.com/ipinfo/cli/releases/tag/cidr2ip-1.0.0) |
+| range2cidr | [1.2.0](https://github.com/ipinfo/cli/releases/tag/range2cidr-1.2.0) |
+| range2ip   | [1.0.0](https://github.com/ipinfo/cli/releases/tag/range2ip-1.0.0) |
+| randip     | [1.1.0](https://github.com/ipinfo/cli/releases/tag/randip-1.1.0) |
 
 ## Quick Start
 
@@ -279,11 +314,28 @@ If you have an account, see our
 
 All examples in this document use a token with all data enabled.
 
-## Disabling Color Output
+## Color Output
+
+### Disabling Color Output
 
 All our CLIs respect either the `--nocolor` flag or the
 [`NO_COLOR`](https://no-color.org/)  environment variable to disable color
 output.
+
+### Color on Windows
+
+To enable color support for the Windows command prompt, run the following to
+enable [`Console Virtual Terminal Sequences`](https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences).
+
+```cmd
+REG ADD HKCU\CONSOLE /f /v VirtualTerminalLevel /t REG_DWORD /d 1
+```
+
+You can disable this by running the following:
+
+```cmd
+REG DELETE HKCU\CONSOLE /f /v VirtualTerminalLevel
+```
 
 ## Other IPinfo Tools
 

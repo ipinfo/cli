@@ -50,6 +50,7 @@ func CmdCIDR2Range(
 	scanrdr := func(r io.Reader) {
 		var rem string
 		var hitEOF bool
+		onfirst := true
 
 		buf := bufio.NewReader(r)
 		for {
@@ -97,7 +98,14 @@ func CmdCIDR2Range(
 			continue
 
 		noip:
-			fmt.Printf("%s", d)
+			if onfirst {
+				onfirst = false
+
+				// gen new header.
+				fmt.Printf("range%s", rem)
+			} else {
+				fmt.Printf("%s", d)
+			}
 			if sepIdx == len(d) {
 				fmt.Println()
 			}
