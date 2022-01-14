@@ -10,6 +10,12 @@ import (
 	"strings"
 )
 
+// isFQDN returns true if domain is a fully qualified domain
+// name. The logic comes from main.go
+func isFQDN(domain string) bool {
+	return len(domain) >= 3 && strings.IndexByte(domain, '.') != -1
+}
+
 // IPListFrom returns a list of IPs from stdin and a list of inputs which is
 // interpreted to contain IPs, IP ranges, IP CIDRs and files with IPs in them,
 // all depending upon which flags are set.
@@ -60,21 +66,6 @@ func IPListFrom(
 			continue
 		}
 
-		// Use FQDN here
-		// According to main.go, this is how
-		// you know a string is a FQDN
-		isFQDN := len(input) >= 3 && strings.IndexByte(input, '.') != -1
-		if ip && isFQDN {
-			// Get the IP address(es) of the domains
-			inputIps, err := net.LookupIP(input)
-			if err != nil {
-				continue
-			}
-			// Append the first IP of the domain
-			ips = append(ips, inputIps[0])
-			continue
-		}
-
 		if cidr && StrIsCIDRStr(input) {
 			_ips, _ := IPListFromCIDR(input)
 			ips = append(ips, _ips...)
@@ -87,6 +78,22 @@ func IPListFrom(
 				return nil, err
 			}
 			ips = append(ips, _ips...)
+			continue
+		}
+
+		// Use FQDN here
+		// According to main.go, this is how
+		// you know a string is a FQDN
+		// This goes AFTER the file so the cli does not confuse
+		// files like ips.txt as domain names
+		if ip && isFQDN(input) {
+			// Get the IP address(es) of the domains
+			inputIps, err := net.LookupIP(input)
+			if err != nil {
+				continue
+			}
+			// Append the first IP of the domain
+			ips = append(ips, inputIps[0])
 			continue
 		}
 
@@ -220,6 +227,16 @@ func IPListFromReader(r io.Reader) []net.IP {
 			continue
 		}
 
+		if isFQDN(ipStr) {
+			// Get the IP address(es) of the domains
+			inputIps, err := net.LookupIP(ipStr)
+			if err != nil {
+				continue
+			}
+			// Append the first IP of the domain
+			ips = append(ips, inputIps[0])
+			continue
+		}
 		// simply ignore anything else.
 	}
 
