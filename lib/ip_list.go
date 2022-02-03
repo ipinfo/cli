@@ -185,7 +185,7 @@ func IPListFromReader(r io.Reader) []net.IP {
 	for scanner.Scan() {
 		ipStr := strings.TrimSpace(scanner.Text())
 		if ipStr == "" {
-			break
+			continue
 		}
 
 		_ips, err := IPListFromRangeStr(ipStr)

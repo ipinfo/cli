@@ -175,7 +175,7 @@ func IPListWriteFromReader(
 	for scanner.Scan() {
 		input := strings.TrimSpace(scanner.Text())
 		if input == "" {
-			break
+			continue
 		}
 
 		if iprange {
