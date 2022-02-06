@@ -160,8 +160,8 @@ func IPListWriteFromIPRangeStr(rStr string) error {
 
 // IPListWriteFromReader returns a list of IPs after reading from a reader; the
 // reader should have IPs per-line.
-func IPListWriteAllFromReader(r io.Reader) {
-	IPListWriteFromReader(r, true, true, true)
+func IPListWriteAllFromReader(r io.Reader, breakOnEmptyLine bool) {
+	IPListWriteFromReader(r, true, true, true, breakOnEmptyLine)
 }
 
 // IPListWriteFromReader returns a list of IPs after reading from a reader
@@ -170,11 +170,16 @@ func IPListWriteFromReader(
 	r io.Reader,
 	ip bool,
 	iprange bool,
-	cidr bool) {
+	cidr bool,
+	breakOnEmptyLine bool,
+) {
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		input := strings.TrimSpace(scanner.Text())
 		if input == "" {
+			if breakOnEmptyLine {
+				break
+			}
 			continue
 		}
 
@@ -202,7 +207,7 @@ func IPListWriteFromReader(
 // IPListWriteFromStdin returns a list of IPs from a stdin; the IPs should be 1
 // per line.
 func IPListWriteAllFromStdin() {
-	IPListWriteAllFromReader(os.Stdin)
+	IPListWriteAllFromReader(os.Stdin, true)
 }
 
 // IPListWriteFromStdin returns a list of IPs from a stdin from selected
@@ -210,8 +215,9 @@ func IPListWriteAllFromStdin() {
 func IPListWriteFromStdin(
 	ip bool,
 	iprange bool,
-	cidr bool) {
-	IPListWriteFromReader(os.Stdin, ip, iprange, cidr)
+	cidr bool,
+) {
+	IPListWriteFromReader(os.Stdin, ip, iprange, cidr, true)
 }
 
 // IPListWriteFromFile returns a list of IPs found in a file.
@@ -231,7 +237,7 @@ func IPListWriteFromFile(
 	if err != nil {
 		return err
 	}
-	IPListWriteFromReader(f, ip, iprange, cidr)
+	IPListWriteFromReader(f, ip, iprange, cidr, false)
 	return nil
 }
 

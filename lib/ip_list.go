@@ -179,12 +179,15 @@ func IPListFromRangeStr(rStr string) ([]net.IP, error) {
 
 // IPListFromReader returns a list of IPs after reading from a reader; the
 // reader should have IPs per-line.
-func IPListFromReader(r io.Reader) []net.IP {
+func IPListFromReader(r io.Reader, breakOnEmptyLine bool) []net.IP {
 	ips := make([]net.IP, 0, 10000)
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		ipStr := strings.TrimSpace(scanner.Text())
 		if ipStr == "" {
+			if breakOnEmptyLine {
+				break
+			}
 			continue
 		}
 
@@ -214,7 +217,7 @@ func IPListFromReader(r io.Reader) []net.IP {
 // IPListFromStdin returns a list of IPs from a stdin; the IPs should be 1 per
 // line.
 func IPListFromStdin() []net.IP {
-	return IPListFromReader(os.Stdin)
+	return IPListFromReader(os.Stdin, true)
 }
 
 // IPListFromFile returns a list of IPs found in a file.
@@ -224,7 +227,7 @@ func IPListFromFile(pathToFile string) ([]net.IP, error) {
 		return nil, err
 	}
 
-	return IPListFromReader(f), nil
+	return IPListFromReader(f, false), nil
 }
 
 // IPListFromFiles returns a list of IPs found in a list of files.
