@@ -80,13 +80,13 @@ iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/windows.p
 docker run ipinfo/ipinfo:2.7.0
 ```
 
-### Using `go get`
+### Using `go install`
 
 Make sure that `$GOPATH/bin` is in your `$PATH`, because that's where this gets
 installed:
 
 ```bash
-go get github.com/ipinfo/cli/ipinfo
+go install github.com/ipinfo/cli/ipinfo@latest
 ```
 
 ### Using `curl`/`wget`
