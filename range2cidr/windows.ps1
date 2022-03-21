@@ -1,4 +1,4 @@
-$VSN = "1.2.0"
+$VSN = "1.3.0"
 
 # build the filename for the Zip archive and exe file
 $FileName = "range2cidr_$($VSN)_windows_amd64"

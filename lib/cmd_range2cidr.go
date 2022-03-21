@@ -2,7 +2,6 @@ package lib
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"io"
 	"os"

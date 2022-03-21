@@ -24,7 +24,7 @@ brew install ipinfo-cli
 OR to install the latest `amd64` version without automatic updates:
 
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/macos.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.8.0/macos.sh | sh
 ```
 
 ### Ubuntu PPA
@@ -43,14 +43,14 @@ sudo apt install ipinfo
 for automatic updates.
 
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/deb.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.8.0/deb.sh | sh
 ```
 
 OR
 
 ```bash
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/ipinfo_2.7.0.deb
-sudo dpkg -i ipinfo_2.7.0.deb
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.8.0/ipinfo_2.8.0.deb
+sudo dpkg -i ipinfo_2.8.0.deb
 ```
 
 ### FreeBSD
@@ -71,13 +71,13 @@ makepkg -si
 *Note*: run powershell as administrator before executing this command.
 
 ```bash
-iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/windows.ps1 | iex
+iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-2.8.0/windows.ps1 | iex
 ```
 
 ### Docker
 
 ```bash
-docker run ipinfo/ipinfo:2.7.0
+docker run ipinfo/ipinfo:2.8.0
 ```
 
 ### Using `go install`
@@ -128,12 +128,12 @@ After choosing a platform `PLAT` from above, run:
 
 ```bash
 # for Windows, use ".zip" instead of ".tar.gz"
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/ipinfo_2.7.0_${PLAT}.tar.gz
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.8.0/ipinfo_2.8.0_${PLAT}.tar.gz
 # OR
-wget https://github.com/ipinfo/cli/releases/download/ipinfo-2.7.0/ipinfo_2.7.0_${PLAT}.tar.gz
+wget https://github.com/ipinfo/cli/releases/download/ipinfo-2.8.0/ipinfo_2.8.0_${PLAT}.tar.gz
 
-tar -xvf ipinfo_2.7.0_${PLAT}.tar.gz
-mv ipinfo_2.7.0_${PLAT} /usr/local/bin/ipinfo
+tar -xvf ipinfo_2.8.0_${PLAT}.tar.gz
+mv ipinfo_2.8.0_${PLAT} /usr/local/bin/ipinfo
 ```
 
 ### Using `git`
@@ -183,7 +183,7 @@ Currently these subcommands are separately shipped:
 | prips      | [1.0.0](https://github.com/ipinfo/cli/releases/tag/prips-1.0.0) |
 | cidr2range | [1.2.0](https://github.com/ipinfo/cli/releases/tag/cidr2range-1.2.0) |
 | cidr2ip    | [1.0.0](https://github.com/ipinfo/cli/releases/tag/cidr2ip-1.0.0) |
-| range2cidr | [1.2.0](https://github.com/ipinfo/cli/releases/tag/range2cidr-1.2.0) |
+| range2cidr | [1.3.0](https://github.com/ipinfo/cli/releases/tag/range2cidr-1.3.0) |
 | range2ip   | [1.0.0](https://github.com/ipinfo/cli/releases/tag/range2ip-1.0.0) |
 | randip     | [1.1.0](https://github.com/ipinfo/cli/releases/tag/randip-1.1.0) |
 
