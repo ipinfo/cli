@@ -2,6 +2,7 @@ package lib
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -53,7 +54,7 @@ func CmdRange2CIDR(
 		var tmp string
 
 		// will use this var temporarily to help us convert header.
-		headerData := 0
+		headerState := 0
 
 		buf := bufio.NewReader(r)
 		for {
@@ -99,14 +100,21 @@ func CmdRange2CIDR(
 			}
 
 			rangeStr := d[:sepIdx]
+			if headerState == 1 {
+				headerState = 2
+
+				hdrSepIdx := strings.IndexAny(tmp, ",\n")
+				if hdrSepIdx != -1 && hdrSepIdx != len(tmp)-1 && tmp[hdrSepIdx] == ',' {
+					nextHdrSepIdx := strings.IndexAny(tmp[hdrSepIdx+1:], ",\n")
+					if nextHdrSepIdx != -1 {
+						fmt.Printf("cidr%s", tmp[nextHdrSepIdx+hdrSepIdx+1:])
+					} else {
+						fmt.Printf("cidr%s", tmp[sepIdx+1:])
+					}
+				}
+			}
 			if strings.IndexByte(rangeStr, ':') == -1 {
 				if cidrs, err := CIDRsFromIPRangeStrRaw(rangeStr); err == nil {
-					if headerData == 1 {
-						headerData = 2
-
-						fmt.Printf("cidr%s", tmp)
-					}
-
 					for _, cidr := range cidrs {
 						fmt.Printf("%s%s", cidr, rem)
 					}
@@ -115,12 +123,6 @@ func CmdRange2CIDR(
 				}
 			} else {
 				if cidrs, err := CIDRsFromIP6RangeStrRaw(rangeStr); err == nil {
-					if headerData == 1 {
-						headerData = 2
-
-						fmt.Printf("cidr%s", tmp)
-					}
-
 					for _, cidr := range cidrs {
 						fmt.Printf("%s%s", cidr, rem)
 					}
@@ -129,19 +131,20 @@ func CmdRange2CIDR(
 				}
 			}
 
+			headerState = 2
 			continue
 
 		noip:
-			if headerData == 0 {
-				headerData = 1
+			if headerState == 0 {
+				headerState = 1
 
-				// temporarily buffer the remaining line, which is the part of
-				// the header that we still care about.
+				// temporarily buffer the line, which may be the header that
+				// we still care about.
 				//
 				// in the next iter, we'll be able to determine whether the
 				// range input is `-` or `,` separated, which then tells us
 				// what to print as the prefix.
-				tmp = rem
+				tmp = d
 			} else {
 				fmt.Printf("%s", d)
 			}
