@@ -323,6 +323,8 @@ func outputFieldBatchCore(
 			rowFuncs = append(rowFuncs, outputFieldCoreAnycast)
 		case "city":
 			rowFuncs = append(rowFuncs, outputFieldCoreCity)
+		case "region":
+			rowFuncs = append(rowFuncs, outputFieldCoreRegion)
 		case "country":
 			rowFuncs = append(rowFuncs, outputFieldCoreCountry)
 		case "country_name":
