@@ -245,7 +245,6 @@ func outputFieldBatchCore(
 			}
 		}
 		if !hasIPField {
-			fmt.Printf("ip,")
 			fields = append([]string{"ip"}, fields...)
 		}
 	}
