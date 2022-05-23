@@ -13,8 +13,9 @@ import (
 )
 
 const (
-	batchMaxSize           = 1000
-	batchReqTimeoutDefault = 5
+	batchMaxSize                        = 1000
+	batchReqTimeoutDefault              = 5
+	batchDefaultConcurrentRequestsLimit = 8
 )
 
 // Internal batch type used by common batch functionality to temporarily store
@@ -63,6 +64,12 @@ type BatchReqOpts struct {
 	// 0 means no total timeout; `TimeoutPerBatch` will still apply.
 	TimeoutTotal uint64
 
+	// ConcurrentBatchRequestsLimit is the maximum number of concurrent batch
+	// requests that will be mid-flight for inputs that exceed the batch limit.
+	//
+	// 0 means to use a default of 8; any negative number implies unlimited concurrency.
+	ConcurrentBatchRequestsLimit int
+
 	// Filter, if turned on, will filter out a URL whose value was deemed empty
 	// on the server.
 	Filter bool
@@ -85,6 +92,7 @@ func (c *Client) GetBatch(
 ) (Batch, error) {
 	var batchSize int
 	var timeoutPerBatch int64
+	var maxConcurrentBatchRequests int
 	var totalTimeoutCtx context.Context
 	var totalTimeoutCancel context.CancelFunc
 	var lookupUrls []string
@@ -118,6 +126,13 @@ func (c *Client) GetBatch(
 		batchSize = int(opts.BatchSize)
 	}
 
+	// use correct concurrent requests limit; either default or user-provided.
+	if opts.ConcurrentBatchRequestsLimit == 0 {
+		maxConcurrentBatchRequests = batchDefaultConcurrentRequestsLimit
+	} else {
+		maxConcurrentBatchRequests = opts.ConcurrentBatchRequestsLimit
+	}
+
 	// use correct timeout per batch; either default or user-provided.
 	if opts.TimeoutPerBatch == 0 {
 		timeoutPerBatch = batchReqTimeoutDefault
@@ -137,6 +152,7 @@ func (c *Client) GetBatch(
 	}
 
 	errg, ctx := errgroup.WithContext(totalTimeoutCtx)
+	errg.SetLimit(maxConcurrentBatchRequests)
 	for i := 0; i < len(lookupUrls); i += batchSize {
 		end := i + batchSize
 		if end > len(lookupUrls) {
