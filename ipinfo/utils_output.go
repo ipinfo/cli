@@ -141,7 +141,11 @@ func outputFriendlyCore(d *ipinfo.Core) {
 	printline("Hostname", d.Hostname)
 	printline("City", d.City)
 	printline("Region", d.Region)
-	printline("Country", fmt.Sprintf("%v (%v)", d.CountryName, d.Country))
+	country := d.Country
+	if country != "" {
+		country = fmt.Sprintf(" (%v)", country)
+	}
+	printline("Country", d.CountryName+country)
 	printline("Location", d.Location)
 	printline("Organization", d.Org)
 	printline("Postal", d.Postal)
