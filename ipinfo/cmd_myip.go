@@ -14,7 +14,7 @@ var completionsMyIP = &complete.Command{
 	Flags: map[string]complete.Predictor{
 		"-t":        predict.Nothing,
 		"--token":   predict.Nothing,
-		"--cache":   predict.Nothing,
+		"--nocache": predict.Nothing,
 		"-h":        predict.Nothing,
 		"--help":    predict.Nothing,
 		"-f":        predict.Set(coreFields),
@@ -37,8 +37,8 @@ Options:
   General:
     --token <tok>, -t <tok>
       use <tok> as API token.
-    --cache
-      use the cache.
+	--nocache
+      do not use the cache.
     --help, -h
       show help.
 
@@ -68,7 +68,7 @@ func cmdMyIP() error {
 	var fCSV bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
-	pflag.BoolVar(&fNoCache, "cache", false, "use the cache.")
+	pflag.BoolVar(&fNoCache, "nocache", true, "disable the cache.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.StringSliceVarP(&fField, "field", "f", nil, "specific field to lookup.")
 	pflag.BoolVarP(&fPretty, "pretty", "p", true, "output pretty format.")
@@ -76,8 +76,6 @@ func cmdMyIP() error {
 	pflag.BoolVarP(&fCSV, "csv", "c", false, "output CSV format.")
 	pflag.BoolVar(&fNoColor, "nocolor", false, "disable color output.")
 	pflag.Parse()
-
-	fNoCache = !fNoCache
 
 	if fNoColor {
 		color.NoColor = true
