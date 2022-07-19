@@ -37,7 +37,7 @@ Options:
   General:
     --token <tok>, -t <tok>
       use <tok> as API token.
-	--nocache
+    --nocache
       do not use the cache.
     --help, -h
       show help.
