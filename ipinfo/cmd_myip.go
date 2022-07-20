@@ -68,7 +68,7 @@ func cmdMyIP() error {
 	var fCSV bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
-	pflag.BoolVar(&fNoCache, "nocache", false, "disable the cache.")
+	pflag.BoolVar(&fNoCache, "nocache", true, "disable the cache.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.StringSliceVarP(&fField, "field", "f", nil, "specific field to lookup.")
 	pflag.BoolVarP(&fPretty, "pretty", "p", true, "output pretty format.")
