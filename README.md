@@ -195,6 +195,10 @@ This will help you quickly get started with the `ipinfo` CLI.
 
 By default, invoking the CLI shows a help message:
 
+```bash
+ipinfo
+```
+
 ![ipinfo](gif/default.gif)
 
 ### Login
@@ -212,11 +216,19 @@ ipinfo login
 
 You can quickly look up details of your own IP with `myip`:
 
+```bash
+ipinfo myip
+```
+
 ![ipinfo myip](gif/myip.gif)
 
 ### Any IP
 
 You can see the details of any IP by specifying it:
+
+```bash
+ipinfo 8.8.8.8
+```
 
 ![ipinfo myip](gif/ip8.8.8.8.gif)
 
@@ -224,15 +236,27 @@ You can see the details of any IP by specifying it:
 
 You can pipe IPs in and get their results in bulk (this requires a token):
 
+```bash
+cat ips.txt | ipinfo | less
+```
+
 ![cat ips.txt | ipinfo](gif/cat.gif)
 
 Here's the CSV version of that:
+
+```bash
+cat ips.txt | ipinfo -c | less
+```
 
 ![cat ips.txt | ipinfo -c](gif/cat-csv.gif)
 
 ### Field Filter
 
 In case you only needed a single field from a bunch of IPs:
+
+```bash
+cat ips.txt | ipinfo -f hostname
+```
 
 ![cat ips.txt | ipinfo](gif/hostname.gif)
 
@@ -241,12 +265,20 @@ In case you only needed a single field from a bunch of IPs:
 The above commands implicitly run the `bulk` subcommand on the input. You can
 manually specify bulk and input IPs on the command line:
 
+```bash
+ipinfo bulk 1.1.1.0/30 8.8.8.0/30 9.9.9.0/30 | less
+```
+
 ![ipinfo bulk](gif/bulk.gif)
 
 ### Summarize
 
 IP details can be summarized similar to what's provided by
 https://ipinfo.io/summarize-ips:
+
+```bash
+cat lk-ips.txt | ipinfo summarize
+```
 
 ![ipinfo summarize](gif/summarize.gif)
 
