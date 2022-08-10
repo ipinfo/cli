@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/fatih/color"
 	"github.com/ipinfo/go/v2/ipinfo"
@@ -67,6 +68,9 @@ func cmdASN(asn string) error {
 
 	data, err := ii.GetASNDetails(asn)
 	if err != nil {
+		if strings.Contains(err.Error(), "401 { }") {
+			return errors.New("Token does not have access to ASN API")
+		}
 		return err
 	}
 
