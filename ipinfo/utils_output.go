@@ -711,7 +711,7 @@ func outputFieldCoreAbuse(core *ipinfo.Core) string {
 		return ",,,,,,"
 	}
 	return fmt.Sprintf(
-		"%v,%v,%v,%v,%v,%v,%v",
+		"\"%v\",%v,%v,%v,%v,%v,%v",
 		core.Abuse.Address,
 		core.Abuse.Country,
 		core.Abuse.CountryName,
