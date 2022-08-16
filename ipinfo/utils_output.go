@@ -1,10 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/fatih/color"
@@ -73,6 +75,17 @@ var asnFields = []string{
 	"peers",
 	"upstreams",
 	"downstreams",
+}
+
+func arrToCSV(strArr []string) string {
+	buff := new(bytes.Buffer)
+	csvWriter := csv.NewWriter(buff)
+	err := csvWriter.Write(strArr)
+	if err != nil {
+		panic(err)
+	}
+	csvWriter.Flush()
+	return buff.String()
 }
 
 func outputJSON(d interface{}) error {
@@ -538,14 +551,12 @@ func outputFieldCoreASN(core *ipinfo.Core) string {
 	if core.ASN == nil {
 		return ",,,,"
 	}
-	return fmt.Sprintf(
-		"%v,%v,%v,%v,%v",
+	return arrToCSV([]string{
 		core.ASN.ASN,
 		core.ASN.Name,
 		core.ASN.Domain,
 		core.ASN.Route,
-		core.ASN.Type,
-	)
+		core.ASN.Type})
 }
 
 func outputFieldCoreASNId(core *ipinfo.Core) string {
@@ -587,12 +598,11 @@ func outputFieldCoreCompany(core *ipinfo.Core) string {
 	if core.Company == nil {
 		return ",,"
 	}
-	return fmt.Sprintf(
-		"%v,%v,%v",
+	return arrToCSV([]string{
 		core.Company.Name,
 		core.Company.Domain,
 		core.Company.Type,
-	)
+	})
 }
 
 func outputFieldCoreCompanyName(core *ipinfo.Core) string {
@@ -620,12 +630,11 @@ func outputFieldCoreCarrier(core *ipinfo.Core) string {
 	if core.Carrier == nil {
 		return ",,"
 	}
-	return fmt.Sprintf(
-		"%v,%v,%v",
+	return arrToCSV([]string{
 		core.Carrier.Name,
 		core.Carrier.MCC,
 		core.Carrier.MNC,
-	)
+	})
 }
 
 func outputFieldCoreCarrierName(core *ipinfo.Core) string {
@@ -653,15 +662,14 @@ func outputFieldCorePrivacy(core *ipinfo.Core) string {
 	if core.Privacy == nil {
 		return ",,,,,"
 	}
-	return fmt.Sprintf(
-		"%v,%v,%v,%v,%v,%v",
-		core.Privacy.VPN,
-		core.Privacy.Proxy,
-		core.Privacy.Tor,
-		core.Privacy.Relay,
-		core.Privacy.Hosting,
+	return arrToCSV([]string{
+		strconv.FormatBool(core.Privacy.VPN),
+		strconv.FormatBool(core.Privacy.Proxy),
+		strconv.FormatBool(core.Privacy.Tor),
+		strconv.FormatBool(core.Privacy.Relay),
+		strconv.FormatBool(core.Privacy.Hosting),
 		core.Privacy.Service,
-	)
+	})
 }
 
 func outputFieldCorePrivacyVPN(core *ipinfo.Core) string {
@@ -710,16 +718,14 @@ func outputFieldCoreAbuse(core *ipinfo.Core) string {
 	if core.Abuse == nil {
 		return ",,,,,,"
 	}
-	return fmt.Sprintf(
-		"\"%v\",%v,%v,%v,%v,%v,%v",
+	return arrToCSV([]string{
 		core.Abuse.Address,
 		core.Abuse.Country,
 		core.Abuse.CountryName,
 		core.Abuse.Email,
 		core.Abuse.Name,
 		core.Abuse.Network,
-		core.Abuse.Phone,
-	)
+		core.Abuse.Phone})
 }
 
 func outputFieldCoreAbuseAddress(core *ipinfo.Core) string {
