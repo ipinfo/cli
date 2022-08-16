@@ -1,10 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/fatih/color"
@@ -73,6 +75,36 @@ var asnFields = []string{
 	"peers",
 	"upstreams",
 	"downstreams",
+}
+
+// Converts `i` to a single CSV encoded line, where `i` may be a `string`,
+// `[]string`, `bool` or any value that can be converted to a string.
+func encodeToCsvLine(i interface{}) string {
+	var arr []string
+	switch v := i.(type) {
+	case []string:
+		arr = v
+	case string:
+		arr = []string{v}
+	case bool:
+		arr = []string{strconv.FormatBool(v)}
+	default:
+		arr = []string{fmt.Sprintf("%v", v)}
+	}
+
+	// writing to string buffer.
+	buf := new(bytes.Buffer)
+	csvWriter := csv.NewWriter(buf)
+	if err := csvWriter.Write(arr); err != nil {
+		panic(err)
+	}
+	csvWriter.Flush()
+	encodedStr := buf.String()
+	end := len(encodedStr) - 1
+	if end < 0 {
+		end = 0
+	}
+	return encodedStr[:end]
 }
 
 func outputJSON(d interface{}) error {
@@ -491,227 +523,222 @@ func outputFieldBatchASNDetails(
 }
 
 func outputFieldCoreIP(core *ipinfo.Core) string {
-	return fmt.Sprintf("%v", core.IP)
+	return encodeToCsvLine(core.IP)
 }
 
 func outputFieldCoreHostname(core *ipinfo.Core) string {
-	return fmt.Sprintf("%v", core.Hostname)
+	return encodeToCsvLine(core.Hostname)
 }
 
 func outputFieldCoreAnycast(core *ipinfo.Core) string {
-	return fmt.Sprintf("%v", core.Anycast)
+	return encodeToCsvLine(core.Anycast)
 }
 
 func outputFieldCoreCity(core *ipinfo.Core) string {
-	return fmt.Sprintf("%v", core.City)
+	return encodeToCsvLine(core.City)
 }
 
 func outputFieldCoreRegion(core *ipinfo.Core) string {
-	return fmt.Sprintf("%v", core.Region)
+	return encodeToCsvLine(core.Region)
 }
 
 func outputFieldCoreCountry(core *ipinfo.Core) string {
-	return fmt.Sprintf("%v", core.Country)
+	return encodeToCsvLine(core.Country)
 }
 
 func outputFieldCoreCountryName(core *ipinfo.Core) string {
-	return fmt.Sprintf("%v", core.CountryName)
+	return encodeToCsvLine(core.CountryName)
 }
 
 func outputFieldCoreLoc(core *ipinfo.Core) string {
-	return fmt.Sprintf("%v", core.Location)
+	return encodeToCsvLine(core.Location)
 }
 
 func outputFieldCoreOrg(core *ipinfo.Core) string {
-	return fmt.Sprintf("%v", core.Org)
+	return encodeToCsvLine(core.Org)
 }
 
 func outputFieldCorePostal(core *ipinfo.Core) string {
-	return fmt.Sprintf("%v", core.Postal)
+	return encodeToCsvLine(core.Postal)
 }
 
 func outputFieldCoreTimezone(core *ipinfo.Core) string {
-	return fmt.Sprintf("%v", core.Timezone)
+	return encodeToCsvLine(core.Timezone)
 }
 
 func outputFieldCoreASN(core *ipinfo.Core) string {
 	if core.ASN == nil {
 		return ",,,,"
 	}
-	return fmt.Sprintf(
-		"%v,%v,%v,%v,%v",
+	return encodeToCsvLine([]string{
 		core.ASN.ASN,
 		core.ASN.Name,
 		core.ASN.Domain,
 		core.ASN.Route,
 		core.ASN.Type,
-	)
+	})
 }
 
 func outputFieldCoreASNId(core *ipinfo.Core) string {
 	if core.ASN == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.ASN.ASN)
+	return encodeToCsvLine(core.ASN.ASN)
 }
 
 func outputFieldCoreASNName(core *ipinfo.Core) string {
 	if core.ASN == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.ASN.Name)
+	return encodeToCsvLine(core.ASN.Name)
 }
 
 func outputFieldCoreASNDomain(core *ipinfo.Core) string {
 	if core.ASN == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.ASN.Domain)
+	return encodeToCsvLine(core.ASN.Domain)
 }
 
 func outputFieldCoreASNRoute(core *ipinfo.Core) string {
 	if core.ASN == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.ASN.Route)
+	return encodeToCsvLine(core.ASN.Route)
 }
 
 func outputFieldCoreASNType(core *ipinfo.Core) string {
 	if core.ASN == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.ASN.Type)
+	return encodeToCsvLine(core.ASN.Type)
 }
 
 func outputFieldCoreCompany(core *ipinfo.Core) string {
 	if core.Company == nil {
 		return ",,"
 	}
-	return fmt.Sprintf(
-		"%v,%v,%v",
+	return encodeToCsvLine([]string{
 		core.Company.Name,
 		core.Company.Domain,
 		core.Company.Type,
-	)
+	})
 }
 
 func outputFieldCoreCompanyName(core *ipinfo.Core) string {
 	if core.Company == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Company.Name)
+	return encodeToCsvLine(core.Company.Name)
 }
 
 func outputFieldCoreCompanyDomain(core *ipinfo.Core) string {
 	if core.Company == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Company.Domain)
+	return encodeToCsvLine(core.Company.Domain)
 }
 
 func outputFieldCoreCompanyType(core *ipinfo.Core) string {
 	if core.Company == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Company.Type)
+	return encodeToCsvLine(core.Company.Type)
 }
 
 func outputFieldCoreCarrier(core *ipinfo.Core) string {
 	if core.Carrier == nil {
 		return ",,"
 	}
-	return fmt.Sprintf(
-		"%v,%v,%v",
+	return encodeToCsvLine([]string{
 		core.Carrier.Name,
 		core.Carrier.MCC,
 		core.Carrier.MNC,
-	)
+	})
 }
 
 func outputFieldCoreCarrierName(core *ipinfo.Core) string {
 	if core.Carrier == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Carrier.Name)
+	return encodeToCsvLine(core.Carrier.Name)
 }
 
 func outputFieldCoreCarrierMCC(core *ipinfo.Core) string {
 	if core.Carrier == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Carrier.MCC)
+	return encodeToCsvLine(core.Carrier.MCC)
 }
 
 func outputFieldCoreCarrierMNC(core *ipinfo.Core) string {
 	if core.Carrier == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Carrier.MNC)
+	return encodeToCsvLine(core.Carrier.MNC)
 }
 
 func outputFieldCorePrivacy(core *ipinfo.Core) string {
 	if core.Privacy == nil {
 		return ",,,,,"
 	}
-	return fmt.Sprintf(
-		"%v,%v,%v,%v,%v,%v",
-		core.Privacy.VPN,
-		core.Privacy.Proxy,
-		core.Privacy.Tor,
-		core.Privacy.Relay,
-		core.Privacy.Hosting,
+	return encodeToCsvLine([]string{
+		strconv.FormatBool(core.Privacy.VPN),
+		strconv.FormatBool(core.Privacy.Proxy),
+		strconv.FormatBool(core.Privacy.Tor),
+		strconv.FormatBool(core.Privacy.Relay),
+		strconv.FormatBool(core.Privacy.Hosting),
 		core.Privacy.Service,
-	)
+	})
 }
 
 func outputFieldCorePrivacyVPN(core *ipinfo.Core) string {
 	if core.Privacy == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Privacy.VPN)
+	return encodeToCsvLine(core.Privacy.VPN)
 }
 
 func outputFieldCorePrivacyProxy(core *ipinfo.Core) string {
 	if core.Privacy == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Privacy.Proxy)
+	return encodeToCsvLine(core.Privacy.Proxy)
 }
 
 func outputFieldCorePrivacyTor(core *ipinfo.Core) string {
 	if core.Privacy == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Privacy.Tor)
+	return encodeToCsvLine(core.Privacy.Tor)
 }
 
 func outputFieldCorePrivacyRelay(core *ipinfo.Core) string {
 	if core.Privacy == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Privacy.Relay)
+	return encodeToCsvLine(core.Privacy.Relay)
 }
 
 func outputFieldCorePrivacyHosting(core *ipinfo.Core) string {
 	if core.Privacy == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Privacy.Hosting)
+	return encodeToCsvLine(core.Privacy.Hosting)
 }
 
 func outputFieldCorePrivacyService(core *ipinfo.Core) string {
 	if core.Privacy == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Privacy.Service)
+	return encodeToCsvLine(core.Privacy.Service)
 }
 
 func outputFieldCoreAbuse(core *ipinfo.Core) string {
 	if core.Abuse == nil {
 		return ",,,,,,"
 	}
-	return fmt.Sprintf(
-		"%v,%v,%v,%v,%v,%v,%v",
+	return encodeToCsvLine([]string{
 		core.Abuse.Address,
 		core.Abuse.Country,
 		core.Abuse.CountryName,
@@ -719,120 +746,120 @@ func outputFieldCoreAbuse(core *ipinfo.Core) string {
 		core.Abuse.Name,
 		core.Abuse.Network,
 		core.Abuse.Phone,
-	)
+	})
 }
 
 func outputFieldCoreAbuseAddress(core *ipinfo.Core) string {
 	if core.Abuse == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Abuse.Address)
+	return encodeToCsvLine(core.Abuse.Address)
 }
 
 func outputFieldCoreAbuseCountry(core *ipinfo.Core) string {
 	if core.Abuse == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Abuse.Country)
+	return encodeToCsvLine(core.Abuse.Country)
 }
 
 func outputFieldCoreAbuseCountryName(core *ipinfo.Core) string {
 	if core.Abuse == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Abuse.CountryName)
+	return encodeToCsvLine(core.Abuse.CountryName)
 }
 
 func outputFieldCoreAbuseEmail(core *ipinfo.Core) string {
 	if core.Abuse == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Abuse.Email)
+	return encodeToCsvLine(core.Abuse.Email)
 }
 
 func outputFieldCoreAbuseName(core *ipinfo.Core) string {
 	if core.Abuse == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Abuse.Name)
+	return encodeToCsvLine(core.Abuse.Name)
 }
 
 func outputFieldCoreAbuseNetwork(core *ipinfo.Core) string {
 	if core.Abuse == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Abuse.Network)
+	return encodeToCsvLine(core.Abuse.Network)
 }
 
 func outputFieldCoreAbusePhone(core *ipinfo.Core) string {
 	if core.Abuse == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Abuse.Phone)
+	return encodeToCsvLine(core.Abuse.Phone)
 }
 
 func outputFieldCoreDomains(core *ipinfo.Core) string {
 	if core.Domains == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Domains.Total)
+	return encodeToCsvLine(core.Domains.Total)
 }
 
 func outputFieldCoreDomainsTotal(core *ipinfo.Core) string {
 	if core.Domains == nil {
 		return ""
 	}
-	return fmt.Sprintf("%v", core.Domains.Total)
+	return encodeToCsvLine(core.Domains.Total)
 }
 
 func outputFieldASNId(d *ipinfo.ASNDetails) string {
-	return fmt.Sprintf("%v", d.ASN)
+	return encodeToCsvLine(d.ASN)
 }
 
 func outputFieldASNName(d *ipinfo.ASNDetails) string {
-	return fmt.Sprintf("%v", d.Name)
+	return encodeToCsvLine(d.Name)
 }
 
 func outputFieldASNCountry(d *ipinfo.ASNDetails) string {
-	return fmt.Sprintf("%v", d.Country)
+	return encodeToCsvLine(d.Country)
 }
 
 func outputFieldASNCountryName(d *ipinfo.ASNDetails) string {
-	return fmt.Sprintf("%v", d.CountryName)
+	return encodeToCsvLine(d.CountryName)
 }
 
 func outputFieldASNAllocated(d *ipinfo.ASNDetails) string {
-	return fmt.Sprintf("%v", d.Allocated)
+	return encodeToCsvLine(d.Allocated)
 }
 
 func outputFieldASNRegistry(d *ipinfo.ASNDetails) string {
-	return fmt.Sprintf("%v", d.Registry)
+	return encodeToCsvLine(d.Registry)
 }
 
 func outputFieldASNDomain(d *ipinfo.ASNDetails) string {
-	return fmt.Sprintf("%v", d.Domain)
+	return encodeToCsvLine(d.Domain)
 }
 
 func outputFieldASNNumIPs(d *ipinfo.ASNDetails) string {
-	return fmt.Sprintf("%v", d.NumIPs)
+	return encodeToCsvLine(d.NumIPs)
 }
 
 func outputFieldASNPrefixes(d *ipinfo.ASNDetails) string {
-	return fmt.Sprintf("%v", d.Prefixes)
+	return encodeToCsvLine(d.Prefixes)
 }
 
 func outputFieldASNPrefixes6(d *ipinfo.ASNDetails) string {
-	return fmt.Sprintf("%v", d.Prefixes6)
+	return encodeToCsvLine(d.Prefixes6)
 }
 
 func outputFieldASNPeers(d *ipinfo.ASNDetails) string {
-	return fmt.Sprintf("%v", d.Peers)
+	return encodeToCsvLine(d.Peers)
 }
 
 func outputFieldASNUpstreams(d *ipinfo.ASNDetails) string {
-	return fmt.Sprintf("%v", d.Upstreams)
+	return encodeToCsvLine(d.Upstreams)
 }
 
 func outputFieldASNDownstreams(d *ipinfo.ASNDetails) string {
-	return fmt.Sprintf("%v", d.Downstreams)
+	return encodeToCsvLine(d.Downstreams)
 }
