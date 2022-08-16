@@ -124,7 +124,7 @@ func cmdBulk() (err error) {
 	}
 
 	data, err := ii.GetIPInfoBatch(ips, ipinfo.BatchReqOpts{
-		TimeoutPerBatch: 60 * 30, // 30min
+		TimeoutPerBatch:              60 * 30, // 30min
 		ConcurrentBatchRequestsLimit: 20,
 	})
 	if err != nil {
