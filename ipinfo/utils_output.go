@@ -575,7 +575,8 @@ func outputFieldCoreASN(core *ipinfo.Core) string {
 		core.ASN.Name,
 		core.ASN.Domain,
 		core.ASN.Route,
-		core.ASN.Type})
+		core.ASN.Type,
+	})
 }
 
 func outputFieldCoreASNId(core *ipinfo.Core) string {
