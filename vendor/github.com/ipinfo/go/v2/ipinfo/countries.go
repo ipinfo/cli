@@ -6,6 +6,17 @@ func GetCountryName(country string) string {
 	return countriesMap[country]
 }
 
+// IsEU takes the country code and returns `true`
+// if the country is a member of the EU, e.g. "SE" -> true
+func IsEU(country string) bool {
+	for _, val := range euCountries {
+		if val == country {
+			return true
+		}
+	}
+	return false
+}
+
 var countriesMap = map[string]string{
 	"BD": "Bangladesh",
 	"BE": "Belgium",
@@ -257,4 +268,10 @@ var countriesMap = map[string]string{
 	"UA": "Ukraine",
 	"QA": "Qatar",
 	"MZ": "Mozambique",
+}
+
+var euCountries = []string{
+	"IE", "AT", "LT", "LU", "LV", "DE", "DK", "SE", "SI", "SK", "CZ", "CY",
+	"NL", "FI", "FR", "MT", "ES", "IT", "EE", "PL", "PT", "HU", "HR", "GR",
+	"RO", "BG", "BE",
 }
