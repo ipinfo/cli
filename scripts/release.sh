@@ -44,7 +44,7 @@ cd ..
 rm -rf $ROOT/${CLI}/dist/usr
 mkdir -p $ROOT/${CLI}/dist/usr/local/bin
 cp $ROOT/build/${CLI}_${VSN}_linux_amd64 $ROOT/${CLI}/dist/usr/local/bin/${CLI}
-dpkg-deb --build ${ROOT}/${CLI}/dist build/${CLI}_${VSN}.deb
+dpkg-deb -Zgzip --build ${ROOT}/${CLI}/dist build/${CLI}_${VSN}.deb
 
 # release
 gh release create ${CLI}-${VSN}                                               \
