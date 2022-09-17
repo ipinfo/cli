@@ -80,6 +80,14 @@ iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-2.9.0/windows.p
 docker run --rm -it ipinfo/ipinfo:2.9.0
 ```
 
+To save the ipinfo config, add `-v "/path_to_config:/root/.config/ipinfo"`. For
+example, the following command saves the config to the `ipinfo` directory in
+the current working directory.
+
+```bash
+docker run --rm -it -v "$PWD/ipinfo:/root/.config/ipinfo" ipinfo/ipinfo:2.9.0
+```
+
 ### Using `go install`
 
 Make sure that `$GOPATH/bin` is in your `$PATH`, because that's where this gets
