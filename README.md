@@ -77,7 +77,7 @@ iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-2.9.0/windows.p
 ### Docker
 
 ```bash
-docker run ipinfo/ipinfo:2.9.0
+docker run --rm -it ipinfo/ipinfo:2.9.0
 ```
 
 ### Using `go install`
