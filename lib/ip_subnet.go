@@ -1,6 +1,9 @@
 package lib
 
 import (
+	"encoding/binary"
+	"fmt"
+	"net"
 	"strconv"
 )
 
@@ -63,4 +66,44 @@ func CIDRsFromIPRangeStrRaw(rStr string) ([]string, error) {
 	}
 
 	return r.ToCIDRs(), nil
+}
+
+func CIDRSpliter(cidr string, spliter string) ([]*net.IPNet, error) {
+	_, network, err := net.ParseCIDR(cidr)
+	if err != nil {
+		return nil, err
+	}
+	split, err := strconv.Atoi(spliter)
+	if err != nil {
+		return nil, err
+	}
+	ones, _ := network.Mask.Size()
+	bitshifts := split - ones
+	if bitshifts < 0 || bitshifts > 31 || ones+bitshifts > 32 {
+		return nil, fmt.Errorf("wrong split string")
+	}
+	subnets, err := SubnetBitShift(network, bitshifts)
+	if err != nil {
+		return nil, err
+	}
+	return subnets, nil
+
+}
+
+func SubnetBitShift(network *net.IPNet, bits int) ([]*net.IPNet, error) {
+	subnets := make([]*net.IPNet, 1<<bits)
+	ones, _ := network.Mask.Size()
+	hostBits := (32 - ones) - bits
+	newMask := net.CIDRMask(int(ones+bits), 32)
+
+	for i := range subnets {
+		ip := binary.BigEndian.Uint32(network.IP) + uint32(i*(1<<uint(hostBits)))
+		ip4 := make(net.IP, 4)
+		binary.BigEndian.PutUint32(ip4, ip)
+		subnets[i] = &net.IPNet{
+			IP:   ip4,
+			Mask: newMask,
+		}
+	}
+	return subnets, nil
 }
