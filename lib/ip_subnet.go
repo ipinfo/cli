@@ -89,44 +89,26 @@ func CIDRToIPSubnet(cidr string) (IPSubnet, error) {
 	return ipsubnet, nil
 }
 
-// SubnetBitShift returns a list of IPSubnet after shifting number of `bits`.
-func (s IPSubnet) SubnetBitShift(bits int) ([]IPSubnet, error) {
-	ipsubnets := make([]IPSubnet, 1<<bits)
-	_, network, err := net.ParseCIDR(s.ToCIDR())
-	if err != nil {
-		return nil, err
+// SplitCIDR returns a list of smaller IPSubnet after splitting a larger CIDR
+// into `split`.
+func (s IPSubnet) SplitCIDR(split int) ([]IPSubnet, error) {
+	bitshifts := int(uint32(split) - s.NetBitCnt)
+	if bitshifts < 0 || bitshifts > 31 || int(s.NetBitCnt)+bitshifts > 32 {
+		return nil, fmt.Errorf("wrong split string")
 	}
-	subnets, err := NetworkBitShift(network, bits)
-	if err != nil {
-		return nil, err
-	}
-	for i, subnet := range subnets {
-		ipsubnet, err := CIDRToIPSubnet(fmt.Sprint(subnet))
-		if err != nil {
-			return nil, err
+	hostBits := (32 - s.NetBitCnt) - uint32(bitshifts)
+	netMask, hostMask := NetAndHostMasks(uint32(split))
+	ipsubnets := make([]IPSubnet, 1<<bitshifts)
+	for i := range ipsubnets {
+		start := uint32(s.LoIP) + uint32(i*(1<<hostBits))
+		ipsubnets[i] = IPSubnet{
+			HostBitCnt: uint32(32 - split),
+			HostMask:   hostMask,
+			NetBitCnt:  uint32(split),
+			LoIP:       IP(uint32(start) & netMask),
+			HiIP:       IP((uint32(start) & netMask) | hostMask),
 		}
-		ipsubnets[i] = ipsubnet
 	}
 
 	return ipsubnets, nil
-}
-
-// NetworkBitShift returns a list of *net.IPNet after shifting the bits number
-// of on `bits` on network `*net.IPNet`.
-func NetworkBitShift(network *net.IPNet, bits int) ([]*net.IPNet, error) {
-	subnets := make([]*net.IPNet, 1<<bits)
-	ones, _ := network.Mask.Size()
-	hostBits := (32 - ones) - bits
-	newMask := net.CIDRMask(int(ones+bits), 32)
-	for i := range subnets {
-		ip := binary.BigEndian.Uint32(network.IP) + uint32(i*(1<<uint(hostBits)))
-		ip4 := make(net.IP, 4)
-		binary.BigEndian.PutUint32(ip4, ip)
-		subnets[i] = &net.IPNet{
-			IP:   ip4,
-			Mask: newMask,
-		}
-	}
-
-	return subnets, nil
 }

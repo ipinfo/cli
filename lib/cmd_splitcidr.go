@@ -43,18 +43,20 @@ func CmdSplitCIDR(
 	}
 	cidrString := args[0]
 	splitString := args[1]
-	cid, _ := CIDRToIPSubnet(cidrString)
+	ipsubnet, err := CIDRToIPSubnet(cidrString)
+	if err != nil {
+		return err
+	}
 	split, err := strconv.Atoi(splitString)
 	if err != nil {
 		return nil
 	}
-	bitshifts := split - int(cid.NetBitCnt)
-	if bitshifts < 0 || bitshifts > 31 || int(cid.NetBitCnt)+bitshifts > 32 {
-		return fmt.Errorf("wrong split string")
+	subs, err := ipsubnet.SplitCIDR(split)
+	if err != nil {
+		return err
 	}
-	cids, _ := cid.SubnetBitShift(bitshifts)
-	for _, cidr := range cids {
-		fmt.Println(cidr.ToCIDR())
+	for _, s := range subs {
+		fmt.Println(s.ToCIDR())
 	}
 
 	return nil
