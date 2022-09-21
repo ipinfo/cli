@@ -68,6 +68,7 @@ func CIDRsFromIPRangeStrRaw(rStr string) ([]string, error) {
 	return r.ToCIDRs(), nil
 }
 
+// CIDRToIPSubnet converts a CIDR notation to IPSubnet.
 func CIDRToIPSubnet(cidr string) (IPSubnet, error) {
 	_, network, err := net.ParseCIDR(cidr)
 	if err != nil {
@@ -88,13 +89,14 @@ func CIDRToIPSubnet(cidr string) (IPSubnet, error) {
 	return ipsubnet, nil
 }
 
+// SubnetBitShift returns a list of IPSubnet after shifting number of `bits`.
 func (s IPSubnet) SubnetBitShift(bits int) ([]IPSubnet, error) {
 	ipsubnets := make([]IPSubnet, 1<<bits)
 	_, network, err := net.ParseCIDR(s.ToCIDR())
 	if err != nil {
 		return nil, err
 	}
-	subnets, err := SubnetBitShift(network, bits)
+	subnets, err := NetworkBitShift(network, bits)
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +111,9 @@ func (s IPSubnet) SubnetBitShift(bits int) ([]IPSubnet, error) {
 	return ipsubnets, nil
 }
 
-func SubnetBitShift(network *net.IPNet, bits int) ([]*net.IPNet, error) {
+// NetworkBitShift returns a list of *net.IPNet after shifting the bits number
+// of on `bits` on network `*net.IPNet`.
+func NetworkBitShift(network *net.IPNet, bits int) ([]*net.IPNet, error) {
 	subnets := make([]*net.IPNet, 1<<bits)
 	ones, _ := network.Mask.Size()
 	hostBits := (32 - ones) - bits

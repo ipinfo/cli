@@ -21,7 +21,7 @@ func printHelpSplitCIDR() {
 		`Usage: %s splitcidr <cidr> <split>
 
 Description:
-  Splitcidrs.
+  splits a larger CIDR into smaller CIDRs.
 
   $ %[1]s splitcidr 8.8.8.0/24 25
 
