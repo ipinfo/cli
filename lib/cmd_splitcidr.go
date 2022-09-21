@@ -3,6 +3,7 @@ package lib
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/spf13/pflag"
 )
@@ -42,12 +43,18 @@ func CmdSplitCIDR(
 	}
 	cidrString := args[0]
 	splitString := args[1]
-	subnets, err := CIDRSpliter(cidrString, splitString)
+	cid, _ := CIDRToIPSubnet(cidrString)
+	split, err := strconv.Atoi(splitString)
 	if err != nil {
-		return err
+		return nil
 	}
-	for _, subnet := range subnets {
-		fmt.Println(subnet)
+	bitshifts := split - int(cid.NetBitCnt)
+	if bitshifts < 0 || bitshifts > 31 || int(cid.NetBitCnt)+bitshifts > 32 {
+		return fmt.Errorf("wrong split string")
+	}
+	cids, _ := cid.SubnetBitShift(bitshifts)
+	for _, cidr := range cids {
+		fmt.Println(cidr.ToCIDR())
 	}
 
 	return nil

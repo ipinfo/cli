@@ -68,26 +68,45 @@ func CIDRsFromIPRangeStrRaw(rStr string) ([]string, error) {
 	return r.ToCIDRs(), nil
 }
 
-func CIDRSpliter(cidr string, spliter string) ([]*net.IPNet, error) {
+func CIDRToIPSubnet(cidr string) (IPSubnet, error) {
 	_, network, err := net.ParseCIDR(cidr)
 	if err != nil {
-		return nil, err
-	}
-	split, err := strconv.Atoi(spliter)
-	if err != nil {
-		return nil, err
+		return IPSubnet{}, err
 	}
 	ones, _ := network.Mask.Size()
-	bitshifts := split - ones
-	if bitshifts < 0 || bitshifts > 31 || ones+bitshifts > 32 {
-		return nil, fmt.Errorf("wrong split string")
+	netMask, hostMask := NetAndHostMasks(uint32(ones))
+	start := binary.BigEndian.Uint32(network.IP)
+	ipsubnet := IPSubnet{
+		HostBitCnt: uint32(32 - ones),
+		HostMask:   hostMask,
+		NetBitCnt:  uint32(ones),
+		NetMask:    netMask,
+		LoIP:       IP(uint32(start) & netMask),
+		HiIP:       IP((uint32(start) & netMask) | hostMask),
 	}
-	subnets, err := SubnetBitShift(network, bitshifts)
+
+	return ipsubnet, nil
+}
+
+func (s IPSubnet) SubnetBitShift(bits int) ([]IPSubnet, error) {
+	ipsubnets := make([]IPSubnet, 1<<bits)
+	_, network, err := net.ParseCIDR(s.ToCIDR())
 	if err != nil {
 		return nil, err
 	}
-	return subnets, nil
+	subnets, err := SubnetBitShift(network, bits)
+	if err != nil {
+		return nil, err
+	}
+	for i, subnet := range subnets {
+		ipsubnet, err := CIDRToIPSubnet(fmt.Sprint(subnet))
+		if err != nil {
+			return nil, err
+		}
+		ipsubnets[i] = ipsubnet
+	}
 
+	return ipsubnets, nil
 }
 
 func SubnetBitShift(network *net.IPNet, bits int) ([]*net.IPNet, error) {
@@ -95,7 +114,6 @@ func SubnetBitShift(network *net.IPNet, bits int) ([]*net.IPNet, error) {
 	ones, _ := network.Mask.Size()
 	hostBits := (32 - ones) - bits
 	newMask := net.CIDRMask(int(ones+bits), 32)
-
 	for i := range subnets {
 		ip := binary.BigEndian.Uint32(network.IP) + uint32(i*(1<<uint(hostBits)))
 		ip4 := make(net.IP, 4)
@@ -105,5 +123,6 @@ func SubnetBitShift(network *net.IPNet, bits int) ([]*net.IPNet, error) {
 			Mask: newMask,
 		}
 	}
+
 	return subnets, nil
 }
