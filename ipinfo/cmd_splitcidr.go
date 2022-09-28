@@ -25,7 +25,6 @@ Description:
 
   $ %[1]s splitcidr 8.8.8.0/24 25
 
-
 Options:
   --help, -h
     show help.

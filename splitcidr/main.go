@@ -16,27 +16,26 @@ var version = "1.0.0"
 
 func printHelp() {
 	fmt.Printf(
-		`Usage: %s splitcidr <cidr> <split>
+		`Usage: %s <cidr> <split>
 
 Description:
-  splits a larger CIDR into smaller CIDRs.
+  Splits a larger CIDR into smaller CIDRs.
 
-  $ %[1]s splitcidr 8.8.8.0/24 25
-
+  $ %[1]s 8.8.8.0/24 25
 
 Options:
   --help, -h
     show help.
 
-  Completions:
-    --completions-install
-      attempt completions auto-installation for any supported shell.
-    --completions-bash
-      output auto-completion script for bash for manual installation.
-    --completions-zsh
-      output auto-completion script for zsh for manual installation.
-    --completions-fish
-      output auto-completion script for fish for manual installation.
+Completions:
+  --completions-install
+    attempt completions auto-installation for any supported shell.
+  --completions-bash
+    output auto-completion script for bash for manual installation.
+  --completions-zsh
+    output auto-completion script for zsh for manual installation.
+  --completions-fish
+    output auto-completion script for fish for manual installation.
 `, progBase)
 }
 

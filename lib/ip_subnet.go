@@ -74,6 +74,7 @@ func CIDRToIPSubnet(cidr string) (IPSubnet, error) {
 	if err != nil {
 		return IPSubnet{}, err
 	}
+
 	ones, _ := network.Mask.Size()
 	netMask, hostMask := NetAndHostMasks(uint32(ones))
 	start := binary.BigEndian.Uint32(network.IP)
@@ -96,6 +97,7 @@ func (s IPSubnet) SplitCIDR(split int) ([]IPSubnet, error) {
 	if bitshifts < 0 || bitshifts > 31 || int(s.NetBitCnt)+bitshifts > 32 {
 		return nil, fmt.Errorf("wrong split string")
 	}
+
 	hostBits := (32 - s.NetBitCnt) - uint32(bitshifts)
 	netMask, hostMask := NetAndHostMasks(uint32(split))
 	ipsubnets := make([]IPSubnet, 1<<bitshifts)

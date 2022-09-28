@@ -34,6 +34,7 @@ func CmdSplitCIDR(
 		printHelp()
 		return nil
 	}
+
 	// require args and/or stdin.
 	stat, _ := os.Stdin.Stat()
 	isStdin := (stat.Mode() & os.ModeCharDevice) == 0
@@ -41,20 +42,25 @@ func CmdSplitCIDR(
 		printHelp()
 		return nil
 	}
+
 	cidrString := args[0]
 	splitString := args[1]
+
 	ipsubnet, err := CIDRToIPSubnet(cidrString)
 	if err != nil {
 		return err
 	}
+
 	split, err := strconv.Atoi(splitString)
 	if err != nil {
 		return nil
 	}
+
 	subs, err := ipsubnet.SplitCIDR(split)
 	if err != nil {
 		return err
 	}
+
 	for _, s := range subs {
 		fmt.Println(s.ToCIDR())
 	}
