@@ -2,6 +2,7 @@ package lib
 
 import (
 	"fmt"
+	"net"
 	"strconv"
 
 	"github.com/spf13/pflag"
@@ -41,8 +42,7 @@ func CmdSplitCIDR(
 
 	cidrString := args[0]
 	splitString := args[1]
-
-	ipsubnet, err := IPSubnetFromCidr(cidrString)
+	ip, _, err := net.ParseCIDR(cidrString)
 	if err != nil {
 		return err
 	}
@@ -52,13 +52,32 @@ func CmdSplitCIDR(
 		return nil
 	}
 
-	subs, err := ipsubnet.SplitCIDR(split)
-	if err != nil {
-		return err
-	}
+	if ip.To4() != nil {
+		ipsubnet, err := IPSubnetFromCidr(cidrString)
+		if err != nil {
+			return err
+		}
 
-	for _, s := range subs {
-		fmt.Println(s.ToCIDR())
+		subs, err := ipsubnet.SplitCIDR(split)
+		if err != nil {
+			return err
+		}
+
+		for _, s := range subs {
+			fmt.Println(s.ToCIDR())
+		}
+	} else {
+		ipsubnet, err := IP6SubnetFromCidr(cidrString)
+		if err != nil {
+			return err
+		}
+		subs, err := ipsubnet.SplitCIDR(split)
+		if err != nil {
+			return err
+		}
+		for _, s := range subs {
+			fmt.Println(s.ToCIDR())
+		}
 	}
 
 	return nil

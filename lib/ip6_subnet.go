@@ -1,6 +1,11 @@
 package lib
 
 import (
+	"encoding/binary"
+	"fmt"
+	"math"
+	"math/big"
+	"net"
 	"strconv"
 )
 
@@ -59,4 +64,72 @@ func CIDRsFromIP6RangeStrRaw(rStr string) ([]string, error) {
 	}
 
 	return r.ToCIDRs(), nil
+}
+
+// IP6SubnetFromCidr converts a CIDR notation to IP6Subnet.
+func IP6SubnetFromCidr(cidr string) (IP6Subnet, error) {
+	_, network, err := net.ParseCIDR(cidr)
+	if err != nil {
+		return IP6Subnet{}, err
+	}
+
+	ones, _ := network.Mask.Size()
+	netMask, hostMask := NetAndHostMasks6(uint32(ones))
+	starthi := binary.BigEndian.Uint64(network.IP[:8])
+	startlo := binary.BigEndian.Uint64(network.IP[8:])
+	start := NewIP6(starthi, startlo)
+	ip6subnet := IP6Subnet{
+		HostBitCnt: uint32(128 - ones),
+		HostMask:   hostMask,
+		NetBitCnt:  uint32(ones),
+		NetMask:    netMask,
+		LoIP:       IP6FromU128(start.N.And(netMask)),
+		HiIP:       IP6FromU128(start.N.And(netMask).Or(hostMask)),
+	}
+
+	return ip6subnet, nil
+}
+
+// SplitCIDR returns a list of smaller IPSubnet after splitting a larger CIDR
+// into `split`.
+func (s IP6Subnet) SplitCIDR(split int) ([]IP6Subnet, error) {
+	bitshifts := int(uint32(split) - s.NetBitCnt)
+	if bitshifts < 0 || bitshifts > 128 || int(s.NetBitCnt)+bitshifts > 128 {
+		return nil, fmt.Errorf("wrong split string")
+	}
+
+	hostBits := (128 - s.NetBitCnt) - uint32(bitshifts)
+	netMask, hostMask := NetAndHostMasks6(uint32(split))
+	subnetCount := math.Pow(2, float64(bitshifts))
+	subnetCountBig := big.NewFloat(subnetCount)
+	hostCount := math.Pow(2, float64(hostBits))
+	hostCountbig := big.NewFloat(hostCount)
+
+	var ipsubnets []IP6Subnet
+	for i := big.NewFloat(0); i.Cmp(subnetCountBig) < 0; i.Add(i, big.NewFloat(1)) {
+		// calculating new LoIP by `LoIP + i*(hostCount)`
+		hostCountMul := new(big.Float)
+		hostCountMul.Mul(i, hostCountbig)
+		newIP := new(big.Int)
+		newIP.SetBytes(s.LoIP.To16ByteSlice())
+		hostCountAdd := new(big.Int)
+		result := new(big.Int)
+		hostCountMul.Int(result)
+		hostCountAdd.Add(newIP, result)
+
+		// converting `bigint` to `IP6`
+		ipBytes := hostCountAdd.Bytes()
+		startIP := NewIP6(binary.BigEndian.Uint64(ipBytes[:8]), binary.BigEndian.Uint64(ipBytes[8:]))
+
+		subnet := IP6Subnet{
+			HostBitCnt: uint32(128 - split),
+			HostMask:   hostMask,
+			NetBitCnt:  uint32(split),
+			LoIP:       IP6FromU128(startIP.N.And(netMask)),
+			HiIP:       IP6FromU128(startIP.N.And(netMask).Or(hostMask)),
+		}
+		ipsubnets = append(ipsubnets, subnet)
+	}
+
+	return ipsubnets, nil
 }
