@@ -118,8 +118,9 @@ func (s IP6Subnet) SplitCIDR(split int) ([]IP6Subnet, error) {
 		hostCountAdd.Add(newIP, result)
 
 		// converting `bigint` to `IP6`
-		ipBytes := hostCountAdd.Bytes()
-		startIP := NewIP6(binary.BigEndian.Uint64(ipBytes[:8]), binary.BigEndian.Uint64(ipBytes[8:]))
+		ipArr := []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+		copy(ipArr[16-len(hostCountAdd.Bytes()):], hostCountAdd.Bytes())
+		startIP := NewIP6(binary.BigEndian.Uint64(ipArr[:8]), binary.BigEndian.Uint64(ipArr[8:]))
 
 		subnet := IP6Subnet{
 			HostBitCnt: uint32(128 - split),
