@@ -17,3 +17,4 @@ cidr2ip/dist/
 range2cidr/dist/
 range2ip/dist/
 randip/dist/
+splitcidr/dist/

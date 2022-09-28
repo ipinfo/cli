@@ -11,4 +11,5 @@ golint                                                                        \
     ./range2cidr/...                                                          \
     ./range2ip/...                                                            \
     ./cidr2ip/...                                                             \
+    ./splitcidr/...                                                           \
     ./randip/...

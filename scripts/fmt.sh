@@ -14,4 +14,5 @@ gofmt -w                                                                      \
     $ROOT/range2cidr                                                          \
     $ROOT/range2ip                                                            \
     $ROOT/cidr2ip                                                             \
+    $ROOT/splitcidr                                                           \
     $ROOT/randip

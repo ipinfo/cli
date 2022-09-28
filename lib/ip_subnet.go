@@ -1,6 +1,9 @@
 package lib
 
 import (
+	"encoding/binary"
+	"fmt"
+	"net"
 	"strconv"
 )
 
@@ -63,4 +66,51 @@ func CIDRsFromIPRangeStrRaw(rStr string) ([]string, error) {
 	}
 
 	return r.ToCIDRs(), nil
+}
+
+// IPSubnetFromCidr converts a CIDR notation to IPSubnet.
+func IPSubnetFromCidr(cidr string) (IPSubnet, error) {
+	_, network, err := net.ParseCIDR(cidr)
+	if err != nil {
+		return IPSubnet{}, err
+	}
+
+	ones, _ := network.Mask.Size()
+	netMask, hostMask := NetAndHostMasks(uint32(ones))
+	start := binary.BigEndian.Uint32(network.IP)
+	ipsubnet := IPSubnet{
+		HostBitCnt: uint32(32 - ones),
+		HostMask:   hostMask,
+		NetBitCnt:  uint32(ones),
+		NetMask:    netMask,
+		LoIP:       IP(uint32(start) & netMask),
+		HiIP:       IP((uint32(start) & netMask) | hostMask),
+	}
+
+	return ipsubnet, nil
+}
+
+// SplitCIDR returns a list of smaller IPSubnet after splitting a larger CIDR
+// into `split`.
+func (s IPSubnet) SplitCIDR(split int) ([]IPSubnet, error) {
+	bitshifts := int(uint32(split) - s.NetBitCnt)
+	if bitshifts < 0 || bitshifts > 31 || int(s.NetBitCnt)+bitshifts > 32 {
+		return nil, fmt.Errorf("wrong split string")
+	}
+
+	hostBits := (32 - s.NetBitCnt) - uint32(bitshifts)
+	netMask, hostMask := NetAndHostMasks(uint32(split))
+	ipsubnets := make([]IPSubnet, 1<<bitshifts)
+	for i := range ipsubnets {
+		start := uint32(s.LoIP) + uint32(i*(1<<hostBits))
+		ipsubnets[i] = IPSubnet{
+			HostBitCnt: uint32(32 - split),
+			HostMask:   hostMask,
+			NetBitCnt:  uint32(split),
+			LoIP:       IP(uint32(start) & netMask),
+			HiIP:       IP((uint32(start) & netMask) | hostMask),
+		}
+	}
+
+	return ipsubnets, nil
 }

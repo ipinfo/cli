@@ -63,6 +63,8 @@ func main() {
 		err = cmdRange2IP()
 	case cmd == "randip":
 		err = cmdRandIP()
+	case cmd == "splitcidr":
+		err = cmdSplitCIDR()
 	case cmd == "cache":
 		err = cmdCache()
 	case cmd == "config":
