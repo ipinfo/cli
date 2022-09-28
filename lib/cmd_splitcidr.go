@@ -2,7 +2,6 @@ package lib
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 
 	"github.com/spf13/pflag"
@@ -35,10 +34,7 @@ func CmdSplitCIDR(
 		return nil
 	}
 
-	// require args and/or stdin.
-	stat, _ := os.Stdin.Stat()
-	isStdin := (stat.Mode() & os.ModeCharDevice) == 0
-	if (len(args) == 0 || len(args) != 2) && !isStdin {
+	if len(args) != 2 {
 		printHelp()
 		return nil
 	}
@@ -46,7 +42,7 @@ func CmdSplitCIDR(
 	cidrString := args[0]
 	splitString := args[1]
 
-	ipsubnet, err := CIDRToIPSubnet(cidrString)
+	ipsubnet, err := IPSubnetFromCidr(cidrString)
 	if err != nil {
 		return err
 	}

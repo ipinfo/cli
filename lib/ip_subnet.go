@@ -68,8 +68,8 @@ func CIDRsFromIPRangeStrRaw(rStr string) ([]string, error) {
 	return r.ToCIDRs(), nil
 }
 
-// CIDRToIPSubnet converts a CIDR notation to IPSubnet.
-func CIDRToIPSubnet(cidr string) (IPSubnet, error) {
+// IPSubnetFromCidr converts a CIDR notation to IPSubnet.
+func IPSubnetFromCidr(cidr string) (IPSubnet, error) {
 	_, network, err := net.ParseCIDR(cidr)
 	if err != nil {
 		return IPSubnet{}, err

@@ -30,6 +30,7 @@ Commands:
   range2cidr  convert IP ranges to CIDRs.
   range2ip    convert IP ranges to individual IPs within those ranges.
   randip      Generates random IPs.
+  splitcidr   splits a larger CIDR into smaller CIDRs.
   cache       manage the cache.
   config      manage the config.
   login       save an API token session.
