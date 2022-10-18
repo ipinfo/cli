@@ -16,17 +16,17 @@ if (Test-Path "$env:LOCALAPPDATA\ipinfo\ipinfo.exe") {
 Rename-Item -Path "$env:LOCALAPPDATA\ipinfo\$FileName.exe" -NewName "ipinfo.exe"
 
 # setting up env. 
-$PathContent = [Environment]::GetEnvironmentVariable('path', 'Machine')
+$PathContent = [Environment]::GetEnvironmentVariable('path', 'User')
 $IPinfoPath = "$env:LOCALAPPDATA\ipinfo"
 
 # if Path already exists
 if ($PathContent -ne $null) {
   if (-Not($PathContent -split ';' -contains $IPinfoPath)) {
-    [System.Environment]::SetEnvironmentVariable("PATH", $Env:Path + ";$env:LOCALAPPDATA\ipinfo", "Machine")
+    [System.Environment]::SetEnvironmentVariable("PATH", $Env:Path + ";$env:LOCALAPPDATA\ipinfo", "User")
   }
 }
 else {
-  [System.Environment]::SetEnvironmentVariable("PATH", $Env:Path + ";$env:LOCALAPPDATA\ipinfo", "Machine")
+  [System.Environment]::SetEnvironmentVariable("PATH", $Env:Path + ";$env:LOCALAPPDATA\ipinfo", "User")
 }
 
 # cleaning files
