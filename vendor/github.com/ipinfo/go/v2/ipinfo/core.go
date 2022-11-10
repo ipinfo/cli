@@ -6,25 +6,27 @@ import (
 
 // Core represents data from the Core API.
 type Core struct {
-	IP          net.IP       `json:"ip" csv:"ip"`
-	Hostname    string       `json:"hostname,omitempty" csv:"hostname"`
-	Bogon       bool         `json:"bogon,omitempty" csv:"bogon"`
-	Anycast     bool         `json:"anycast,omitempty" csv:"anycast"`
-	City        string       `json:"city,omitempty" csv:"city"`
-	Region      string       `json:"region,omitempty" csv:"region"`
-	Country     string       `json:"country,omitempty" csv:"country"`
-	CountryName string       `json:"country_name,omitempty" csv:"country_name"`
-	IsEU        bool         `json:"isEU,omitempty" csv:"isEU"`
-	Location    string       `json:"loc,omitempty" csv:"loc"`
-	Org         string       `json:"org,omitempty" csv:"org"`
-	Postal      string       `json:"postal,omitempty" csv:"postal"`
-	Timezone    string       `json:"timezone,omitempty" csv:"timezone"`
-	ASN         *CoreASN     `json:"asn,omitempty" csv:"asn_,inline"`
-	Company     *CoreCompany `json:"company,omitempty" csv:"company_,inline"`
-	Carrier     *CoreCarrier `json:"carrier,omitempty" csv:"carrier_,inline"`
-	Privacy     *CorePrivacy `json:"privacy,omitempty" csv:"privacy_,inline"`
-	Abuse       *CoreAbuse   `json:"abuse,omitempty" csv:"abuse_,inline"`
-	Domains     *CoreDomains `json:"domains,omitempty" csv:"domains_,inline"`
+	IP              net.IP          `json:"ip" csv:"ip"`
+	Hostname        string          `json:"hostname,omitempty" csv:"hostname"`
+	Bogon           bool            `json:"bogon,omitempty" csv:"bogon"`
+	Anycast         bool            `json:"anycast,omitempty" csv:"anycast"`
+	City            string          `json:"city,omitempty" csv:"city"`
+	Region          string          `json:"region,omitempty" csv:"region"`
+	Country         string          `json:"country,omitempty" csv:"country"`
+	CountryName     string          `json:"country_name,omitempty" csv:"country_name"`
+	CountryFlag     CountryFlag     `json:"country_flag,omitempty" csv:"country_flag_,inline"`
+	CountryCurrency CountryCurrency `json:"country_currency,omitempty" csv:"country_currency_,inline"`
+	IsEU            bool            `json:"isEU,omitempty" csv:"isEU"`
+	Location        string          `json:"loc,omitempty" csv:"loc"`
+	Org             string          `json:"org,omitempty" csv:"org"`
+	Postal          string          `json:"postal,omitempty" csv:"postal"`
+	Timezone        string          `json:"timezone,omitempty" csv:"timezone"`
+	ASN             *CoreASN        `json:"asn,omitempty" csv:"asn_,inline"`
+	Company         *CoreCompany    `json:"company,omitempty" csv:"company_,inline"`
+	Carrier         *CoreCarrier    `json:"carrier,omitempty" csv:"carrier_,inline"`
+	Privacy         *CorePrivacy    `json:"privacy,omitempty" csv:"privacy_,inline"`
+	Abuse           *CoreAbuse      `json:"abuse,omitempty" csv:"abuse_,inline"`
+	Domains         *CoreDomains    `json:"domains,omitempty" csv:"domains_,inline"`
 }
 
 // CoreASN represents ASN data for the Core API.
@@ -80,11 +82,15 @@ type CoreDomains struct {
 
 func (v *Core) setCountryName() {
 	if v.Country != "" {
-		v.CountryName = countriesMap[v.Country]
+		v.CountryName = GetCountryName(v.Country)
 		v.IsEU = IsEU(v.Country)
+		v.CountryFlag.Emoji = GetCountryFlagEmoji(v.Country)
+		v.CountryFlag.Unicode = GetCountryFlagUnicode(v.Country)
+		v.CountryCurrency.Code = GetCountryCurrencyCode(v.Country)
+		v.CountryCurrency.Symbol = GetCountryCurrencySymbol(v.Country)
 	}
 	if v.Abuse != nil && v.Abuse.Country != "" {
-		v.Abuse.CountryName = countriesMap[v.Abuse.Country]
+		v.Abuse.CountryName = GetCountryName(v.Abuse.Country)
 	}
 }
 
