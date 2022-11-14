@@ -10,7 +10,7 @@ github.com/hashicorp/errwrap
 # github.com/hashicorp/go-multierror v1.1.1
 ## explicit
 github.com/hashicorp/go-multierror
-# github.com/ipinfo/go/v2 v2.8.0
+# github.com/ipinfo/go/v2 v2.9.0
 ## explicit
 github.com/ipinfo/go/v2/ipinfo
 github.com/ipinfo/go/v2/ipinfo/cache
