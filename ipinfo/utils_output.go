@@ -177,33 +177,13 @@ func outputFriendlyCore(d *ipinfo.Core) {
 		printline("Country", "")
 	} else {
 		printline("Country", fmt.Sprintf("%v (%v)", d.CountryName, d.Country))
+		printline("Flag", fmt.Sprintf("%v", d.CountryFlag.Emoji))
+		printline("Currency", fmt.Sprintf("%v (%v)", d.CountryCurrency.Code, d.CountryCurrency.Symbol))
 	}
 	printline("Location", d.Location)
 	printline("Organization", d.Org)
 	printline("Postal", d.Postal)
 	printline("Timezone", d.Timezone)
-	if d.Country != "" {
-		fmt.Println()
-		fmtHdr.Println("Country")
-		printline = printlineGen("4")
-		printline("Code", d.Country)
-		printline("Name", d.CountryName)
-		printline("IsEU", fmt.Sprintf("%v", d.IsEU))
-	}
-	if d.Country != "" {
-		fmt.Println()
-		fmtHdr.Println("Country Flag")
-		printline = printlineGen("6")
-		printline("Emoji", d.CountryFlag.Emoji)
-		printline("Unicode", d.CountryFlag.Unicode)
-	}
-	if d.Country != "" {
-		fmt.Println()
-		fmtHdr.Println("Country Currency")
-		printline = printlineGen("6")
-		printline("Code", d.CountryCurrency.Code)
-		printline("Symbol", d.CountryCurrency.Symbol)
-	}
 	if d.ASN != nil {
 		fmt.Println()
 		fmtHdr.Println("ASN")
