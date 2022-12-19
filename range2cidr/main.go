@@ -32,7 +32,7 @@ Description:
     out[0]: "1.1.1.0/31,other-data"
     out[1]: "1.1.1.2/32,other-data"
 
-  IP ranges can of the form "<start><sep><end>" where "<sep>" can be "," or
+  IP ranges can have the form "<start><sep><end>" where "<sep>" can be "," or
   "-", and "<start>" and "<end>" can be any 2 IPs; order does not matter, but
   the resulting CIDRs are printed in the order they cover the range.
 
