@@ -114,7 +114,6 @@ func getUsageBar(percentage int) string {
 func printStats(detailed bool, quota *QuotaBody) {
 	// Calculate the percentage of remaining quota.
 	percentage := int(math.Round(float64(quota.Requests.Month) / float64(quota.Requests.Limit) * 100.0))
-	fmt.Println("percentage", percentage)
 
 	// Pretty Print.
 	fmtHdr := color.New(color.Bold, color.FgWhite)
