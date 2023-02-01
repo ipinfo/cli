@@ -307,7 +307,11 @@ func (c *BoltdbCache) delBulk() {
 
 		// sort by last-accessed timestamp, and delete the oldest 10k in bulk.
 		sort.Sort(lats)
-		for i := 0; i < 10000; i++ {
+		upperLimit := len(lats)
+		if upperLimit > 10000 {
+			upperLimit = 10000
+		}
+		for i := 0; i < upperLimit; i++ {
 			if err := bucket.Delete([]byte(lats[i].k)); err != nil {
 				return err
 			}
