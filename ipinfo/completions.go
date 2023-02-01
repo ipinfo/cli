@@ -25,6 +25,7 @@ var completions = &complete.Command{
 		"config":     completionsConfig,
 		"completion": completionsCompletion,
 		"version":    completionsVersion,
+		"quota":      completionsQuota,
 	},
 	Flags: map[string]complete.Predictor{
 		"-v":        predict.Nothing,

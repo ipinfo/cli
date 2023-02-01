@@ -77,6 +77,8 @@ func main() {
 		err = cmdCompletion()
 	case cmd == "version" || cmd == "vsn" || cmd == "v":
 		err = cmdVersion()
+	case cmd == "quota":
+		err = cmdQuota()
 	default:
 		err = cmdDefault()
 	}

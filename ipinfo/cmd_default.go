@@ -37,6 +37,7 @@ Commands:
   logout      delete your current API token session.
   completion  install or output shell auto-completion script.
   version     show current version.
+  quota       print the quota of account.
 
 Options:
   General:
