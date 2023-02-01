@@ -69,6 +69,8 @@ func main() {
 		err = cmdCache()
 	case cmd == "config":
 		err = cmdConfig()
+	case cmd == "quota":
+		err = cmdQuota()
 	case cmd == "login":
 		err = cmdLogin()
 	case cmd == "logout":
@@ -77,8 +79,6 @@ func main() {
 		err = cmdCompletion()
 	case cmd == "version" || cmd == "vsn" || cmd == "v":
 		err = cmdVersion()
-	case cmd == "quota":
-		err = cmdQuota()
 	default:
 		err = cmdDefault()
 	}

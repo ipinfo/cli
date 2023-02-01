@@ -20,12 +20,12 @@ var completions = &complete.Command{
 		"randip":     completionsRandIP,
 		"splitcidr":  completionsSplitCIDR,
 		"cache":      completionsCache,
+		"quota":      completionsQuota,
 		"login":      completionsLogin,
 		"logout":     completionsLogout,
 		"config":     completionsConfig,
 		"completion": completionsCompletion,
 		"version":    completionsVersion,
-		"quota":      completionsQuota,
 	},
 	Flags: map[string]complete.Predictor{
 		"-v":        predict.Nothing,

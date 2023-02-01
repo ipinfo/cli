@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math"
 	"net/http"
+	"strings"
 
 	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib/complete"
@@ -80,7 +81,7 @@ func cmdQuota() error {
 
 	token := gConfig.Token
 	if token == "" {
-		return errors.New("no token available please login first")
+		return errors.New("please login first to check quota")
 	}
 
 	res, err := http.Get("https://ipinfo.io/me?token=" + token)
@@ -88,6 +89,7 @@ func cmdQuota() error {
 		return err
 	}
 	defer res.Body.Close()
+
 	quota := &QuotaBody{}
 	err = json.NewDecoder(res.Body).Decode(quota)
 	if err != nil {
@@ -99,15 +101,7 @@ func cmdQuota() error {
 }
 
 func getUsageBar(percentage int) string {
-	usageBar := "["
-	for i := 0; i < 100; i++ {
-		if i < percentage {
-			usageBar += "#"
-		} else {
-			usageBar += " "
-		}
-	}
-	usageBar += "]"
+	usageBar := "[" + strings.Repeat("#", percentage) + strings.Repeat(" ", 100-percentage) + "]"
 	return fmt.Sprintf("%s %d%%\n", usageBar, percentage)
 }
 
