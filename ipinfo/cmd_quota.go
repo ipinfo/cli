@@ -91,8 +91,7 @@ func cmdQuota() error {
 	defer res.Body.Close()
 
 	quota := &QuotaBody{}
-	err = json.NewDecoder(res.Body).Decode(quota)
-	if err != nil {
+	if err := json.NewDecoder(res.Body).Decode(quota); err != nil {
 		return err
 	}
 	printStats(fDetailed, quota)
