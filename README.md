@@ -80,7 +80,6 @@ iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-2.10.1/windows.
 scoop install ipinfo-cli
 ```
 
-
 ### Docker
 
 ```bash
