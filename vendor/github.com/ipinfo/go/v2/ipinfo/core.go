@@ -2,6 +2,7 @@ package ipinfo
 
 import (
 	"net"
+	"net/netip"
 )
 
 // Core represents data from the Core API.
@@ -16,6 +17,7 @@ type Core struct {
 	CountryName     string          `json:"country_name,omitempty" csv:"country_name"`
 	CountryFlag     CountryFlag     `json:"country_flag,omitempty" csv:"country_flag_,inline"`
 	CountryCurrency CountryCurrency `json:"country_currency,omitempty" csv:"country_currency_,inline"`
+	Continent       Continent       `json:"continent,omitempty" csv:"continent_,inline"`
 	IsEU            bool            `json:"isEU,omitempty" csv:"isEU"`
 	Location        string          `json:"loc,omitempty" csv:"loc"`
 	Org             string          `json:"org,omitempty" csv:"org"`
@@ -88,6 +90,8 @@ func (v *Core) setCountryName() {
 		v.CountryFlag.Unicode = GetCountryFlagUnicode(v.Country)
 		v.CountryCurrency.Code = GetCountryCurrencyCode(v.Country)
 		v.CountryCurrency.Symbol = GetCountryCurrencySymbol(v.Country)
+		v.Continent.Code = GetContinentCode(v.Country)
+		v.Continent.Name = GetContinentName(v.Country)
 	}
 	if v.Abuse != nil && v.Abuse.Country != "" {
 		v.Abuse.CountryName = GetCountryName(v.Abuse.Country)
@@ -104,6 +108,12 @@ func GetIPInfo(ip net.IP) (*Core, error) {
 // GetIPInfo returns the details for the specified IP.
 func (c *Client) GetIPInfo(ip net.IP) (*Core, error) {
 	relURL := ""
+	if ip != nil && isBogon(netip.MustParseAddr(ip.String())) {
+		bogonResponse := new(Core)
+		bogonResponse.Bogon = true
+		bogonResponse.IP = ip
+		return bogonResponse, nil
+	}
 	if ip != nil {
 		relURL = ip.String()
 	}

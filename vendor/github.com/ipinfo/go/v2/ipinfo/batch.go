@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net"
 	"strings"
 	"sync"
@@ -275,7 +276,13 @@ func (c *Client) GetIPInfoBatch(
 	opts BatchReqOpts,
 ) (BatchCore, error) {
 	ipstrs := make([]string, 0, len(ips))
+	if c.Token == "" {
+		return nil, fmt.Errorf("invalid token")
+	}
 	for _, ip := range ips {
+		if ip == nil {
+			continue
+		}
 		ipstrs = append(ipstrs, ip.String())
 	}
 
