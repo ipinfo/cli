@@ -7,7 +7,7 @@ require (
 	github.com/fatih/color v1.10.0
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1
-	github.com/ipinfo/go/v2 v2.9.0
+	github.com/ipinfo/go/v2 v2.9.2
 	github.com/jszwec/csvutil v1.4.0
 	github.com/pkg/browser v0.0.0-20210115035449-ce105d075bb4
 	github.com/posener/script v1.1.5
