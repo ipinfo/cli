@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/ipinfo/cli/lib/complete"
-	"github.com/ipinfo/cli/lib/complete/predict"
 )
 
 var completions = &complete.Command{
@@ -26,12 +25,10 @@ var completions = &complete.Command{
 		"config":     completionsConfig,
 		"completion": completionsCompletion,
 		"version":    completionsVersion,
-	},
-	Flags: map[string]complete.Predictor{
-		"-v":        predict.Nothing,
-		"--version": predict.Nothing,
-		"-h":        predict.Nothing,
-		"--help":    predict.Nothing,
+		"-v":         nil,
+		"--version":  nil,
+		"-h":         nil,
+		"--help":     nil,
 	},
 }
 
