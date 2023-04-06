@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -121,6 +122,7 @@ type completer struct {
 // if the command has sub commands: try to complete only sub commands.
 // Otherwise complete flags and positional arguments.
 func (c completer) complete() ([]string, error) {
+	regex := regexp.MustCompile(`(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}`)
 reset:
 	arg := Arg{}
 	if len(c.args) > 0 {
@@ -141,6 +143,13 @@ reset:
 		// complete algorithm with the new sub command.
 		c.stack = append([]Completer{c.Completer}, c.stack...)
 		c.Completer = c.SubCmdGet(arg.Text)
+		c.args = c.args[1:]
+		goto reset
+	case regex.MatchString(arg.Text):
+		//  IP sub command completed, setting the completions of 'myip' as
+		// IP has same completions
+		c.stack = append([]Completer{c.Completer}, c.stack...)
+		c.Completer = c.SubCmdGet("myip")
 		c.args = c.args[1:]
 		goto reset
 	default:
