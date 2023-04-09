@@ -133,6 +133,9 @@ reset:
 		return c.suggestLeafCommandOptions(), nil
 	case !arg.Completed:
 		// Currently typing a sub command.
+		if arg.HasFlag {
+			return c.suggestLeafCommandOptions(), nil
+		}
 		return c.suggestSubCommands(arg.Text), nil
 	case c.SubCmdGet(arg.Text) != nil:
 		// Sub command completed, look into that sub command completion.
