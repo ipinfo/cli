@@ -167,6 +167,9 @@ func CmdGrepIP(
 				for _, m := range allMatches {
 					mIPStr := d[m[0]:m[1]]
 					mIP := net.ParseIP(mIPStr)
+					if mIP == nil {
+						goto next_match
+					}
 					if strings.Contains(mIPStr, ":") {
 						ip, _ := IP6FromStdIP(mIP.To16())
 						for _, r := range bogonIP6List {
