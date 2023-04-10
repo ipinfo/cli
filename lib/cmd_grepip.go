@@ -168,7 +168,7 @@ func CmdGrepIP(
 					mIPStr := d[m[0]:m[1]]
 					mIP := net.ParseIP(mIPStr)
 					if mIP == nil {
-						return
+						goto next_match
 					}
 					if strings.Contains(mIPStr, ":") {
 						ip, _ := IP6FromStdIP(mIP.To16())
