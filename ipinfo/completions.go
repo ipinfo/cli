@@ -40,7 +40,7 @@ var completions = &complete.Command{
 
 func handleCompletions() {
 	line := os.Getenv("COMP_LINE")
-	args := complete.Parse(line[:])
+	args := complete.Parse(line)
 	if len(args) > 1 {
 		cmdSecondArg := args[1].Text
 		if lib.StrIsIPStr(cmdSecondArg) {
