@@ -42,8 +42,11 @@ func handleCompletions() {
 	line := os.Getenv("COMP_LINE")
 	args := complete.Parse(line[:])
 	if len(args) > 1 {
-		if lib.StrIsIPStr(args[1].Text) {
-			completions.Sub[args[1].Text] = completionsIP
+		cmdSecondArg := args[1].Text
+		if lib.StrIsIPStr(cmdSecondArg) {
+			completions.Sub[cmdSecondArg] = completionsIP
+		} else if lib.StrIsASNStr(cmdSecondArg) {
+			completions.Sub[cmdSecondArg] = completionsASN
 		}
 	}
 
