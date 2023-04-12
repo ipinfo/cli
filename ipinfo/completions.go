@@ -1,6 +1,9 @@
 package main
 
 import (
+	"os"
+
+	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
 )
@@ -36,5 +39,16 @@ var completions = &complete.Command{
 }
 
 func handleCompletions() {
+	line := os.Getenv("COMP_LINE")
+	args := complete.Parse(line)
+	if len(args) > 1 {
+		cmdSecondArg := args[1].Text
+		if lib.StrIsIPStr(cmdSecondArg) {
+			completions.Sub[cmdSecondArg] = completionsIP
+		} else if lib.StrIsASNStr(cmdSecondArg) {
+			completions.Sub[cmdSecondArg] = completionsASN
+		}
+	}
+
 	completions.Complete(progBase)
 }

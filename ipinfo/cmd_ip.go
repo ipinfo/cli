@@ -5,9 +5,30 @@ import (
 	"net"
 
 	"github.com/fatih/color"
+	"github.com/ipinfo/cli/lib/complete"
+	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
 )
+
+var completionsIP = &complete.Command{
+	Flags: map[string]complete.Predictor{
+		"-t":        predict.Nothing,
+		"--token":   predict.Nothing,
+		"--nocache": predict.Nothing,
+		"-h":        predict.Nothing,
+		"--help":    predict.Nothing,
+		"-f":        predict.Set(coreFields),
+		"--field":   predict.Set(coreFields),
+		"--nocolor": predict.Nothing,
+		"-p":        predict.Nothing,
+		"--pretty":  predict.Nothing,
+		"-j":        predict.Nothing,
+		"--json":    predict.Nothing,
+		"-c":        predict.Nothing,
+		"--csv":     predict.Nothing,
+	},
+}
 
 func printHelpIP(ipStr string) {
 	fmt.Printf(
