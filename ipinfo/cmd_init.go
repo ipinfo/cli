@@ -11,7 +11,7 @@ import (
 
 func printHelpInit() {
 	fmt.Printf(
-		`Usage: %s login [<opts>] [<token>]
+		`Usage: %s init [<opts>] [<token>]
 
 Options:
   --token <tok>, -t <tok>
@@ -65,7 +65,6 @@ func cmdInit() error {
 			return nil
 		}
 	}
-	fmt.Printf("Hello Samuel Gill token %v\n", tok) // remove this later.
 	fmt.Printf("1) Enter an existing API token\n")
 	fmt.Printf("2) Create a new account\n")
 	_, err := fmt.Scanf("%d", &num)
