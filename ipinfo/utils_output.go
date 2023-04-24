@@ -177,7 +177,6 @@ func outputFriendlyCore(d *ipinfo.Core) {
 		printline("Country", "")
 	} else {
 		printline("Country", fmt.Sprintf("%v (%v)", d.CountryName, d.Country))
-		printline("Flag", fmt.Sprintf("%v", d.CountryFlag.Emoji))
 		printline("Currency", fmt.Sprintf("%v (%v)", d.CountryCurrency.Code, d.CountryCurrency.Symbol))
 	}
 	printline("Location", d.Location)
