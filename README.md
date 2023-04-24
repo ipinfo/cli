@@ -289,7 +289,7 @@ ipinfo bulk 1.1.1.0/30 8.8.8.0/30 9.9.9.0/30 | less
 ### Summarize
 
 IP details can be summarized similar to what's provided by
-https://ipinfo.io/summarize-ips:
+https://ipinfo.io/tools/summarize-ips:
 
 ```bash
 cat lk-ips.txt | ipinfo summarize
