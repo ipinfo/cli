@@ -1,9 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
+	"net/url"
 	"os"
+	"os/exec"
+	"time"
 
 	"github.com/spf13/pflag"
 	"golang.org/x/term"
@@ -23,6 +28,14 @@ Options:
   --help, -h
     show help.
 `, progBase)
+}
+
+type signupCli struct {
+	SignupURL string `json:"signupURL"`
+}
+
+type tokenCli struct {
+	Token string `json:"token"`
 }
 
 func cmdInit() error {
@@ -80,7 +93,58 @@ func cmdInit() error {
 			return fmt.Errorf("could not confirm if token is valid: %w", err)
 		}
 	} else if num == 2 {
-		fmt.Printf("Signup flow")
+		res, err := http.Get("http://localhost:3000/signup/cli")
+		if err != nil {
+			return err
+		}
+		defer res.Body.Close()
+		// parse response.
+		msg := &signupCli{}
+		if err := json.NewDecoder(res.Body).Decode(msg); err != nil {
+			return err
+		}
+		fmt.Printf("%v\n",msg.SignupURL)
+		var input string
+		fmt.Println("Press Enter to open link:")
+		fmt.Scanf("%s", &input)
+		cmd := exec.Command("xdg-open", msg.SignupURL)
+		err = cmd.Run()
+		if err != nil {
+			fmt.Println("Error opening link:", err)
+			return err
+		}
+		parsedUrl, err := url.Parse(msg.SignupURL)
+		if err != nil {
+			fmt.Println("Error parsing URL:", err)
+			return err
+		}
+	
+		uid := parsedUrl.Query().Get("uid")
+		if uid == "" {
+			fmt.Println("UID not found in URL")
+			return err
+		}
+
+		// Adding delay to allow user to fill signup form.
+		time.Sleep(40 * time.Second)
+
+		// Check if signup flow is completed.
+		res, err = http.Get("http://localhost:3000/signup/cli/check?uid="+uid)
+		if err != nil {
+			return err
+		}
+		defer res.Body.Close()
+		body := &tokenCli{}
+		if err := json.NewDecoder(res.Body).Decode(body); err != nil {
+			return err
+		}
+		if tok, err = enterToken(body.Token); err != nil {
+			return fmt.Errorf(err.Error())
+		}
+		if err := checkValidity(tok); err != nil {
+			return fmt.Errorf("could not confirm if token is valid: %w", err)
+		}
+
 	} else {
 		fmt.Println("Invalid input.")
 		return err

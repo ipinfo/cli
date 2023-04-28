@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	defaultBaseURL   = "https://ipinfo.io/"
+	//defaultBaseURL   = "https://ipinfo.io/"
+	defaultBaseURL   = "http://localhost:3000/"
 	defaultUserAgent = "IPinfoClient/Go/2.9.2"
 )
 
