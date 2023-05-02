@@ -94,7 +94,7 @@ func cmdInit() error {
 			return fmt.Errorf("could not confirm if token is valid: %w", err)
 		}
 	} else if num == 2 {
-		res, err := http.Get("http://localhost:3000/signup/cli")
+		res, err := http.Get("https://ipinfo.io/signup/cli")
 		if err != nil {
 			return err
 		}
@@ -130,7 +130,7 @@ func cmdInit() error {
 		time.Sleep(40 * time.Second)
 
 		// Check if signup flow is completed.
-		res, err = http.Get("http://localhost:3000/signup/cli/check?uid="+uid)
+		res, err = http.Get("https://ipinfo.io/signup/cli/check?uid="+uid)
 		if err != nil {
 			return err
 		}

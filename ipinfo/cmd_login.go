@@ -118,7 +118,7 @@ type meResponse struct {
 
 func isTokenValid(tok string) (bool, error) {
 	// make API req for true token validity.
-	res, err := http.Get("http://localhost:3000/me?token=" + tok)
+	res, err := http.Get("https://ipinfo.io/me?token=" + tok)
 	if err != nil {
 		return false, err
 	}
