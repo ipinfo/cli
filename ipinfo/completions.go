@@ -10,6 +10,7 @@ import (
 
 var completions = &complete.Command{
 	Sub: map[string]*complete.Command{
+		"download":   completionsDownload,
 		"myip":       completionsMyIP,
 		"bulk":       completionsBulk,
 		"summarize":  completionsSummarize,

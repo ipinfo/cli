@@ -34,6 +34,7 @@ Commands:
   cache       manage the cache.
   config      manage the config.
   quota       print the request quota of your account.
+  download    download free ipinfo database files.
   login       save an API token session.
   logout      delete your current API token session.
   completion  install or output shell auto-completion script.
