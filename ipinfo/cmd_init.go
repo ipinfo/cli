@@ -86,10 +86,11 @@ func cmdInit() error {
 		return err
 	}
 	if num == 1 {
-		if tok, err = enterToken(tok); err != nil {
+		newtoken, err := enterToken(tok);
+		if err != nil {
 			return fmt.Errorf(err.Error())
 		}
-		if err := checkValidity(tok); err != nil {
+		if err := checkValidity(newtoken); err != nil {
 			return fmt.Errorf("could not confirm if token is valid: %w", err)
 		}
 	} else if num == 2 {
@@ -160,7 +161,7 @@ func checkValidity(tok string) error {
 		return fmt.Errorf("could not confirm if token is valid: %w", err)
 	}
 	if !tokenOk {
-		return errors.New("invalid token")
+		return fmt.Errorf("invalid token")
 	}
 
 	// save token to file.

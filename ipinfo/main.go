@@ -74,7 +74,7 @@ func main() {
 	case cmd == "login":
 		err = cmdLogin()
 	case cmd == "init":
-		cmdInit()
+		err = cmdInit()
 	case cmd == "logout":
 		err = cmdLogout()
 	case cmd == "completion":
