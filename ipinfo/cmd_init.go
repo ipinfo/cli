@@ -126,26 +126,44 @@ func cmdInit() error {
 			return err
 		}
 
-		// Adding delay to allow user to fill signup form.
-		time.Sleep(40 * time.Second)
-
 		// Check if signup flow is completed.
-		res, err = http.Get("https://ipinfo.io/signup/cli/check?uid="+uid)
-		if err != nil {
-			return err
-		}
-		defer res.Body.Close()
-		body := &tokenCli{}
-		if err := json.NewDecoder(res.Body).Decode(body); err != nil {
-			return err
-		}
-		if tok, err = enterToken(body.Token); err != nil {
-			return fmt.Errorf(err.Error())
-		}
-		if err := checkValidity(tok); err != nil {
-			return fmt.Errorf("could not confirm if token is valid: %w", err)
-		}
+		maxAttempts := 200
+		count := 0
+		fmt.Printf("Configuring account ...\n")
+		for {
+			count++
+			res, err := http.Get("https://ipinfo.io/signup/cli/check?uid=" + uid)
+			if err != nil {
+				return fmt.Errorf("%v",err)
+			}
+			defer res.Body.Close()
+	
+			if res.StatusCode == http.StatusOK {
+				body := &tokenCli{}
+				if err := json.NewDecoder(res.Body).Decode(body); err != nil {
+					return err
+				}
+				if tok, err = enterToken(body.Token); err != nil {
+					return fmt.Errorf(err.Error())
+				}
+				if err := checkValidity(tok); err != nil {
+					return fmt.Errorf("could not confirm if token is valid: %w", err)
+				}
+				break
+			}
+	
+			if count == maxAttempts {
+				fmt.Println("Reached max attempts. Press Enter to retry or Ctrl+C to exit.")
+				if _, err := fmt.Scanln(); err != nil {
+					return fmt.Errorf("%v",err)
+				}
+				// reset the count if user chooses to retry
+				count = 0
+			}
 
+			time.Sleep(time.Second)
+		}
+		os.Exit(0)
 	} else {
 		fmt.Println("Invalid input.")
 		return err
