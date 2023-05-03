@@ -50,13 +50,15 @@ Options:
       download the free ipinfo country database. 
     --country-asn
       download the free ipinfo country asn database. 
-    --format <fmt>, -f <fmt>
-      use the <fmt> output format of the database file.
-        mmdb (default.)
-        json
-        csv
     --help, -h
       show help.
+
+Outputs:
+    --format , -f <mmdb | json | csv>
+    output format of the database file.
+      mmdb (default.) => downloads the mmdb format database.
+      json            => downloads the json format database.
+      csv             => downloads the csv  format database.
 `, progBase)
 }
 
@@ -93,7 +95,7 @@ func cmdDownload() error {
 
 	// require token for download.
 	if token == "" {
-		return errors.New("download require a token; login via `ipinfo login` or pass the `--token` argument")
+		return errors.New("downloading requires a token; login via `ipinfo login` or pass the `--token` argument")
 	}
 
 	// check download format
@@ -147,14 +149,14 @@ func downloadDb(name, format, token string) error {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer file.Close()
 
 	// save file.
 	_, err = io.Copy(file, res.Body)
 	if err != nil {
 		return err
 	}
-	defer file.Close()
 
-	fmt.Printf("Database %s.% saved successfully.", name, format)
+	fmt.Printf("Database %s.%s saved successfully.", name, format)
 	return nil
 }

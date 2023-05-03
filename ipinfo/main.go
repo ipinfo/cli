@@ -65,14 +65,14 @@ func main() {
 		err = cmdRandIP()
 	case cmd == "splitcidr":
 		err = cmdSplitCIDR()
+	case cmd == "download":
+		err = cmdDownload()
 	case cmd == "cache":
 		err = cmdCache()
 	case cmd == "config":
 		err = cmdConfig()
 	case cmd == "quota":
 		err = cmdQuota()
-	case cmd == "download":
-		err = cmdDownload()
 	case cmd == "login":
 		err = cmdLogin()
 	case cmd == "logout":

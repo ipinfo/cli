@@ -10,7 +10,6 @@ import (
 
 var completions = &complete.Command{
 	Sub: map[string]*complete.Command{
-		"download":   completionsDownload,
 		"myip":       completionsMyIP,
 		"bulk":       completionsBulk,
 		"summarize":  completionsSummarize,
@@ -23,6 +22,7 @@ var completions = &complete.Command{
 		"range2ip":   completionsRange2IP,
 		"randip":     completionsRandIP,
 		"splitcidr":  completionsSplitCIDR,
+		"download":   completionsDownload,
 		"cache":      completionsCache,
 		"quota":      completionsQuota,
 		"login":      completionsLogin,
