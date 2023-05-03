@@ -70,7 +70,7 @@ func cmdDownload() error {
 	pflag.Parse()
 
 	args := pflag.Args()[1:]
-	if fHelp || len(args) < 1 {
+	if fHelp || len(args) != 1 {
 		printHelpDownload()
 		return nil
 	}
@@ -87,7 +87,7 @@ func cmdDownload() error {
 
 	// check download format
 	var format string
-	switch fFmt {
+	switch strings.ToLower(fFmt) {
 	case "mmdb":
 		format = "mmdb"
 	case "csv":
