@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
@@ -17,73 +18,59 @@ const dbDownloadURL = "https://ipinfo.io/data/free/"
 
 var completionsDownload = &complete.Command{
 	Flags: map[string]complete.Predictor{
-		"--asn":         predict.Nothing,
-		"--country":     predict.Nothing,
-		"--country-asn": predict.Nothing,
-		"-f":            predict.Nothing,
-		"--format":      predict.Nothing,
-		"-t":            predict.Nothing,
-		"--token":       predict.Nothing,
-		"-h":            predict.Nothing,
-		"--help":        predict.Nothing,
+		"-f":       predict.Nothing,
+		"--format": predict.Nothing,
+		"-t":       predict.Nothing,
+		"--token":  predict.Nothing,
+		"-h":       predict.Nothing,
+		"--help":   predict.Nothing,
 	},
 }
 
 func printHelpDownload() {
 	fmt.Printf(
-		`Usage: %s download [<opts>]
+		`Usage: %s download [<database>] [<opts>]
 
 Description:
     Download the free ipinfo databases.
 
 Examples:
     # Download country database in csv format.
-    $ %[1]s download --country --csv
+    $ %[1]s download country -f csv
+
+Databases:
+    asn            free ipinfo asn database.
+    country        free ipinfo country database.
+    country-asn    free ipinfo country-asn database.
 
 Options:
   General:
     --token <tok>, -t <tok>
       use <tok> as API token.
-    --asn
-      download the free ipinfo asn database. 
-    --country
-      download the free ipinfo country database. 
-    --country-asn
-      download the free ipinfo country asn database. 
     --help, -h
       show help.
 
 Outputs:
     --format , -f <mmdb | json | csv>
     output format of the database file.
-      mmdb (default.) => downloads the mmdb format database.
-      json            => downloads the json format database.
-      csv             => downloads the csv  format database.
+      mmdb (default.)  downloads the mmdb format database.
+      json             downloads the json format database.
+      csv              downloads the csv  format database.
 `, progBase)
 }
 
 func cmdDownload() error {
 	var fTok string
 	var fFmt string
-	var fAsn bool
-	var fCountry bool
-	var fCountryAsn bool
 	var fHelp bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
-	pflag.BoolVar(&fAsn, "asn", false, "free asn database.")
-	pflag.BoolVar(&fCountry, "country", false, "free country database.")
-	pflag.BoolVar(&fCountryAsn, "country-asn", false, "free country asn database.")
 	pflag.StringVarP(&fFmt, "format", "f", "mmdb", "the output format to use.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.Parse()
 
-	if pflag.NFlag() == 0 {
-		printHelpDownload()
-		return nil
-	}
-
-	if fHelp {
+	args := pflag.Args()[1:]
+	if fHelp || len(args) < 1 {
 		printHelpDownload()
 		return nil
 	}
@@ -111,25 +98,25 @@ func cmdDownload() error {
 		return errors.New("unknown download format")
 	}
 
-	if fAsn {
+	switch strings.ToLower(args[0]) {
+	case "asn":
 		err := downloadDb("asn", format, token)
 		if err != nil {
 			return err
 		}
-	}
-	if fCountry {
+	case "country":
 		err := downloadDb("country", format, token)
 		if err != nil {
 			return err
 		}
-	}
-	if fCountryAsn {
+	case "country-asn":
 		err := downloadDb("country_asn", format, token)
 		if err != nil {
 			return err
 		}
+	default:
+		return fmt.Errorf("database '%v' is invalid", args[0])
 	}
-
 	return nil
 }
 
