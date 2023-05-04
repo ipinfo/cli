@@ -143,7 +143,7 @@ func cmdInit() error {
 
 		return nil
 	} else if opt == 2 {
-		res, err := http.Get("http://localhost:3000/signup/cli")
+		res, err := http.Get("https://ipinfo.io/signup/cli")
 		if err != nil {
 			return err
 		}
@@ -187,7 +187,7 @@ func cmdInit() error {
 		count := 0
 		for {
 			count++
-			res, err := http.Get("http://localhost:3000/signup/cli/check?uid=" + uid)
+			res, err := http.Get("https://ipinfo.io/signup/cli/check?uid=" + uid)
 			if err != nil {
 				return fmt.Errorf("%v", err)
 			}
@@ -267,7 +267,7 @@ func enterToken(tok string) (string, error) {
 
 func isTokenValid(tok string) (bool, error) {
 	// make API req for true token validity.
-	res, err := http.Get("http://localhost:3000/me?token=" + tok)
+	res, err := http.Get("https://ipinfo.io/me?token=" + tok)
 	if err != nil {
 		return false, err
 	}
