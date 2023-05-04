@@ -19,5 +19,4 @@ range2ip/dist/
 randip/dist/
 splitcidr/dist/
 *.mmdb
-*.csv.gz
-*.json.gz
+*.gz
