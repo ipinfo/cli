@@ -4,19 +4,38 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
 	"os/exec"
 	"time"
 
+	"github.com/ipinfo/cli/lib/complete"
+	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/spf13/pflag"
 	"golang.org/x/term"
 )
 
+var completionsInit = &complete.Command{
+	Flags: map[string]complete.Predictor{
+		"-t":         predict.Nothing,
+		"--token":    predict.Nothing,
+		"--no-check": predict.Nothing,
+		"-h":         predict.Nothing,
+		"--help":     predict.Nothing,
+	},
+}
+
 func printHelpInit() {
 	fmt.Printf(
 		`Usage: %s init [<opts>] [<token>]
+Examples:
+	# Login command with token flag.
+	$ init --token <token>
+
+	#Authentication without token flag.
+	$ init
 
 Options:
   --token <tok>, -t <tok>
@@ -38,8 +57,12 @@ type tokenCli struct {
 	Token string `json:"token"`
 }
 
+type meResponse struct {
+	Error string `json:"error"`
+}
+
 func cmdInit() error {
-	var num int
+	var opt int
 	var fTok string
 	var fNoCheck bool
 
@@ -58,10 +81,12 @@ func cmdInit() error {
 
 	// only token arg allowed.
 	if len(args) > 1 {
-		return errors.New("invalid arguments")
+		printHelpInit()
+		return nil
 	}
 
 	// allow only flag or arg for token but not both.
+	// if it exists, we'll exit early as it's an implicit login.
 	if fTok != "" && len(args) > 0 {
 		return errors.New("ambiguous token input source")
 	}
@@ -71,55 +96,86 @@ func cmdInit() error {
 	if len(args) > 0 {
 		tok = args[0]
 	}
-	if tok != "" && !fNoCheck {
-		if err := checkValidity(tok); err != nil {
-			return fmt.Errorf("could not confirm if token is valid: %w", err)
-		} else {
-			return nil
+	if tok != "" {
+		if !fNoCheck {
+			if err := checkValidity(tok); err != nil {
+				return fmt.Errorf("could not confirm if token is valid: %w", err)
+			}
 		}
+
+		// save token to file.
+		gConfig.Token = tok
+		if err := SaveConfig(gConfig); err != nil {
+			return err
+		}
+
+		fmt.Println("done")
+
+		return nil
 	}
-	fmt.Printf("1) Enter an existing API token\n")
-	fmt.Printf("2) Create a new account\n")
-	_, err := fmt.Scanf("%d", &num)
+
+	fmt.Println("1) Enter an existing API token")
+	fmt.Println("2) Create a new account")
+	_, err := fmt.Scanf("%d", &opt)
 	if err != nil {
-		fmt.Println("Error reading input:", err)
-		return err
+		return fmt.Errorf("error reading input: %v", err)
 	}
-	if num == 1 {
-		newtoken, err := enterToken(tok);
+	if opt == 1 {
+		newtoken, err := enterToken(tok)
 		if err != nil {
 			return fmt.Errorf(err.Error())
 		}
-		if err := checkValidity(newtoken); err != nil {
-			return fmt.Errorf("could not confirm if token is valid: %w", err)
+
+		// check token validity.
+		if !fNoCheck {
+			if err := checkValidity(newtoken); err != nil {
+				return fmt.Errorf("could not confirm if token is valid: %w", err)
+			}
 		}
-	} else if num == 2 {
-		res, err := http.Get("https://ipinfo.io/signup/cli")
+
+		// save token to file.
+		gConfig.Token = tok
+		if err := SaveConfig(gConfig); err != nil {
+			return err
+		}
+
+		fmt.Println("done")
+
+		return nil
+	} else if opt == 2 {
+		res, err := http.Get("http://localhost:3000/signup/cli")
 		if err != nil {
 			return err
 		}
 		defer res.Body.Close()
+
 		// parse response.
-		msg := &signupCli{}
-		if err := json.NewDecoder(res.Body).Decode(msg); err != nil {
+		rawBody, err := io.ReadAll(res.Body)
+		if err != nil {
 			return err
 		}
-		fmt.Printf("%v\n",msg.SignupURL)
-		var input string
-		fmt.Println("Press Enter to open link:")
-		fmt.Scanf("%s", &input)
-		cmd := exec.Command("xdg-open", msg.SignupURL)
+		body := &signupCli{}
+		err = json.Unmarshal(rawBody, body)
+		if err != nil {
+			return err
+		}
+
+		cmd := exec.Command("xdg-open", body.SignupURL)
 		err = cmd.Run()
+		fmt.Println("If the link does not open, please go to this link to get your access token:")
+		fmt.Printf("%v\n", body.SignupURL)
+		fmt.Println("Press [Enter] when done if not automatically detected.")
 		if err != nil {
 			fmt.Println("Error opening link:", err)
 			return err
 		}
-		parsedUrl, err := url.Parse(msg.SignupURL)
+
+		// Retrieving unique id from signup URL.
+		parsedUrl, err := url.Parse(body.SignupURL)
 		if err != nil {
 			fmt.Println("Error parsing URL:", err)
 			return err
 		}
-	
 		uid := parsedUrl.Query().Get("uid")
 		if uid == "" {
 			fmt.Println("UID not found in URL")
@@ -129,41 +185,43 @@ func cmdInit() error {
 		// Check if signup flow is completed.
 		maxAttempts := 200
 		count := 0
-		fmt.Printf("Configuring account ...\n")
 		for {
 			count++
-			res, err := http.Get("https://ipinfo.io/signup/cli/check?uid=" + uid)
+			res, err := http.Get("http://localhost:3000/signup/cli/check?uid=" + uid)
 			if err != nil {
-				return fmt.Errorf("%v",err)
+				return fmt.Errorf("%v", err)
 			}
 			defer res.Body.Close()
-	
+
 			if res.StatusCode == http.StatusOK {
-				body := &tokenCli{}
-				if err := json.NewDecoder(res.Body).Decode(body); err != nil {
+				rawBody, err := io.ReadAll(res.Body)
+				if err != nil {
 					return err
 				}
-				if tok, err = enterToken(body.Token); err != nil {
-					return fmt.Errorf(err.Error())
+				body := &tokenCli{}
+				err = json.Unmarshal(rawBody, body)
+				if err != nil {
+					return err
 				}
-				if err := checkValidity(tok); err != nil {
-					return fmt.Errorf("could not confirm if token is valid: %w", err)
+
+				// save token to file.
+				gConfig.Token = tok
+				if err := SaveConfig(gConfig); err != nil {
+					return err
 				}
+
+				fmt.Println("Account created successfully.")
 				break
 			}
-	
+
 			if count == maxAttempts {
-				fmt.Println("Reached max attempts. Press Enter to retry or Ctrl+C to exit.")
 				if _, err := fmt.Scanln(); err != nil {
-					return fmt.Errorf("%v",err)
+					return fmt.Errorf("%v", err)
 				}
-				// reset the count if user chooses to retry
-				count = 0
 			}
 
 			time.Sleep(time.Second)
 		}
-		os.Exit(0)
 	} else {
 		fmt.Println("Invalid input.")
 		return err
@@ -173,7 +231,7 @@ func cmdInit() error {
 }
 
 func checkValidity(tok string) error {
-	fmt.Println("logging in...")
+	fmt.Println("checking token...")
 	tokenOk, err := isTokenValid(tok)
 	if err != nil {
 		return fmt.Errorf("could not confirm if token is valid: %w", err)
@@ -181,14 +239,6 @@ func checkValidity(tok string) error {
 	if !tokenOk {
 		return fmt.Errorf("invalid token")
 	}
-
-	// save token to file.
-	gConfig.Token = tok
-	if err := SaveConfig(gConfig); err != nil {
-		return err
-	}
-
-	fmt.Println("done")
 
 	return nil
 }
@@ -212,5 +262,23 @@ func enterToken(tok string) (string, error) {
 		fmt.Println("please enter a token")
 	}
 
-	return tok , nil
+	return tok, nil
+}
+
+func isTokenValid(tok string) (bool, error) {
+	// make API req for true token validity.
+	res, err := http.Get("http://localhost:3000/me?token=" + tok)
+	if err != nil {
+		return false, err
+	}
+	defer res.Body.Close()
+
+	// parse response.
+	me := &meResponse{}
+	if err := json.NewDecoder(res.Body).Decode(me); err != nil {
+		return false, err
+	}
+
+	// If no errors then me.Error should be empty
+	return me.Error == "", nil
 }

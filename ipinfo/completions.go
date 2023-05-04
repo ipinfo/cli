@@ -24,7 +24,7 @@ var completions = &complete.Command{
 		"splitcidr":  completionsSplitCIDR,
 		"cache":      completionsCache,
 		"quota":      completionsQuota,
-		"login":      completionsLogin,
+		"init":       completionsInit,
 		"logout":     completionsLogout,
 		"config":     completionsConfig,
 		"completion": completionsCompletion,
