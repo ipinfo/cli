@@ -34,7 +34,7 @@ Commands:
   cache       manage the cache.
   config      manage the config.
   quota       print the request quota of your account.
-  login       save an API token session.
+  init        login or signup account.
   logout      delete your current API token session.
   completion  install or output shell auto-completion script.
   version     show current version.

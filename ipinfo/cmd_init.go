@@ -176,8 +176,8 @@ func cmdInit() error {
 			fmt.Println("Error parsing URL:", err)
 			return err
 		}
-		uid := parsedUrl.Query().Get("uid")
-		if uid == "" {
+		cli_token := parsedUrl.Query().Get("cli_token")
+		if cli_token == "" {
 			fmt.Println("UID not found in URL")
 			return err
 		}
@@ -187,7 +187,7 @@ func cmdInit() error {
 		count := 0
 		for {
 			count++
-			res, err := http.Get("https://ipinfo.io/signup/cli/check?uid=" + uid)
+			res, err := http.Get("https://ipinfo.io/signup/cli/check?cli_token=" + cli_token)
 			if err != nil {
 				return fmt.Errorf("%v", err)
 			}
