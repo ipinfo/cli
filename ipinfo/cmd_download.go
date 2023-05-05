@@ -33,7 +33,7 @@ var completionsDownload = &complete.Command{
 
 func printHelpDownload() {
 	fmt.Printf(
-		`Usage: %s download [<database>] [<opts>]
+		`Usage: %s download [<opts>] <database> [<output>]
 
 Description:
     Download the free ipinfo databases.
@@ -56,12 +56,12 @@ Options:
       show help.
 
 Outputs:
-	--compress, -c
+    --compress, -c
 	save the file in compressed format.
 	default: false.
-    --format , -f <mmdb | json | csv>
-    output format of the database file.
-    default: mmdb.
+    --format, -f <mmdb | json | csv>
+     output format of the database file.
+     default: mmdb.
 `, progBase)
 }
 
@@ -93,33 +93,41 @@ func cmdDownload() error {
 		return errors.New("downloading requires a token; login via `ipinfo login` or pass the `--token` argument")
 	}
 
-	// get download format.
+	// get download format and extension.
 	var format string
+	var fileExtension string
 	switch strings.ToLower(fFmt) {
 	case "mmdb":
 		format = "mmdb"
+		fileExtension = "mmdb"
 	case "csv":
 		format = "csv.gz"
+		fileExtension = "csv"
 	case "json":
 		format = "json.gz"
+		fileExtension = "json"
 	default:
 		return errors.New("unknown download format")
+	}
+
+	if fZip {
+		fileExtension = fmt.Sprintf("%s.%s", fileExtension, "gz")
 	}
 
 	// download the db.
 	switch strings.ToLower(args[0]) {
 	case "asn":
-		err := downloadDb("asn", format, token, fZip)
+		err := downloadDb("asn", format, token, fileExtension, fZip)
 		if err != nil {
 			return err
 		}
 	case "country":
-		err := downloadDb("country", format, token, fZip)
+		err := downloadDb("country", format, token, fileExtension, fZip)
 		if err != nil {
 			return err
 		}
 	case "country-asn":
-		err := downloadDb("country_asn", format, token, fZip)
+		err := downloadDb("country_asn", format, token, fileExtension, fZip)
 		if err != nil {
 			return err
 		}
@@ -130,8 +138,16 @@ func cmdDownload() error {
 	return nil
 }
 
-func downloadDb(name, format, token string, zip bool) error {
+func downloadDb(name, format, token, fileExtension string, zip bool) error {
 	url := fmt.Sprintf("%s%s.%s?token=%s", dbDownloadURL, name, format, token)
+
+	// get file name.
+	var fileName string
+	if len(pflag.Args()) > 2 {
+		fileName = pflag.Args()[2]
+	} else {
+		fileName = fmt.Sprintf("%s.%s", name, fileExtension)
+	}
 
 	// make API req to download the file.
 	res, err := http.Get(url)
@@ -147,20 +163,6 @@ func downloadDb(name, format, token string, zip bool) error {
 			return err
 		}
 	} else {
-		// get filename.
-		var fileName string
-		if len(pflag.Args()) > 2 {
-			fileName = pflag.Args()[2]
-		} else if zip {
-			if format == "mmdb" {
-				fileName = fmt.Sprintf("%s.%s.gz", name, format)
-			} else {
-				fileName = fmt.Sprintf("%s.%s", name, format)
-			}
-		} else {
-			fileName = strings.TrimRight(fmt.Sprintf("%s.%s", name, format), ".gz")
-		}
-
 		// create file.
 		file, err := os.Create(fileName)
 		if err != nil {
