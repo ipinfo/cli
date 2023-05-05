@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"runtime"
 	"time"
 
 	"github.com/ipinfo/cli/lib/complete"
@@ -86,12 +87,12 @@ func cmdInit() error {
 	}
 
 	// allow only flag or arg for token but not both.
-	// if it exists, we'll exit early as it's an implicit login.
 	if fTok != "" && len(args) > 0 {
 		return errors.New("ambiguous token input source")
 	}
 
 	// get token, from flag or command line.
+	// if it exists, we'll exit early as it's an implicit login.
 	tok := fTok
 	if len(args) > 0 {
 		tok = args[0]
@@ -160,8 +161,7 @@ func cmdInit() error {
 			return err
 		}
 
-		cmd := exec.Command("xdg-open", body.SignupURL)
-		err = cmd.Run()
+		err = openURL(body.SignupURL)
 		fmt.Println("If the link does not open, please go to this link to get your access token:")
 		fmt.Printf("%v\n", body.SignupURL)
 		fmt.Println("Press [Enter] when done if not automatically detected.")
@@ -281,4 +281,21 @@ func isTokenValid(tok string) (bool, error) {
 
 	// If no errors then me.Error should be empty
 	return me.Error == "", nil
+}
+
+func openURL(url string) error {
+	var err error
+
+	switch runtime.GOOS {
+	case "linux":
+		err = exec.Command("xdg-open", url).Start()
+	case "windows":
+		err = exec.Command("cmd", "/c", "start", url).Start()
+	case "darwin":
+		err = exec.Command("open", url).Start()
+	default:
+		err = fmt.Errorf("unsupported platform")
+	}
+
+	return err
 }
