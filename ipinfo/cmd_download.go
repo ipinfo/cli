@@ -154,10 +154,18 @@ func downloadDb(url string, fileName string, format string, zip bool) error {
 
 	// if output not terminal unzip and write to stdout.
 	if fileInfo, _ := os.Stdout.Stat(); (fileInfo.Mode() & os.ModeCharDevice) == 0 {
-		err := unzipWrite(os.Stdout, res.Body)
-		if err != nil {
-			return err
+		if zip {
+			err := zipWriter(os.Stdout, res.Body)
+			if err != nil {
+				return err
+			}
+		} else {
+			err := unzipWrite(os.Stdout, res.Body)
+			if err != nil {
+				return err
+			}
 		}
+
 	} else {
 		// create file.
 		file, err := os.Create(fileName)
@@ -169,15 +177,7 @@ func downloadDb(url string, fileName string, format string, zip bool) error {
 		// save compressed file.
 		if zip {
 			if format == "mmdb" {
-				writer := gzip.NewWriter(file)
-				defer writer.Close()
-
-				body, err := io.ReadAll(res.Body)
-				if err != nil {
-					return err
-				}
-
-				_, err = writer.Write(body)
+				err := zipWriter(file, res.Body)
 				if err != nil {
 					return err
 				}
@@ -202,6 +202,23 @@ func downloadDb(url string, fileName string, format string, zip bool) error {
 		}
 
 		fmt.Printf("Database %s saved successfully.", fileName)
+	}
+
+	return nil
+}
+
+func zipWriter(file *os.File, data io.Reader) error {
+	writer := gzip.NewWriter(file)
+	defer writer.Close()
+
+	body, err := io.ReadAll(data)
+	if err != nil {
+		return err
+	}
+
+	_, err = writer.Write(body)
+	if err != nil {
+		return err
 	}
 
 	return nil
