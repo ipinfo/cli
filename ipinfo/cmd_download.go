@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -57,11 +56,11 @@ Options:
 
 Outputs:
     --compress, -c
-	save the file in compressed format.
-	default: false.
+      save the file in compressed format.
+      default: false.
     --format, -f <mmdb | json | csv>
-     output format of the database file.
-     default: mmdb.
+      output format of the database file.
+      default: mmdb.
 `, progBase)
 }
 
@@ -115,39 +114,36 @@ func cmdDownload() error {
 	}
 
 	// download the db.
+	var dbName string
 	switch strings.ToLower(args[0]) {
 	case "asn":
-		err := downloadDb("asn", format, token, fileExtension, fZip)
-		if err != nil {
-			return err
-		}
+		dbName = "asn"
 	case "country":
-		err := downloadDb("country", format, token, fileExtension, fZip)
-		if err != nil {
-			return err
-		}
+		dbName = "country"
 	case "country-asn":
-		err := downloadDb("country_asn", format, token, fileExtension, fZip)
-		if err != nil {
-			return err
-		}
+		dbName = "country_asn"
 	default:
 		return fmt.Errorf("database '%v' is invalid", args[0])
 	}
-
-	return nil
-}
-
-func downloadDb(name, format, token, fileExtension string, zip bool) error {
-	url := fmt.Sprintf("%s%s.%s?token=%s", dbDownloadURL, name, format, token)
 
 	// get file name.
 	var fileName string
 	if len(pflag.Args()) > 2 {
 		fileName = pflag.Args()[2]
 	} else {
-		fileName = fmt.Sprintf("%s.%s", name, fileExtension)
+		fileName = fmt.Sprintf("%s.%s", dbName, fileExtension)
 	}
+
+	url := fmt.Sprintf("%s%s.%s?token=%s", dbDownloadURL, dbName, format, token)
+	err := downloadDb(url, fileName, format, fZip)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func downloadDb(url string, fileName string, format string, zip bool) error {
 
 	// make API req to download the file.
 	res, err := http.Get(url)
@@ -176,7 +172,7 @@ func downloadDb(name, format, token, fileExtension string, zip bool) error {
 				writer := gzip.NewWriter(file)
 				defer writer.Close()
 
-				body, err := ioutil.ReadAll(res.Body)
+				body, err := io.ReadAll(res.Body)
 				if err != nil {
 					return err
 				}
@@ -205,7 +201,7 @@ func downloadDb(name, format, token, fileExtension string, zip bool) error {
 			}
 		}
 
-		fmt.Printf("Database %s saved successfully.", name)
+		fmt.Printf("Database %s saved successfully.", fileName)
 	}
 
 	return nil
