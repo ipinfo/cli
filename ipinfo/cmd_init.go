@@ -14,6 +14,7 @@ import (
 
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
+	"github.com/pkg/browser"
 	"github.com/spf13/pflag"
 	"golang.org/x/term"
 )
@@ -161,7 +162,7 @@ func cmdInit() error {
 			return err
 		}
 
-		_ = openURL(body.SignupURL)
+		browser.OpenURL(body.SignupURL)
 		fmt.Println("If the link does not open, please go to this link to get your access token:")
 		fmt.Println("")
 		fmt.Printf("%v\n", body.SignupURL)
@@ -279,21 +280,4 @@ func isTokenValid(tok string) (bool, error) {
 
 	// If no errors then me.Error should be empty
 	return me.Error == "", nil
-}
-
-func openURL(url string) error {
-	var err error
-
-	switch runtime.GOOS {
-	case "linux":
-		err = exec.Command("xdg-open", url).Start()
-	case "windows":
-		err = exec.Command("cmd", "/c", "start", url).Start()
-	case "darwin":
-		err = exec.Command("open", url).Start()
-	default:
-		err = fmt.Errorf("unsupported platform")
-	}
-
-	return err
 }
