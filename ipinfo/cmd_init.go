@@ -35,7 +35,7 @@ Examples:
 	# Login command with token flag.
 	$ init --token <token>
 
-	#Authentication without token flag.
+    # Authentication without token flag.
 	$ init
 
 Options:
