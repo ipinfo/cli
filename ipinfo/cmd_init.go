@@ -33,10 +33,10 @@ func printHelpInit() {
 		`Usage: %s init [<opts>] [<token>]
 Examples:
 	# Login command with token flag.
-	$ init --token <token>
+	$ %[1]s init --token <token>
 
     # Authentication without token flag.
-	$ init
+	$ %[1]s init
 
 Options:
   --token <tok>, -t <tok>
