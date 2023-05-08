@@ -161,15 +161,12 @@ func cmdInit() error {
 			return err
 		}
 
-		err = openURL(body.SignupURL)
+		_ = openURL(body.SignupURL)
 		fmt.Println("If the link does not open, please go to this link to get your access token:")
+		fmt.Println("")
 		fmt.Printf("%v\n", body.SignupURL)
 		fmt.Println("")
 		fmt.Println("Press [Enter] when done if not automatically detected.")
-		if err != nil {
-			fmt.Println("Error opening link:", err)
-			return err
-		}
 
 		// Retrieving CLI token from signup URL.
 		parsedUrl, err := url.Parse(body.SignupURL)
@@ -177,9 +174,9 @@ func cmdInit() error {
 			fmt.Println("Error parsing URL:", err)
 			return err
 		}
-		cli_token := parsedUrl.Query().Get("cli_token")
-		if cli_token == "" {
-			fmt.Println("UID not found in URL")
+		cliToken := parsedUrl.Query().Get("cli_token")
+		if cliToken == "" {
+			fmt.Println("CLI token not found in URL")
 			return err
 		}
 
@@ -188,7 +185,7 @@ func cmdInit() error {
 		count := 0
 		for {
 			count++
-			res, err := http.Get("https://ipinfo.io/signup/cli/check?cli_token=" + cli_token)
+			res, err := http.Get("https://ipinfo.io/signup/cli/check?cli_token=" + cliToken)
 			if err != nil {
 				return fmt.Errorf("%v", err)
 			}

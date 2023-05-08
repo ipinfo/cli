@@ -147,6 +147,7 @@ func IPListWriteFromIPRange(ipStrStart string, ipStrEnd string) error {
 // IPListFromIPRangeStrWrite outputs all IPs in an IP range.
 //
 // `rStr` must be of any of these forms:
+//
 //	<ip_range_start>-<ip_range_end>
 //	<ip_range_start>,<ip_range_end>
 func IPListWriteFromIPRangeStr(rStr string) error {

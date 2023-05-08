@@ -23,6 +23,7 @@ func NewIPRangeStr(start string, end string) IPRangeStr {
 // StrIsIPRangeStr checks whether a string is an IP range.
 //
 // The string must be of any of these forms to be considered an IP range:
+//
 //	<ip_range_start>-<ip_range_end>
 //	<ip_range_start>,<ip_range_end>
 func StrIsIPRangeStr(r string) bool {
@@ -34,6 +35,7 @@ func StrIsIPRangeStr(r string) bool {
 // range string.
 //
 // The string must be of any of these forms:
+//
 //	<ip_range_start>-<ip_range_end>
 //	<ip_range_start>,<ip_range_end>
 func IPRangeStrFromStr(r string) (IPRangeStr, error) {

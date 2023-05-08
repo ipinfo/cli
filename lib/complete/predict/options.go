@@ -10,10 +10,10 @@ import (
 //
 // Usage:
 //
-//  func(o ...predict.Option) {
-//  	cfg := predict.Options(o)
-//  	// use cfg.Predict...
-//  }
+//	func(o ...predict.Option) {
+//		cfg := predict.Options(o)
+//		// use cfg.Predict...
+//	}
 type Option func(*Config)
 
 // OptValues allows to set a desired set of valid values for the flag.
