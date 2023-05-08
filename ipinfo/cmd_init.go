@@ -164,6 +164,7 @@ func cmdInit() error {
 		err = openURL(body.SignupURL)
 		fmt.Println("If the link does not open, please go to this link to get your access token:")
 		fmt.Printf("%v\n", body.SignupURL)
+		fmt.Println("")
 		fmt.Println("Press [Enter] when done if not automatically detected.")
 		if err != nil {
 			fmt.Println("Error opening link:", err)
