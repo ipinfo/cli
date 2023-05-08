@@ -152,7 +152,7 @@ func downloadDb(url string, fileName string, format string, zip bool) error {
 	}
 	defer res.Body.Close()
 
-	// if output not terminal unzip and write to stdout.
+	// if output not terminal write to stdout.
 	if fileInfo, _ := os.Stdout.Stat(); (fileInfo.Mode() & os.ModeCharDevice) == 0 {
 		if zip {
 			err := zipWriter(os.Stdout, res.Body)
