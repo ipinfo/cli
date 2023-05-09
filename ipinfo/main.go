@@ -73,8 +73,8 @@ func main() {
 		err = cmdConfig()
 	case cmd == "quota":
 		err = cmdQuota()
-	case cmd == "login":
-		err = cmdLogin()
+	case cmd == "init":
+		err = cmdInit()
 	case cmd == "logout":
 		err = cmdLogout()
 	case cmd == "completion":

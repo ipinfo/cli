@@ -25,7 +25,7 @@ var completions = &complete.Command{
 		"download":   completionsDownload,
 		"cache":      completionsCache,
 		"quota":      completionsQuota,
-		"login":      completionsLogin,
+		"init":       completionsInit,
 		"logout":     completionsLogout,
 		"config":     completionsConfig,
 		"completion": completionsCompletion,

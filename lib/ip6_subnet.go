@@ -55,6 +55,7 @@ func (s IP6Subnet) ToCIDR() string {
 // range specified in the IP range string `rStr`.
 //
 // `rStr` must be of any of these forms:
+//
 //	<ip_range_start>-<ip_range_end>
 //	<ip_range_start>,<ip_range_end>
 func CIDRsFromIP6RangeStrRaw(rStr string) ([]string, error) {

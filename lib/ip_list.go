@@ -166,6 +166,7 @@ func IPListFromRange(ipStrStart string, ipStrEnd string) ([]net.IP, error) {
 // IPListFromRangeStr returns a list of IPs given a range string.
 //
 // `rStr` must be of any of these forms:
+//
 //	<ip_range_start>-<ip_range_end>
 //	<ip_range_start>,<ip_range_end>
 func IPListFromRangeStr(rStr string) ([]net.IP, error) {
