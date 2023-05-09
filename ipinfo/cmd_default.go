@@ -31,6 +31,7 @@ Commands:
   range2ip    convert IP ranges to individual IPs within those ranges.
   randip      Generates random IPs.
   splitcidr   splits a larger CIDR into smaller CIDRs.
+  download    download free ipinfo database files.
   cache       manage the cache.
   config      manage the config.
   quota       print the request quota of your account.

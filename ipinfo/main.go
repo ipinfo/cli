@@ -65,6 +65,8 @@ func main() {
 		err = cmdRandIP()
 	case cmd == "splitcidr":
 		err = cmdSplitCIDR()
+	case cmd == "download":
+		err = cmdDownload()
 	case cmd == "cache":
 		err = cmdCache()
 	case cmd == "config":

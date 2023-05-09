@@ -18,3 +18,5 @@ range2cidr/dist/
 range2ip/dist/
 randip/dist/
 splitcidr/dist/
+*.mmdb
+*.gz
