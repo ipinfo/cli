@@ -31,11 +31,11 @@ func printHelpInit() {
 	fmt.Printf(
 		`Usage: %s init [<opts>] [<token>]
 Examples:
-# Login command with token flag.
-$ %[1]s init --token <token>
+  # Login command with token flag.
+  $ %[1]s init --token <token>
 
-# Authentication without token flag.
-$ %[1]s init
+  # Authentication without token flag.
+  $ %[1]s init
 
 Options:
   --token <tok>, -t <tok>
