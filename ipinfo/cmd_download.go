@@ -89,7 +89,7 @@ func cmdDownload() error {
 
 	// require token for download.
 	if token == "" {
-		return errors.New("downloading requires a token; login via `ipinfo login` or pass the `--token` argument")
+		return errors.New("downloading requires a token; login via `ipinfo init` or pass the `--token` argument")
 	}
 
 	// get download format and extension.

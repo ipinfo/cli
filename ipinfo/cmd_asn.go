@@ -84,7 +84,7 @@ func cmdASN(asn string) error {
 
 	// require token for ASN API.
 	if ii.Token == "" {
-		return errors.New("ASN lookups require a token; login via `ipinfo login`.")
+		return errors.New("ASN lookups require a token; login via `ipinfo init`.")
 	}
 
 	data, err := ii.GetASNDetails(asn)

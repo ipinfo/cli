@@ -224,7 +224,7 @@ will not be available. Get your token for free at
 [https://ipinfo.io/signup](https://ipinfo.io/signup?ref=cli).
 
 ```bash
-ipinfo login
+ipinfo init
 ```
 
 ### My IP
