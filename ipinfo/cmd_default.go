@@ -127,7 +127,7 @@ func cmdDefault() (err error) {
 
 	// require token for bulk.
 	if ii.Token == "" {
-		return errors.New("bulk lookups require a token; login via `ipinfo login`.")
+		return errors.New("bulk lookups require a token; login via `ipinfo init`.")
 	}
 
 	data, err := ii.GetIPInfoBatch(ips, ipinfo.BatchReqOpts{
