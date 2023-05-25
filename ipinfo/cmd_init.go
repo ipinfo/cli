@@ -160,9 +160,11 @@ func cmdInit() error {
 			return err
 		}
 
-		browser.OpenURL(body.SignupURL)
-		fmt.Println("If the link does not open, please go to this link to get your access token:")
-		fmt.Println("")
+		if gConfig.OpenBrowser {
+			browser.OpenURL(body.SignupURL)
+			fmt.Println("If the link does not open, please go to this link to get your access token:")
+			fmt.Println("")
+		}
 		fmt.Printf("%v\n", body.SignupURL)
 		fmt.Println("")
 		fmt.Println("Press [Enter] when done if not automatically detected.")
