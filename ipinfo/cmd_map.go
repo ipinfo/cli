@@ -50,9 +50,9 @@ Options:
   General:
     --help, -h
       show help.
-	--no-browser
-	  don't open the map link in the browser.
-	  default: false
+    --no-browser
+      don't open the map link in the browser.
+      default: false
 `, progBase)
 }
 
