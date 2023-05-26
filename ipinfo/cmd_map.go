@@ -13,8 +13,9 @@ import (
 
 var completionsMap = &complete.Command{
 	Flags: map[string]complete.Predictor{
-		"-h":     predict.Nothing,
-		"--help": predict.Nothing,
+		"-h":           predict.Nothing,
+		"--help":       predict.Nothing,
+		"--no-browser": predict.Nothing,
 	},
 }
 
@@ -49,13 +50,18 @@ Options:
   General:
     --help, -h
       show help.
+    --no-browser
+      don't open the map link in the browser.
+      default: false.
 `, progBase)
 }
 
 func cmdMap() (err error) {
 	var ips []net.IP
+	var fNoBrowser bool
 
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
+	pflag.BoolVar(&fNoBrowser, "no-browser", false, "disable browser opening.")
 	pflag.Parse()
 
 	if fHelp {
@@ -78,7 +84,9 @@ func cmdMap() (err error) {
 		return err
 	}
 
-	browser.OpenURL(d.ReportURL)
+	if !fNoBrowser && gConfig.OpenBrowser {
+		browser.OpenURL(d.ReportURL)
+	}
 	fmt.Println(d.ReportURL)
 
 	return nil

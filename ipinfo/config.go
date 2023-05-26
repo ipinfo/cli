@@ -15,6 +15,7 @@ var gConfig Config
 type Config struct {
 	CacheEnabled bool   `json:"cache_enabled"`
 	Token        string `json:"token"`
+	OpenBrowser  bool   `json:"open_browser"`
 }
 
 // gets the global config directory, creating it if necessary.
@@ -102,6 +103,7 @@ func NewConfig() Config {
 	return Config{
 		CacheEnabled: true,
 		Token:        "",
+		OpenBrowser:  true,
 	}
 }
 

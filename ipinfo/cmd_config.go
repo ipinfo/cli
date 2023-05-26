@@ -34,6 +34,8 @@ Options:
 Configurations:
   cache=<enable | disable>
     Control whether the cache is enabled or disabled.
+  open_browser=<enable | disable>
+    Control whether the links should open the browser or not.
   token=<tok>
     Save a token for use when querying the API.
     (Token will not be validated).
@@ -56,7 +58,7 @@ func cmdConfig() error {
 		configStr := strings.Split(arg, "=")
 		key := strings.ToLower(configStr[0])
 		if len(configStr) != 2 {
-			if key == "cache" || key == "token" {
+			if key == "cache" || key == "token" || key == "open_browser" {
 				return fmt.Errorf("err: no value provided for key %s", key)
 			}
 			return fmt.Errorf("err: invalid key argument %s", key)
@@ -71,6 +73,16 @@ func cmdConfig() error {
 				gConfig.CacheEnabled = false
 			default:
 				return fmt.Errorf("err: invalid value %s; cache must be 'enabled' or disabled", val)
+			}
+		case "open_browser":
+			val := strings.ToLower(configStr[1])
+			switch val {
+			case "enable":
+				gConfig.OpenBrowser = true
+			case "disable":
+				gConfig.OpenBrowser = false
+			default:
+				return fmt.Errorf("err: invalid value %s; open_browser must be 'enable' or disable", val)
 			}
 		case "token":
 			gConfig.Token = configStr[1]
