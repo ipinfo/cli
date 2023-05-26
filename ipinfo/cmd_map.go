@@ -52,7 +52,7 @@ Options:
       show help.
     --no-browser
       don't open the map link in the browser.
-      default: false
+      default: false.
 `, progBase)
 }
 

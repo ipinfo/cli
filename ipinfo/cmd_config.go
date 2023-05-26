@@ -82,7 +82,7 @@ func cmdConfig() error {
 			case "disable":
 				gConfig.OpenBrowser = false
 			default:
-				return fmt.Errorf("err: invalid value %s; open_browser must be 'enabled' or disabled", val)
+				return fmt.Errorf("err: invalid value %s; open_browser must be 'enable' or disable", val)
 			}
 		case "token":
 			gConfig.Token = configStr[1]
