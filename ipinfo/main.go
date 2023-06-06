@@ -81,6 +81,8 @@ func main() {
 		err = cmdCompletion()
 	case cmd == "version" || cmd == "vsn" || cmd == "v":
 		err = cmdVersion()
+	case cmd == "mmdbctl":
+		err = cmdMmdbCtl()
 	default:
 		err = cmdDefault()
 	}

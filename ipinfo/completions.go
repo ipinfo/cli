@@ -30,6 +30,7 @@ var completions = &complete.Command{
 		"config":     completionsConfig,
 		"completion": completionsCompletion,
 		"version":    completionsVersion,
+		"mmdbctl":    completionsMmdbCtl,
 	},
 	Flags: map[string]complete.Predictor{
 		"-v":        predict.Nothing,
