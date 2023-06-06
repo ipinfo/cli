@@ -23,7 +23,7 @@ var completionsMetadata = &complete.Command{
 
 func printHelpMetadata() {
 	fmt.Printf(
-		`Usage: %s metadata [<opts>] <mmdb_file>
+		`Usage: %s mmdbctl metadata [<opts>] <mmdb_file>
 
 Options:
   General:

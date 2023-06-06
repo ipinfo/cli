@@ -22,7 +22,7 @@ var completionsDiff = &complete.Command{
 
 func printHelpDiff() {
 	fmt.Printf(
-		`Usage: %s diff [<opts>] <old> <new>
+		`Usage: %s mmdbctl diff [<opts>] <old> <new>
 
 Description:
   Print subnet and record differences between two mmdb files (i.e. do set

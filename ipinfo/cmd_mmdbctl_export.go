@@ -26,7 +26,7 @@ var completionsExport = &complete.Command{
 
 func printHelpExport() {
 	fmt.Printf(
-		`Usage: %s export [<opts>] <mmdb_file> [<out_file>]
+		`Usage: %s mmdbctl export [<opts>] <mmdb_file> [<out_file>]
 
 Options:
   General:

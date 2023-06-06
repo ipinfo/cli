@@ -29,7 +29,7 @@ var completionsRead = &complete.Command{
 
 func printHelpRead() {
 	fmt.Printf(
-		`Usage: %s read [<opts>] <ip | ip-range | cidr | filepath> <mmdb>
+		`Usage: %s mmdbctl read [<opts>] <ip | ip-range | cidr | filepath> <mmdb>
 
 Options:
   General:

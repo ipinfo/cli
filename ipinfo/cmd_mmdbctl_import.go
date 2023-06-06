@@ -48,7 +48,7 @@ var completionsImport = &complete.Command{
 
 func printHelpImport() {
 	fmt.Printf(
-		`Usage: %s import [<opts>] [<input>] [<output>]
+		`Usage: %s mmdbctl import [<opts>] [<input>] [<output>]
 
 Example:
   # Imports an input file and outputs an mmdb file with default configurations. 
