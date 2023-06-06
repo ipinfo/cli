@@ -79,6 +79,8 @@ Options:
       output JSON format. (default)
     --csv, -c
       output CSV format.
+    --yaml, -y
+      output YAML format.
 `, progBase)
 }
 
@@ -88,6 +90,7 @@ func cmdBulk() (err error) {
 	var fField []string
 	var fJSON bool
 	var fCSV bool
+	var fYAML bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
 	pflag.BoolVar(&fNoCache, "nocache", false, "disable the cache.")
@@ -95,6 +98,7 @@ func cmdBulk() (err error) {
 	pflag.StringSliceVarP(&fField, "field", "f", nil, "specific field to lookup.")
 	pflag.BoolVarP(&fJSON, "json", "j", true, "output JSON format. (default)")
 	pflag.BoolVarP(&fCSV, "csv", "c", false, "output CSV format.")
+	pflag.BoolVarP(&fYAML, "yaml", "y", false, "output YAML format.")
 	pflag.BoolVar(&fNoColor, "nocolor", false, "disable color output.")
 	pflag.Parse()
 
@@ -137,6 +141,9 @@ func cmdBulk() (err error) {
 
 	if fCSV {
 		return outputCSVBatchCore(data)
+	}
+	if fYAML {
+		return outputYAML(data)
 	}
 
 	return outputJSON(data)
