@@ -11,7 +11,7 @@ import (
 
 var predictMetadataFmts = []string{"pretty", "json"}
 
-var completionsMetadata = &complete.Command{
+var completionsMmdbMetadata = &complete.Command{
 	Flags: map[string]complete.Predictor{
 		"--nocolor": predict.Nothing,
 		"-h":        predict.Nothing,
@@ -21,9 +21,9 @@ var completionsMetadata = &complete.Command{
 	},
 }
 
-func printHelpMetadata() {
+func printHelpMmdbMetadata() {
 	fmt.Printf(
-		`Usage: %s mmdbctl metadata [<opts>] <mmdb_file>
+		`Usage: %s mmdb metadata [<opts>] <mmdb_file>
 
 Options:
   General:
@@ -40,13 +40,13 @@ Options:
 `, progBase)
 }
 
-func cmdMetadata() error {
+func cmdMmdbMetadata() error {
 	f := lib.CmdMetadataFlags{}
 	f.Init()
 	pflag.Parse()
-	if pflag.NArg() <= 2 {
+	if pflag.NArg() <= 2 && pflag.NFlag() == 0 {
 		f.Help = true
 	}
 
-	return lib.CmdMetadata(f, pflag.Args()[2:], printHelpMetadata)
+	return lib.CmdMetadata(f, pflag.Args()[2:], printHelpMmdbMetadata)
 }

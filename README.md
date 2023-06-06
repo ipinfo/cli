@@ -183,7 +183,7 @@ Replace `<path>` with the required location.
 ## Additional CLIs
 
 The `ipinfo` CLI has some subcommands like `grepip`, `prips`, `cidr2range`, `cidr2ip`,
-`range2cidr`, `range2ip`, `splitcidr` and `randip` which are also shipped as standalone binaries.
+`range2cidr`, `range2ip`, `splitcidr`, `randip` and `mmdb` which are also shipped as standalone binaries.
 
 These binaries are available via all the **same installation methods** as
 mentioned above for `ipinfo`, except you must change only the name to the name
@@ -201,6 +201,7 @@ Currently these subcommands are separately shipped:
 | range2ip   | [1.0.0](https://github.com/ipinfo/cli/releases/tag/range2ip-1.0.0) |
 | randip     | [1.1.0](https://github.com/ipinfo/cli/releases/tag/randip-1.1.0) |
 | splitcidr  | [1.0.0](https://github.com/ipinfo/cli/releases/tag/splitcidr-1.0.0) |
+| mmdb       | [1.0.0](https://github.com/ipinfo/cli/releases/tag/mmdb-1.0.0) |
 
 ## Quick Start
 

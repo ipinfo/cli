@@ -65,6 +65,8 @@ func main() {
 		err = cmdRandIP()
 	case cmd == "splitcidr":
 		err = cmdSplitCIDR()
+	case cmd == "mmdb":
+		err = cmdMmdb()
 	case cmd == "download":
 		err = cmdDownload()
 	case cmd == "cache":
@@ -81,8 +83,6 @@ func main() {
 		err = cmdCompletion()
 	case cmd == "version" || cmd == "vsn" || cmd == "v":
 		err = cmdVersion()
-	case cmd == "mmdbctl":
-		err = cmdMmdbCtl()
 	default:
 		err = cmdDefault()
 	}

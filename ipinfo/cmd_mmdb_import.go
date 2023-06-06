@@ -13,7 +13,7 @@ var predictIpVsn = []string{"4", "6"}
 var predictSize = []string{"24", "28", "32"}
 var predictMerge = []string{"none", "toplevel", "recurse"}
 
-var completionsImport = &complete.Command{
+var completionsMmdbImport = &complete.Command{
 	Flags: map[string]complete.Predictor{
 		"-h":                          predict.Nothing,
 		"--help":                      predict.Nothing,
@@ -46,13 +46,13 @@ var completionsImport = &complete.Command{
 	},
 }
 
-func printHelpImport() {
+func printHelpMmdbImport() {
 	fmt.Printf(
-		`Usage: %s mmdbctl import [<opts>] [<input>] [<output>]
+		`Usage: %s mmdb import [<opts>] [<input>] [<output>]
 
 Example:
   # Imports an input file and outputs an mmdb file with default configurations. 
-  $ %[1]s import input.csv output.mmdb
+  $ %[1]s mmdb import input.csv output.mmdb
 
 Options:
   General:
@@ -142,13 +142,13 @@ Options:
 `, progBase)
 }
 
-func cmdImport() error {
+func cmdMmdbImport() error {
 	f := lib.CmdImportFlags{}
 	f.Init()
 	pflag.Parse()
-	if pflag.NArg() <= 2 {
+	if pflag.NArg() <= 2 && pflag.NFlag() == 0 {
 		f.Help = true
 	}
 
-	return lib.CmdImport(f, pflag.Args()[2:], printHelpImport)
+	return lib.CmdImport(f, pflag.Args()[2:], printHelpMmdbImport)
 }

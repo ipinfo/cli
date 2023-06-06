@@ -12,7 +12,7 @@ import (
 
 var predictFormats = []string{"csv", "tsv", "json"}
 
-var completionsExport = &complete.Command{
+var completionsMmdbExport = &complete.Command{
 	Flags: map[string]complete.Predictor{
 		"-h":          predict.Nothing,
 		"--help":      predict.Nothing,
@@ -24,9 +24,9 @@ var completionsExport = &complete.Command{
 	},
 }
 
-func printHelpExport() {
+func printHelpMmdbExport() {
 	fmt.Printf(
-		`Usage: %s mmdbctl export [<opts>] <mmdb_file> [<out_file>]
+		`Usage: %s mmdb export [<opts>] <mmdb_file> [<out_file>]
 
 Options:
   General:
@@ -51,13 +51,13 @@ Options:
 `, progBase)
 }
 
-func cmdExport() error {
+func cmdMmdbExport() error {
 	f := lib.CmdExportFlags{}
 	f.Init()
 	pflag.Parse()
-	if pflag.NArg() <= 2 {
+	if pflag.NArg() <= 2 && pflag.NFlag() == 0 {
 		f.Help = true
 	}
 
-	return lib.CmdExport(f, pflag.Args()[2:], printHelpExport)
+	return lib.CmdExport(f, pflag.Args()[2:], printHelpMmdbExport)
 }

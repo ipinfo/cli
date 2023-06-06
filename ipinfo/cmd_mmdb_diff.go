@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/pflag"
 )
 
-var completionsDiff = &complete.Command{
+var completionsMmdbDiff = &complete.Command{
 	Flags: map[string]complete.Predictor{
 		"-h":        predict.Nothing,
 		"--help":    predict.Nothing,
@@ -20,9 +20,9 @@ var completionsDiff = &complete.Command{
 	},
 }
 
-func printHelpDiff() {
+func printHelpMmdbDiff() {
 	fmt.Printf(
-		`Usage: %s mmdbctl diff [<opts>] <old> <new>
+		`Usage: %s mmdb diff [<opts>] <old> <new>
 
 Description:
   Print subnet and record differences between two mmdb files (i.e. do set
@@ -39,13 +39,13 @@ Options:
 `, progBase)
 }
 
-func cmdDiff() error {
+func cmdMmdbDiff() error {
 	f := lib.CmdDiffFlags{}
 	f.Init()
 	pflag.Parse()
-	if pflag.NArg() <= 2 {
+	if pflag.NArg() <= 2 && pflag.NFlag() == 0 {
 		f.Help = true
 	}
 
-	return lib.CmdDiff(f, pflag.Args()[2:], printHelpDiff)
+	return lib.CmdDiff(f, pflag.Args()[2:], printHelpMmdbDiff)
 }

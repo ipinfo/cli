@@ -10,14 +10,14 @@ import (
 	"github.com/spf13/pflag"
 )
 
-var completionsMmdbCtl = &complete.Command{
+var completionsMmdb = &complete.Command{
 	Sub: map[string]*complete.Command{
-		"read":     completionsRead,
-		"import":   completionsImport,
-		"export":   completionsExport,
-		"diff":     completionsDiff,
-		"metadata": completionsMetadata,
-		"verify":   completionsVerify,
+		"read":     completionsMmdbRead,
+		"import":   completionsMmdbImport,
+		"export":   completionsMmdbExport,
+		"diff":     completionsMmdbDiff,
+		"metadata": completionsMmdbMetadata,
+		"verify":   completionsMmdbVerify,
 	},
 	Flags: map[string]complete.Predictor{
 		"-h":     predict.Nothing,
@@ -25,10 +25,10 @@ var completionsMmdbCtl = &complete.Command{
 	},
 }
 
-func printHelpMmdbCtl() {
+func printHelpMmdb() {
 
 	fmt.Printf(
-		`Usage: %s mmdbctl <cmd> [<opts>] [<args>]
+		`Usage: %s mmdb <cmd> [<opts>] [<args>]
 
 Commands:
   read        read data for IPs in an mmdb file.
@@ -48,7 +48,7 @@ Options:
 `, progBase)
 }
 
-func mmdbctlHelp() (err error) {
+func mmdbHelp() (err error) {
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.BoolVar(&fNoColor, "nocolor", false, "disable colored output.")
 	pflag.Parse()
@@ -63,11 +63,11 @@ func mmdbctlHelp() (err error) {
 	}
 
 	// currently we do nothing by default.
-	printHelpMmdbCtl()
+	printHelpMmdb()
 	return nil
 }
 
-func cmdMmdbCtl() error {
+func cmdMmdb() error {
 	var err error
 	cmd := ""
 	if len(os.Args) > 2 {
@@ -76,19 +76,19 @@ func cmdMmdbCtl() error {
 
 	switch {
 	case cmd == "read":
-		err = cmdRead()
+		err = cmdMmdbRead()
 	case cmd == "import":
-		err = cmdImport()
+		err = cmdMmdbImport()
 	case cmd == "export":
-		err = cmdExport()
+		err = cmdMmdbExport()
 	case cmd == "diff":
-		err = cmdDiff()
+		err = cmdMmdbDiff()
 	case cmd == "verify":
-		err = cmdVerify()
+		err = cmdMmdbVerify()
 	case cmd == "metadata":
-		err = cmdMetadata()
+		err = cmdMmdbMetadata()
 	default:
-		err = mmdbctlHelp()
+		err = mmdbHelp()
 	}
 
 	if err != nil {

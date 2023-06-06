@@ -17,7 +17,7 @@ var predictReadFmts = []string{
 	"csv",
 }
 
-var completionsRead = &complete.Command{
+var completionsMmdbRead = &complete.Command{
 	Flags: map[string]complete.Predictor{
 		"--nocolor": predict.Nothing,
 		"-h":        predict.Nothing,
@@ -27,9 +27,9 @@ var completionsRead = &complete.Command{
 	},
 }
 
-func printHelpRead() {
+func printHelpMmdbRead() {
 	fmt.Printf(
-		`Usage: %s mmdbctl read [<opts>] <ip | ip-range | cidr | filepath> <mmdb>
+		`Usage: %s mmdb read [<opts>] <ip | ip-range | cidr | filepath> <mmdb>
 
 Options:
   General:
@@ -47,13 +47,13 @@ Options:
 `, progBase)
 }
 
-func cmdRead() error {
+func cmdMmdbRead() error {
 	f := mmdbLib.CmdReadFlags{}
 	f.Init()
 	pflag.Parse()
-	if pflag.NArg() <= 2 {
+	if pflag.NArg() <= 2 && pflag.NFlag() == 0 {
 		f.Help = true
 	}
 
-	return mmdbLib.CmdRead(f, pflag.Args()[2:], printHelpRead)
+	return mmdbLib.CmdRead(f, pflag.Args()[2:], printHelpMmdbRead)
 }

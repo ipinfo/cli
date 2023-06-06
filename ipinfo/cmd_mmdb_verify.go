@@ -9,16 +9,16 @@ import (
 	"github.com/spf13/pflag"
 )
 
-var completionsVerify = &complete.Command{
+var completionsMmdbVerify = &complete.Command{
 	Flags: map[string]complete.Predictor{
 		"-h":     predict.Nothing,
 		"--help": predict.Nothing,
 	},
 }
 
-func printHelpVerify() {
+func printHelpMmdbVerify() {
 	fmt.Printf(
-		`Usage: %s mmdbctl verify [<opts>] <mmdb_file>
+		`Usage: %s mmdb verify [<opts>] <mmdb_file>
 
 Options:
   General:
@@ -27,13 +27,13 @@ Options:
 `, progBase)
 }
 
-func cmdVerify() error {
+func cmdMmdbVerify() error {
 	f := lib.CmdVerifyFlags{}
 	f.Init()
 	pflag.Parse()
-	if pflag.NArg() <= 2 {
+	if pflag.NArg() <= 2 && pflag.NFlag() == 0 {
 		f.Help = true
 	}
 
-	return lib.CmdVerify(f, pflag.Args()[2:], printHelpVerify)
+	return lib.CmdVerify(f, pflag.Args()[2:], printHelpMmdbVerify)
 }
