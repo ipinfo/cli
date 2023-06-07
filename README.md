@@ -201,7 +201,7 @@ Currently these subcommands are separately shipped:
 | range2ip   | [1.0.0](https://github.com/ipinfo/cli/releases/tag/range2ip-1.0.0) |
 | randip     | [1.1.0](https://github.com/ipinfo/cli/releases/tag/randip-1.1.0) |
 | splitcidr  | [1.0.0](https://github.com/ipinfo/cli/releases/tag/splitcidr-1.0.0) |
-| mmdb       | [1.0.0](https://github.com/ipinfo/cli/releases/tag/mmdb-1.0.0) |
+| mmdb       | [1.0.0](https://github.com/ipinfo/mmdbctl/releases/tag/mmdbctl-1.3.0) |
 
 ## Quick Start
 

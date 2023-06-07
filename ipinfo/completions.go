@@ -22,6 +22,7 @@ var completions = &complete.Command{
 		"range2ip":   completionsRange2IP,
 		"randip":     completionsRandIP,
 		"splitcidr":  completionsSplitCIDR,
+		"mmdb":       completionsMmdb,
 		"download":   completionsDownload,
 		"cache":      completionsCache,
 		"quota":      completionsQuota,
@@ -30,7 +31,6 @@ var completions = &complete.Command{
 		"config":     completionsConfig,
 		"completion": completionsCompletion,
 		"version":    completionsVersion,
-		"mmdb":       completionsMmdb,
 	},
 	Flags: map[string]complete.Predictor{
 		"-v":        predict.Nothing,
