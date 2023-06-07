@@ -72,6 +72,8 @@ Options:
       output pretty format. (default)
     --json, -j
       output JSON format.
+    --yaml, -y
+      output YAML format.
 `, progBase)
 }
 
@@ -80,11 +82,13 @@ func cmdSum() (err error) {
 	var fTok string
 	var fPretty bool
 	var fJSON bool
+	var fYAML bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.BoolVarP(&fPretty, "pretty", "p", true, "output pretty format. (default)")
 	pflag.BoolVarP(&fJSON, "json", "j", false, "output JSON format.")
+	pflag.BoolVarP(&fJSON, "yaml", "y", false, "output YAML format.")
 	pflag.BoolVar(&fNoColor, "nocolor", false, "disable color output.")
 	pflag.Parse()
 
@@ -114,6 +118,9 @@ func cmdSum() (err error) {
 
 	if fJSON {
 		return outputJSON(d)
+	}
+	if fYAML {
+		return outputYAML(d)
 	}
 
 	// print pretty.

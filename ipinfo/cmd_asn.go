@@ -55,6 +55,8 @@ Options:
   Formats:
     --json, -j
       output JSON format. (default)
+    --yaml, -y
+      output YAML format.
 `, progBase, asn)
 }
 
@@ -62,12 +64,14 @@ func cmdASN(asn string) error {
 	var fTok string
 	var fField []string
 	var fJSON bool
+	var fYAML bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
 	pflag.BoolVar(&fNoCache, "nocache", false, "disable the cache.")
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.StringSliceVarP(&fField, "field", "f", nil, "specific field to lookup.")
 	pflag.BoolVarP(&fJSON, "json", "j", true, "output JSON format. (default)")
+	pflag.BoolVarP(&fYAML, "yaml", "y", false, "output YAML format.")
 	pflag.BoolVar(&fNoColor, "nocolor", false, "disable color output.")
 	pflag.Parse()
 
@@ -100,6 +104,9 @@ func cmdASN(asn string) error {
 		d := make(ipinfo.BatchASNDetails, 1)
 		d[data.ASN] = data
 		return outputFieldBatchASNDetails(d, fField, false, false)
+	}
+	if fYAML {
+		return outputYAML(data)
 	}
 
 	return outputJSON(data)

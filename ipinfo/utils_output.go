@@ -12,6 +12,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/jszwec/csvutil"
+	"gopkg.in/yaml.v3"
 )
 
 var coreFields = []string{
@@ -105,6 +106,11 @@ func encodeToCsvLine(i interface{}) string {
 		end = 0
 	}
 	return encodedStr[:end]
+}
+
+func outputYAML(d interface{}) error {
+	yamlEnc := yaml.NewEncoder(os.Stdout)
+	return yamlEnc.Encode(d)
 }
 
 func outputJSON(d interface{}) error {

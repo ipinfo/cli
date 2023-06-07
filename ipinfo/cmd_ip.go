@@ -58,6 +58,8 @@ Options:
       output JSON format.
     --csv, -c
       output CSV format.
+    --yaml, -y
+      output YAML format.
 `, progBase, ipStr)
 }
 
@@ -68,6 +70,7 @@ func cmdIP(ipStr string) error {
 	var fPretty bool
 	var fJSON bool
 	var fCSV bool
+	var fYAML bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
 	pflag.BoolVar(&fNoCache, "nocache", false, "disable the cache.")
@@ -76,6 +79,7 @@ func cmdIP(ipStr string) error {
 	pflag.BoolVarP(&fPretty, "pretty", "p", true, "output pretty format.")
 	pflag.BoolVarP(&fJSON, "json", "j", false, "output JSON format.")
 	pflag.BoolVarP(&fCSV, "csv", "c", false, "output CSV format.")
+	pflag.BoolVarP(&fYAML, "yaml", "y", false, "output YAML format.")
 	pflag.BoolVar(&fNoColor, "nocolor", false, "disable color output.")
 	pflag.Parse()
 
@@ -105,6 +109,9 @@ func cmdIP(ipStr string) error {
 	}
 	if fCSV {
 		return outputCSV(data)
+	}
+	if fYAML {
+		return outputYAML(data)
 	}
 
 	outputFriendlyCore(data)
