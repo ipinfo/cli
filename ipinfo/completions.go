@@ -22,6 +22,7 @@ var completions = &complete.Command{
 		"range2ip":   completionsRange2IP,
 		"randip":     completionsRandIP,
 		"splitcidr":  completionsSplitCIDR,
+		"mmdb":       completionsMmdb,
 		"download":   completionsDownload,
 		"cache":      completionsCache,
 		"quota":      completionsQuota,
