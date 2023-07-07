@@ -1,56 +1,81 @@
 # github.com/davecgh/go-spew v1.1.1
 ## explicit
 github.com/davecgh/go-spew/spew
-# github.com/fatih/color v1.10.0
-## explicit
+# github.com/fatih/color v1.13.0
+## explicit; go 1.13
 github.com/fatih/color
 # github.com/hashicorp/errwrap v1.1.0
 ## explicit
 github.com/hashicorp/errwrap
 # github.com/hashicorp/go-multierror v1.1.1
-## explicit
+## explicit; go 1.13
 github.com/hashicorp/go-multierror
 # github.com/ipinfo/go/v2 v2.9.2
-## explicit
+## explicit; go 1.15
 github.com/ipinfo/go/v2/ipinfo
 github.com/ipinfo/go/v2/ipinfo/cache
+# github.com/ipinfo/mmdbctl v0.0.0-20230605073329-ce5a017c8886
+## explicit; go 1.17
+github.com/ipinfo/mmdbctl/lib
 # github.com/jszwec/csvutil v1.4.0
-## explicit
+## explicit; go 1.13
 github.com/jszwec/csvutil
-# github.com/mattn/go-colorable v0.1.8
+# github.com/mattn/go-colorable v0.1.9
+## explicit; go 1.13
 github.com/mattn/go-colorable
-# github.com/mattn/go-isatty v0.0.12
+# github.com/mattn/go-isatty v0.0.14
+## explicit; go 1.12
 github.com/mattn/go-isatty
+# github.com/maxmind/mmdbwriter v0.0.0-20220808142708-766ad8188582
+## explicit; go 1.17
+github.com/maxmind/mmdbwriter
+github.com/maxmind/mmdbwriter/inserter
+github.com/maxmind/mmdbwriter/mmdbtype
+# github.com/oschwald/maxminddb-golang v1.10.0
+## explicit; go 1.18
+github.com/oschwald/maxminddb-golang
 # github.com/patrickmn/go-cache v2.1.0+incompatible
+## explicit
 github.com/patrickmn/go-cache
 # github.com/pkg/browser v0.0.0-20210115035449-ce105d075bb4
-## explicit
+## explicit; go 1.14
 github.com/pkg/browser
 # github.com/pmezard/go-difflib v1.0.0
+## explicit
 github.com/pmezard/go-difflib/difflib
 # github.com/posener/script v1.1.5
-## explicit
+## explicit; go 1.13
 github.com/posener/script
 # github.com/spf13/pflag v1.0.5
-## explicit
+## explicit; go 1.12
 github.com/spf13/pflag
-# github.com/stretchr/testify v1.7.0
-## explicit
+# github.com/stretchr/testify v1.8.0
+## explicit; go 1.13
 github.com/stretchr/testify/assert
 # go.etcd.io/bbolt v1.3.6
-## explicit
+## explicit; go 1.12
 go.etcd.io/bbolt
+# go4.org/intern v0.0.0-20220617035311-6925f38cc365
+## explicit; go 1.13
+go4.org/intern
+# go4.org/unsafe/assume-no-moving-gc v0.0.0-20230525183740-e7c30c78aeb2
+## explicit; go 1.11
+go4.org/unsafe/assume-no-moving-gc
 # golang.org/x/sync v0.0.0-20220513210516-0976fa681c29
-golang.org/x/sync/errgroup
-# golang.org/x/sys v0.0.0-20211004093028-2c5d950f24ef
 ## explicit
+golang.org/x/sync/errgroup
+# golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab
+## explicit; go 1.17
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
 # golang.org/x/term v0.0.0-20201210144234-2321bbc49cbf
-## explicit
+## explicit; go 1.11
 golang.org/x/term
-# gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
+# gopkg.in/yaml.v3 v3.0.1
 ## explicit
 gopkg.in/yaml.v3
+# inet.af/netaddr v0.0.0-20220811202034-502d2d690317
+## explicit; go 1.12
+inet.af/netaddr
