@@ -93,13 +93,11 @@ func CmdToolAggregate(
 					}
 					continue
 				}
-				firstIP := ipRange[0]
-				lastIP := ipRange[1]
 
 				if strings.ContainsRune(rowStr, ':') {
-					cidrs, err := getCIDRFromIP6Range(firstIP, lastIP)
+					cidrs, err := CIDRsFromIP6RangeStrRaw(rowStr)
 					if err == nil {
-						parsedCIDRs = append(parsedCIDRs, parseCIDRs([]string{cidrs})...)
+						parsedCIDRs = append(parsedCIDRs, parseCIDRs(cidrs)...)
 						continue
 					} else {
 						if !f.Quiet {
@@ -108,9 +106,9 @@ func CmdToolAggregate(
 						continue
 					}
 				} else {
-					cidrs, err := getCIDRFromIP4Range(firstIP, lastIP)
+					cidrs, err := CIDRsFromIPRangeStrRaw(rowStr)
 					if err == nil {
-						parsedCIDRs = append(parsedCIDRs, parseCIDRs([]string{cidrs})...)
+						parsedCIDRs = append(parsedCIDRs, parseCIDRs(cidrs)...)
 						continue
 					} else {
 						if !f.Quiet {
