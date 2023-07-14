@@ -30,8 +30,9 @@ Commands:
   range2cidr  convert IP ranges to CIDRs.
   range2ip    convert IP ranges to individual IPs within those ranges.
   randip      Generates random IPs.
-  splitcidr   splits a larger CIDR into smaller CIDRs. 
+  splitcidr   splits a larger CIDR into smaller CIDRs.
   mmdb        read, import and export mmdb files.
+  tool        misc. tools related to IPs, IP ranges and CIDRs.
   download    download free ipinfo database files.
   cache       manage the cache.
   config      manage the config.

@@ -20,37 +20,40 @@ var completionsToolAggregate = &complete.Command{
 
 func printHelpToolAggregate() {
 	fmt.Printf(
-		`Usage: %s aggregate [<opts>] <cidr | filepath>
+		`Usage: %s tool aggregate [<opts>] <cidr | IP | IP range | filepath>
 
 Description:
   Accepts IPs, IP ranges, and CIDRs, aggregating them efficiently.
-  Input can be IPs, IP ranges, CIDRs, and/or a filepath containing
-  any of these. Works for both IPv4 and IPv6.
+  Input can be IPs, IP ranges, CIDRs, and/or filepath to a file
+  containing any of these. Works for both IPv4 and IPv6.
 
   If input contains single IPs, it tries to merge them into the input CIDRs,
-  otherwise they are printed to the output as it is.
+  otherwise they are printed to the output as they are.
 
   IP range can be of format <start-ip><SEP><end-ip>, where <SEP> can either
   be a ',' or a '-'.
 
 Examples:
   # Aggregate two CIDRs.
-  $ %[1]s aggregate 1.1.1.0/30 1.1.1.0/28
+  $ %[1]s tool aggregate 1.1.1.0/30 1.1.1.0/28
+
+  # Aggregate IP range and CIDR.
+  $ %[1]s tool aggregate 1.1.1.0-1.1.1.244 1.1.1.0/28
 
   # Aggregate enteries from 2 files.
-  $ %[1]s aggregate /path/to/file1.txt /path/to/file2.txt
+  $ %[1]s tool aggregate /path/to/file1.txt /path/to/file2.txt
 
   # Aggregate enteries from stdin.
-  $ cat /path/to/file1.txt | %[1]s aggregate
+  $ cat /path/to/file1.txt | %[1]s tool aggregate
 
   # Aggregate enteries from stdin and a file.
-  $ cat /path/to/file1.txt | %[1]s aggregate /path/to/file2.txt
+  $ cat /path/to/file1.txt | %[1]s tool aggregate /path/to/file2.txt
 
 Options:
   --help, -h
     show help.
   --quiet, -q
-	quiet mode; suppress additional output.
+    quiet mode; suppress additional output.
 `, progBase)
 }
 

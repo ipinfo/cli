@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/spf13/pflag"
@@ -29,7 +28,6 @@ Commands:
   aggregate    aggregate IPs, IP ranges, and CIDRs.
 
 Options:
-  General:
     --help, -h
       show help.
 `, progBase)
@@ -37,19 +35,13 @@ Options:
 
 func toolHelp() (err error) {
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
-	pflag.BoolVar(&fNoColor, "nocolor", false, "disable colored output.")
 	pflag.Parse()
 
-	if fNoColor {
-		color.NoColor = true
-	}
-
 	if fHelp {
-		printHelpDefault()
+		printHelpTool()
 		return nil
 	}
 
-	// currently we do nothing by default.
 	printHelpTool()
 	return nil
 }
