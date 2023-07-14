@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"math/big"
 	"net"
 	"os"
 	"sort"
@@ -217,62 +216,6 @@ func CmdToolAggregate(
 	}
 
 	return nil
-}
-
-// Helper function to get CIDR from an IPv6 IP range.
-func getCIDRFromIP6Range(firstIP string, lastIP string) (string, error) {
-	startIP := net.ParseIP(strings.TrimSpace(firstIP))
-	endIP := net.ParseIP(strings.TrimSpace(lastIP))
-
-	if startIP == nil || endIP == nil {
-		return "", fmt.Errorf("invalid IP address")
-	}
-
-	// Convert the IP addresses to big.Int
-	start := big.NewInt(0).SetBytes(startIP)
-	end := big.NewInt(0).SetBytes(endIP)
-
-	if start.Cmp(end) > 0 {
-		return "", fmt.Errorf("start IP must be less than or equal to end IP")
-	}
-
-	// Calculate the number of host bits required
-	numHosts := big.NewInt(0).Sub(end, start)
-	numHosts.Add(numHosts, big.NewInt(1))
-	numBits := 128 - numHosts.BitLen()
-
-	// Calculate the CIDR notation
-	ip := startIP.String()
-	cidr := fmt.Sprintf("%s/%d", ip, numBits)
-
-	return cidr, nil
-}
-
-// Helper function to get CIDR from an IPv4 IP range.
-func getCIDRFromIP4Range(firstIP string, lastIP string) (string, error) {
-	startIP := net.ParseIP(strings.TrimSpace(firstIP))
-	endIP := net.ParseIP(strings.TrimSpace(lastIP))
-
-	if startIP == nil || endIP == nil {
-		return "", fmt.Errorf("invalid IP address")
-	}
-
-	// Convert IP addresses to big integers
-	start := big.NewInt(0)
-	start.SetBytes(startIP.To4())
-	end := big.NewInt(0)
-	end.SetBytes(endIP.To4())
-
-	// Calculate the subnet mask length
-	mask := big.NewInt(0)
-	mask.Sub(end, start)
-	mask.Add(mask, big.NewInt(1))
-	maskLen := mask.BitLen()
-
-	// Format CIDR notation
-	cidr := fmt.Sprintf("%s/%d", startIP.String(), 32-maskLen)
-
-	return cidr, nil
 }
 
 // Helper function to aggregate IP ranges.
