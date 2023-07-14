@@ -56,9 +56,9 @@ func CmdToolAggregate(
 		return nil
 	}
 
-	// Aggregates a list of CIDRs.
-	aggregateCIDRs := func(cidrs []string) []net.IPNet {
-		ipRanges := make([]net.IPNet, 0)
+	// Parses a list of CIDRs.
+	parseCIDRs := func(cidrs []string) []net.IPNet {
+		parsedCIDRs := make([]net.IPNet, 0)
 		for _, cidrStr := range cidrs {
 			_, ipNet, err := net.ParseCIDR(cidrStr)
 			if err != nil {
@@ -67,10 +67,10 @@ func CmdToolAggregate(
 				}
 				continue
 			}
-			ipRanges = append(ipRanges, *ipNet)
+			parsedCIDRs = append(parsedCIDRs, *ipNet)
 		}
 
-		return ipRanges
+		return parsedCIDRs
 	}
 
 	// Input parser.
@@ -99,7 +99,7 @@ func CmdToolAggregate(
 				if strings.ContainsRune(rowStr, ':') {
 					cidrs, err := getCIDRFromIP6Range(firstIP, lastIP)
 					if err == nil {
-						parsedCIDRs = append(parsedCIDRs, aggregateCIDRs([]string{cidrs})...)
+						parsedCIDRs = append(parsedCIDRs, parseCIDRs([]string{cidrs})...)
 						continue
 					} else {
 						if !f.Quiet {
@@ -110,7 +110,7 @@ func CmdToolAggregate(
 				} else {
 					cidrs, err := getCIDRFromIP4Range(firstIP, lastIP)
 					if err == nil {
-						parsedCIDRs = append(parsedCIDRs, aggregateCIDRs([]string{cidrs})...)
+						parsedCIDRs = append(parsedCIDRs, parseCIDRs([]string{cidrs})...)
 						continue
 					} else {
 						if !f.Quiet {
@@ -120,7 +120,7 @@ func CmdToolAggregate(
 					}
 				}
 			} else if strings.ContainsRune(rowStr, '/') {
-				parsedCIDRs = append(parsedCIDRs, aggregateCIDRs([]string{rowStr})...)
+				parsedCIDRs = append(parsedCIDRs, parseCIDRs([]string{rowStr})...)
 				continue
 			} else {
 				if ip := net.ParseIP(rowStr); ip != nil {
@@ -149,7 +149,7 @@ func CmdToolAggregate(
 				}
 			} else if err != nil {
 				if !f.Quiet {
-					fmt.Printf("Error: %v len d:%v\n", err, len(d))
+					fmt.Printf("Scan error: %v\n", err)
 				}
 				return rows
 			}
@@ -167,17 +167,17 @@ func CmdToolAggregate(
 		return rows
 	}
 
-	// Aggregate CIDRs from all sources.
+	// Vars to contain CIDRs/IPs from all input sources.
 	parsedCIDRs := make([]net.IPNet, 0)
 	parsedIPs := make([]net.IP, 0)
 
-	// Aggregate CIDRs from stdin.
+	// Collect CIDRs/IPs from stdin.
 	if isStdin {
 		rows := scanrdr(os.Stdin)
 		parsedCIDRs, parsedIPs = parseInput(rows)
 	}
 
-	// Aggregate CIDRs from all args.
+	// Collect CIDRs/IPs from all args.
 	for _, arg := range args {
 		file, err := os.Open(arg)
 		if err != nil {
@@ -194,8 +194,8 @@ func CmdToolAggregate(
 		parsedIPs = append(parsedIPs, ips...)
 	}
 
-	// Sort and merge aggregated CIDRs and IPs.
-	aggregatedCIDRs := aggregateIPRanges(parsedCIDRs)
+	// Sort and merge collected CIDRs and IPs.
+	aggregatedCIDRs := aggregateCIDRs(parsedCIDRs)
 	outlierIPs := make([]net.IP, 0)
 	length := len(aggregatedCIDRs)
 	for _, ip := range parsedIPs {
@@ -221,6 +221,7 @@ func CmdToolAggregate(
 	return nil
 }
 
+// Helper function to get CIDR from an IPv6 IP range.
 func getCIDRFromIP6Range(firstIP string, lastIP string) (string, error) {
 	startIP := net.ParseIP(strings.TrimSpace(firstIP))
 	endIP := net.ParseIP(strings.TrimSpace(lastIP))
@@ -249,6 +250,7 @@ func getCIDRFromIP6Range(firstIP string, lastIP string) (string, error) {
 	return cidr, nil
 }
 
+// Helper function to get CIDR from an IPv4 IP range.
 func getCIDRFromIP4Range(firstIP string, lastIP string) (string, error) {
 	startIP := net.ParseIP(strings.TrimSpace(firstIP))
 	endIP := net.ParseIP(strings.TrimSpace(lastIP))
@@ -276,46 +278,46 @@ func getCIDRFromIP4Range(firstIP string, lastIP string) (string, error) {
 }
 
 // Helper function to aggregate IP ranges.
-func aggregateIPRanges(ipRanges []net.IPNet) []net.IPNet {
-	aggregatedRanges := make([]net.IPNet, 0)
+func aggregateCIDRs(cidrs []net.IPNet) []net.IPNet {
+	aggregatedCIDRs := make([]net.IPNet, 0)
 
-	// Sort IP ranges by starting IP.
-	sortIPRanges(ipRanges)
+	// Sort CIDRs by starting IP.
+	sortCIDRs(cidrs)
 
-	for _, r := range ipRanges {
-		if len(aggregatedRanges) == 0 {
-			aggregatedRanges = append(aggregatedRanges, r)
+	for _, r := range cidrs {
+		if len(aggregatedCIDRs) == 0 {
+			aggregatedCIDRs = append(aggregatedCIDRs, r)
 			continue
 		}
 
-		last := len(aggregatedRanges) - 1
-		prev := aggregatedRanges[last]
+		last := len(aggregatedCIDRs) - 1
+		prev := aggregatedCIDRs[last]
 
 		if canAggregate(prev, r) {
-			// Merge overlapping IP ranges.
-			aggregatedRanges[last] = aggregateIPRange(prev, r)
+			// Merge overlapping CIDRs.
+			aggregatedCIDRs[last] = aggregateCIDR(prev, r)
 		} else {
-			aggregatedRanges = append(aggregatedRanges, r)
+			aggregatedCIDRs = append(aggregatedCIDRs, r)
 		}
 	}
 
-	return aggregatedRanges
+	return aggregatedCIDRs
 }
 
 // Helper function to sort IP ranges by starting IP.
-func sortIPRanges(ipRanges []net.IPNet) {
+func sortCIDRs(ipRanges []net.IPNet) {
 	sort.SliceStable(ipRanges, func(i, j int) bool {
 		return bytes.Compare(ipRanges[i].IP, ipRanges[j].IP) < 0
 	})
 }
 
-// Helper function to check if two IP ranges can be aggregated.
+// Helper function to check if two CIDRs can be aggregated.
 func canAggregate(r1, r2 net.IPNet) bool {
 	return r1.Contains(r2.IP) || r2.Contains(r1.IP)
 }
 
-// Helper function to aggregate two IP ranges.
-func aggregateIPRange(r1, r2 net.IPNet) net.IPNet {
+// Helper function to aggregate two CIDRs.
+func aggregateCIDR(r1, r2 net.IPNet) net.IPNet {
 	mask1, _ := r1.Mask.Size()
 	mask2, _ := r2.Mask.Size()
 
