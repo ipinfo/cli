@@ -11,7 +11,7 @@ import (
 )
 
 var progBase = filepath.Base(os.Args[0])
-var version = "2.10.1"
+var version = "2.10.2"
 
 // global flags.
 var fHelp bool
@@ -69,6 +69,8 @@ func main() {
 		err = cmdMmdb()
 	case cmd == "download":
 		err = cmdDownload()
+	case cmd == "tool":
+		err = cmdTool()
 	case cmd == "cache":
 		err = cmdCache()
 	case cmd == "config":
