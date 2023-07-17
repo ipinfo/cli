@@ -28,8 +28,8 @@ Commands:
   aggregate    aggregate IPs, IP ranges, and CIDRs.
 
 Options:
-    --help, -h
-      show help.
+  --help, -h
+    show help.
 `, progBase)
 }
 

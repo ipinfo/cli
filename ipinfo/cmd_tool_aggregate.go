@@ -20,7 +20,7 @@ var completionsToolAggregate = &complete.Command{
 
 func printHelpToolAggregate() {
 	fmt.Printf(
-		`Usage: %s tool aggregate [<opts>] <cidr | IP | IP range | filepath>
+		`Usage: %s tool aggregate [<opts>] <cidr | ip | ip-range | filepath>
 
 Description:
   Accepts IPs, IP ranges, and CIDRs, aggregating them efficiently.
