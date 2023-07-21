@@ -24,7 +24,7 @@ brew install ipinfo-cli
 OR to install the latest `amd64` version without automatic updates:
 
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.10.1/macos.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-3.0.0/macos.sh | sh
 ```
 
 ### Ubuntu PPA
@@ -43,14 +43,14 @@ sudo apt install ipinfo
 for automatic updates.
 
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-2.10.1/deb.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-3.0.0/deb.sh | sh
 ```
 
 OR
 
 ```bash
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.10.1/ipinfo_2.10.1.deb
-sudo dpkg -i ipinfo_2.10.1.deb
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-3.0.0/ipinfo_3.0.0.deb
+sudo dpkg -i ipinfo_3.0.0.deb
 ```
 
 ### FreeBSD
@@ -71,7 +71,7 @@ makepkg -si
 *Note*: run powershell as administrator before executing this command.
 
 ```bash
-iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-2.10.1/windows.ps1 | iex
+iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-3.0.0/windows.ps1 | iex
 ```
 
 ### Scoop
@@ -83,7 +83,7 @@ scoop install ipinfo-cli
 ### Docker
 
 ```bash
-docker run --rm -it ipinfo/ipinfo:2.10.1
+docker run --rm -it ipinfo/ipinfo:3.0.0
 ```
 
 To save the CLI's config, add `-v "/path_to_config:/root/.config/ipinfo"`. For
@@ -91,7 +91,7 @@ example, the following command saves the config to the `ipinfo` directory in
 the current working directory.
 
 ```bash
-docker run --rm -it -v "$PWD/ipinfo:/root/.config/ipinfo" ipinfo/ipinfo:2.10.1
+docker run --rm -it -v "$PWD/ipinfo:/root/.config/ipinfo" ipinfo/ipinfo:3.0.0
 ```
 
 ### Using `go install`
@@ -142,12 +142,12 @@ After choosing a platform `PLAT` from above, run:
 
 ```bash
 # for Windows, use ".zip" instead of ".tar.gz"
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-2.10.1/ipinfo_2.10.1_${PLAT}.tar.gz
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-3.0.0/ipinfo_3.0.0_${PLAT}.tar.gz
 # OR
-wget https://github.com/ipinfo/cli/releases/download/ipinfo-2.10.1/ipinfo_2.10.1_${PLAT}.tar.gz
+wget https://github.com/ipinfo/cli/releases/download/ipinfo-3.0.0/ipinfo_3.0.0_${PLAT}.tar.gz
 
-tar -xvf ipinfo_2.10.1_${PLAT}.tar.gz
-mv ipinfo_2.10.1_${PLAT} /usr/local/bin/ipinfo
+tar -xvf ipinfo_3.0.0_${PLAT}.tar.gz
+mv ipinfo_3.0.0_${PLAT} /usr/local/bin/ipinfo
 ```
 
 ### Using `git`
