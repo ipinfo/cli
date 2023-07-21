@@ -12,7 +12,7 @@ import (
 )
 
 var progBase = filepath.Base(os.Args[0])
-var version = "1.2.1"
+var version = "1.2.2"
 
 func printHelp() {
 	fmt.Printf(
