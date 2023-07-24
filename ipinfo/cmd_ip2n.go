@@ -92,7 +92,6 @@ func cmdIP2n() error {
 	}
 
 	fmt.Println(res)
-
 	return nil
 }
 
