@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/fatih/color"
+	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/spf13/pflag"
@@ -60,7 +61,7 @@ func cmdCalc() error {
 
 	switch {
 	case cmd != "":
-		res, err = cmdCalcInfix()
+		res, err = lib.CmdCalcInfix()
 	default:
 		printHelpCalc()
 	}

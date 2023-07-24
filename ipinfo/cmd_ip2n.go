@@ -67,7 +67,7 @@ func cmdIP2n() error {
 		return nil
 	}
 
-	res, err = lib.CalcIP2n(cmd)
+	res, err = lib.IPtoDecimal(cmd)
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "err: %v\n", err)
