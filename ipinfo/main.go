@@ -65,6 +65,14 @@ func main() {
 		err = cmdRandIP()
 	case cmd == "splitcidr":
 		err = cmdSplitCIDR()
+	case cmd == "calc":
+		err = cmdCalc()
+	case cmd == "ip2n":
+		err = cmdIP2n()
+	case cmd == "n2ip":
+		err = cmdN2IP()
+	case cmd == "n2ip6":
+		err = cmdN2IP6()
 	case cmd == "mmdb":
 		err = cmdMmdb()
 	case cmd == "download":
