@@ -3,10 +3,10 @@ package main
 import (
 	"errors"
 	"fmt"
-	"math/big"
-	"net"
+	"github.com/ipinfo/cli/lib"
 	"os"
 	"strings"
+
 	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
@@ -79,12 +79,12 @@ func cmdN2IP() error {
 		return nil
 	}
 
-	if isInvalid(cmd) {
+	if lib.IsInvalid(cmd) {
 		return errors.New("invalid expression")
 	}
 
 	// Tokenize
-	tokens, err := tokeinzeExp(cmd)
+	tokens, err := lib.TokeinzeExp(cmd)
 
 	if err != nil {
 		return err
@@ -93,17 +93,17 @@ func cmdN2IP() error {
 	// Convert to postfix
 	// If it is a single number and not an expression
 	// The tokenization and evaluation would have no effect on the number
-	postfix := infixToPostfix(tokens)
+	postfix := lib.InfixToPostfix(tokens)
 
 	// Evaluate the postfix expression
-	result, err := evaluatePostfix(postfix)
+	result, err := lib.EvaluatePostfix(postfix)
 
 	if err != nil {
 		return err
 	}
 
 	// Convert to IP
-	res := decimalToIP(result.String(), forceIpv6)
+	res := lib.DecimalToIP(result.String(), forceIpv6)
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "err: %v\n", err)
@@ -113,28 +113,4 @@ func cmdN2IP() error {
 
 	fmt.Println(res)
 	return nil
-}
-
-func decimalToIP(decimal string, forceIPv6 bool) net.IP {
-	// Create a new big.Int with a value of 'decimal'
-	num := new(big.Int)
-	num, success := num.SetString(decimal, 10)
-	if !success {
-		fmt.Fprintf(os.Stderr, "Error parsing the decimal string: %v\n", success)
-		return nil
-	}
-
-	// Convert to IPv4 if not forcing IPv6 and 'num' is within the IPv4 range
-	if !forceIPv6 && num.Cmp(big.NewInt(4294967295)) <= 0 {
-		ip := make(net.IP, 4)
-		b := num.Bytes()
-		copy(ip[4-len(b):], b)
-		return ip
-	}
-
-	// Convert to IPv6
-	ip := make(net.IP, 16)
-	b := num.Bytes()
-	copy(ip[16-len(b):], b)
-	return ip
 }

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/fatih/color"
+	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/spf13/pflag"
@@ -67,22 +68,22 @@ func cmdN2IP6() error {
 		return nil
 	}
 
-	if isInvalid(cmd) {
+	if lib.IsInvalid(cmd) {
 		return errors.New("invalid expression")
 	}
-	tokens, err := tokeinzeExp(cmd)
+	tokens, err := lib.TokeinzeExp(cmd)
 	if err != nil {
 		return err
 	}
 
-	postfix := infixToPostfix(tokens)
+	postfix := lib.InfixToPostfix(tokens)
 
-	result, err := evaluatePostfix(postfix)
+	result, err := lib.EvaluatePostfix(postfix)
 	if err != nil {
 		return err
 	}
 
-	res := decimalToIP(result.String(), true)
+	res := lib.DecimalToIP(result.String(), true)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "err: %v\n", err)
 		printHelpN2IP6()

@@ -1,11 +1,9 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"net"
+	"github.com/ipinfo/cli/lib"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/fatih/color"
@@ -69,7 +67,7 @@ func cmdIP2n() error {
 		return nil
 	}
 
-	res, err = calcIP2n(cmd)
+	res, err = lib.CalcIP2n(cmd)
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "err: %v\n", err)
@@ -79,25 +77,4 @@ func cmdIP2n() error {
 
 	fmt.Println(res)
 	return nil
-}
-
-func calcIP2n(strIP string) (string, error) {
-	if isIPv6Address(strIP) {
-		ip := net.ParseIP(strIP)
-		if ip == nil {
-			return "", errors.New("invalid IPv6 address: '" + strIP + "'")
-		}
-
-		decimalIP := IP6toInt(ip)
-		return decimalIP.String(), nil
-	}
-	if isIPv4Address(strIP) {
-		ip := net.ParseIP(strIP)
-		if ip == nil {
-			return "", errors.New("invalid IPv4 address: '" + strIP + "'")
-		}
-		return strconv.FormatInt(IP4toInt(ip), 10), nil
-	} else {
-		return "", errors.New("invalid IP address: '" + strIP + "'")
-	}
 }

@@ -1,4 +1,4 @@
-package main
+package lib
 
 import (
 	"errors"
@@ -66,69 +66,69 @@ func isFloat(str string) bool {
 	return regex.MatchString(str)
 }
 
-func infixToPostfix(infix []string) []string {
-	var sta Stack
+func InfixToPostfix(infix []string) []string {
+	var postfixStack Stack
 	var postfix []string
 
 	for _, token := range infix {
 		if isOperator(token) {
-			for !sta.IsEmpty() && prec(token) <= prec(sta.Top()) {
-				postfix = append(postfix, sta.Top())
-				sta.Pop()
+			for !postfixStack.IsEmpty() && prec(token) <= prec(postfixStack.Top()) {
+				postfix = append(postfix, postfixStack.Top())
+				postfixStack.Pop()
 			}
-			sta.Push(token)
+			postfixStack.Push(token)
 		} else if token == "(" {
-			sta.Push(token)
+			postfixStack.Push(token)
 		} else if token == ")" {
-			for sta.Top() != "(" {
-				postfix = append(postfix, sta.Top())
-				sta.Pop()
+			for postfixStack.Top() != "(" {
+				postfix = append(postfix, postfixStack.Top())
+				postfixStack.Pop()
 			}
-			sta.Pop()
+			postfixStack.Pop()
 		} else {
 			postfix = append(postfix, token)
 		}
 	}
 	// Pop all the remaining elements from the stack
-	for !sta.IsEmpty() {
-		postfix = append(postfix, sta.Top())
-		sta.Pop()
+	for !postfixStack.IsEmpty() {
+		postfix = append(postfix, postfixStack.Top())
+		postfixStack.Pop()
 	}
 	return postfix
 }
 
-func evaluatePostfix(postfix []string) (*big.Float, error) {
-	var sta Stack
+func EvaluatePostfix(postfix []string) (*big.Float, error) {
+	var postfixStack Stack
 	for _, el := range postfix {
 		// if operand, push it onto the stack.
 		if el == "" {
 			continue
 		}
-		if isFloat(el) || isIPv4Address(el) || isIPv6Address(el) {
-			sta.Push(el)
+		if isFloat(el) || IsIPv4Address(el) || IsIPv6Address(el) {
+			postfixStack.Push(el)
 			continue
 		}
 
 		// if operator pop two elements off of the stack.
 		var num1 big.Float
-		strNum1 := sta.Top()
+		strNum1 := postfixStack.Top()
 		_, success := num1.SetString(strNum1)
 
 		if !success {
 			fmt.Println("Error: Failed to convert the num1 to big.Int")
 			return big.NewFloat(0), nil
 		}
-		sta.Pop()
+		postfixStack.Pop()
 
 		var num2 big.Float
-		strNum2 := sta.Top()
+		strNum2 := postfixStack.Top()
 		_, success = num2.SetString(strNum2)
 
 		if !success {
 			fmt.Println("Error: Failed to convert the num2 to big.Int:", strNum2)
 			return big.NewFloat(0), nil
 		}
-		sta.Pop()
+		postfixStack.Pop()
 		operator := el
 		result := new(big.Float)
 
@@ -148,10 +148,10 @@ func evaluatePostfix(postfix []string) (*big.Float, error) {
 			result = new(big.Float).Quo(&num2, &num1)
 
 		case operator == "^":
-			result1, _ := num1.Float64()
-			result2, _ := num2.Float64()
+			num1F64, _ := num1.Float64()
+			num2F64, _ := num2.Float64()
 
-			res := math.Pow(result2, result1)
+			res := math.Pow(num1F64, num2F64)
 			result = new(big.Float).SetPrec(64).SetFloat64(res)
 
 		default:
@@ -159,11 +159,11 @@ func evaluatePostfix(postfix []string) (*big.Float, error) {
 		}
 
 		strResult := result.String()
-		sta.Push(strResult)
+		postfixStack.Push(strResult)
 	}
 
-	strTop := sta.Top()
-	sta.Pop()
+	strTop := postfixStack.Top()
+	postfixStack.Pop()
 
 	var top = new(big.Float)
 	_, success := top.SetString(strTop)
@@ -190,7 +190,7 @@ func translateToken(tempToken string, tokens []string) ([]string, error) {
 
 	if isFloat(tempToken) {
 		tokens = append(tokens, tempToken)
-	} else if isIPv4Address(tempToken) {
+	} else if IsIPv4Address(tempToken) {
 		// convert ipv4 to decimal then append to tokens
 		ip := net.ParseIP(tempToken)
 		if ip == nil {
@@ -200,7 +200,7 @@ func translateToken(tempToken string, tokens []string) ([]string, error) {
 		res := strconv.FormatInt(decimalIP, 10)
 		tokens = append(tokens, res)
 
-	} else if isIPv6Address(tempToken) {
+	} else if IsIPv6Address(tempToken) {
 		ip := net.ParseIP(tempToken)
 		if ip == nil {
 			fmt.Println("Invalid IPv6 address")
@@ -214,7 +214,7 @@ func translateToken(tempToken string, tokens []string) ([]string, error) {
 	return tokens, err
 }
 
-func tokeinzeExp(expression string) ([]string, error) {
+func TokeinzeExp(expression string) ([]string, error) {
 	var tokens []string
 	var err error
 
@@ -248,7 +248,7 @@ func IP4toInt(IPv4Address net.IP) int64 {
 	return IPv4Int.Int64()
 }
 
-func isIPv4Address(expression string) bool {
+func IsIPv4Address(expression string) bool {
 	// Define the regular expression pattern for matching IPv4 addresses
 	ipV4Pattern := `^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$`
 
@@ -259,7 +259,7 @@ func isIPv4Address(expression string) bool {
 	return ipV4Regex.MatchString(expression)
 }
 
-func isIPv6Address(expression string) bool {
+func IsIPv6Address(expression string) bool {
 	// Define the regular expression pattern for matching IPv6 addresses
 	ipV6Pattern := `^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$`
 
@@ -270,7 +270,7 @@ func isIPv6Address(expression string) bool {
 	return ipV6Regex.MatchString(expression)
 }
 
-func isInvalid(expression string) bool {
+func IsInvalid(expression string) bool {
 	validChars := `^[0-9:\.\+\-\*\^\(\)\/ ]*$`
 	validCharsRegx := regexp.MustCompile(validChars)
 
@@ -304,40 +304,40 @@ func isInvalid(expression string) bool {
 
 // Function to check if parentheses are balanced
 func isBalanced(input string) bool {
-	var sta Stack
+	var postfixStack Stack
 	for _, char := range input {
 		if char == '(' {
-			sta.Push("(")
+			postfixStack.Push("(")
 		} else if char == ')' {
-			if sta.IsEmpty() {
+			if postfixStack.IsEmpty() {
 				return false
 			}
-			sta.Pop()
+			postfixStack.Pop()
 		}
 	}
-	return sta.IsEmpty()
+	return postfixStack.IsEmpty()
 }
 
-func cmdCalcInfix() (string, error) {
+func CmdCalcInfix() (string, error) {
 	// infix := "2+3*(2^3-5)^(2+1*2)-4"
 	cmd := ""
 	if len(os.Args) > 2 {
 		cmd = os.Args[2]
 	}
 
-	if isInvalid(cmd) {
+	if IsInvalid(cmd) {
 		return "", errors.New("invalid expression")
 	}
 
-	tokens, err := tokeinzeExp(cmd)
+	tokens, err := TokeinzeExp(cmd)
 
 	if err != nil {
 		return "", err
 	}
 
-	postfix := infixToPostfix(tokens)
+	postfix := InfixToPostfix(tokens)
 
-	result, err := evaluatePostfix(postfix)
+	result, err := EvaluatePostfix(postfix)
 
 	if err != nil {
 		return "", err
