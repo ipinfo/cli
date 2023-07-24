@@ -79,6 +79,5 @@ func cmdCalc() error {
 	}
 
 	fmt.Println(res)
-
 	return nil
 }
