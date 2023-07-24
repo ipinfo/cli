@@ -300,7 +300,6 @@ func isInvalid(expression string) bool {
 	}
 
 	return !validCharsRegx.MatchString(expression) || !isBalanced(expression)
-
 }
 
 // Function to check if parentheses are balanced
