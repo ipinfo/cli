@@ -24,7 +24,6 @@ func printHelpCalc() {
 calc <expression>
   Evaluate a mathematical expression and print the result.
 
-  
 Example:
   %s calc "2*2828-1"
   %s calc "190.87.89.1*2"

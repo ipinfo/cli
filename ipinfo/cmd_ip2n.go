@@ -105,7 +105,7 @@ func calcIP2n(strIP string) (string, error) {
 			return "", errors.New("invalid IPv6 address: '" + strIP + "'")
 		}
 
-		decimalIP := IP6toSInt(ip)
+		decimalIP := IP6toInt(ip)
 		return decimalIP.String(), nil
 	}
 	if isIPv4Address(strIP) {

@@ -73,7 +73,6 @@ func infixToPostfix(infix []string) []string {
 	for _, token := range infix {
 		if isOperator(token) {
 			for !sta.IsEmpty() && prec(token) <= prec(sta.Top()) {
-				// postfix = postfix + sta.Top()
 				postfix = append(postfix, sta.Top())
 				sta.Pop()
 			}
@@ -82,19 +81,16 @@ func infixToPostfix(infix []string) []string {
 			sta.Push(token)
 		} else if token == ")" {
 			for sta.Top() != "(" {
-				// postfix = postfix + sta.Top()
 				postfix = append(postfix, sta.Top())
 				sta.Pop()
 			}
 			sta.Pop()
 		} else {
-			// postfix = postfix + token
 			postfix = append(postfix, token)
 		}
 	}
 	// Pop all the remaining elements from the stack
 	for !sta.IsEmpty() {
-		// postfix = postfix + sta.Top()
 		postfix = append(postfix, sta.Top())
 		sta.Pop()
 	}
@@ -104,7 +100,6 @@ func infixToPostfix(infix []string) []string {
 func evaluatePostfix(postfix []string) (*big.Float, error) {
 	var sta Stack
 	for _, el := range postfix {
-		//fmt.Println("stack:", sta)
 		// if operand, push it onto the stack.
 		if el == "" {
 			continue
@@ -114,11 +109,9 @@ func evaluatePostfix(postfix []string) (*big.Float, error) {
 			continue
 		}
 
-		// if operator
-		// pop two elements off of the stack.
+		// if operator pop two elements off of the stack.
 		var num1 big.Float
 		strNum1 := sta.Top()
-		//fmt.Println("strNum1:", strNum1)
 		_, success := num1.SetString(strNum1)
 
 		if !success {
@@ -129,7 +122,6 @@ func evaluatePostfix(postfix []string) (*big.Float, error) {
 
 		var num2 big.Float
 		strNum2 := sta.Top()
-		//fmt.Println("strNum2:", strNum2)
 		_, success = num2.SetString(strNum2)
 
 		if !success {
@@ -139,10 +131,7 @@ func evaluatePostfix(postfix []string) (*big.Float, error) {
 		sta.Pop()
 		operator := el
 
-		// Perform addition
 		result := new(big.Float)
-
-		// Convert the result back to a string
 
 		switch {
 		case operator == "+":
@@ -161,10 +150,6 @@ func evaluatePostfix(postfix []string) (*big.Float, error) {
 			result = new(big.Float).Quo(&num2, &num1)
 
 		case operator == "^":
-			//fmt.Println("Exponent")
-			// Using logs to calculate exponent
-			//logRes := new(big.Int)
-
 			result1, _ := num1.Float64()
 			result2, _ := num2.Float64()
 
@@ -177,8 +162,6 @@ func evaluatePostfix(postfix []string) (*big.Float, error) {
 
 		strResult := result.String()
 		sta.Push(strResult)
-
-		//fmt.Println(strNum1, operator, strNum2, " = ", strResult)
 	}
 
 	strTop := sta.Top()
@@ -199,16 +182,6 @@ func isOperator(token string) bool {
 	_, isOperator := operators[token]
 	return isOperator
 }
-
-//func isPostfix(expression string) bool {
-//	bytes := []byte(expression)
-//
-//	// Get the last character (last byte) from the slice
-//	lastChar := string(bytes[len(bytes)-1])
-//	return isOperator(lastChar)
-//}
-
-// fmt.Println("->", tempToken, " | char:", string(char))
 
 func translateToken(tempToken string, tokens []string) ([]string, error) {
 	var err error = nil
@@ -235,7 +208,7 @@ func translateToken(tempToken string, tokens []string) ([]string, error) {
 			fmt.Println("Invalid IPv6 address")
 			err = errors.New("invalid IPv6 address: '" + tempToken + "'")
 		}
-		decimalIP := IP6toSInt(ip)
+		decimalIP := IP6toInt(ip)
 		tokens = append(tokens, decimalIP.String())
 	} else {
 		err = errors.New("invalid expression")
@@ -250,7 +223,6 @@ func tokeinzeExp(expression string) ([]string, error) {
 	expression = "(" + expression + ")"
 	tempToken := ""
 	for _, char := range expression {
-		//fmt.Println("Is IPv6:", tempToken, isIPv6Address(tempToken))
 		opchar := string(char)
 		if isFloat(opchar) || opchar == "." || opchar == ":" {
 			tempToken = tempToken + opchar
@@ -267,7 +239,7 @@ func tokeinzeExp(expression string) ([]string, error) {
 	return tokens, nil
 }
 
-func IP6toSInt(IPv6Address net.IP) *big.Int {
+func IP6toInt(IPv6Address net.IP) *big.Int {
 	IPv6Int := big.NewInt(0)
 	IPv6Int.SetBytes(IPv6Address)
 	return IPv6Int
@@ -350,7 +322,7 @@ func isBalanced(input string) bool {
 }
 
 func cmdCalcInfix() (string, error) {
-	// infix := "2+3*(2^3-5)^(2+1*2)-4" //abcd^e-fgh*+^*+i-
+	// infix := "2+3*(2^3-5)^(2+1*2)-4"
 	cmd := ""
 	if len(os.Args) > 2 {
 		cmd = os.Args[2]
