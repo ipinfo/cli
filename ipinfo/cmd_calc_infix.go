@@ -130,14 +130,12 @@ func evaluatePostfix(postfix []string) (*big.Float, error) {
 		}
 		sta.Pop()
 		operator := el
-
 		result := new(big.Float)
 
 		switch {
 		case operator == "+":
 			//fmt.Println("Adding")
 			result = result.Add(&num2, &num1)
-
 		case operator == "-":
 			//fmt.Println("Subtracting")
 			result = result.Sub(&num2, &num1)
@@ -302,7 +300,6 @@ func isInvalid(expression string) bool {
 	}
 
 	return !validCharsRegx.MatchString(expression) || !isBalanced(expression)
-
 }
 
 // Function to check if parentheses are balanced

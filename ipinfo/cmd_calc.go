@@ -17,7 +17,6 @@ var completionsCalc = &complete.Command{
 }
 
 func printHelpCalc() {
-
 	fmt.Printf(
 		`Usage: %s calc <expression> [<opts>]
 
@@ -35,7 +34,7 @@ Options:
       disable colored output.
     --help, -h
       show help.
-`, progBase, progBase, progBase, progBase)
+`, progBase)
 }
 
 func calcHelp() (err error) {
@@ -52,7 +51,7 @@ func calcHelp() (err error) {
 		return nil
 	}
 
-	// currently we do nothing by default.
+	// Currently we do nothing by default.
 	printHelpCalc()
 	return nil
 }
@@ -80,6 +79,5 @@ func cmdCalc() error {
 	}
 
 	fmt.Println(res)
-
 	return nil
 }
