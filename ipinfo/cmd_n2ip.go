@@ -3,14 +3,13 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/ipinfo/cli/lib"
-	"os"
-	"strings"
-
 	"github.com/fatih/color"
+	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/spf13/pflag"
+	"os"
+	"strings"
 )
 
 var forceIpv6 bool
