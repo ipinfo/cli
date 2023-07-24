@@ -32,6 +32,10 @@ var completions = &complete.Command{
 		"config":     completionsConfig,
 		"completion": completionsCompletion,
 		"version":    completionsVersion,
+		"calc":       completionsCalc,
+		"ip2n":       completionsIP2n,
+		"n2ip":       completionsN2IP,
+		"n2ip6":      completionsN2IP6,
 	},
 	Flags: map[string]complete.Predictor{
 		"-v":        predict.Nothing,
