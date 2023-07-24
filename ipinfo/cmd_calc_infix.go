@@ -136,7 +136,6 @@ func evaluatePostfix(postfix []string) (*big.Float, error) {
 		case operator == "+":
 			//fmt.Println("Adding")
 			result = result.Add(&num2, &num1)
-
 		case operator == "-":
 			//fmt.Println("Subtracting")
 			result = result.Sub(&num2, &num1)
