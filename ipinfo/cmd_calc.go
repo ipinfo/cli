@@ -51,7 +51,7 @@ func calcHelp() (err error) {
 		return nil
 	}
 
-	// currently we do nothing by default.
+	// Currently we do nothing by default.
 	printHelpCalc()
 	return nil
 }
