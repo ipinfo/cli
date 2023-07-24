@@ -12,6 +12,8 @@ import (
 var completionsTool = &complete.Command{
 	Sub: map[string]*complete.Command{
 		"aggregate": completionsToolAggregate,
+		"lower":     completionsToolLower,
+		"upper":     completionsToolUpper,
 	},
 	Flags: map[string]complete.Predictor{
 		"-h":     predict.Nothing,
@@ -26,7 +28,8 @@ func printHelpTool() {
 
 Commands:
   aggregate    aggregate IPs, IP ranges, and CIDRs.
-
+  lower        lower IPs, IP ranges, and CIDRs.
+  upper        upper IPs, IP ranges, and CIDRs.
 Options:
   --help, -h
     show help.
@@ -56,6 +59,10 @@ func cmdTool() error {
 	switch {
 	case cmd == "aggregate":
 		err = cmdToolAggregate()
+	case cmd == "lower":
+		err = cmdToolLower()
+	case cmd == "upper":
+		err = cmdToolUpper()
 	default:
 		err = toolHelp()
 	}
