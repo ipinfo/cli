@@ -37,7 +37,7 @@ Options:
 `, progBase)
 }
 
-func calcHelp() (err error) {
+func cmdCalc() error {
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.BoolVar(&fNoColor, "nocolor", false, "disable colored output.")
 	pflag.Parse()
@@ -51,12 +51,6 @@ func calcHelp() (err error) {
 		return nil
 	}
 
-	// Currently we do nothing by default.
-	printHelpCalc()
-	return nil
-}
-
-func cmdCalc() error {
 	var err error
 	var res string
 	cmd := ""
@@ -68,7 +62,7 @@ func cmdCalc() error {
 	case cmd != "":
 		res, err = cmdCalcInfix()
 	default:
-		err = calcHelp()
+		printHelpCalc()
 	}
 
 	if err != nil {
@@ -76,6 +70,8 @@ func cmdCalc() error {
 		if err != nil {
 			return err
 		}
+
+		printHelpCalc()
 	}
 
 	fmt.Println(res)

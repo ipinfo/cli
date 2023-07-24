@@ -43,7 +43,7 @@ Options:
 `, progBase)
 }
 
-func ip2nHelp() (err error) {
+func cmdIP2n() error {
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.BoolVar(&fNoColor, "nocolor", false, "disable colored output.")
 	pflag.Parse()
@@ -57,12 +57,6 @@ func ip2nHelp() (err error) {
 		return nil
 	}
 
-	// currently we do nothing by default.
-	printHelpIp2n()
-	return nil
-}
-
-func cmdIP2n() error {
 	var err error
 	var res string
 	cmd := ""
@@ -71,10 +65,7 @@ func cmdIP2n() error {
 	}
 
 	if strings.TrimSpace(cmd) == "" {
-		err := ip2nHelp()
-		if err != nil {
-			return err
-		}
+		printHelpIp2n()
 		return nil
 	}
 
@@ -82,15 +73,11 @@ func cmdIP2n() error {
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "err: %v\n", err)
-		err := ip2nHelp()
-		if err != nil {
-			return err
-		}
+		printHelpIp2n()
 		return nil
 	}
 
 	fmt.Println(res)
-
 	return nil
 }
 

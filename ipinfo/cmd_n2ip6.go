@@ -40,7 +40,7 @@ Options:
 `, progBase)
 }
 
-func n2ip6Help() (err error) {
+func cmdN2IP6() error {
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.BoolVar(&fNoColor, "nocolor", false, "disable colored output.")
 	pflag.Parse()
@@ -54,12 +54,6 @@ func n2ip6Help() (err error) {
 		return nil
 	}
 
-	// currently we do nothing by default.
-	printHelpN2IP6()
-	return nil
-}
-
-func cmdN2IP6() error {
 	var err error
 
 	cmd := ""
@@ -69,10 +63,7 @@ func cmdN2IP6() error {
 
 	// If no argument is given, print help.
 	if strings.TrimSpace(cmd) == "" {
-		err := n2ip6Help()
-		if err != nil {
-			return err
-		}
+		printHelpN2IP6()
 		return nil
 	}
 
@@ -94,10 +85,7 @@ func cmdN2IP6() error {
 	res := decimalToIP(result.String(), true)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "err: %v\n", err)
-		err := n2ip6Help()
-		if err != nil {
-			return err
-		}
+		printHelpN2IP6()
 		return nil
 	}
 

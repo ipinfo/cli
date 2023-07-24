@@ -46,9 +46,11 @@ Options:
 `, progBase)
 }
 
-func n2ipHelp() (err error) {
+func cmdN2IP() error {
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.BoolVar(&fNoColor, "nocolor", false, "disable colored output.")
+	pflag.BoolVarP(&forceIpv6, "ipv6", "6", false, "force conversion to IPv6 address")
+	pflag.Parse()
 
 	if fNoColor {
 		color.NoColor = true
@@ -59,14 +61,6 @@ func n2ipHelp() (err error) {
 		return nil
 	}
 
-	// currently we do nothing by default.
-	printHelpN2IP()
-	return nil
-}
-
-func cmdN2IP() error {
-	pflag.BoolVarP(&forceIpv6, "ipv6", "6", false, "force conversion to IPv6 address")
-	pflag.Parse()
 	var err error
 
 	cmd := ""
@@ -76,19 +70,13 @@ func cmdN2IP() error {
 	} else if !forceIpv6 && len(os.Args) > 2 {
 		cmd = os.Args[2]
 	} else {
-		err := n2ipHelp()
-		if err != nil {
-			return err
-		}
+		printHelpN2IP()
 		return nil
 	}
 
 	// Validate the input
 	if strings.TrimSpace(cmd) == "" {
-		err := n2ipHelp()
-		if err != nil {
-			return err
-		}
+		printHelpN2IP()
 		return nil
 	}
 
@@ -120,15 +108,11 @@ func cmdN2IP() error {
 
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "err: %v\n", err)
-		err := n2ipHelp()
-		if err != nil {
-			return err
-		}
+		printHelpN2IP()
 		return nil
 	}
 
 	fmt.Println(res)
-
 	return nil
 }
 
