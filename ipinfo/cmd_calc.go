@@ -17,7 +17,6 @@ var completionsCalc = &complete.Command{
 }
 
 func printHelpCalc() {
-
 	fmt.Printf(
 		`Usage: %s calc <expression> [<opts>]
 
