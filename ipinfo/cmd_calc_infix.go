@@ -130,7 +130,6 @@ func evaluatePostfix(postfix []string) (*big.Float, error) {
 		}
 		sta.Pop()
 		operator := el
-
 		result := new(big.Float)
 
 		switch {
