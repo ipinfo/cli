@@ -34,7 +34,7 @@ Options:
       disable colored output.
     --help, -h
       show help.
-`, progBase, progBase, progBase, progBase)
+`, progBase)
 }
 
 func calcHelp() (err error) {
