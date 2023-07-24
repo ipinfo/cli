@@ -25,7 +25,6 @@ var completionsIP2n = &complete.Command{
 }
 
 func printHelpIp2n() {
-
 	fmt.Printf(
 		`Usage: %s ip2n <ip>
 
