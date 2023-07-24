@@ -19,22 +19,19 @@ var completionsIP2n = &complete.Command{
 		"--nocolor": predict.Nothing,
 		"-h":        predict.Nothing,
 		"--help":    predict.Nothing,
-		"-f":        predict.Set(predictReadFmts),
-		"--format":  predict.Set(predictReadFmts),
 	},
 }
 
 func printHelpIp2n() {
-
 	fmt.Printf(
 		`Usage: %s ip2n <ip>
 
 Example:
-  %s ip2n "190.87.89.1"
-  %s ip2n "2001:0db8:85a3:0000:0000:8a2e:0370:7334
-  %s ip2n "2001:0db8:85a3::8a2e:0370:7334
-  %s ip2n "::7334
-  %s ip2n "7334::""
+  %[1]s ip2n "190.87.89.1"
+  %[1]s ip2n "2001:0db8:85a3:0000:0000:8a2e:0370:7334
+  %[1]s ip2n "2001:0db8:85a3::8a2e:0370:7334
+  %[1]s ip2n "::7334
+  %[1]s ip2n "7334::""
 	
 
 Options:
@@ -43,7 +40,7 @@ Options:
       disable colored output.
     --help, -h
       show help.
-`, progBase, progBase, progBase, progBase, progBase, progBase)
+`, progBase)
 }
 
 func ip2nHelp() (err error) {
@@ -101,7 +98,6 @@ func calcIP2n(strIP string) (string, error) {
 	if isIPv6Address(strIP) {
 		ip := net.ParseIP(strIP)
 		if ip == nil {
-			fmt.Println("Invalid IPv6 address")
 			return "", errors.New("invalid IPv6 address: '" + strIP + "'")
 		}
 

@@ -16,22 +16,19 @@ var completionsN2IP6 = &complete.Command{
 		"--nocolor": predict.Nothing,
 		"-h":        predict.Nothing,
 		"--help":    predict.Nothing,
-		"-f":        predict.Set(predictReadFmts),
-		"--format":  predict.Set(predictReadFmts),
 	},
 }
 
 func printHelpN2IP6() {
-
 	fmt.Printf(
 		`Usage: %s n2ip6 [<opts>] <expr>
 
 Example:
-  %s n2ip6 "190.87.89.1"
-  %s n2ip6 "2001:0db8:85a3:0000:0000:8a2e:0370:7334
-  %s n2ip6 "2001:0db8:85a3::8a2e:0370:7334
-  %s n2ip6 "::7334
-  %s n2ip6 "7334::""
+  %[1]s n2ip6 "190.87.89.1"
+  %[1]s n2ip6 "2001:0db8:85a3:0000:0000:8a2e:0370:7334
+  %[1]s n2ip6 "2001:0db8:85a3::8a2e:0370:7334
+  %[1]s n2ip6 "::7334
+  %[1]s n2ip6 "7334::""
 	
 
 Options:
@@ -40,7 +37,7 @@ Options:
       disable colored output.
     --help, -h
       show help.
-`, progBase, progBase, progBase, progBase, progBase, progBase)
+`, progBase)
 }
 
 func n2ip6Help() (err error) {
@@ -66,11 +63,11 @@ func cmdN2IP6() error {
 	var err error
 
 	cmd := ""
-
 	if len(os.Args) > 2 {
 		cmd = os.Args[2]
 	}
 
+	// If no argument is given, print help.
 	if strings.TrimSpace(cmd) == "" {
 		err := n2ip6Help()
 		if err != nil {
@@ -83,7 +80,6 @@ func cmdN2IP6() error {
 		return errors.New("invalid expression")
 	}
 	tokens, err := tokeinzeExp(cmd)
-
 	if err != nil {
 		return err
 	}
@@ -91,13 +87,11 @@ func cmdN2IP6() error {
 	postfix := infixToPostfix(tokens)
 
 	result, err := evaluatePostfix(postfix)
-
 	if err != nil {
 		return err
 	}
 
 	res := decimalToIP(result.String(), true)
-
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "err: %v\n", err)
 		err := n2ip6Help()
@@ -108,6 +102,5 @@ func cmdN2IP6() error {
 	}
 
 	fmt.Println(res)
-
 	return nil
 }

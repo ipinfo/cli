@@ -24,9 +24,9 @@ calc <expression>
   Evaluate a mathematical expression and print the result.
 
 Example:
-  %s calc "2*2828-1"
-  %s calc "190.87.89.1*2"
-  %s calc "2001:0db8:85a3:0000:0000:8a2e:0370:7334*6"
+  %[1]s calc "2*2828-1"
+  %[1]s calc "190.87.89.1*2"
+  %[1]s calc "2001:0db8:85a3:0000:0000:8a2e:0370:7334*6"
 
 Options:
   General:

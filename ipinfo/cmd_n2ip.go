@@ -21,22 +21,19 @@ var completionsN2IP = &complete.Command{
 		"--nocolor": predict.Nothing,
 		"-h":        predict.Nothing,
 		"--help":    predict.Nothing,
-		"-f":        predict.Set(predictReadFmts),
-		"--format":  predict.Set(predictReadFmts),
 		"-6":        predict.Set(predictReadFmts),
 		"--ipv6":    predict.Set(predictReadFmts),
 	},
 }
 
 func printHelpN2IP() {
-
 	fmt.Printf(
 		`Usage: %s n2ip [<opts>] <expr>
 
 Example:
-  %s n2ip "2*2828-1"
-  %s n2ip "190.87.89.1*2"
-  %s n2ip "2001:0db8:85a3:0000:0000:8a2e:0370:7334*6"
+  %[1]s n2ip "2*2828-1"
+  %[1]s n2ip "190.87.89.1*2"
+  %[1]s n2ip "2001:0db8:85a3:0000:0000:8a2e:0370:7334*6"
 
 Options:
   General:
@@ -46,7 +43,7 @@ Options:
       show help.
     --ipv6, -6
       force conversion to IPv6 address
-`, progBase, progBase, progBase, progBase)
+`, progBase)
 }
 
 func n2ipHelp() (err error) {
@@ -73,9 +70,6 @@ func cmdN2IP() error {
 	var err error
 
 	cmd := ""
-
-	fmt.Println(os.Args)
-
 	// Reading input from the command line
 	if forceIpv6 && len(os.Args) > 3 {
 		cmd = os.Args[3]
@@ -111,7 +105,7 @@ func cmdN2IP() error {
 
 	// Convert to postfix
 	// If it is a single number and not an expression
-	// The tokenization ad evaluation would have no effect on the number
+	// The tokenization and evaluation would have no effect on the number
 	postfix := infixToPostfix(tokens)
 
 	// Evaluate the postfix expression
