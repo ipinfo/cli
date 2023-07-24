@@ -7,7 +7,6 @@ import (
 	"net"
 	"os"
 	"strings"
-
 	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
