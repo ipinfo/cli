@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib"
@@ -55,8 +54,6 @@ func cmdN2IP6() error {
 		return nil
 	}
 
-	var err error
-
 	cmd := ""
 	if len(os.Args) > 2 {
 		cmd = os.Args[2]
@@ -68,26 +65,12 @@ func cmdN2IP6() error {
 		return nil
 	}
 
-	if lib.IsInvalid(cmd) {
-		return errors.New("invalid expression")
-	}
-	tokens, err := lib.TokeinzeExp(cmd)
+	res, err := lib.CmdN2IP6(cmd)
 	if err != nil {
-		return err
-	}
-
-	postfix := lib.InfixToPostfix(tokens)
-
-	result, err := lib.EvaluatePostfix(postfix)
-	if err != nil {
-		return err
-	}
-
-	res := lib.DecimalToIP(result.String(), true)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "err: %v\n", err)
-		printHelpN2IP6()
-		return nil
+		_, err := fmt.Fprintf(os.Stderr, "err: %v\n", err)
+		if err != nil {
+			return err
+		}
 	}
 
 	fmt.Println(res)

@@ -51,11 +51,8 @@ func cmdIP2n() error {
 
 	if fHelp {
 		printHelpDefault()
-		return nil
 	}
 
-	var err error
-	var res string
 	cmd := ""
 	if len(os.Args) > 2 {
 		cmd = os.Args[2]
@@ -66,14 +63,12 @@ func cmdIP2n() error {
 		return nil
 	}
 
-	res, err = lib.IPtoDecimal(cmd)
-
+	res, err := lib.CmdIP2n(cmd)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "err: %v\n", err)
-		printHelpIp2n()
-		return nil
+		return err
 	}
 
 	fmt.Println(res)
+
 	return nil
 }

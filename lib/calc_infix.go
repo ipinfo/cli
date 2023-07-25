@@ -1,12 +1,10 @@
 package lib
 
 import (
-	"errors"
 	"fmt"
 	"math"
 	"math/big"
 	"net"
-	"os"
 	"regexp"
 	"strconv"
 )
@@ -45,7 +43,7 @@ func (st *Stack) Top() string {
 	}
 }
 
-// Function to return precedence of operators
+// prec Function to return precedence of operators
 func prec(s string) int {
 	if s == "^" {
 		return 3
@@ -58,6 +56,7 @@ func prec(s string) int {
 	}
 }
 
+// isFloat Function to check if string is a float
 func isFloat(str string) bool {
 	pattern := `^[-+]?\d+(\.\d+)?$`
 
@@ -66,6 +65,7 @@ func isFloat(str string) bool {
 	return regex.MatchString(str)
 }
 
+// InfixToPostfix Function to convert infix expression to postfix expression using a stack based algorithm
 func InfixToPostfix(infix []string) []string {
 	var postfixStack Stack
 	var postfix []string
@@ -97,6 +97,7 @@ func InfixToPostfix(infix []string) []string {
 	return postfix
 }
 
+// EvaluatePostfix Function to evaluate postfix expression using a stack based algorithm
 func EvaluatePostfix(postfix []string) (*big.Float, error) {
 	var postfixStack Stack
 	for _, el := range postfix {
@@ -110,55 +111,56 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 		}
 
 		// if operator pop two elements off of the stack.
-		var num1 big.Float
 		strNum1 := postfixStack.Top()
-		_, success := num1.SetString(strNum1)
-
-		if !success {
-			fmt.Println("Error: Failed to convert the num1 to big.Int")
-			return big.NewFloat(0), nil
-		}
 		postfixStack.Pop()
+		num1, _, err := big.ParseFloat(strNum1, 10, uint(10000), big.ToZero)
+		if err != nil {
+			return big.NewFloat(0), ErrInvalidInput
+		}
 
-		var num2 big.Float
 		strNum2 := postfixStack.Top()
-		_, success = num2.SetString(strNum2)
-
-		if !success {
-			fmt.Println("Error: Failed to convert the num2 to big.Int:", strNum2)
-			return big.NewFloat(0), nil
-		}
 		postfixStack.Pop()
+		num2, _, err := big.ParseFloat(strNum2, 10, uint(10000), big.ToZero)
+		if err != nil {
+			return big.NewFloat(0), ErrInvalidInput
+		}
+
 		operator := el
 		result := new(big.Float)
 
 		switch {
 		case operator == "+":
-			//fmt.Println("Adding")
-			result = result.Add(&num2, &num1)
+			result = result.Add(num2, num1)
 		case operator == "-":
-			//fmt.Println("Subtracting")
-			result = result.Sub(&num2, &num1)
+			result = result.Sub(num2, num1)
 
 		case operator == "*":
-			//fmt.Println("Multiplying")
-			result = result.Mul(&num2, &num1)
+			result = result.Mul(num2, num1)
+
 		case operator == "/":
-			//fmt.Println("Dividing")
-			result = new(big.Float).Quo(&num2, &num1)
+			// Check for division by zero
+			if num1.Cmp(big.NewFloat(0)) == 0 {
+				return big.NewFloat(0), ErrInvalidInput
+			}
+
+			result = new(big.Float).Quo(num2, num1)
 
 		case operator == "^":
+			// Using Float64() to convert big.Float to float64
+			// because big.Float does not have a equivalent function
+			// for math.Pow() which accepts big.Float
+			// also, it can support around 194 digits before decimal
 			num1F64, _ := num1.Float64()
 			num2F64, _ := num2.Float64()
 
-			res := math.Pow(num1F64, num2F64)
-			result = new(big.Float).SetPrec(64).SetFloat64(res)
+			res := math.Pow(num2F64, num1F64)
+			result = new(big.Float).SetPrec(uint(10000)).SetFloat64(res)
 
 		default:
-			fmt.Println("invalid operator: ", operator)
+			return big.NewFloat(0), ErrInvalidInput
 		}
 
-		strResult := result.String()
+		strResult := result.Text('f', 50)
 		postfixStack.Push(strResult)
 	}
 
@@ -172,18 +174,19 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 		fmt.Println("Error: Failed to convert the string to big.Int")
 		return big.NewFloat(0), nil
 	}
+
 	return top, nil
 }
 
+// isOperator Function to check if token is an operator
 func isOperator(token string) bool {
 	operators := map[string]bool{"+": true, "-": true, "*": true, "/": true, "^": true /* add other operators here */}
 	_, isOperator := operators[token]
 	return isOperator
 }
 
+// translateToken Function to translate token to decimal i.e. convert ipv4, ipv6 to decimal
 func translateToken(tempToken string, tokens []string) ([]string, error) {
-	var err error = nil
-
 	if tempToken == "" {
 		return tokens, nil
 	}
@@ -191,36 +194,30 @@ func translateToken(tempToken string, tokens []string) ([]string, error) {
 	if isFloat(tempToken) {
 		tokens = append(tokens, tempToken)
 	} else if IsIPv4Address(tempToken) {
-		// convert ipv4 to decimal then append to tokens
+		// Convert ipv4 to decimal then append to tokens
 		ip := net.ParseIP(tempToken)
-		if ip == nil {
-			err = errors.New("invalid IPv4 address: '" + tempToken + "'")
-		}
 		decimalIP := IP4toInt(ip)
 		res := strconv.FormatInt(decimalIP, 10)
 		tokens = append(tokens, res)
 
 	} else if IsIPv6Address(tempToken) {
 		ip := net.ParseIP(tempToken)
-		if ip == nil {
-			fmt.Println("Invalid IPv6 address")
-			err = errors.New("invalid IPv6 address: '" + tempToken + "'")
-		}
 		decimalIP := IP6toInt(ip)
 		tokens = append(tokens, decimalIP.String())
 	} else {
-		err = errors.New("invalid expression")
+		return []string{}, ErrInvalidInput
 	}
-	return tokens, err
+	return tokens, nil
 }
 
-func TokeinzeExp(expression string) ([]string, error) {
+// TokenizeInfix Function to tokenize infix expression
+func TokenizeInfix(infix string) ([]string, error) {
 	var tokens []string
 	var err error
 
-	expression = "(" + expression + ")"
+	infix = "(" + infix + ")"
 	tempToken := ""
-	for _, char := range expression {
+	for _, char := range infix {
 		opchar := string(char)
 		if isFloat(opchar) || opchar == "." || opchar == ":" {
 			tempToken = tempToken + opchar
@@ -237,7 +234,8 @@ func TokeinzeExp(expression string) ([]string, error) {
 	return tokens, nil
 }
 
-func IsInvalid(expression string) bool {
+// IsInvalidInfix Function to check if infix expression is valid
+func IsInvalidInfix(expression string) bool {
 	validChars := `^[0-9:\.\+\-\*\^\(\)\/ ]*$`
 	validCharsRegx := regexp.MustCompile(validChars)
 
@@ -269,7 +267,7 @@ func IsInvalid(expression string) bool {
 	return !validCharsRegx.MatchString(expression) || !isBalanced(expression)
 }
 
-// Function to check if parentheses are balanced
+// isBalanced Function to check if parentheses are balanced
 func isBalanced(input string) bool {
 	var postfixStack Stack
 	for _, char := range input {
@@ -285,19 +283,12 @@ func isBalanced(input string) bool {
 	return postfixStack.IsEmpty()
 }
 
-func CmdCalcInfix() (string, error) {
-	// infix := "2+3*(2^3-5)^(2+1*2)-4"
-	cmd := ""
-	if len(os.Args) > 2 {
-		cmd = os.Args[2]
+func CmdCalcInfix(infix string) (string, error) {
+	if IsInvalidInfix(infix) {
+		return "", ErrInvalidInput
 	}
 
-	if IsInvalid(cmd) {
-		return "", errors.New("invalid expression")
-	}
-
-	tokens, err := TokeinzeExp(cmd)
-
+	tokens, err := TokenizeInfix(infix)
 	if err != nil {
 		return "", err
 	}
@@ -305,10 +296,9 @@ func CmdCalcInfix() (string, error) {
 	postfix := InfixToPostfix(tokens)
 
 	result, err := EvaluatePostfix(postfix)
-
 	if err != nil {
 		return "", err
 	}
 
-	return result.Text('f', 0), nil
+	return result.Text('f', 10), nil
 }

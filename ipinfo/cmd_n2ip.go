@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib"
@@ -11,8 +10,6 @@ import (
 	"os"
 	"strings"
 )
-
-var forceIpv6 bool
 
 var completionsN2IP = &complete.Command{
 	Flags: map[string]complete.Predictor{
@@ -45,6 +42,7 @@ Options:
 }
 
 func cmdN2IP() error {
+	var forceIpv6 bool
 	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
 	pflag.BoolVar(&fNoColor, "nocolor", false, "disable colored output.")
 	pflag.BoolVarP(&forceIpv6, "ipv6", "6", false, "force conversion to IPv6 address")
@@ -53,13 +51,10 @@ func cmdN2IP() error {
 	if fNoColor {
 		color.NoColor = true
 	}
-
 	if fHelp {
 		printHelpDefault()
 		return nil
 	}
-
-	var err error
 
 	cmd := ""
 	// Reading input from the command line
@@ -78,36 +73,12 @@ func cmdN2IP() error {
 		return nil
 	}
 
-	if lib.IsInvalid(cmd) {
-		return errors.New("invalid expression")
-	}
-
-	// Tokenize
-	tokens, err := lib.TokeinzeExp(cmd)
-
+	res, err := lib.CmdN2IP(cmd, forceIpv6)
 	if err != nil {
-		return err
-	}
-
-	// Convert to postfix
-	// If it is a single number and not an expression
-	// The tokenization and evaluation would have no effect on the number
-	postfix := lib.InfixToPostfix(tokens)
-
-	// Evaluate the postfix expression
-	result, err := lib.EvaluatePostfix(postfix)
-
-	if err != nil {
-		return err
-	}
-
-	// Convert to IP
-	res := lib.DecimalToIP(result.String(), forceIpv6)
-
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "err: %v\n", err)
-		printHelpN2IP()
-		return nil
+		_, err := fmt.Fprintf(os.Stderr, "err: %v\n", err)
+		if err != nil {
+			return err
+		}
 	}
 
 	fmt.Println(res)

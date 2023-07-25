@@ -61,7 +61,7 @@ func cmdCalc() error {
 
 	switch {
 	case cmd != "":
-		res, err = lib.CmdCalcInfix()
+		res, err = lib.CmdCalcInfix(cmd)
 	default:
 		printHelpCalc()
 	}
@@ -71,8 +71,6 @@ func cmdCalc() error {
 		if err != nil {
 			return err
 		}
-
-		printHelpCalc()
 	}
 
 	fmt.Println(res)
