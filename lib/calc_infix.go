@@ -7,6 +7,7 @@ import (
 	"net"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 type Stack []string
@@ -161,18 +162,16 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 		}
 
 		strResult := result.Text('f', 50)
+		fmt.Println(strResult)
 		postfixStack.Push(strResult)
 	}
 
 	strTop := postfixStack.Top()
 	postfixStack.Pop()
 
-	var top = new(big.Float)
-	_, success := top.SetString(strTop)
-
-	if !success {
-		fmt.Println("Error: Failed to convert the string to big.Int")
-		return big.NewFloat(0), nil
+	top, _, err := big.ParseFloat(strTop, 10, uint(10000), big.ToZero)
+	if err != nil {
+		return big.NewFloat(0), ErrInvalidInput
 	}
 
 	return top, nil
@@ -300,5 +299,24 @@ func CmdCalcInfix(infix string) (string, error) {
 		return "", err
 	}
 
-	return result.Text('f', 10), nil
+	precision := digitsAfterDecimal(*result)
+	fmt.Println(precision)
+	resultStr := result.Text('f', precision)
+	return resultStr, nil
+}
+
+func digitsAfterDecimal(float big.Float) int {
+	str := float.Text('f', 100)
+	decimalIndex := strings.Index(str, ".")
+	// Start counting the digits after the decimal point.
+	count := 0
+	for i := len(str) - 1; i > decimalIndex; i-- {
+		if str[i] == '0' {
+			count++
+		} else {
+			break
+		}
+	}
+
+	return len(str) - (decimalIndex + 1) - count
 }
