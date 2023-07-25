@@ -207,6 +207,12 @@ func translateToken(tempToken string, tokens []string) ([]string, error) {
 	return tokens, nil
 }
 
+func isValidPartOfToken(char rune) bool {
+	validChars := `^[0-9a-fA-F:\.]*$`
+	validCharsRegx := regexp.MustCompile(validChars)
+	return validCharsRegx.MatchString(string(char))
+}
+
 // TokenizeInfix Function to tokenize infix expression
 func TokenizeInfix(infix string) ([]string, error) {
 	var tokens []string
@@ -216,7 +222,7 @@ func TokenizeInfix(infix string) ([]string, error) {
 	tempToken := ""
 	for _, char := range infix {
 		opchar := string(char)
-		if isFloat(opchar) || opchar == "." || opchar == ":" {
+		if isValidPartOfToken(char) {
 			tempToken = tempToken + opchar
 		} else if char == '(' || char == ')' || isOperator(opchar) {
 			tokens, err = translateToken(tempToken, tokens)
@@ -233,7 +239,7 @@ func TokenizeInfix(infix string) ([]string, error) {
 
 // IsInvalidInfix Function to check if infix expression is valid
 func IsInvalidInfix(expression string) bool {
-	validChars := `^[0-9:\.\+\-\*\^\(\)\/ ]*$`
+	validChars := `^[0-9a-fA-F:\.\+\-\*\^\(\)\/ ]*$`
 	validCharsRegx := regexp.MustCompile(validChars)
 
 	var PrevChar rune
