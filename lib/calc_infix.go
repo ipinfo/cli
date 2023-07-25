@@ -1,7 +1,6 @@
 package lib
 
 import (
-	"fmt"
 	"math"
 	"math/big"
 	"net"
@@ -162,7 +161,6 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 		}
 
 		strResult := result.Text('f', 50)
-		fmt.Println(strResult)
 		postfixStack.Push(strResult)
 	}
 
@@ -300,7 +298,6 @@ func CmdCalcInfix(infix string) (string, error) {
 	}
 
 	precision := digitsAfterDecimal(*result)
-	fmt.Println(precision)
 	resultStr := result.Text('f', precision)
 	return resultStr, nil
 }
