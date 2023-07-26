@@ -1,6 +1,9 @@
 package lib
 
 import (
+	"fmt"
+	"github.com/fatih/color"
+	"github.com/spf13/pflag"
 	"math"
 	"math/big"
 	"net"
@@ -9,6 +12,28 @@ import (
 	"strings"
 )
 
+// CmdCalcFlags are flags expected by CmdCalcInfix
+type CmdCalcFlags struct {
+	Help    bool
+	NoColor bool
+}
+
+// Init initializes the common flags available to CmdCalcInfix with sensible
+func (f *CmdCalcFlags) Init() {
+	_h := "see description in --help"
+	pflag.BoolVarP(
+		&f.Help,
+		"help", "h", false,
+		"show help.",
+	)
+	pflag.BoolVar(
+		&f.NoColor,
+		"nocolor", false,
+		_h,
+	)
+}
+
+// Stack type
 type Stack []string
 
 // IsEmpty check if stack is empty
@@ -285,28 +310,7 @@ func isBalanced(input string) bool {
 	return postfixStack.IsEmpty()
 }
 
-func CmdCalcInfix(infix string) (string, error) {
-	if IsInvalidInfix(infix) {
-		return "", ErrInvalidInput
-	}
-
-	tokens, err := TokenizeInfix(infix)
-	if err != nil {
-		return "", err
-	}
-
-	postfix := InfixToPostfix(tokens)
-
-	result, err := EvaluatePostfix(postfix)
-	if err != nil {
-		return "", err
-	}
-
-	precision := digitsAfterDecimal(*result)
-	resultStr := result.Text('f', precision)
-	return resultStr, nil
-}
-
+// digitsAfterDecimal Function to count the number of non-zero digits after the decimal point
 func digitsAfterDecimal(float big.Float) int {
 	str := float.Text('f', 100)
 	decimalIndex := strings.Index(str, ".")
@@ -321,4 +325,37 @@ func digitsAfterDecimal(float big.Float) int {
 	}
 
 	return len(str) - (decimalIndex + 1) - count
+}
+
+// CmdCalcInfix Function is the handler for the "calc" command.
+func CmdCalcInfix(f CmdCalcFlags, args []string, printHelp func()) error {
+	if f.NoColor {
+		color.NoColor = true
+	}
+
+	if f.Help {
+		printHelp()
+		return nil
+	}
+	infix := args[0]
+	if IsInvalidInfix(infix) {
+		return ErrInvalidInput
+	}
+
+	tokens, err := TokenizeInfix(infix)
+	if err != nil {
+		return err
+	}
+
+	postfix := InfixToPostfix(tokens)
+
+	result, err := EvaluatePostfix(postfix)
+	if err != nil {
+		return err
+	}
+
+	precision := digitsAfterDecimal(*result)
+	resultStr := result.Text('f', precision)
+	fmt.Println(resultStr)
+	return nil
 }

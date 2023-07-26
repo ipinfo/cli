@@ -2,15 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/spf13/pflag"
-	"os"
-	"strings"
 )
 
+// cmdN2IP is the handler for the "n2ip" command.
 var completionsN2IP = &complete.Command{
 	Flags: map[string]complete.Predictor{
 		"--nocolor": predict.Nothing,
@@ -21,6 +19,7 @@ var completionsN2IP = &complete.Command{
 	},
 }
 
+// printHelpN2IP prints the help message for the "n2ip" command.
 func printHelpN2IP() {
 	fmt.Printf(
 		`Usage: %s n2ip [<opts>] <expr>
@@ -41,46 +40,14 @@ Options:
 `, progBase)
 }
 
+// cmdN2IP is the handler for the "n2ip" command.
 func cmdN2IP() error {
-	var forceIpv6 bool
-	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
-	pflag.BoolVar(&fNoColor, "nocolor", false, "disable colored output.")
-	pflag.BoolVarP(&forceIpv6, "ipv6", "6", false, "force conversion to IPv6 address")
+	f := lib.CmdN2IPFlags{}
+	f.Init()
 	pflag.Parse()
-
-	if fNoColor {
-		color.NoColor = true
-	}
-	if fHelp {
-		printHelpDefault()
-		return nil
+	if pflag.NArg() <= 1 && pflag.NFlag() == 0 {
+		f.Help = true
 	}
 
-	cmd := ""
-	// Reading input from the command line
-	if forceIpv6 && len(os.Args) > 3 {
-		cmd = os.Args[3]
-	} else if !forceIpv6 && len(os.Args) > 2 {
-		cmd = os.Args[2]
-	} else {
-		printHelpN2IP()
-		return nil
-	}
-
-	// Validate the input
-	if strings.TrimSpace(cmd) == "" {
-		printHelpN2IP()
-		return nil
-	}
-
-	res, err := lib.CmdN2IP(cmd, forceIpv6)
-	if err != nil {
-		_, err := fmt.Fprintf(os.Stderr, "err: %v\n", err)
-		if err != nil {
-			return err
-		}
-	}
-
-	fmt.Println(res)
-	return nil
+	return lib.CmdN2IP(f, pflag.Args()[1:], printHelpN2IP)
 }

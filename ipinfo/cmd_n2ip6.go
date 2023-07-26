@@ -2,13 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/spf13/pflag"
-	"os"
-	"strings"
 )
 
 var completionsN2IP6 = &complete.Command{
@@ -19,6 +16,7 @@ var completionsN2IP6 = &complete.Command{
 	},
 }
 
+// printHelpN2IP6 prints the help message for the "n2ip6" command.
 func printHelpN2IP6() {
 	fmt.Printf(
 		`Usage: %s n2ip6 [<opts>] <expr>
@@ -40,39 +38,14 @@ Options:
 `, progBase)
 }
 
+// cmdN2IP6 is the handler for the "n2ip6" command.
 func cmdN2IP6() error {
-	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
-	pflag.BoolVar(&fNoColor, "nocolor", false, "disable colored output.")
+	f := lib.CmdN2IP6Flags{}
+	f.Init()
 	pflag.Parse()
-
-	if fNoColor {
-		color.NoColor = true
+	if pflag.NArg() <= 1 && pflag.NFlag() == 0 {
+		f.Help = true
 	}
 
-	if fHelp {
-		printHelpDefault()
-		return nil
-	}
-
-	cmd := ""
-	if len(os.Args) > 2 {
-		cmd = os.Args[2]
-	}
-
-	// If no argument is given, print help.
-	if strings.TrimSpace(cmd) == "" {
-		printHelpN2IP6()
-		return nil
-	}
-
-	res, err := lib.CmdN2IP6(cmd)
-	if err != nil {
-		_, err := fmt.Fprintf(os.Stderr, "err: %v\n", err)
-		if err != nil {
-			return err
-		}
-	}
-
-	fmt.Println(res)
-	return nil
+	return lib.CmdN2IP6(f, pflag.Args()[1:], printHelpN2IP6)
 }

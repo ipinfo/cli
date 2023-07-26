@@ -2,13 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/spf13/pflag"
-	"os"
-	"strings"
 )
 
 var completionsIP2n = &complete.Command{
@@ -19,6 +16,7 @@ var completionsIP2n = &complete.Command{
 	},
 }
 
+// printHelpIp2n prints the help message for the "ip2n" command.
 func printHelpIp2n() {
 	fmt.Printf(
 		`Usage: %s ip2n <ip>
@@ -40,35 +38,15 @@ Options:
 `, progBase)
 }
 
+// cmdIP2n is the handler for the "ip2n" command.
 func cmdIP2n() error {
-	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
-	pflag.BoolVar(&fNoColor, "nocolor", false, "disable colored output.")
+	f := lib.CmdIP2nFlags{}
+	f.Init()
 	pflag.Parse()
 
-	if fNoColor {
-		color.NoColor = true
+	if pflag.NArg() <= 1 && pflag.NFlag() == 0 {
+		f.Help = true
 	}
 
-	if fHelp {
-		printHelpDefault()
-	}
-
-	cmd := ""
-	if len(os.Args) > 2 {
-		cmd = os.Args[2]
-	}
-
-	if strings.TrimSpace(cmd) == "" {
-		printHelpIp2n()
-		return nil
-	}
-
-	res, err := lib.CmdIP2n(cmd)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(res)
-
-	return nil
+	return lib.CmdIP2n(f, pflag.Args()[1:], printHelpIp2n)
 }

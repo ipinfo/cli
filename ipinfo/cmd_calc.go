@@ -2,12 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/spf13/pflag"
-	"os"
 )
 
 var completionsCalc = &complete.Command{
@@ -17,6 +15,7 @@ var completionsCalc = &complete.Command{
 	},
 }
 
+// printHelpCalc prints the help message for the "calc" command.
 func printHelpCalc() {
 	fmt.Printf(
 		`Usage: %s calc <expression> [<opts>]
@@ -38,41 +37,15 @@ Options:
 `, progBase)
 }
 
+// cmdCalc is the handler for the "calc" command.
 func cmdCalc() error {
-	pflag.BoolVarP(&fHelp, "help", "h", false, "show help.")
-	pflag.BoolVar(&fNoColor, "nocolor", false, "disable colored output.")
+	f := lib.CmdCalcFlags{}
+	f.Init()
 	pflag.Parse()
 
-	if fNoColor {
-		color.NoColor = true
+	if pflag.NArg() <= 1 && pflag.NFlag() == 0 {
+		f.Help = true
 	}
 
-	if fHelp {
-		printHelpDefault()
-		return nil
-	}
-
-	var err error
-	var res string
-	cmd := ""
-	if len(os.Args) > 2 {
-		cmd = os.Args[2]
-	}
-
-	switch {
-	case cmd != "":
-		res, err = lib.CmdCalcInfix(cmd)
-	default:
-		printHelpCalc()
-	}
-
-	if err != nil {
-		_, err := fmt.Fprintf(os.Stderr, "err: %v\n", err)
-		if err != nil {
-			return err
-		}
-	}
-
-	fmt.Println(res)
-	return nil
+	return lib.CmdCalcInfix(f, pflag.Args()[1:], printHelpCalc)
 }
