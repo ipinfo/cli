@@ -149,7 +149,6 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 			// Using Float64() to convert big.Float to float64
 			// because big.Float does not have a equivalent function
 			// for math.Pow() which accepts big.Float
-			// also, it can support around 194 digits before decimal
 			num1F64, _ := num1.Float64()
 			num2F64, _ := num2.Float64()
 
