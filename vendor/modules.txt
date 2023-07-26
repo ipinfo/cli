@@ -14,7 +14,7 @@ github.com/hashicorp/go-multierror
 ## explicit; go 1.15
 github.com/ipinfo/go/v2/ipinfo
 github.com/ipinfo/go/v2/ipinfo/cache
-# github.com/ipinfo/mmdbctl v0.0.0-20230725231754-cc1fc06b63b0
+# github.com/ipinfo/mmdbctl v0.0.0-20230726080357-558a20ba8524
 ## explicit; go 1.20
 github.com/ipinfo/mmdbctl/lib
 # github.com/jszwec/csvutil v1.4.0
