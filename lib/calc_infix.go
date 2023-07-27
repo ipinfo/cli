@@ -124,6 +124,8 @@ func InfixToPostfix(infix []string) []string {
 
 // EvaluatePostfix Function to evaluate postfix expression using a stack based algorithm
 func EvaluatePostfix(postfix []string) (*big.Float, error) {
+	// Precision for parsing string to big.Float
+	var precision uint = 10000
 	var postfixStack Stack
 	for _, el := range postfix {
 		// if operand, push it onto the stack.
@@ -138,14 +140,14 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 		// if operator pop two elements off of the stack.
 		strNum1 := postfixStack.Top()
 		postfixStack.Pop()
-		num1, _, err := big.ParseFloat(strNum1, 10, uint(10000), big.ToZero)
+		num1, _, err := big.ParseFloat(strNum1, 10, precision, big.ToZero)
 		if err != nil {
 			return big.NewFloat(0), ErrInvalidInput
 		}
 
 		strNum2 := postfixStack.Top()
 		postfixStack.Pop()
-		num2, _, err := big.ParseFloat(strNum2, 10, uint(10000), big.ToZero)
+		num2, _, err := big.ParseFloat(strNum2, 10, precision, big.ToZero)
 		if err != nil {
 			return big.NewFloat(0), ErrInvalidInput
 		}
@@ -178,7 +180,7 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 			num2F64, _ := num2.Float64()
 
 			res := math.Pow(num2F64, num1F64)
-			result = new(big.Float).SetPrec(uint(10000)).SetFloat64(res)
+			result = new(big.Float).SetPrec(precision).SetFloat64(res)
 
 		default:
 			return big.NewFloat(0), ErrInvalidInput
@@ -191,7 +193,7 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 	strTop := postfixStack.Top()
 	postfixStack.Pop()
 
-	top, _, err := big.ParseFloat(strTop, 10, uint(10000), big.ToZero)
+	top, _, err := big.ParseFloat(strTop, 10, precision, big.ToZero)
 	if err != nil {
 		return big.NewFloat(0), ErrInvalidInput
 	}
@@ -312,8 +314,10 @@ func isBalanced(input string) bool {
 
 // digitsAfterDecimal Function to count the number of non-zero digits after the decimal point
 func digitsAfterDecimal(float big.Float) int {
+	// Initially allowing 100 digits after decimal
 	str := float.Text('f', 100)
 	decimalIndex := strings.Index(str, ".")
+
 	// Start counting the digits after the decimal point.
 	count := 0
 	for i := len(str) - 1; i > decimalIndex; i-- {
