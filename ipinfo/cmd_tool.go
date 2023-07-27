@@ -28,8 +28,8 @@ func printHelpTool() {
 
 Commands:
   aggregate    aggregate IPs, IP ranges, and CIDRs.
-  lower        lower IPs, IP ranges, and CIDRs.
-  upper        upper IPs, IP ranges, and CIDRs.
+  lower        lower CIDRs.
+  upper        upper CIDRs.
 Options:
   --help, -h
     show help.

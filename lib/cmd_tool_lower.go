@@ -2,7 +2,6 @@ package lib
 
 import (
 	"fmt"
-
 	"os"
 
 	"github.com/spf13/pflag"
@@ -38,14 +37,13 @@ func CmdToolLower(
 
 	stat, _ := os.Stdin.Stat()
 	isStdin := (stat.Mode() & os.ModeCharDevice) == 0
-
 	if len(args) == 0 && !isStdin {
 		printHelp()
 		return nil
 	}
 
 	processCIDR := func(cidrStr string) error {
-		startIP, err := findStartIP(cidrStr)
+		ipRange, err := IPRangeStrFromCIDR(cidrStr)
 		if err != nil {
 			if !f.Quiet {
 				fmt.Printf("Error parsing CIDR: %v\n", err)
@@ -53,7 +51,7 @@ func CmdToolLower(
 			return nil
 		}
 
-		fmt.Println(startIP)
+		fmt.Println(ipRange.Start)
 		return nil
 	}
 
@@ -66,14 +64,5 @@ func CmdToolLower(
 			return err
 		}
 	}
-
 	return nil
-}
-
-func findStartIP(cidrStr string) (string, error) {
-	ipRange, err := IPRangeStrFromCIDR(cidrStr)
-	if err != nil {
-		return "", err
-	}
-	return ipRange.Start, nil
 }

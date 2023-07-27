@@ -20,34 +20,23 @@ var completionsToolLower = &complete.Command{
 
 func printHelpToolLower() {
 	fmt.Printf(
-		`Usage: %s tool lower [<opts>] <cidr | ip | ip-range | filepath>
+		`Usage: %s tool lower [<opts>] <cidr>
 
 Description:
-  Accepts IPs, IP ranges, and CIDRs, aggregating them efficiently.
-  Input can be IPs, IP ranges, CIDRs, and/or filepath to a file
-  containing any of these. Works for both IPv4 and IPv6.
-
-  If input contains single IPs, it tries to merge them into the input CIDRs,
-  otherwise they are printed to the output as they are.
-
-  IP range can be of format <start-ip><SEP><end-ip>, where <SEP> can either
-  be a ',' or a '-'.
-
+  Calculates the lower IP address (start address of a network) for the given inputs.
+  Input should be CIDRs.
+  
+  If input contains CIDRs, it calculates the lower IP address for each CIDRs.
+  
 Examples:
-  # Lower two CIDRs.
-  $ %[1]s tool lower 1.1.1.0/30 1.1.1.0/28
-
-  # Lower IP range and CIDR.
-  $ %[1]s tool lower 1.1.1.0-1.1.1.244 1.1.1.0/28
-
-  # Lower enteries from 2 files.
-  $ %[1]s tool lower /path/to/file1.txt /path/to/file2.txt
-
-  # Lower enteries from stdin.
-  $ cat /path/to/file1.txt | %[1]s tool lower
-
-  # Lower enteries from stdin and a file.
-  $ cat /path/to/file1.txt | %[1]s tool lower /path/to/file2.txt
+  # Calculate lower IP for a CIDR.
+  $ %[1]s tool lower 192.168.1.0/24
+  
+  # Calculate lower IPs for CIDRs.
+  $ %[1]s tool lower 192.168.1.0/24 10.0.0.0/16
+  
+  # Calculate lower IPs from stdin.
+  $ cat /path/to/file.txt | %[1]s tool upper
 
 Options:
   --help, -h
