@@ -34,8 +34,10 @@ func CmdToolUpper(
 		printHelp()
 		return nil
 	}
+
 	stat, _ := os.Stdin.Stat()
 	isStdin := (stat.Mode() & os.ModeCharDevice) == 0
+
 	if len(args) == 0 && !isStdin {
 		printHelp()
 		return nil
@@ -47,7 +49,7 @@ func CmdToolUpper(
 			if !f.Quiet {
 				fmt.Printf("Error parsing CIDR: %v\n", err)
 			}
-			return nil
+			return err
 		}
 		fmt.Println(ipRange.End)
 		return nil
