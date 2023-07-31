@@ -169,7 +169,6 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 			if num1.Cmp(big.NewFloat(0)) == 0 {
 				return big.NewFloat(0), ErrInvalidInput
 			}
-
 			result = new(big.Float).Quo(num2, num1)
 
 		case operator == "^":
