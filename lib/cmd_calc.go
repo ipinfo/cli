@@ -162,7 +162,6 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 			result = result.Sub(num2, num1)
 		case operator == "*":
 			result = result.Mul(num2, num1)
-
 		case operator == "/":
 			// Check for division by zero
 			if num1.Cmp(big.NewFloat(0)) == 0 {
