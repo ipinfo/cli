@@ -312,7 +312,6 @@ func CmdCalc(f CmdCalcFlags, args []string, printHelp func()) error {
 	}
 
 	postfix := InfixToPostfix(tokens)
-
 	result, err := EvaluatePostfix(postfix)
 	if err != nil {
 		return err
