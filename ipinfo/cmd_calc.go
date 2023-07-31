@@ -43,9 +43,5 @@ func cmdCalc() error {
 	f.Init()
 	pflag.Parse()
 
-	if pflag.NArg() <= 1 && pflag.NFlag() == 0 {
-		f.Help = true
-	}
-
-	return lib.CmdCalcInfix(f, pflag.Args()[1:], printHelpCalc)
+	return lib.CmdCalc(f, pflag.Args()[1:], printHelpCalc)
 }

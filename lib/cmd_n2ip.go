@@ -39,7 +39,7 @@ func CmdN2IP(f CmdN2IPFlags, args []string, printHelp func()) error {
 		color.NoColor = true
 	}
 
-	if f.Help {
+	if len(args) == 0 {
 		printHelp()
 		return nil
 	}
@@ -62,7 +62,7 @@ func CmdN2IP(f CmdN2IPFlags, args []string, printHelp func()) error {
 	}
 
 	postfix := InfixToPostfix(tokens)
-	//
+
 	// Evaluate the postfix expression
 	result, err := EvaluatePostfix(postfix)
 	if err != nil {

@@ -43,9 +43,6 @@ func cmdN2IP6() error {
 	f := lib.CmdN2IP6Flags{}
 	f.Init()
 	pflag.Parse()
-	if pflag.NArg() <= 1 && pflag.NFlag() == 0 {
-		f.Help = true
-	}
 
 	return lib.CmdN2IP6(f, pflag.Args()[1:], printHelpN2IP6)
 }

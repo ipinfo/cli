@@ -33,7 +33,7 @@ func CmdIP2n(f CmdIP2nFlags, args []string, printHelp func()) error {
 		color.NoColor = true
 	}
 
-	if f.Help {
+	if len(args) == 0 {
 		printHelp()
 		return nil
 	}

@@ -44,9 +44,5 @@ func cmdIP2n() error {
 	f.Init()
 	pflag.Parse()
 
-	if pflag.NArg() <= 1 && pflag.NFlag() == 0 {
-		f.Help = true
-	}
-
 	return lib.CmdIP2n(f, pflag.Args()[1:], printHelpIp2n)
 }

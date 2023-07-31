@@ -12,13 +12,13 @@ import (
 	"strings"
 )
 
-// CmdCalcFlags are flags expected by CmdCalcInfix
+// CmdCalcFlags are flags expected by CmdCalc
 type CmdCalcFlags struct {
 	Help    bool
 	NoColor bool
 }
 
-// Init initializes the common flags available to CmdCalcInfix with sensible
+// Init initializes the common flags available to CmdCalc with sensible
 func (f *CmdCalcFlags) Init() {
 	_h := "see description in --help"
 	pflag.BoolVarP(
@@ -331,16 +331,17 @@ func digitsAfterDecimal(float big.Float) int {
 	return len(str) - (decimalIndex + 1) - count
 }
 
-// CmdCalcInfix Function is the handler for the "calc" command.
-func CmdCalcInfix(f CmdCalcFlags, args []string, printHelp func()) error {
+// CmdCalc Function is the handler for the "calc" command.
+func CmdCalc(f CmdCalcFlags, args []string, printHelp func()) error {
+	if len(args) == 0 {
+		printHelp()
+		return nil
+	}
+
 	if f.NoColor {
 		color.NoColor = true
 	}
 
-	if f.Help {
-		printHelp()
-		return nil
-	}
 	infix := args[0]
 	if IsInvalidInfix(infix) {
 		return ErrInvalidInput
