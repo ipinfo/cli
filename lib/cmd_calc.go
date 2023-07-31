@@ -132,7 +132,7 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 		if el == "" {
 			continue
 		}
-		if isFloat(el) || IsIPv4Address(el) || IsIPv6Address(el) {
+		if isFloat(el) || StrIsIPv4Str(el) || StrIsIPv6Str(el) {
 			postfixStack.Push(el)
 			continue
 		}
@@ -216,14 +216,14 @@ func translateToken(tempToken string, tokens []string) ([]string, error) {
 
 	if isFloat(tempToken) {
 		tokens = append(tokens, tempToken)
-	} else if IsIPv4Address(tempToken) {
+	} else if StrIsIPv4Str(tempToken) {
 		// Convert ipv4 to decimal then append to tokens
 		ip := net.ParseIP(tempToken)
 		decimalIP := IP4toInt(ip)
 		res := strconv.FormatInt(decimalIP, 10)
 		tokens = append(tokens, res)
 
-	} else if IsIPv6Address(tempToken) {
+	} else if StrIsIPv6Str(tempToken) {
 		ip := net.ParseIP(tempToken)
 		decimalIP := IP6toInt(ip)
 		tokens = append(tokens, decimalIP.String())

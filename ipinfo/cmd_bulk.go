@@ -112,6 +112,7 @@ func cmdBulk() (err error) {
 	}
 
 	ips, err = lib.IPListFromAllSrcs(pflag.Args()[1:])
+	fmt.Println(ips)
 	if err != nil {
 		return err
 	}
