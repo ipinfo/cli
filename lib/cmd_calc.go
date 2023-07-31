@@ -160,7 +160,6 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 			result = result.Add(num2, num1)
 		case operator == "-":
 			result = result.Sub(num2, num1)
-
 		case operator == "*":
 			result = result.Mul(num2, num1)
 
