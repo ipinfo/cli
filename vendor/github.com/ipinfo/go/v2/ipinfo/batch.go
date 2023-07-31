@@ -335,17 +335,30 @@ func (c *Client) GetASNDetailsBatch(
 	asns []string,
 	opts BatchReqOpts,
 ) (BatchASNDetails, error) {
+	fmt.Println("GetASNDetailsBatch")
 	intermediateRes, err := c.GetBatch(asns, opts)
+
 
 	// if we have items in the result, don't throw them away; we'll convert
 	// below and return the error together if it existed.
 	if err != nil && len(intermediateRes) == 0 {
+		fmt.Println("Error: line 345")
 		return nil, err
 	}
 
 	res := make(BatchASNDetails, len(intermediateRes))
+	fmt.Println("res: ", res)
 	for k, v := range intermediateRes {
-		res[k] = v.(*ASNDetails)
+		fmt.Println()
+		switch asn := v.(type) {
+		case *ASNDetails:
+			res[k] = asn
+		default:
+			// Handle the case when the type is not *ipinfo.ASNDetails.
+			fmt.Printf("Error: Unexpected type for key %T: %T\n", k, v)
+		}
 	}
+
+	fmt.Println("-->>Res: ", res)
 	return res, err
 }

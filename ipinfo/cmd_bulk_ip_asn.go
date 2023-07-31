@@ -10,5 +10,8 @@ func cmdBulkIpAsn() error {
 	f := lib.CmdBulkIpAsnFlags{}
 	f.Init()
 	pflag.Parse()
-	return lib.CmdBulkIpAsn(f, os.Args[1:])
+
+	ii = prepareIpinfoClient(f.Token)
+
+	return lib.CmdBulkIpAsn(f, ii, os.Args[1:])
 }
