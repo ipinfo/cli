@@ -179,7 +179,6 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 		default:
 			return big.NewFloat(0), ErrInvalidInput
 		}
-
 		strResult := result.Text('f', 50)
 		postfixStack.Push(strResult)
 	}
