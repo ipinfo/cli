@@ -34,6 +34,8 @@ func main() {
 	}
 
 	switch {
+	case lib.StrArrIsCombinationOfIPsAndASNs(os.Args[1:]):
+		err = cmdBulkIpAsn()
 	case lib.StrIsIPStr(cmd):
 		err = cmdIP(cmd)
 	case lib.StrIsASNStr(cmd):
