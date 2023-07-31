@@ -95,7 +95,6 @@ func cmdIP(ipStr string) error {
 	ip := net.ParseIP(ipStr)
 	ii = prepareIpinfoClient(fTok)
 	data, err := ii.GetIPInfo(ip)
-	//fmt.Println(outputYAML(data))
 	if err != nil {
 		return err
 	}
@@ -105,7 +104,6 @@ func cmdIP(ipStr string) error {
 		d[ipStr] = data
 		return outputFieldBatchCore(d, fField, false, false)
 	}
-
 	if fJSON {
 		return outputJSON(data)
 	}
