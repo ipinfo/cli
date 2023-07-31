@@ -55,9 +55,8 @@ func CmdN2IP6(f CmdN2IP6Flags, args []string, printHelp func()) error {
 		return err
 	}
 
-	postfix := InfixToPostfix(tokens)
-
 	// Evaluate the postfix expression
+	postfix := InfixToPostfix(tokens)
 	result, err := EvaluatePostfix(postfix)
 	if err != nil {
 		return err
