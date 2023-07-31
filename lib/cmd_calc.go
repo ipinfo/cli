@@ -178,7 +178,6 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 			// for math.Pow() which accepts big.Float
 			num1F64, _ := num1.Float64()
 			num2F64, _ := num2.Float64()
-
 			res := math.Pow(num2F64, num1F64)
 			result = new(big.Float).SetPrec(precision).SetFloat64(res)
 
