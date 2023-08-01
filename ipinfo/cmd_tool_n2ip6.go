@@ -21,7 +21,8 @@ func printHelpToolN2IP6() {
 		`Usage: %s tool n2ip6 [<opts>] <number>
 
 Description:
-  Converts a given numeric representation to its corresponding IPv6 address, and can also evaluate a mathematical expression for conversion.
+  Converts a given numeric representation to its corresponding IPv6 address,
+  and can also evaluate a mathematical expression for conversion.
 
 Examples:
   %[1]s n2ip "4294967295 + 87"
@@ -43,5 +44,5 @@ func cmdToolN2IP6() error {
 	f.Init()
 	pflag.Parse()
 
-	return lib.CmdToolN2IP6(f, pflag.Args()[2:], printHelpToolN2IP6)
+	return lib.CmdToolN2IP6(pflag.Args()[2:], printHelpToolN2IP6)
 }

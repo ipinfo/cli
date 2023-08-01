@@ -2,37 +2,25 @@ package lib
 
 import (
 	"fmt"
-	"github.com/fatih/color"
 	"github.com/spf13/pflag"
 )
 
 // CmdToolN2IP6Flags are flags expected by CmdToolN2IP6
 type CmdToolN2IP6Flags struct {
-	Help    bool
-	NoColor bool
+	Help bool
 }
 
 // Init initializes the common flags available to CmdToolN2IP6 with sensible
 func (f *CmdToolN2IP6Flags) Init() {
-	_h := "see description in --help"
 	pflag.BoolVarP(
 		&f.Help,
 		"help", "h", false,
 		"show help.",
 	)
-	pflag.BoolVar(
-		&f.NoColor,
-		"nocolor", false,
-		_h,
-	)
 }
 
 // CmdToolN2IP6 converts a number to an IPv6 address
-func CmdToolN2IP6(f CmdToolN2IP6Flags, args []string, printHelp func()) error {
-	if f.NoColor {
-		color.NoColor = true
-	}
-
+func CmdToolN2IP6(args []string, printHelp func()) error {
 	if len(args) == 0 {
 		printHelp()
 		return nil

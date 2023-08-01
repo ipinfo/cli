@@ -24,7 +24,8 @@ func printHelpToolN2IP() {
 		`Usage: %s n2ip tool [<opts>] <number>
 
 Description:
-  Converts a given numeric representation to its corresponding IPv4 or IPv6 address, and can also evaluate a mathematical expression for conversion.
+  Converts a given numeric representation to its corresponding IPv4 or IPv6 address,
+  and can also evaluate a mathematical expression for conversion.
 
 Examples:
   %[1]s n2ip "4294967295 + 87"
