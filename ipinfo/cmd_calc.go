@@ -20,18 +20,16 @@ func printHelpCalc() {
 	fmt.Printf(
 		`Usage: %s calc <expression> [<opts>]
 
-calc <expression>
+Description:
   Evaluate a mathematical expression and print the result.
 
-Example:
+Examples:
   %[1]s calc "2*2828-1"
   %[1]s calc "190.87.89.1*2"
   %[1]s calc "2001:0db8:85a3:0000:0000:8a2e:0370:7334*6"
 
 Options:
   General:
-    --nocolor
-      disable colored output.
     --help, -h
       show help.
 `, progBase)

@@ -62,28 +62,35 @@ func InfixToPostfix(infix []string) []string {
 
 	for _, token := range infix {
 		if isOperator(token) {
-			for !postfixStack.IsEmpty() && prec(token) <= prec(postfixStack.Top()) {
-				postfix = append(postfix, postfixStack.Top())
-				postfixStack.Pop()
+			for {
+				topOfStack, isEmpty := postfixStack.Pop()
+				if isEmpty || prec(token) > prec(topOfStack) {
+					postfixStack.Push(topOfStack)
+					break
+				}
+				postfix = append(postfix, topOfStack)
 			}
 			postfixStack.Push(token)
 		} else if token == "(" {
 			postfixStack.Push(token)
 		} else if token == ")" {
-			for postfixStack.Top() != "(" {
-				postfix = append(postfix, postfixStack.Top())
-				postfixStack.Pop()
+			for {
+				topOfStack, _ := postfixStack.Pop()
+				if topOfStack == "(" {
+					break
+				}
+				postfix = append(postfix, topOfStack)
 			}
-			postfixStack.Pop()
 		} else {
 			postfix = append(postfix, token)
 		}
 	}
 
 	// Pop all the remaining elements from the stack
-	for !postfixStack.IsEmpty() {
-		postfix = append(postfix, postfixStack.Top())
-		postfixStack.Pop()
+	topOfStack, isEmpty := postfixStack.Pop()
+	for !isEmpty {
+		postfix = append(postfix, topOfStack)
+		topOfStack, isEmpty = postfixStack.Pop()
 	}
 	return postfix
 }
@@ -104,19 +111,17 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 		}
 
 		// if operator pop two elements off of the stack.
-		strNum1 := postfixStack.Top()
-		postfixStack.Pop()
-		num1, _, err := big.ParseFloat(strNum1, 10, precision, big.ToZero)
-		if err != nil {
+		strNum1, isEmpty := postfixStack.Pop()
+		if isEmpty {
 			return big.NewFloat(0), ErrInvalidInput
 		}
+		num1, _, _ := big.ParseFloat(strNum1, 10, precision, big.ToZero)
 
-		strNum2 := postfixStack.Top()
-		postfixStack.Pop()
-		num2, _, err := big.ParseFloat(strNum2, 10, precision, big.ToZero)
-		if err != nil {
+		strNum2, isEmpty := postfixStack.Pop()
+		if isEmpty {
 			return big.NewFloat(0), ErrInvalidInput
 		}
+		num2, _, _ := big.ParseFloat(strNum2, 10, precision, big.ToZero)
 
 		operator := el
 		result := new(big.Float)
@@ -149,13 +154,8 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 		postfixStack.Push(strResult)
 	}
 
-	strTop := postfixStack.Top()
-	postfixStack.Pop()
-
-	top, _, err := big.ParseFloat(strTop, 10, precision, big.ToZero)
-	if err != nil {
-		return big.NewFloat(0), ErrInvalidInput
-	}
+	strTop, _ := postfixStack.Pop()
+	top, _, _ := big.ParseFloat(strTop, 10, precision, big.ToZero)
 
 	return top, nil
 }
@@ -192,7 +192,7 @@ func translateToken(tempToken string, tokens []string) ([]string, error) {
 	return tokens, nil
 }
 
-func isValidPartOfToken(char rune) bool {
+func isValidPartOfOperand(char rune) bool {
 	validChars := `^[0-9a-fA-F:\.]*$`
 	validCharsRegx := regexp.MustCompile(validChars)
 	return validCharsRegx.MatchString(string(char))
@@ -202,20 +202,41 @@ func isValidPartOfToken(char rune) bool {
 func TokenizeInfix(infix string) ([]string, error) {
 	var tokens []string
 	var err error
+	var prevCharIsPartOfOperand bool
+	var prevCharIsClosingBracket bool
 
 	infix = "(" + infix + ")"
 	tempToken := ""
 	for _, char := range infix {
 		opchar := string(char)
-		if isValidPartOfToken(char) {
+		if isValidPartOfOperand(char) {
 			tempToken = tempToken + opchar
+			prevCharIsPartOfOperand = true
+			// If previous character was closing bracket and current character is part of operand
+			// then insert a '*' between them
+			// For example: (3+4)2 should be (3+4)*2
+			if prevCharIsClosingBracket {
+				tokens = append(tokens, "*")
+			}
+			prevCharIsClosingBracket = false
+
 		} else if char == '(' || char == ')' || isOperator(opchar) {
 			tokens, err = translateToken(tempToken, tokens)
 			if err != nil {
 				return []string{}, err
 			}
+			// If previous character was part of operand and current character is '('
+			// then insert a '*' between them
+			// For example: 2(3+4) should be 2*(3+4)
+			if prevCharIsPartOfOperand && char == '(' {
+				tokens = append(tokens, "*")
+			}
+
 			tokens = append(tokens, opchar)
 			tempToken = ""
+
+			prevCharIsPartOfOperand = false
+			prevCharIsClosingBracket = char == ')'
 		}
 	}
 	tokens = append(tokens, tempToken)

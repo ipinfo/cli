@@ -6,15 +6,15 @@ import (
 	"github.com/spf13/pflag"
 )
 
-// CmdN2IPFlags are flags expected by CmdN2IP
-type CmdN2IPFlags struct {
+// CmdToolN2IPFlags are flags expected by CmdToolN2IP
+type CmdToolN2IPFlags struct {
 	Help    bool
 	NoColor bool
 	ipv6    bool
 }
 
-// Init initializes the common flags available to CmdN2IP with sensible
-func (f *CmdN2IPFlags) Init() {
+// Init initializes the common flags available to CmdToolN2IP with sensible
+func (f *CmdToolN2IPFlags) Init() {
 	_h := "see description in --help"
 	pflag.BoolVarP(
 		&f.Help,
@@ -33,8 +33,8 @@ func (f *CmdN2IPFlags) Init() {
 	)
 }
 
-// CmdN2IP converts a number to an IP address
-func CmdN2IP(f CmdN2IPFlags, args []string, printHelp func()) error {
+// CmdToolN2IP converts a number to an IP address
+func CmdToolN2IP(f CmdToolN2IPFlags, args []string, printHelp func()) error {
 	if f.NoColor {
 		color.NoColor = true
 	}

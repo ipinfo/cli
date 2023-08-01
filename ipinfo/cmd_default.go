@@ -33,9 +33,6 @@ Commands:
   splitcidr   splits a larger CIDR into smaller CIDRs.
   mmdb        read, import and export mmdb files.
   calc 	      evaluates a mathematical expression that may contain IP addresses.
-  ip2n        convert an IPv4 or IPv6 address to its decimal representation.
-  n2ip	      evaluates an expression and converts it to IPv4 or IPv6 address.	
-  n2ip6	      evaluates an expression and converts it to IPv6 address.
   tool        misc. tools related to IPs, IP ranges and CIDRs.
   download    download free ipinfo database files.
   cache       manage the cache.

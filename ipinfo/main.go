@@ -69,12 +69,6 @@ func main() {
 		err = cmdMmdb()
 	case cmd == "calc":
 		err = cmdCalc()
-	case cmd == "ip2n":
-		err = cmdIP2n()
-	case cmd == "n2ip":
-		err = cmdN2IP()
-	case cmd == "n2ip6":
-		err = cmdN2IP6()
 	case cmd == "download":
 		err = cmdDownload()
 	case cmd == "tool":
