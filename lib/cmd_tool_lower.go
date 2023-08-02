@@ -2,6 +2,7 @@ package lib
 
 import (
 	"fmt"
+	"net"
 	"os"
 
 	"github.com/spf13/pflag"
@@ -37,32 +38,42 @@ func CmdToolLower(
 
 	stat, _ := os.Stdin.Stat()
 	isStdin := (stat.Mode() & os.ModeCharDevice) == 0
-	
+
 	if len(args) == 0 && !isStdin {
 		printHelp()
 		return nil
 	}
 
-	processCIDR := func(cidrStr string) error {
-		ipRange, err := IPRangeStrFromCIDR(cidrStr)
-		if err != nil {
-			if !f.Quiet {
-				fmt.Printf("Error parsing CIDR: %v\n", err)
-			}
-			return err
-		}
-		fmt.Println(ipRange.Start)
-		return nil
-	}
-
 	if isStdin {
-		return scanrdr(os.Stdin, processCIDR)
+		return scanrdr(os.Stdin, processIPRangeOrCIDRLower)
 	}
 
-	for _, cidrStr := range args {
-		if err := processCIDR(cidrStr); err != nil {
+	for _, input := range args {
+		if err := processIPRangeOrCIDRLower(input); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+func processIPRangeOrCIDRLower(input string) error {
+	if ipRange, err := IPRangeStrFromStr(input); err == nil {
+		// If it's an IP range, print the starting IP in the range.
+		fmt.Printf("%s\n", ipRange.Start)
+		return nil
+	}
+
+	if ip := net.ParseIP(input); ip != nil {
+		// If it's a simple IP address, print the IP itself.
+		fmt.Printf("%s\n", ip)
+		return nil
+	}
+
+	if _, ipnet, err := net.ParseCIDR(input); err == nil {
+		// If it's a CIDR, print the Starting IP address of the CIDR.
+		fmt.Printf("%s\n", ipnet.IP)
+		return nil
+	}
+
+	return fmt.Errorf("invalid input: %s", input)
 }

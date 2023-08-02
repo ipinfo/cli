@@ -24,15 +24,15 @@ func printHelpToolUpper() {
 
 Description:
   Calculates the upper IP address (end address of a network) for the given inputs.
-  Input should be CIDRs.
+  Input can be Ip, IP range or CIDR.
 
-  If input contains CIDRs, it calculates the upper IP address for each CIDRs.
-
+  If input contains CIDRs, it calculates the upper IP address for each CIDR.
+  If input contains Ip ranges, it calculates the upper IP address for each IP range.
 Examples:
-  # Calculate upper IP for a CIDR.
+  # Calculate upper IP for IP, IP range and CIDR.
   $ %[1]s tool upper 192.168.1.0/24
 
-  # Calculate upper IPs for CIDRs.
+  # Calculate upper IPs for IPs, IP ranges and CIDRs.
   $ %[1]s tool upper 192.168.1.0/24 10.0.0.0/16
 
   # Calculate upper IPs from stdin.

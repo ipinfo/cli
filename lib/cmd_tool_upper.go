@@ -2,6 +2,7 @@ package lib
 
 import (
 	"fmt"
+	"net"
 	"os"
 
 	"github.com/spf13/pflag"
@@ -43,26 +44,38 @@ func CmdToolUpper(
 		return nil
 	}
 
-	processCIDR := func(cidrStr string) error {
-		ipRange, err := IPRangeStrFromCIDR(cidrStr)
-		if err != nil {
-			if !f.Quiet {
-				fmt.Printf("Error parsing CIDR: %v\n", err)
-			}
-			return err
-		}
-		fmt.Println(ipRange.End)
-		return nil
-	}
-
 	if isStdin {
-		return scanrdr(os.Stdin, processCIDR)
+		return scanrdr(os.Stdin, processIPRangeOrCIDRUpper)
 	}
 
-	for _, cidrStr := range args {
-		if err := processCIDR(cidrStr); err != nil {
+	for _, input := range args {
+		if err := processIPRangeOrCIDRUpper(input); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+func processIPRangeOrCIDRUpper(input string) error {
+	ipRange, err := IPRangeStrFromStr(input)
+	if err == nil {
+		fmt.Println(ipRange.End)
+		return nil
+	}
+
+	if ip := net.ParseIP(input); ip != nil {
+		fmt.Println(input)
+		return nil
+	}
+
+	if _, ipnet, err := net.ParseCIDR(input); err == nil {
+		ipRange, err := IPRangeStrFromCIDR(ipnet.String())
+		if err == nil {
+			fmt.Println(ipRange.End)
+			return nil
+		}
+	}
+
+	fmt.Printf("Error parsing input: %v\n", err)
+	return err
 }
