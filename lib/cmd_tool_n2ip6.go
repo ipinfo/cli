@@ -32,11 +32,7 @@ func CmdToolN2IP6(f CmdToolN2IP6Flags, args []string, printHelp func()) error {
 		return ErrInvalidInput
 	}
 
-	// n2ip also accepts an expression which is why the following
-	// Steps are being done
-	// Convert to postfix
-	// If it is a single number and not an expression
-	// The tokenization and evaluation would have no effect on the number
+	// NOTE: n2ip6 also accepts an expression, hence the tokenization and evaluation.
 
 	// Tokenize the expression
 	tokens, err := TokenizeInfix(expression)
