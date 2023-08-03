@@ -122,11 +122,11 @@ func CmdGrepIP(
 	// prepare regexp
 	var rexp *regexp.Regexp
 	if ipv == 4 {
-		rexp = regexp.MustCompilePOSIX(ipV4RgxPattern)
+		rexp = ipV4Regex
 	} else if ipv == 6 {
-		rexp = regexp.MustCompilePOSIX(ipV4RgxPattern)
+		rexp = ipV6Regex
 	} else {
-		rexp = regexp.MustCompilePOSIX(ipV4RgxPattern + "|" + ipV6RgxPattern)
+		rexp = ipRegex
 	}
 
 	fmtSrc := color.New(color.FgMagenta)

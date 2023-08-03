@@ -313,7 +313,7 @@ func digitsAfterDecimal(float big.Float) int {
 
 // CmdCalc Function is the handler for the "calc" command.
 func CmdCalc(f CmdCalcFlags, args []string, printHelp func()) error {
-	if len(args) == 0 {
+	if len(args) == 0 || f.Help {
 		printHelp()
 		return nil
 	}

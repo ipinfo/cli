@@ -25,11 +25,11 @@ Description:
   and can also evaluate a mathematical expression for conversion.
 
 Examples:
-  %[1]s n2ip "4294967295 + 87"
-  %[1]s n2ip "4294967295"
-  %[1]s n2ip "201523715"
-  %[1]s n2ip "51922968585348276285304963292200960"
-  %[1]s n2ip "a:: - 4294967295"
+  %[1]s n2ip6 "4294967295 + 87"
+  %[1]s n2ip6 "4294967295"
+  %[1]s n2ip6 "201523715"
+  %[1]s n2ip6 "51922968585348276285304963292200960"
+  %[1]s n2ip6 "a:: - 4294967295"
 
 Options:
   General:
@@ -44,5 +44,5 @@ func cmdToolN2IP6() error {
 	f.Init()
 	pflag.Parse()
 
-	return lib.CmdToolN2IP6(pflag.Args()[2:], printHelpToolN2IP6)
+	return lib.CmdToolN2IP6(f, pflag.Args()[2:], printHelpToolN2IP6)
 }

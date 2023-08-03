@@ -43,5 +43,5 @@ func cmdToolIP2n() error {
 	f.Init()
 	pflag.Parse()
 
-	return lib.CmdToolIP2n(pflag.Args()[2:], printHelpToolIp2n)
+	return lib.CmdToolIP2n(f, pflag.Args()[2:], printHelpToolIp2n)
 }

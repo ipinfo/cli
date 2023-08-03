@@ -20,8 +20,8 @@ func (f *CmdToolIP2nFlags) Init() {
 }
 
 // CmdToolIP2n converts an IP address to a number
-func CmdToolIP2n(args []string, printHelp func()) error {
-	if len(args) == 0 {
+func CmdToolIP2n(f CmdToolIP2nFlags, args []string, printHelp func()) error {
+	if len(args) == 0 || f.Help {
 		printHelp()
 		return nil
 	}

@@ -39,7 +39,6 @@ func DecimalStrToIP(decimal string, forceIPv6 bool) (net.IP, error) {
 		fmt.Print(decimal)
 		return nil, ErrInvalidInput
 	}
-
 	// Convert to IPv4 if not forcing IPv6 and 'num' is within the IPv4 range
 	if !forceIPv6 && num.Cmp(big.NewInt(4294967295)) <= 0 {
 		ip := make(net.IP, 4)
@@ -47,7 +46,6 @@ func DecimalStrToIP(decimal string, forceIPv6 bool) (net.IP, error) {
 		copy(ip[4-len(b):], b)
 		return ip, nil
 	}
-
 	// Convert to IPv6 if 'num' is within the IPv6 range
 	maxIpv6 := new(big.Int)
 	maxIpv6.SetString("340282366920938463463374607431768211455", 10)
@@ -57,7 +55,6 @@ func DecimalStrToIP(decimal string, forceIPv6 bool) (net.IP, error) {
 		copy(ip[16-len(b):], b)
 		return ip, nil
 	}
-
 	return nil, ErrInvalidInput
 }
 

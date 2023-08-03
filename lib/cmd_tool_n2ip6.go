@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"errors"
 	"fmt"
 	"github.com/spf13/pflag"
 )
@@ -20,8 +21,8 @@ func (f *CmdToolN2IP6Flags) Init() {
 }
 
 // CmdToolN2IP6 converts a number to an IPv6 address
-func CmdToolN2IP6(args []string, printHelp func()) error {
-	if len(args) == 0 {
+func CmdToolN2IP6(f CmdToolN2IP6Flags, args []string, printHelp func()) error {
+	if len(args) == 0 || f.Help {
 		printHelp()
 		return nil
 	}
@@ -49,13 +50,12 @@ func CmdToolN2IP6(args []string, printHelp func()) error {
 	if err != nil {
 		return err
 	}
-
 	// Convert to IP
 	// Precision should be 0 i.e. number of digits after decimal
 	// as ip cannot be derived from a float
 	res, err := DecimalStrToIP(result.Text('f', 0), true)
 	if err != nil {
-		return err
+		return errors.New("number is too large")
 	}
 
 	fmt.Println(res.String())
