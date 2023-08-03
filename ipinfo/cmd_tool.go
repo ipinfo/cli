@@ -28,9 +28,9 @@ func printHelpTool() {
 
 Commands:
   aggregate    aggregate IPs, IP ranges, and CIDRs.
+  lower        get start IP of IPs, IP ranges, and CIDRs.
+  upper        get end IP of IPs, IP ranges, and CIDRs.
 
-  lower        get start IP of IP, IP ranges, and CIDRs.
-  upper        get end IP of IP, IP ranges, and CIDRs.
 Options:
   --help, -h
     show help.

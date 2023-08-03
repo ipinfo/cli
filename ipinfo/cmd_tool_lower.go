@@ -20,14 +20,11 @@ var completionsToolLower = &complete.Command{
 
 func printHelpToolLower() {
 	fmt.Printf(
-		`Usage: %s tool lower [<opts>] <cidr>
+		`Usage: %s tool lower [<opts>] <cidr | ip | ip-range | file>
 
 Description:
   Calculates the lower IP address (start address of a network) for the given inputs.
-  Input can be IP, IP range or CIDR.
-  
-  If input contains CIDRs, it calculates the lower IP address for each CIDR.
-  If input contains IP ranges, it calculates the lower IP address for each Ip range.
+  Input can be a mixture of IPs, IP ranges or CIDRs.
   
 Examples:
   # Calculate lower IP for IP, IP range and CIDR.
@@ -52,5 +49,5 @@ func cmdToolLower() (err error) {
 	f.Init()
 	pflag.Parse()
 
-	return lib.CmdToolLower(f, pflag.Args()[2:], printHelpToolLower)
+	return lib.CmdToolLower(f, pflag.Args()[2:], printHelpToolLower, true, true, true, true)
 }

@@ -30,22 +30,30 @@ func CmdToolUpper(
 	f CmdToolUpperFlags,
 	args []string,
 	printHelp func(),
+	stdin bool,
+	ip bool,
+	iprange bool,
+	cidr bool,
 ) error {
 	if f.Help {
 		printHelp()
 		return nil
 	}
 
-	stat, _ := os.Stdin.Stat()
-	isStdin := (stat.Mode() & os.ModeCharDevice) == 0
+	if stdin {
+		stat, _ := os.Stdin.Stat()
 
-	if len(args) == 0 && !isStdin {
-		printHelp()
-		return nil
-	}
+		isPiped := (stat.Mode() & os.ModeNamedPipe) != 0
+		isTyping := (stat.Mode()&os.ModeCharDevice) != 0 && len(args) == 0
 
-	if isStdin {
-		return scanrdr(os.Stdin, processIPRangeOrCIDRUpper)
+		if isTyping {
+			fmt.Println("** manual input mode **")
+			fmt.Println("Enter all IPs, one per line:")
+		}
+
+		if isPiped || isTyping || stat.Size() > 0 {
+			return scanrdr(os.Stdin, processIPRangeOrCIDRUpper)
+		}
 	}
 
 	for _, input := range args {
@@ -75,7 +83,5 @@ func processIPRangeOrCIDRUpper(input string) error {
 			return nil
 		}
 	}
-
-	fmt.Printf("Error parsing input: %v\n", err)
-	return err
+	return ErrInvalidInput
 }

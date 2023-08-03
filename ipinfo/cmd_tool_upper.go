@@ -20,14 +20,12 @@ var completionsToolUpper = &complete.Command{
 
 func printHelpToolUpper() {
 	fmt.Printf(
-		`Usage: %s tool upper [<opts>] <cidr>
+		`Usage: %s tool upper [<opts>] <cidr | ip | ip-range | file>
 
 Description:
   Calculates the upper IP address (end address of a network) for the given inputs.
-  Input can be Ip, IP range or CIDR.
+  Input can be a mixture of Ips, IP ranges or CIDRs.
 
-  If input contains CIDRs, it calculates the upper IP address for each CIDR.
-  If input contains Ip ranges, it calculates the upper IP address for each IP range.
 Examples:
   # Calculate upper IP for IP, IP range and CIDR.
   $ %[1]s tool upper 192.168.1.0/24
@@ -51,5 +49,5 @@ func cmdToolUpper() (err error) {
 	f.Init()
 	pflag.Parse()
 
-	return lib.CmdToolUpper(f, pflag.Args()[2:], printHelpToolUpper)
+	return lib.CmdToolUpper(f, pflag.Args()[2:], printHelpToolUpper, true, true, true, true)
 }
