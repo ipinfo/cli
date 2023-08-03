@@ -82,8 +82,8 @@ func cmdDownload() error {
 		return nil
 	}
 
-	var token string
-	if fTok == "" {
+	token := fTok
+	if token == "" {
 		token = gConfig.Token
 	}
 
