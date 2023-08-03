@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/cli/lib/complete"
@@ -71,10 +70,6 @@ func cmdASNBulk() error {
 	pflag.Parse()
 
 	ii = prepareIpinfoClient(f.Token)
-	if ii.Token == "" && gConfig.Token == "" {
-		return errors.New("bulk lookups require a token; login via `ipinfo init`.")
-	}
-
 	data, err := lib.CmdASNBulk(f, ii, pflag.Args()[2:], printHelpASNBulk)
 	if err != nil {
 		return err
