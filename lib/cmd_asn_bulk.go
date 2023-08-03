@@ -87,10 +87,6 @@ func CmdASNBulk(f CmdASNBulkFlags, ii *ipinfo.Client, args []string, printHelp f
 		}
 	}
 
-	if ii.Token == "" {
-		return nil, errors.New("bulk lookups require a token; login via `ipinfo init`.")
-	}
-
 	for _, arg := range args {
 		// Convert to uppercase
 		asnUpperCase := strings.ToUpper(arg)
