@@ -25,7 +25,7 @@ func IPtoDecimalStr(strIP string) (string, error) {
 		}
 		return strconv.FormatInt(IP4toInt(ip), 10), nil
 	} else {
-		return "", ErrInvalidInput
+		return "", ErrNotIP
 	}
 }
 
