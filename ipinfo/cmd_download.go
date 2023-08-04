@@ -201,7 +201,7 @@ func downloadDb(url string, fileName string, format string, zip bool) error {
 			}
 		}
 
-		fmt.Printf("Database %s saved successfully.", fileName)
+		fmt.Printf("Database %s saved successfully.\n", fileName)
 	}
 
 	return nil
