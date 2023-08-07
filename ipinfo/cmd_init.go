@@ -144,7 +144,6 @@ func cmdInit() error {
 		return nil
 	} else if opt == 2 {
 		res, err := http.Get("https://ipinfo.io/signup/cli")
-
 		if res.StatusCode == http.StatusTooManyRequests {
 			return errors.New("too many requests. Please try again later")
 		}
