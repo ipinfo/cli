@@ -147,9 +147,8 @@ func cmdDownload() error {
 	url := fmt.Sprintf("%s%s.%s?token=%s", dbDownloadURL, dbName, format, token)
 	err := downloadDb(url, fileName, format, fZip)
 
-	// check if checksums match.
+	// fetch checksums from API and check if they match.
 	checksumUrl := fmt.Sprintf("%s%s.%s/checksums?token=%s", dbDownloadURL, dbName, format, token)
-	// fetch checksums from API.
 	checksumResponse, err := fetchChecksums(checksumUrl)
 	if err != nil {
 		return err
