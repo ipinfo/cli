@@ -1,9 +1,11 @@
 package lib
 
 import (
+	"bufio"
 	"fmt"
 	"net"
 	"os"
+	"strings"
 
 	"github.com/spf13/pflag"
 )
@@ -40,48 +42,74 @@ func CmdToolUpper(
 		return nil
 	}
 
-	if stdin {
-		stat, _ := os.Stdin.Stat()
-
-		isPiped := (stat.Mode() & os.ModeNamedPipe) != 0
-		isTyping := (stat.Mode()&os.ModeCharDevice) != 0 && len(args) == 0
-
-		if isTyping {
-			fmt.Println("** manual input mode **")
-			fmt.Println("Enter all IPs, one per line:")
-		}
-
-		if isPiped || isTyping || stat.Size() > 0 {
-			return scanrdr(os.Stdin, processIPRangeOrCIDRUpper)
-		}
+	actionStdin := func(input string, iprange, cidr bool) {
+		ActionForStdinUpper(input, iprange, cidr)
+	}
+	actionRange := func(input string) {
+		ActionForRangeUpper(input)
+	}
+	actionCidr := func(input string) {
+		ActionForCIDRUpper(input)
+	}
+	actionFile := func(input string, iprange, cidr bool) {
+		ActionForFileUpper(input, iprange, cidr)
 	}
 
-	for _, input := range args {
-		if err := processIPRangeOrCIDRUpper(input); err != nil {
-			return err
-		}
+	// Process inputs using the IPInputAction function.
+	err := IPInputAction(args, true, true, true, true, true,
+		actionStdin, actionRange, actionCidr, actionFile)
+	if err != nil {
+		fmt.Println(err)
 	}
+
 	return nil
 }
 
-func processIPRangeOrCIDRUpper(input string) error {
+func ActionForStdinUpper(input string, iprange bool, cidr bool) {
+	ip := net.ParseIP(input)
+	if ip != nil {
+		fmt.Println(ip)
+	} else if iprange {
+		ActionForRangeUpper(input)
+	} else if cidr {
+		ActionForCIDRUpper(input)
+	}
+}
+
+func ActionForRangeUpper(input string) {
 	ipRange, err := IPRangeStrFromStr(input)
 	if err == nil {
 		fmt.Println(ipRange.End)
-		return nil
 	}
+}
 
-	if ip := net.ParseIP(input); ip != nil {
-		fmt.Println(input)
-		return nil
-	}
-
-	if _, ipnet, err := net.ParseCIDR(input); err == nil {
+func ActionForCIDRUpper(input string) {
+	_, ipnet, err := net.ParseCIDR(input)
+	if err == nil {
 		ipRange, err := IPRangeStrFromCIDR(ipnet.String())
 		if err == nil {
 			fmt.Println(ipRange.End)
-			return nil
 		}
 	}
-	return ErrInvalidInput
+}
+
+func ActionForFileUpper(pathToFile string, iprange bool, cidr bool) {
+	f, err := os.Open(pathToFile)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		input := strings.TrimSpace(scanner.Text())
+		if input == "" {
+			continue
+		}
+		ActionForStdinUpper(input, iprange, cidr)
+	}
+	if err := scanner.Err(); err != nil {
+		fmt.Println(err)
+	}
 }

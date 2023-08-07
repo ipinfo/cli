@@ -20,7 +20,7 @@ var completionsToolUpper = &complete.Command{
 
 func printHelpToolUpper() {
 	fmt.Printf(
-		`Usage: %s tool upper [<opts>] <cidr | ip | ip-range | file>
+		`Usage: %s tool upper [<opts>] <cidr | ip | ip-range | filepath>
 
 Description:
   Calculates the upper IP address (end address of a network) for the given inputs.
@@ -49,5 +49,5 @@ func cmdToolUpper() (err error) {
 	f.Init()
 	pflag.Parse()
 
-	return lib.CmdToolUpper(f, pflag.Args()[2:], printHelpToolUpper, true, true, true, true)
+	return lib.CmdToolUpper(f, pflag.Args()[2:], printHelpToolUpper)
 }

@@ -20,7 +20,7 @@ var completionsToolLower = &complete.Command{
 
 func printHelpToolLower() {
 	fmt.Printf(
-		`Usage: %s tool lower [<opts>] <cidr | ip | ip-range | file>
+		`Usage: %s tool lower [<opts>] <cidr | ip | ip-range | filepath>
 
 Description:
   Calculates the lower IP address (start address of a network) for the given inputs.
@@ -49,5 +49,5 @@ func cmdToolLower() (err error) {
 	f.Init()
 	pflag.Parse()
 
-	return lib.CmdToolLower(f, pflag.Args()[2:], printHelpToolLower, true, true, true, true)
+	return lib.CmdToolLower(f, pflag.Args()[2:], printHelpToolLower)
 }
