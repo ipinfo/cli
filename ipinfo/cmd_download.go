@@ -146,6 +146,9 @@ func cmdDownload() error {
 
 	url := fmt.Sprintf("%s%s.%s?token=%s", dbDownloadURL, dbName, format, token)
 	err := downloadDb(url, fileName, format, fZip)
+	if err != nil {
+		return err
+	}
 
 	// fetch checksums from API and check if they match.
 	checksumUrl := fmt.Sprintf("%s%s.%s/checksums?token=%s", dbDownloadURL, dbName, format, token)
@@ -163,10 +166,6 @@ func cmdDownload() error {
 	// compare checksums.
 	if localChecksum != checksumResponse.Checksums.SHA256 {
 		return errors.New("checksums do not match. File might be corrupted")
-	}
-
-	if err != nil {
-		return err
 	}
 
 	return nil
@@ -288,8 +287,8 @@ func fetchChecksums(url string) (*ChecksumResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
 
+	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
