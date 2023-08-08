@@ -32,6 +32,7 @@ Commands:
   randip      Generates random IPs.
   splitcidr   splits a larger CIDR into smaller CIDRs.
   mmdb        read, import and export mmdb files.
+  calc 	      evaluates a mathematical expression that may contain IP addresses.
   tool        misc. tools related to IPs, IP ranges and CIDRs.
   download    download free ipinfo database files.
   cache       manage the cache.

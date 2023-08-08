@@ -23,6 +23,7 @@ var completions = &complete.Command{
 		"randip":     completionsRandIP,
 		"splitcidr":  completionsSplitCIDR,
 		"mmdb":       completionsMmdb,
+		"calc":       completionsCalc,
 		"tool":       completionsTool,
 		"download":   completionsDownload,
 		"cache":      completionsCache,

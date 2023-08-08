@@ -67,6 +67,8 @@ func main() {
 		err = cmdSplitCIDR()
 	case cmd == "mmdb":
 		err = cmdMmdb()
+	case cmd == "calc":
+		err = cmdCalc()
 	case cmd == "download":
 		err = cmdDownload()
 	case cmd == "tool":
