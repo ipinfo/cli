@@ -8,27 +8,27 @@ import (
 // Core represents data from the Core API.
 type Core struct {
 	IP              net.IP          `json:"ip" csv:"ip"`
-	Hostname        string          `json:"hostname,omitempty" csv:"hostname"`
-	Bogon           bool            `json:"bogon,omitempty" csv:"bogon"`
-	Anycast         bool            `json:"anycast,omitempty" csv:"anycast"`
-	City            string          `json:"city,omitempty" csv:"city"`
-	Region          string          `json:"region,omitempty" csv:"region"`
-	Country         string          `json:"country,omitempty" csv:"country"`
-	CountryName     string          `json:"country_name,omitempty" csv:"country_name"`
-	CountryFlag     CountryFlag     `json:"country_flag,omitempty" csv:"country_flag_,inline"`
-	CountryCurrency CountryCurrency `json:"country_currency,omitempty" csv:"country_currency_,inline"`
-	Continent       Continent       `json:"continent,omitempty" csv:"continent_,inline"`
-	IsEU            bool            `json:"isEU,omitempty" csv:"isEU"`
-	Location        string          `json:"loc,omitempty" csv:"loc"`
-	Org             string          `json:"org,omitempty" csv:"org"`
-	Postal          string          `json:"postal,omitempty" csv:"postal"`
-	Timezone        string          `json:"timezone,omitempty" csv:"timezone"`
-	ASN             *CoreASN        `json:"asn,omitempty" csv:"asn_,inline"`
-	Company         *CoreCompany    `json:"company,omitempty" csv:"company_,inline"`
-	Carrier         *CoreCarrier    `json:"carrier,omitempty" csv:"carrier_,inline"`
-	Privacy         *CorePrivacy    `json:"privacy,omitempty" csv:"privacy_,inline"`
-	Abuse           *CoreAbuse      `json:"abuse,omitempty" csv:"abuse_,inline"`
-	Domains         *CoreDomains    `json:"domains,omitempty" csv:"domains_,inline"`
+	Hostname        string          `json:"hostname,omitempty" csv:"hostname" yaml:"hostname,omitempty"`
+	Bogon           bool            `json:"bogon,omitempty" csv:"bogon" yaml:"bogon,omitempty"`
+	Anycast         bool            `json:"anycast,omitempty" csv:"anycast" yaml:"anycast,omitempty"`
+	City            string          `json:"city,omitempty" csv:"city" yaml:"city,omitempty"`
+	Region          string          `json:"region,omitempty" csv:"region" yaml:"region,omitempty"`
+	Country         string          `json:"country,omitempty" csv:"country" yaml:"country,omitempty"`
+	CountryName     string          `json:"country_name,omitempty" csv:"country_name" yaml:"countryName,omitempty"`
+	CountryFlag     CountryFlag     `json:"country_flag,omitempty" csv:"country_flag_,inline" yaml:"countryFlag,omitempty"`
+	CountryCurrency CountryCurrency `json:"country_currency,omitempty" csv:"country_currency_,inline "yaml:"countryCurrency,omitempty"`
+	Continent       Continent       `json:"continent,omitempty" csv:"continent_,inline" yaml:"continent,omitempty"`
+	IsEU            bool            `json:"isEU,omitempty" csv:"isEU" yaml:"isEU,omitempty"`
+	Location        string          `json:"loc,omitempty" csv:"loc" yaml:"location,omitempty"`
+	Org             string          `json:"org,omitempty" csv:"org" yaml:"org,omitempty"`
+	Postal          string          `json:"postal,omitempty" csv:"postal" yaml:"postal,omitempty"`
+	Timezone        string          `json:"timezone,omitempty" csv:"timezone" yaml:"timezone,omitempty"`
+	ASN             *CoreASN        `json:"asn,omitempty" csv:"asn_,inline" yaml:"ASN,omitempty"`
+	Company         *CoreCompany    `json:"company,omitempty" csv:"company_,inline" yaml:"company,omitempty"`
+	Carrier         *CoreCarrier    `json:"carrier,omitempty" csv:"carrier_,inline" yaml:"carrier,omitempty"`
+	Privacy         *CorePrivacy    `json:"privacy,omitempty" csv:"privacy_,inline" yaml:"privacy,omitempty"`
+	Abuse           *CoreAbuse      `json:"abuse,omitempty" csv:"abuse_,inline" yaml:"abuse,omitempty"`
+	Domains         *CoreDomains    `json:"domains,omitempty" csv:"domains_,inline" yaml:"domains,omitempty"`
 }
 
 // CoreASN represents ASN data for the Core API.

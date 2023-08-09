@@ -1,16 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"net"
-	"reflect"
-
 	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
+	"net"
 )
 
 var completionsIP = &complete.Command{
@@ -113,31 +110,9 @@ func cmdIP(ipStr string) error {
 		return outputCSV(data)
 	}
 	if fYAML {
-		// Convert struct to map
-		var initialMap map[string]interface{}
-		tempJSON, _ := json.Marshal(data)
-		json.Unmarshal(tempJSON, &initialMap)
-
-		// Remove nil values from map
-		cleanedData := removeNilValues(initialMap)
-
-		// Output as YAML
-		return outputYAML(cleanedData)
+		return outputYAML(data)
 	}
 
 	outputFriendlyCore(data)
 	return nil
-}
-
-func removeNilValues(data interface{}) interface{} {
-	if reflect.ValueOf(data).Kind() == reflect.Map {
-		cleanedMap := make(map[string]interface{})
-		for k, v := range data.(map[string]interface{}) {
-			if v != nil {
-				cleanedMap[k] = removeNilValues(v)
-			}
-		}
-		return cleanedMap
-	}
-	return data
 }
