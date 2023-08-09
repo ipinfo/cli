@@ -1,10 +1,11 @@
 Source: ipinfo
+Standards-Version: 4.6.2
 Maintainer: IPinfo <support@ipinfo.io>
 Section: utils
 Priority: optional
 Build-Depends: debhelper-compat (= 12),
                dh-golang,
-               golang-1.16
+               golang-1.18
 Vcs-Git: https://github.com/ipinfo/cli
 Vcs-browser: https://github.com/ipinfo/cli
 Homepage: https://ipinfo.io
