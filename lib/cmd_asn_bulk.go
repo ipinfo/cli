@@ -1,12 +1,9 @@
 package lib
 
 import (
-	"bufio"
 	"errors"
-	"fmt"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
-	"os"
 	"strings"
 )
 
@@ -66,88 +63,35 @@ func CmdASNBulk(f CmdASNBulkFlags, ii *ipinfo.Client, args []string, printHelp f
 
 	var asns []string
 
-	if len(args) == 0 {
-		fmt.Println("** manual input mode **\nEnter all ASNs, one per line:")
-		args = ReadStringsFromStdin()
-		if len(args) == 0 {
-			return nil, errors.New("no input ASNs")
+	op := func(string string, inputType INPUT_TYPE) error {
+		switch inputType {
+		case INPUT_TYPE_ASN:
+			asns = append(asns, strings.ToUpper(string))
+		case INPUT_TYPE_FILE:
+			lines, err := readStringsFromFile(string)
+			if err != nil {
+				return err
+			}
+			for _, line := range lines {
+				asns = append(asns, strings.ToUpper(line))
+			}
+		default:
+			return ErrInvalidInput
 		}
+		return nil
 	}
 
-	for i := 0; i < len(args); i++ {
-		if strings.HasSuffix(args[i], ".txt") {
-			lines, err := readStringsFromFile(args[i])
-			if err != nil {
-				return nil, err
-			}
-			// Remove arg from args
-			args = append(args[:i], args[i+1:]...)
-			i-- // Adjust the index as the slice length changes
-			args = append(args, lines...)
-		}
+	err := getInputFrom(args, true, op)
+	if err != nil {
+		return nil, err
 	}
 
 	if ii.Token == "" {
 		return nil, errors.New("bulk lookups require a token; login via `ipinfo init`.")
 	}
 
-	for _, arg := range args {
-		// Convert to uppercase
-		asnUpperCase := strings.ToUpper(arg)
-		// Validate ASN
-		if !StrIsASNStr(asnUpperCase) {
-			return nil, ErrInvalidInput
-		}
-		asns = append(asns, asnUpperCase)
-	}
-
 	return ii.GetASNDetailsBatch(asns, ipinfo.BatchReqOpts{
 		TimeoutPerBatch:              60 * 30, // 30min
 		ConcurrentBatchRequestsLimit: 20,
 	})
-}
-
-// ReadStringsFromStdin reads strings from stdin until an empty line is entered.
-func ReadStringsFromStdin() []string {
-	var inputLines []string
-	scanner := bufio.NewScanner(os.Stdin)
-
-	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
-		if line == "" {
-			break
-		}
-		inputLines = append(inputLines, line)
-	}
-	return inputLines
-}
-
-// readStringsFromFile reads strings from a file, one per line.
-func readStringsFromFile(filename string) ([]string, error) {
-	var lines []string
-
-	file, err := os.Open(filename)
-	if err != nil {
-		return nil, err
-	}
-	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
-			return // ignore errors on close
-		}
-	}(file)
-
-	scanner := bufio.NewScanner(file)
-	scanner.Split(bufio.ScanWords) // Set the scanner to split on spaces and newlines
-
-	for scanner.Scan() {
-		word := scanner.Text()
-		lines = append(lines, word)
-	}
-
-	if err := scanner.Err(); err != nil {
-		return nil, err
-	}
-
-	return lines, nil
 }
