@@ -12,6 +12,8 @@ import (
 var completionsTool = &complete.Command{
 	Sub: map[string]*complete.Command{
 		"aggregate": completionsToolAggregate,
+		"next":      completionsToolNext,
+		"prev":      completionsToolPrev,
 	},
 	Flags: map[string]complete.Predictor{
 		"-h":     predict.Nothing,
@@ -26,6 +28,8 @@ func printHelpTool() {
 
 Commands:
   aggregate    aggregate IPs, IP ranges, and CIDRs.
+  next         get next IP of IPs
+  prev         get previous IP of IPs
 
 Options:
   --help, -h
@@ -56,6 +60,10 @@ func cmdTool() error {
 	switch {
 	case cmd == "aggregate":
 		err = cmdToolAggregate()
+	case cmd == "next":
+		err = cmdToolNext()
+	case cmd == "prev":
+		err = cmdToolPrev()
 	default:
 		err = toolHelp()
 	}
