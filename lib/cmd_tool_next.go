@@ -38,14 +38,15 @@ func CmdToolNext(
 		return nil
 	}
 
+	increment := 1
+
 	actionStdin := func(input string) {
-		ActionForStdinNext(input)
+		ActionForStdinNextPrev(input, increment)
 	}
 	actionFile := func(input string) {
-		ActionForFileNext(input)
+		ActionForFileNextPrev(input, increment)
 	}
 
-	// Process inputs using the IPInputAction function.
 	err := IPInputAction(args, true, true, false, false, true,
 		actionStdin, nil, nil, actionFile)
 	if err != nil {
@@ -55,15 +56,15 @@ func CmdToolNext(
 	return nil
 }
 
-func ActionForStdinNext(input string) {
+func ActionForStdinNextPrev(input string, delta int) {
 	ip := net.ParseIP(input)
 	if ip != nil {
-		nextIP := NextIP(ip)
-		fmt.Println(nextIP)
+		nextPrevIP := CalculateNextPrevIP(ip, delta)
+		fmt.Println(nextPrevIP)
 	}
 }
 
-func ActionForFileNext(pathToFile string) {
+func ActionForFileNextPrev(pathToFile string, delta int) {
 	f, err := os.Open(pathToFile)
 	if err != nil {
 		fmt.Println(err)
@@ -77,25 +78,33 @@ func ActionForFileNext(pathToFile string) {
 		if input == "" {
 			continue
 		}
-		ActionForStdinNext(input) // Process each IP from the file
+		ActionForStdinNextPrev(input, delta) // Process each IP from the file
 	}
 	if err := scanner.Err(); err != nil {
 		fmt.Println(err)
 	}
 }
 
-func NextIP(ip net.IP) net.IP {
-	nextIP := make(net.IP, len(ip))
-	copy(nextIP, ip)
+func CalculateNextPrevIP(ip net.IP, delta int) net.IP {
+	nextPrevIP := make(net.IP, len(ip))
+	copy(nextPrevIP, ip)
 
-	for i := len(nextIP) - 1; i >= 0; i-- {
-		if nextIP[i] < 255 {
-			nextIP[i]++
-			break
-		} else {
-			nextIP[i] = 0
+	for i := len(nextPrevIP) - 1; i >= 0; i-- {
+		if delta > 0 {
+			if nextPrevIP[i] < 255-byte(delta) {
+				nextPrevIP[i] += byte(delta)
+				break
+			} else {
+				nextPrevIP[i] = 255
+			}
+		} else if delta < 0 {
+			if nextPrevIP[i] >= byte(-delta) {
+				nextPrevIP[i] += byte(delta)
+				break
+			} else {
+				nextPrevIP[i] = 0
+			}
 		}
 	}
-
-	return nextIP
+	return nextPrevIP
 }
