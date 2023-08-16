@@ -134,7 +134,7 @@ func cmdInit() error {
 		}
 
 		// save token to file.
-		gConfig.Token = newtoken
+		gConfig.Token = tok
 		if err := SaveConfig(gConfig); err != nil {
 			return err
 		}

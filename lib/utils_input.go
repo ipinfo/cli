@@ -13,10 +13,24 @@ const (
 	INPUT_TYPE_IP       INPUT_TYPE = "IP"
 	INPUT_TYPE_IP_RANGE INPUT_TYPE = "IPRange"
 	INPUT_TYPE_CIDR     INPUT_TYPE = "CIDR"
-	INPUT_TYPE_FILE     INPUT_TYPE = "File"
 	INPUT_TYPE_ASN      INPUT_TYPE = "ASN"
 	INPUT_TYPE_UNKNOWN  INPUT_TYPE = "Unknown"
 )
+
+func inputHelper(str string, op func(string, INPUT_TYPE) error) error {
+	switch {
+	case StrIsIPStr(str):
+		return op(str, INPUT_TYPE_IP)
+	case StrIsIPRangeStr(str):
+		return op(str, INPUT_TYPE_IP_RANGE)
+	case StrIsCIDRStr(str):
+		return op(str, INPUT_TYPE_CIDR)
+	case StrIsASNStr(str):
+		return op(str, INPUT_TYPE_ASN)
+	default:
+		return op(str, INPUT_TYPE_UNKNOWN)
+	}
+}
 
 // getInputFrom retrieves input data from various sources and processes it using the provided operation.
 // The operation is called for each input string with input type.
@@ -36,6 +50,7 @@ const (
 func getInputFrom(
 	inputs []string,
 	stdin bool,
+	file bool,
 	op func(input string, inputType INPUT_TYPE) error,
 ) error {
 	if !stdin && len(inputs) == 0 {
@@ -55,7 +70,10 @@ func getInputFrom(
 		}
 
 		if isPiped || isTyping || stat.Size() > 0 {
-			inputs = append(inputs, ReadStringsFromStdin()...)
+			err := ProcessStringsFromStdin(op)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -69,8 +87,8 @@ func getInputFrom(
 			err = op(input, INPUT_TYPE_IP_RANGE)
 		case StrIsCIDRStr(input):
 			err = op(input, INPUT_TYPE_CIDR)
-		case FileExists(input):
-			err = op(input, INPUT_TYPE_FILE)
+		case file && FileExists(input):
+			err = ProcessStringsFromFile(input, op)
 		case StrIsASNStr(input):
 			err = op(input, INPUT_TYPE_ASN)
 		default:
@@ -83,13 +101,11 @@ func getInputFrom(
 	return nil
 }
 
-// readStringsFromFile reads strings from a file, one per line.
-func readStringsFromFile(filename string) ([]string, error) {
-	var lines []string
-
+// ProcessStringsFromFile reads strings from a file and passes it to op, one per line.
+func ProcessStringsFromFile(filename string, op func(input string, inputType INPUT_TYPE) error) error {
 	file, err := os.Open(filename)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer func(file *os.File) {
 		err := file.Close()
@@ -102,28 +118,28 @@ func readStringsFromFile(filename string) ([]string, error) {
 	scanner.Split(bufio.ScanWords) // Set the scanner to split on spaces and newlines
 
 	for scanner.Scan() {
-		word := scanner.Text()
-		lines = append(lines, word)
+		err = inputHelper(scanner.Text(), op)
 	}
 
 	if err := scanner.Err(); err != nil {
-		return nil, err
+		return err
 	}
 
-	return lines, nil
+	return nil
 }
 
-// ReadStringsFromStdin reads strings from stdin until an empty line is entered.
-func ReadStringsFromStdin() []string {
-	var inputLines []string
+// ProcessStringsFromStdin reads strings from stdin until an empty line is entered.
+func ProcessStringsFromStdin(op func(input string, inputType INPUT_TYPE) error) error {
 	scanner := bufio.NewScanner(os.Stdin)
-
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
 		if line == "" {
 			break
 		}
-		inputLines = append(inputLines, line)
+		err := inputHelper(line, op)
+		if err != nil {
+			return err
+		}
 	}
-	return inputLines
+	return nil
 }

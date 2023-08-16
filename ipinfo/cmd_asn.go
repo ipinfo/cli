@@ -35,6 +35,8 @@ Options:
 `, progBase)
 }
 
+func cmdASNDefaultHandler
+
 // cmdASN is the handler for the "asn" command.
 func cmdASN() error {
 	var err error
@@ -60,7 +62,7 @@ func cmdASN() error {
 		pflag.Parse()
 
 		ii = prepareIpinfoClient(f.Token)
-		data, err := lib.CmdASNBulk(f, ii, lib.ReadStringsFromStdin(), printHelpASNBulk)
+		data, err := lib.CmdASNBulk(f, ii, lib.ProcessStringsFromStdin(), printHelpASNBulk)
 		if err != nil {
 			return err
 		}

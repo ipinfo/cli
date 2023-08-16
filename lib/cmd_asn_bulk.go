@@ -67,21 +67,13 @@ func CmdASNBulk(f CmdASNBulkFlags, ii *ipinfo.Client, args []string, printHelp f
 		switch inputType {
 		case INPUT_TYPE_ASN:
 			asns = append(asns, strings.ToUpper(string))
-		case INPUT_TYPE_FILE:
-			lines, err := readStringsFromFile(string)
-			if err != nil {
-				return err
-			}
-			for _, line := range lines {
-				asns = append(asns, strings.ToUpper(line))
-			}
 		default:
 			return ErrInvalidInput
 		}
 		return nil
 	}
 
-	err := getInputFrom(args, true, op)
+	err := getInputFrom(args, true, true, op)
 	if err != nil {
 		return nil, err
 	}
