@@ -29,19 +29,13 @@ func IPListFromAllSrcs(inputs []string) ([]net.IP, error) {
 				return err
 			}
 			ips = append(ips, r...)
-		case INPUT_TYPE_FILE:
-			r, err := IPListFromFile(input)
-			if err != nil {
-				return err
-			}
-			ips = append(ips, r...)
 		default:
 			return ErrNotIP
 		}
 		return nil
 	}
 
-	err := getInputFrom(inputs, true, op)
+	err := GetInputFrom(inputs, true, true, op)
 	if err != nil {
 		return nil, err
 	}

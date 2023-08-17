@@ -32,7 +32,7 @@ func inputHelper(str string, op func(string, INPUT_TYPE) error) error {
 	}
 }
 
-// getInputFrom retrieves input data from various sources and processes it using the provided operation.
+// GetInputFrom retrieves input data from various sources and processes it using the provided operation.
 // The operation is called for each input string with input type.
 //
 //	Usage:
@@ -47,7 +47,7 @@ func inputHelper(str string, op func(string, INPUT_TYPE) error) error {
 //			}
 //			return nil
 //		})
-func getInputFrom(
+func GetInputFrom(
 	inputs []string,
 	stdin bool,
 	file bool,
