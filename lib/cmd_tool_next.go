@@ -59,7 +59,7 @@ func CmdToolNext(
 func ActionForStdinNextPrev(input string, delta int) {
 	ip := net.ParseIP(input)
 	if ip != nil {
-		nextPrevIP := CalculateNextPrevIP(ip, delta)
+		nextPrevIP := UpdateIPAddress(ip, delta)
 		fmt.Println(nextPrevIP)
 	}
 }
@@ -85,7 +85,7 @@ func ActionForFileNextPrev(pathToFile string, delta int) {
 	}
 }
 
-func CalculateNextPrevIP(ip net.IP, delta int) net.IP {
+func UpdateIPAddress(ip net.IP, delta int) net.IP {
 	nextPrevIP := make(net.IP, len(ip))
 	copy(nextPrevIP, ip)
 
