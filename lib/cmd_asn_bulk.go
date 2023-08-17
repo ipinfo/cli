@@ -72,7 +72,6 @@ func CmdASNBulk(f CmdASNBulkFlags, ii *ipinfo.Client, args []string, printHelp f
 		}
 		return nil
 	}
-
 	err := GetInputFrom(args, true, true, op)
 	if err != nil {
 		return nil, err

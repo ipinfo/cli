@@ -64,13 +64,18 @@ Options:
 }
 
 // cmdASNBulk is the asn bulk command.
-func cmdASNBulk() error {
+func cmdASNBulk(piped bool) error {
 	f := lib.CmdASNBulkFlags{}
 	f.Init()
 	pflag.Parse()
 
 	ii = prepareIpinfoClient(f.Token)
-	data, err := lib.CmdASNBulk(f, ii, pflag.Args()[2:], printHelpASNBulk)
+	var args []string
+	if !piped {
+		args = pflag.Args()[2:]
+	}
+
+	data, err := lib.CmdASNBulk(f, ii, args, printHelpASNBulk)
 	if err != nil {
 		return err
 	}
