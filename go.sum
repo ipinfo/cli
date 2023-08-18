@@ -12,6 +12,8 @@ github.com/hashicorp/go-multierror v1.1.1 h1:H5DkEtf6CXdFp0N0Em5UCwQpXMWke8IA0+l
 github.com/hashicorp/go-multierror v1.1.1/go.mod h1:iw975J/qwKPdAO1clOe2L8331t/9/fmwbPZ6JB6eMoM=
 github.com/ipinfo/go/v2 v2.9.2 h1:wih7S6ifXAdGE7OH5fgTfC/yA/lFYRKaG5z4FNiE+MY=
 github.com/ipinfo/go/v2 v2.9.2/go.mod h1:tRDkYfM20b1XzNqorn1Q1O6Xtg7uzw3Wn3I2R0SyJh4=
+github.com/ipinfo/go/v2 v2.9.4 h1:6LcbIQ6o/bfNgqGMoJCfkUxVtJsbLWdB9sDq4Vv3fF0=
+github.com/ipinfo/go/v2 v2.9.4/go.mod h1:tRDkYfM20b1XzNqorn1Q1O6Xtg7uzw3Wn3I2R0SyJh4=
 github.com/ipinfo/mmdbctl v0.0.0-20230726080357-558a20ba8524 h1:om+KMCwwLE1scrxr5YirYikcgl27Z2KbKQSpobt/2b0=
 github.com/ipinfo/mmdbctl v0.0.0-20230726080357-558a20ba8524/go.mod h1:RVULurqCcBRklgMU3st4j+sIEuVNY+mB1IMhhi/wjLA=
 github.com/jszwec/csvutil v1.4.0 h1:ro7gZN8PRsyNUEX8qE/eYPE5/kffEXMs+4eRcOd1oUk=

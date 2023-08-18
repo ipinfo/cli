@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/fatih/color v1.13.0
 	github.com/hashicorp/go-multierror v1.1.1
-	github.com/ipinfo/go/v2 v2.9.2
+	github.com/ipinfo/go/v2 v2.9.4
 	github.com/ipinfo/mmdbctl v0.0.0-20230726080357-558a20ba8524
 	github.com/jszwec/csvutil v1.4.0
 	github.com/pkg/browser v0.0.0-20210115035449-ce105d075bb4

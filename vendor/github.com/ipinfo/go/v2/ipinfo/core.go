@@ -16,14 +16,15 @@ type Core struct {
 	Country         string          `json:"country,omitempty" csv:"country" yaml:"country,omitempty"`
 	CountryName     string          `json:"country_name,omitempty" csv:"country_name" yaml:"countryName,omitempty"`
 	CountryFlag     CountryFlag     `json:"country_flag,omitempty" csv:"country_flag_,inline" yaml:"countryFlag,omitempty"`
-	CountryCurrency CountryCurrency `json:"country_currency,omitempty" csv:"country_currency_,inline "yaml:"countryCurrency,omitempty"`
+	CountryFlagURL  string          `json:"country_flag_url,omitempty" csv:"country_flag_url" yaml:"countryFlagURL,omitempty"`
+	CountryCurrency CountryCurrency `json:"country_currency,omitempty" csv:"country_currency_,inline" yaml:"countryCurrency,omitempty"`
 	Continent       Continent       `json:"continent,omitempty" csv:"continent_,inline" yaml:"continent,omitempty"`
 	IsEU            bool            `json:"isEU,omitempty" csv:"isEU" yaml:"isEU,omitempty"`
 	Location        string          `json:"loc,omitempty" csv:"loc" yaml:"location,omitempty"`
 	Org             string          `json:"org,omitempty" csv:"org" yaml:"org,omitempty"`
 	Postal          string          `json:"postal,omitempty" csv:"postal" yaml:"postal,omitempty"`
 	Timezone        string          `json:"timezone,omitempty" csv:"timezone" yaml:"timezone,omitempty"`
-	ASN             *CoreASN        `json:"asn,omitempty" csv:"asn_,inline" yaml:"ASN,omitempty"`
+	ASN             *CoreASN        `json:"asn,omitempty" csv:"asn_,inline" yaml:"asn,omitempty"`
 	Company         *CoreCompany    `json:"company,omitempty" csv:"company_,inline" yaml:"company,omitempty"`
 	Carrier         *CoreCarrier    `json:"carrier,omitempty" csv:"carrier_,inline" yaml:"carrier,omitempty"`
 	Privacy         *CorePrivacy    `json:"privacy,omitempty" csv:"privacy_,inline" yaml:"privacy,omitempty"`
@@ -88,6 +89,7 @@ func (v *Core) setCountryName() {
 		v.IsEU = IsEU(v.Country)
 		v.CountryFlag.Emoji = GetCountryFlagEmoji(v.Country)
 		v.CountryFlag.Unicode = GetCountryFlagUnicode(v.Country)
+		v.CountryFlagURL = GetCountryFlagURL(v.Country)
 		v.CountryCurrency.Code = GetCountryCurrencyCode(v.Country)
 		v.CountryCurrency.Symbol = GetCountryCurrencySymbol(v.Country)
 		v.Continent.Code = GetContinentCode(v.Country)
