@@ -2,13 +2,12 @@ package main
 
 import (
 	"fmt"
-	"net"
-
 	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
+	"net"
 )
 
 var completionsIP = &complete.Command{
