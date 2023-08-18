@@ -21,6 +21,7 @@ Commands:
   <asn>       look up details for an ASN, e.g. AS123 or as123.
   myip        get details for your IP.
   bulk        get details for multiple IPs in bulk.
+  asn         tools related to ASNs.
   summarize   get summarized data for a group of IPs.
   map         open a URL to a map showing the locations of a group of IPs.
   prips       print IP list from CIDR or range.
