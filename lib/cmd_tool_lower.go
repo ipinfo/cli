@@ -1,11 +1,8 @@
 package lib
 
 import (
-	"bufio"
 	"fmt"
 	"net"
-	"os"
-	"strings"
 
 	"github.com/spf13/pflag"
 )
@@ -37,72 +34,47 @@ func CmdToolLower(
 		printHelp()
 		return nil
 	}
-
-	actionStdin := func(input string, iprange, cidr bool) {
-		ActionForStdinLower(input, iprange, cidr)
+	actionFunc := func(input string, inputType INPUT_TYPE) error {
+		switch inputType {
+		case INPUT_TYPE_IP:
+			ActionForIP(input)
+		case INPUT_TYPE_IP_RANGE:
+			ActionForRange(input)
+		case INPUT_TYPE_CIDR:
+			ActionForCIDR(input)
+		default:
+			return ErrNotIP
+		}
+		return nil
 	}
-	actionRange := func(input string) {
-		ActionForRangeLower(input)
-	}
-	actionCidr := func(input string) {
-		ActionForCIDRLower(input)
-	}
-	actionFile := func(input string, iprange, cidr bool) {
-		ActionForFileLower(input, iprange, cidr)
-	}
-
-	// Process inputs using the IPInputAction function.
-	err := IPInputAction(args, true, true, true, true, true,
-		actionStdin, actionRange, actionCidr, actionFile)
+	err := GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
 	}
-
 	return nil
 }
 
-func ActionForStdinLower(input string, iprange bool, cidr bool) {
+func ActionForIP(input string) {
 	ip := net.ParseIP(input)
 	if ip != nil {
 		fmt.Println(ip)
-	} else if iprange {
-		ActionForRangeLower(input)
-	} else if cidr {
-		ActionForCIDRLower(input)
 	}
 }
 
-func ActionForRangeLower(input string) {
+func ActionForRange(input string) {
 	ipRange, err := IPRangeStrFromStr(input)
-	if err == nil {
-		fmt.Println(ipRange.Start)
-	}
-}
-
-func ActionForCIDRLower(input string) {
-	_, ipnet, err := net.ParseCIDR(input)
-	if err == nil {
-		fmt.Println(ipnet.IP)
-	}
-}
-
-func ActionForFileLower(pathToFile string, iprange bool, cidr bool) {
-	f, err := os.Open(pathToFile)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	defer f.Close()
+	fmt.Println(ipRange.Start) // Print the start IP of the range
+}
 
-	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-		input := strings.TrimSpace(scanner.Text())
-		if input == "" {
-			continue
-		}
-		ActionForStdinLower(input, iprange, cidr) 
-	}
-	if err := scanner.Err(); err != nil {
+func ActionForCIDR(input string) {
+	_, ipnet, err := net.ParseCIDR(input)
+	if err != nil {
 		fmt.Println(err)
+		return
 	}
+	fmt.Println(ipnet.IP) // Print the start IP of the CIDR
 }

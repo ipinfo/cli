@@ -27,14 +27,17 @@ Description:
   Input can be a mixture of Ips, IP ranges or CIDRs.
 
 Examples:
-  # Calculate upper IP for IP, IP range and CIDR.
+  # Finds upper IP for CIDR.
   $ %[1]s tool upper 192.168.1.0/24
 
-  # Calculate upper IPs for IPs, IP ranges and CIDRs.
-  $ %[1]s tool upper 192.168.1.0/24 10.0.0.0/16
+  # Finds upper IP for IP range.
+  $ %[1]s tool upper 1.1.1.0-1.1.1.244
 
-  # Calculate upper IPs from stdin.
+  # Finds upper IPs from stdin.
   $ cat /path/to/file.txt | %[1]s tool upper
+
+  # Find upper IPs from file.
+  $ %[1]s tool upper /path/to/file1.txt 
 
 Options:
   --help, -h
