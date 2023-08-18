@@ -2,7 +2,6 @@ package lib
 
 import (
 	"fmt"
-
 	"github.com/spf13/pflag"
 )
 
@@ -35,15 +34,18 @@ func CmdToolPrev(
 	}
 
 	decrement := -1
-	actionStdin := func(input string) {
-		ActionForStdinNextPrev(input, decrement)
-	}
-	actionFile := func(input string) {
-		ActionForFileNextPrev(input, decrement)
+
+	actionFunc := func(input string, inputType INPUT_TYPE) error {
+		switch inputType {
+		case INPUT_TYPE_IP:
+			ActionForIPNextPrev(input, decrement)
+		default:
+			return ErrNotIP
+		}
+		return nil
 	}
 
-	err := IPInputAction(args, true, true, false, false, true,
-		actionStdin, nil, nil, actionFile)
+	err := GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
 	}
