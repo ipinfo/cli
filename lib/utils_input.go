@@ -36,7 +36,8 @@ func inputHelper(str string, op func(string, INPUT_TYPE) error) error {
 // The operation is called for each input string with input type.
 //
 //	Usage:
-//	err := getInputFrom(inputs,
+//	err := GetInputFrom(inputs,
+//		true,
 //		true,
 //		func(input string, inputType INPUT_TYPE) error {
 //			switch inputType {
@@ -46,7 +47,8 @@ func inputHelper(str string, op func(string, INPUT_TYPE) error) error {
 //				return ErrNotIP
 //			}
 //			return nil
-//		})
+//		},
+//	)
 func GetInputFrom(
 	inputs []string,
 	stdin bool,
