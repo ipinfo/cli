@@ -21,6 +21,7 @@ Commands:
   <asn>       look up details for an ASN, e.g. AS123 or as123.
   myip        get details for your IP.
   bulk        get details for multiple IPs in bulk.
+  asn         tools related to ASNs.
   summarize   get summarized data for a group of IPs.
   map         open a URL to a map showing the locations of a group of IPs.
   prips       print IP list from CIDR or range.
@@ -32,6 +33,7 @@ Commands:
   randip      Generates random IPs.
   splitcidr   splits a larger CIDR into smaller CIDRs.
   mmdb        read, import and export mmdb files.
+  calc 	      evaluates a mathematical expression that may contain IP addresses.
   tool        misc. tools related to IPs, IP ranges and CIDRs.
   download    download free ipinfo database files.
   cache       manage the cache.

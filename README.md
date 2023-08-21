@@ -24,12 +24,12 @@ brew install ipinfo-cli
 OR to install the latest `amd64` version without automatic updates:
 
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-3.0.0/macos.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-3.0.2/macos.sh | sh
 ```
 
 ### Ubuntu PPA
 
-*Note*: this installs our full suite of binaries and keeps them up-to-date.
+_Note_: this installs our full suite of binaries and keeps them up-to-date.
 
 ```bash
 sudo add-apt-repository ppa:ipinfo/ppa
@@ -39,18 +39,18 @@ sudo apt install ipinfo
 
 ### Debian / Ubuntu (amd64)
 
-*Note*: this is a one-time installation; updates are not automatic. Use the PPA
+_Note_: this is a one-time installation; updates are not automatic. Use the PPA
 for automatic updates.
 
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-3.0.0/deb.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-3.0.2/deb.sh | sh
 ```
 
 OR
 
 ```bash
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-3.0.0/ipinfo_3.0.0.deb
-sudo dpkg -i ipinfo_3.0.0.deb
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-3.0.2/ipinfo_3.0.2.deb
+sudo dpkg -i ipinfo_3.0.2.deb
 ```
 
 ### FreeBSD
@@ -68,10 +68,10 @@ makepkg -si
 
 ### Windows Powershell
 
-*Note*: run powershell as administrator before executing this command.
+_Note_: run powershell as administrator before executing this command.
 
 ```bash
-iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-3.0.0/windows.ps1 | iex
+iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-3.0.2/windows.ps1 | iex
 ```
 
 ### Scoop
@@ -83,7 +83,7 @@ scoop install ipinfo-cli
 ### Docker
 
 ```bash
-docker run --rm -it ipinfo/ipinfo:3.0.0
+docker run --rm -it ipinfo/ipinfo:3.0.2
 ```
 
 To save the CLI's config, add `-v "/path_to_config:/root/.config/ipinfo"`. For
@@ -91,7 +91,7 @@ example, the following command saves the config to the `ipinfo` directory in
 the current working directory.
 
 ```bash
-docker run --rm -it -v "$PWD/ipinfo:/root/.config/ipinfo" ipinfo/ipinfo:3.0.0
+docker run --rm -it -v "$PWD/ipinfo:/root/.config/ipinfo" ipinfo/ipinfo:3.0.2
 ```
 
 ### Using `go install`
@@ -142,12 +142,12 @@ After choosing a platform `PLAT` from above, run:
 
 ```bash
 # for Windows, use ".zip" instead of ".tar.gz"
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-3.0.0/ipinfo_3.0.0_${PLAT}.tar.gz
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-3.0.2/ipinfo_3.0.2_${PLAT}.tar.gz
 # OR
-wget https://github.com/ipinfo/cli/releases/download/ipinfo-3.0.0/ipinfo_3.0.0_${PLAT}.tar.gz
+wget https://github.com/ipinfo/cli/releases/download/ipinfo-3.0.2/ipinfo_3.0.2_${PLAT}.tar.gz
 
-tar -xvf ipinfo_3.0.0_${PLAT}.tar.gz
-mv ipinfo_3.0.0_${PLAT} /usr/local/bin/ipinfo
+tar -xvf ipinfo_3.0.2_${PLAT}.tar.gz
+mv ipinfo_3.0.2_${PLAT} /usr/local/bin/ipinfo
 ```
 
 ### Using `git`
@@ -191,17 +191,17 @@ of the subcommand, and choose the appropriate version.
 
 Currently these subcommands are separately shipped:
 
-| CLI        | Version |
-| ---------- | ------- |
-| grepip     | [1.2.2](https://github.com/ipinfo/cli/releases/tag/grepip-1.2.2) |
-| prips      | [1.0.0](https://github.com/ipinfo/cli/releases/tag/prips-1.0.0) |
-| cidr2range | [1.2.0](https://github.com/ipinfo/cli/releases/tag/cidr2range-1.2.0) |
-| cidr2ip    | [1.0.0](https://github.com/ipinfo/cli/releases/tag/cidr2ip-1.0.0) |
-| range2cidr | [1.3.0](https://github.com/ipinfo/cli/releases/tag/range2cidr-1.3.0) |
-| range2ip   | [1.0.0](https://github.com/ipinfo/cli/releases/tag/range2ip-1.0.0) |
-| randip     | [1.1.0](https://github.com/ipinfo/cli/releases/tag/randip-1.1.0) |
-| splitcidr  | [1.0.0](https://github.com/ipinfo/cli/releases/tag/splitcidr-1.0.0) |
-| mmdb       | [1.0.0](https://github.com/ipinfo/mmdbctl/releases/tag/mmdbctl-1.3.0) |
+| CLI        | Version                                                               |
+| ---------- | --------------------------------------------------------------------- |
+| grepip     | [1.2.2](https://github.com/ipinfo/cli/releases/tag/grepip-1.2.2)      |
+| prips      | [1.0.0](https://github.com/ipinfo/cli/releases/tag/prips-1.0.0)       |
+| cidr2range | [1.2.0](https://github.com/ipinfo/cli/releases/tag/cidr2range-1.2.0)  |
+| cidr2ip    | [1.0.0](https://github.com/ipinfo/cli/releases/tag/cidr2ip-1.0.0)     |
+| range2cidr | [1.3.0](https://github.com/ipinfo/cli/releases/tag/range2cidr-1.3.0)  |
+| range2ip   | [1.0.0](https://github.com/ipinfo/cli/releases/tag/range2ip-1.0.0)    |
+| randip     | [1.1.0](https://github.com/ipinfo/cli/releases/tag/randip-1.1.0)      |
+| splitcidr  | [1.0.0](https://github.com/ipinfo/cli/releases/tag/splitcidr-1.0.0)   |
+| mmdb       | [1.4.2](https://github.com/ipinfo/mmdbctl/releases/tag/mmdbctl-1.4.2) |
 
 ## Quick Start
 
@@ -367,7 +367,7 @@ All examples in this document use a token with all data enabled.
 ### Disabling Color Output
 
 All our CLIs respect either the `--nocolor` flag or the
-[`NO_COLOR`](https://no-color.org/)  environment variable to disable color
+[`NO_COLOR`](https://no-color.org/) environment variable to disable color
 output.
 
 ### Color on Windows

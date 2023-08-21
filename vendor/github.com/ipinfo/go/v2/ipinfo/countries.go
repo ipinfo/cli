@@ -1,5 +1,9 @@
 package ipinfo
 
+const (
+	countryFlagsBaseURL = "https://cdn.ipinfo.io/static/images/countries-flags/"
+)
+
 // GetCountryName gets the full name of a country from its code, e.g.
 // "PK" -> "Pakistan".
 func GetCountryName(country string) string {
@@ -40,6 +44,12 @@ func GetContinentCode(country string) string {
 // "PK" -> "Asia".
 func GetContinentName(country string) string {
 	return continents[country].Name
+}
+
+// GetCountryFlagURL gets the URL of the country flag, e.g.
+// "PK" -> "https://cdn.ipinfo.io/static/images/countries-flags/PK.svg".
+func GetCountryFlagURL(country string) string {
+	return countryFlagsBaseURL + country + ".svg"
 }
 
 // IsEU takes the country code and returns `true`
