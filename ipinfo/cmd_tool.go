@@ -14,6 +14,9 @@ var completionsTool = &complete.Command{
 		"aggregate": completionsToolAggregate,
 		"next":      completionsToolNext,
 		"prev":      completionsToolPrev,
+		"ip2n":      completionsToolIP2n,
+		"n2ip":      completionsToolN2IP,
+		"n2ip6":     completionsToolN2IP6,
 	},
 	Flags: map[string]complete.Predictor{
 		"-h":     predict.Nothing,
@@ -30,6 +33,9 @@ Commands:
   aggregate    aggregate IPs, IP ranges, and CIDRs.
   next         get next IP of IPs
   prev         get previous IP of IPs
+  ip2n         converts an IPv4 or IPv6 address to its decimal representation.
+  n2ip	       evaluates a mathematical expression and converts it to an IPv4 or IPv6.
+  n2ip6	       evaluates a mathematical expression and converts it to an IPv6.
 
 Options:
   --help, -h
@@ -64,6 +70,12 @@ func cmdTool() error {
 		err = cmdToolNext()
 	case cmd == "prev":
 		err = cmdToolPrev()
+	case cmd == "ip2n":
+		err = cmdToolIP2n()
+	case cmd == "n2ip":
+		err = cmdToolN2IP()
+	case cmd == "n2ip6":
+		err = cmdToolN2IP6()
 	default:
 		err = toolHelp()
 	}
