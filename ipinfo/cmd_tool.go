@@ -14,6 +14,9 @@ var completionsTool = &complete.Command{
 		"aggregate": completionsToolAggregate,
 		"is_v4":     completionsToolIs_v4,
 		"is_v6":     completionsToolIs_v6,
+		"ip2n":      completionsToolIP2n,
+		"n2ip":      completionsToolN2IP,
+		"n2ip6":     completionsToolN2IP6,
 	},
 	Flags: map[string]complete.Predictor{
 		"-h":     predict.Nothing,
@@ -30,6 +33,9 @@ Commands:
   aggregate    aggregate IPs, IP ranges, and CIDRs.
   is_v4        reports whether ip is an IPv4 address.
   is_v6        reports whether ip is an IPv6 address.
+  ip2n         converts an IPv4 or IPv6 address to its decimal representation.
+  n2ip	       evaluates a mathematical expression and converts it to an IPv4 or IPv6.
+  n2ip6	       evaluates a mathematical expression and converts it to an IPv6.
 
 Options:
   --help, -h
@@ -64,6 +70,12 @@ func cmdTool() error {
 		err = cmdToolIs_v4()
 	case cmd == "is_v6":
 		err = cmdToolIs_v6()
+	case cmd == "ip2n":
+		err = cmdToolIP2n()
+	case cmd == "n2ip":
+		err = cmdToolN2IP()
+	case cmd == "n2ip6":
+		err = cmdToolN2IP6()
 	default:
 		err = toolHelp()
 	}

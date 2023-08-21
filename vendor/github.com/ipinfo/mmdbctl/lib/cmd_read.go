@@ -45,7 +45,7 @@ func (f *CmdReadFlags) Init() {
 	)
 	pflag.StringVarP(
 		&f.Format,
-		"format", "f", "",
+		"format", "f", "json",
 		_h,
 	)
 }

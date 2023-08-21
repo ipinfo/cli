@@ -12,6 +12,7 @@ var completions = &complete.Command{
 	Sub: map[string]*complete.Command{
 		"myip":       completionsMyIP,
 		"bulk":       completionsBulk,
+		"asn":        completionsASN,
 		"summarize":  completionsSummarize,
 		"map":        completionsMap,
 		"prips":      completionsPrips,
@@ -23,6 +24,7 @@ var completions = &complete.Command{
 		"randip":     completionsRandIP,
 		"splitcidr":  completionsSplitCIDR,
 		"mmdb":       completionsMmdb,
+		"calc":       completionsCalc,
 		"tool":       completionsTool,
 		"download":   completionsDownload,
 		"cache":      completionsCache,
@@ -49,7 +51,7 @@ func handleCompletions() {
 		if lib.StrIsIPStr(cmdSecondArg) {
 			completions.Sub[cmdSecondArg] = completionsIP
 		} else if lib.StrIsASNStr(cmdSecondArg) {
-			completions.Sub[cmdSecondArg] = completionsASN
+			completions.Sub[cmdSecondArg] = completionsASNSingle
 		}
 	}
 

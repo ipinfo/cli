@@ -11,7 +11,7 @@ import (
 )
 
 var progBase = filepath.Base(os.Args[0])
-var version = "3.0.0"
+var version = "3.0.2"
 
 // global flags.
 var fHelp bool
@@ -38,13 +38,15 @@ func main() {
 		err = cmdIP(cmd)
 	case lib.StrIsASNStr(cmd):
 		asn := strings.ToUpper(cmd)
-		err = cmdASN(asn)
+		err = cmdASNSingle(asn)
 	case len(cmd) >= 3 && strings.IndexByte(cmd, '.') != -1:
 		err = cmdDomain(cmd)
 	case cmd == "myip":
 		err = cmdMyIP()
 	case cmd == "bulk":
 		err = cmdBulk()
+	case cmd == "asn":
+		err = cmdASN()
 	case cmd == "summarize" || cmd == "sum":
 		err = cmdSum()
 	case cmd == "map":
@@ -67,6 +69,8 @@ func main() {
 		err = cmdSplitCIDR()
 	case cmd == "mmdb":
 		err = cmdMmdb()
+	case cmd == "calc":
+		err = cmdCalc()
 	case cmd == "download":
 		err = cmdDownload()
 	case cmd == "tool":
