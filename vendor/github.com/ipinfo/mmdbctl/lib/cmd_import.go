@@ -41,6 +41,28 @@ type CmdImportFlags struct {
 	DisableMetadataPtrs bool
 }
 
+var CmdImportFlagsDefaults = CmdImportFlags{
+	Help:                false,
+	In:                  "",
+	Out:                 "",
+	Csv:                 false,
+	Tsv:                 false,
+	Json:                false,
+	Fields:              nil,
+	FieldsFromHdr:       false,
+	RangeMultiCol:       false,
+	JoinKeyCol:          false,
+	NoFields:            false,
+	NoNetwork:           false,
+	Ip:                  6,
+	Size:                32,
+	Merge:               "none",
+	IgnoreEmptyVals:     false,
+	DisallowReserved:    false,
+	Alias6to4:           false,
+	DisableMetadataPtrs: true,
+}
+
 // Init initializes the common flags available to CmdImport with sensible
 // defaults.
 //
@@ -49,97 +71,97 @@ func (f *CmdImportFlags) Init() {
 	_h := "see description in --help"
 	pflag.BoolVarP(
 		&f.Help,
-		"help", "h", false,
+		"help", "h", CmdImportFlagsDefaults.Help,
 		"show help.",
 	)
 	pflag.StringVarP(
 		&f.In,
-		"in", "i", "",
+		"in", "i", CmdImportFlagsDefaults.In,
 		_h,
 	)
 	pflag.StringVarP(
 		&f.Out,
-		"out", "o", "",
+		"out", "o", CmdImportFlagsDefaults.Out,
 		_h,
 	)
 	pflag.BoolVarP(
 		&f.Csv,
-		"csv", "c", false,
+		"csv", "c", CmdImportFlagsDefaults.Csv,
 		_h,
 	)
 	pflag.BoolVarP(
 		&f.Tsv,
-		"tsv", "t", false,
+		"tsv", "t", CmdImportFlagsDefaults.Tsv,
 		_h,
 	)
 	pflag.BoolVarP(
 		&f.Json,
-		"json", "j", false,
+		"json", "j", CmdImportFlagsDefaults.Json,
 		_h,
 	)
 	pflag.StringSliceVarP(
 		&f.Fields,
-		"fields", "f", nil,
+		"fields", "f", CmdImportFlagsDefaults.Fields,
 		_h,
 	)
 	pflag.BoolVar(
 		&f.FieldsFromHdr,
-		"fields-from-header", false,
+		"fields-from-header", CmdImportFlagsDefaults.FieldsFromHdr,
 		_h,
 	)
 	pflag.BoolVar(
 		&f.RangeMultiCol,
-		"range-multicol", false,
+		"range-multicol", CmdImportFlagsDefaults.RangeMultiCol,
 		_h,
 	)
 	pflag.BoolVar(
 		&f.JoinKeyCol,
-		"joinkey-col", false,
+		"joinkey-col", CmdImportFlagsDefaults.JoinKeyCol,
 		_h,
 	)
 	pflag.BoolVar(
 		&f.NoFields,
-		"no-fields", false,
+		"no-fields", CmdImportFlagsDefaults.NoFields,
 		_h,
 	)
 	pflag.BoolVar(
 		&f.NoNetwork,
-		"no-network", false,
+		"no-network", CmdImportFlagsDefaults.NoNetwork,
 		_h,
 	)
 	pflag.IntVar(
 		&f.Ip,
-		"ip", 6,
+		"ip", CmdImportFlagsDefaults.Ip,
 		_h,
 	)
 	pflag.IntVarP(
 		&f.Size,
-		"size", "s", 32,
+		"size", "s", CmdImportFlagsDefaults.Size,
 		_h,
 	)
 	pflag.StringVarP(
 		&f.Merge,
-		"merge", "m", "none",
+		"merge", "m", CmdImportFlagsDefaults.Merge,
 		_h,
 	)
 	pflag.BoolVar(
 		&f.IgnoreEmptyVals,
-		"ignore-empty-values", false,
+		"ignore-empty-values", CmdImportFlagsDefaults.IgnoreEmptyVals,
 		_h,
 	)
 	pflag.BoolVar(
 		&f.DisallowReserved,
-		"disallow-reserved", false,
+		"disallow-reserved", CmdImportFlagsDefaults.DisallowReserved,
 		_h,
 	)
 	pflag.BoolVar(
 		&f.Alias6to4,
-		"alias-6to4", false,
+		"alias-6to4", CmdImportFlagsDefaults.Alias6to4,
 		_h,
 	)
 	pflag.BoolVar(
 		&f.DisableMetadataPtrs,
-		"disable-metadata-pointers", true,
+		"disable-metadata-pointers", CmdImportFlagsDefaults.DisableMetadataPtrs,
 		_h,
 	)
 
@@ -309,42 +331,12 @@ func CmdImport(f CmdImportFlags, args []string, printHelp func()) error {
 			if !hdrSeen {
 				hdrSeen = true
 
-				// check if the header has a multi-column range.
-				if len(parts) > 1 && parts[0] == "start_ip" && parts[1] == "end_ip" {
-					f.RangeMultiCol = true
+				ParseCSVHeaders(parts, &f, &dataColStart)
 
-					// maybe we also have a join key?
-					if len(parts) > 2 && parts[2] == "join_key" {
-						f.JoinKeyCol = true
-					}
-				}
-
-				if f.RangeMultiCol {
-					if f.JoinKeyCol {
-						dataColStart = 3
-					} else {
-						dataColStart = 2
-					}
-				}
-
-				// need to get fields from hdr?
-				if f.FieldsFromHdr {
-					// skip all non-data columns.
-					f.Fields = parts[dataColStart:]
-				}
-
-				// insert empty values for all fields in 0.0.0.0/0 if requested.
-				if f.IgnoreEmptyVals {
-					_, network, _ := net.ParseCIDR("0.0.0.0/0")
-					record := mmdbtype.Map{}
-					for _, field := range f.Fields {
-						record[mmdbtype.String(field)] = mmdbtype.String("")
-					}
-					if err := tree.Insert(network, record); err != nil {
-						return errors.New(
-							"couldn't insert empty values to 0.0.0.0/0",
-						)
-					}
+				// Now that f.Fields may have been resolved, the preprocessing step can be run
+				err = Preprocess(f, tree)
+				if err != nil {
+					return err
 				}
 
 				// should we skip this first line now?
@@ -353,63 +345,22 @@ func CmdImport(f CmdImportFlags, args []string, printHelp func()) error {
 				}
 			}
 
-			networkStr := parts[0]
-
-			// convert 2 IPs into IP range?
-			if f.RangeMultiCol {
-				networkStr = parts[0] + "-" + parts[1]
-			}
-
-			// add network part to single-IP network if it's missing.
-			isNetworkRange := strings.Contains(networkStr, "-")
-			if !isNetworkRange && !strings.Contains(networkStr, "/") {
-				if f.Ip == 6 && strings.Contains(networkStr, ":") {
-					networkStr += "/128"
-				} else {
-					networkStr += "/32"
-				}
-			}
-
-			// prep record.
-			record := mmdbtype.Map{}
-			if !f.NoNetwork {
-				record["network"] = mmdbtype.String(networkStr)
-			}
-			for i, field := range f.Fields {
-				record[mmdbtype.String(field)] = mmdbtype.String(parts[i+dataColStart])
-			}
-
-			// range insertion or cidr insertion?
-			if isNetworkRange {
-				networkStrParts := strings.Split(networkStr, "-")
-				startIp := net.ParseIP(networkStrParts[0])
-				endIp := net.ParseIP(networkStrParts[1])
-				if err := tree.InsertRange(startIp, endIp, record); err != nil {
-					fmt.Fprintf(
-						os.Stderr, "warn: couldn't insert line '%v'\n",
-						strings.Join(parts, string(delim)),
-					)
-				}
-			} else {
-				_, network, err := net.ParseCIDR(networkStr)
-				if err != nil {
-					return fmt.Errorf(
-						"couldn't parse cidr \"%v\": %w",
-						networkStr, err,
-					)
-				}
-				if err := tree.Insert(network, record); err != nil {
-					fmt.Fprintf(
-						os.Stderr, "warn: couldn't insert line '%v'\n",
-						strings.Join(parts, string(delim)),
-					)
-				}
+			err = AppendCSVRecord(f, dataColStart, delim, parts, tree)
+			if err != nil {
+				return err
 			}
 
 			entrycnt += 1
 		}
 	} else if delim == '-' {
 		dataStream := json.NewDecoder(inFileBuffered)
+
+		// For JSON input, f.Fields may have been specified using the --fields flag, so preprocessing can be run
+		err = Preprocess(f, tree)
+		if err != nil {
+			return err
+		}
+
 		for {
 			// Decode one JSON document.
 			var row interface{}
@@ -423,20 +374,6 @@ func CmdImport(f CmdImportFlags, args []string, printHelp func()) error {
 				break
 			}
 			mResult := row.(map[string]interface{})
-
-			// insert empty values for all fields in 0.0.0.0/0 if requested.
-			if f.IgnoreEmptyVals {
-				_, network, _ := net.ParseCIDR("0.0.0.0/0")
-				record := mmdbtype.Map{}
-				for _, field := range f.Fields {
-					record[mmdbtype.String(field)] = mmdbtype.String("")
-				}
-				if err := tree.Insert(network, record); err != nil {
-					return errors.New(
-						"couldn't insert empty values to 0.0.0.0/0",
-					)
-				}
-			}
 
 			// convert 2 IPs into IP range?
 			var networkStr string
@@ -465,16 +402,15 @@ func CmdImport(f CmdImportFlags, args []string, printHelp func()) error {
 					networkStr += "/32"
 				}
 			}
-
-			// prep record.
-			record := mmdbtype.Map{}
+			subMap := mmdbtype.Map{}
 			if !f.NoNetwork {
-				record["network"] = mmdbtype.String(networkStr)
+				subMap["network"] = mmdbtype.String(networkStr)
 			}
 
-			mResultStr := mapInterfaceToStr(mResult)
-			for k, v := range mResultStr {
-				record[mmdbtype.String(k)] = mmdbtype.String(v)
+			// prep record.
+			errProcessData := ProcessJsonData(mResult, &subMap)
+			if errProcessData != nil {
+				return fmt.Errorf("failed to map to mmdb.type err: %w", errProcessData)
 			}
 
 			// range insertion or cidr insertion?
@@ -482,7 +418,7 @@ func CmdImport(f CmdImportFlags, args []string, printHelp func()) error {
 				networkStrParts := strings.Split(networkStr, "-")
 				startIp := net.ParseIP(networkStrParts[0])
 				endIp := net.ParseIP(networkStrParts[1])
-				if err := tree.InsertRange(startIp, endIp, record); err != nil {
+				if err := tree.InsertRange(startIp, endIp, subMap); err != nil {
 					fmt.Fprintf(
 						os.Stderr, "warn: couldn't insert '%v'\n",
 						mResult,
@@ -496,7 +432,7 @@ func CmdImport(f CmdImportFlags, args []string, printHelp func()) error {
 						networkStr, err,
 					)
 				}
-				if err := tree.Insert(network, record); err != nil {
+				if err := tree.Insert(network, subMap); err != nil {
 					fmt.Fprintf(
 						os.Stderr, "warn: couldn't insert '%v'\n",
 						mResult,
@@ -519,4 +455,170 @@ func CmdImport(f CmdImportFlags, args []string, printHelp func()) error {
 	}
 
 	return nil
+}
+
+func Preprocess(f CmdImportFlags, tree *mmdbwriter.Tree) error {
+	// insert empty values for all fields in 0.0.0.0/0 if requested.
+	if f.IgnoreEmptyVals {
+		_, network, _ := net.ParseCIDR("0.0.0.0/0")
+		record := mmdbtype.Map{}
+		for _, field := range f.Fields {
+			record[mmdbtype.String(field)] = mmdbtype.String("")
+		}
+		if err := tree.Insert(network, record); err != nil {
+			return errors.New(
+				"couldn't insert empty values to 0.0.0.0/0",
+			)
+		}
+	}
+
+	return nil
+}
+
+func ParseCSVHeaders(parts []string, f *CmdImportFlags, dataColStart *int) {
+	// check if the header has a multi-column range.
+	if len(parts) > 1 && parts[0] == "start_ip" && parts[1] == "end_ip" {
+		f.RangeMultiCol = true
+
+		// maybe we also have a join key?
+		if len(parts) > 2 && parts[2] == "join_key" {
+			f.JoinKeyCol = true
+		}
+	}
+
+	if f.RangeMultiCol {
+		if f.JoinKeyCol {
+			*dataColStart = 3
+		} else {
+			*dataColStart = 2
+		}
+	}
+
+	// need to get fields from hdr?
+	if f.FieldsFromHdr {
+		// skip all non-data columns.
+		f.Fields = parts[*dataColStart:]
+	}
+}
+
+func AppendCSVRecord(f CmdImportFlags, dataColStart int, delim rune, parts []string, tree *mmdbwriter.Tree) error {
+	networkStr := parts[0]
+
+	// convert 2 IPs into IP range?
+	if f.RangeMultiCol {
+		networkStr = parts[0] + "-" + parts[1]
+	}
+
+	// add network part to single-IP network if it's missing.
+	isNetworkRange := strings.Contains(networkStr, "-")
+	if !isNetworkRange && !strings.Contains(networkStr, "/") {
+		if f.Ip == 6 && strings.Contains(networkStr, ":") {
+			networkStr += "/128"
+		} else {
+			networkStr += "/32"
+		}
+	}
+
+	// prep record.
+	record := mmdbtype.Map{}
+	if !f.NoNetwork {
+		record["network"] = mmdbtype.String(networkStr)
+	}
+	for i, field := range f.Fields {
+		record[mmdbtype.String(field)] = mmdbtype.String(parts[i+dataColStart])
+	}
+
+	// range insertion or cidr insertion?
+	if isNetworkRange {
+		networkStrParts := strings.Split(networkStr, "-")
+		startIp := net.ParseIP(networkStrParts[0])
+		endIp := net.ParseIP(networkStrParts[1])
+		if err := tree.InsertRange(startIp, endIp, record); err != nil {
+			fmt.Fprintf(
+				os.Stderr, "warn: couldn't insert line '%v'\n",
+				strings.Join(parts, string(delim)),
+			)
+		}
+	} else {
+		_, network, err := net.ParseCIDR(networkStr)
+		if err != nil {
+			return fmt.Errorf(
+				"couldn't parse cidr \"%v\": %w",
+				networkStr, err,
+			)
+		}
+		if err := tree.Insert(network, record); err != nil {
+			fmt.Fprintf(
+				os.Stderr, "warn: couldn't insert line '%v'\n",
+				strings.Join(parts, string(delim)),
+			)
+		}
+	}
+
+	return nil
+}
+
+func ProcessJsonData(
+	data map[string]interface{},
+	subMap *mmdbtype.Map,
+) error {
+	// Insert each key-value pair into the map
+	for key, value := range data {
+		mmdbValue, err := ConvertToMMDBType(value)
+		if err != nil {
+			return fmt.Errorf("failed to convert value to MMDB type: %v", err)
+		}
+		(*subMap)[mmdbtype.String(key)] = mmdbValue
+	}
+
+	return nil
+}
+
+func ConvertToMMDBType(value interface{}) (mmdbtype.DataType, error) {
+	switch v := value.(type) {
+	case nil:
+		return mmdbtype.String(""), nil
+	case string:
+		return mmdbtype.String(v), nil
+	case float64:
+		return mmdbtype.Float64(v), nil
+	case float32:
+		return mmdbtype.Float32(v), nil
+	case int32:
+		return mmdbtype.Int32(v), nil
+	case uint16:
+		return mmdbtype.Uint16(v), nil
+	case uint32:
+		return mmdbtype.Uint32(v), nil
+	case uint64:
+		return mmdbtype.Uint64(v), nil
+	case bool:
+		return mmdbtype.Bool(v), nil
+	case map[string]interface{}:
+		subMap := mmdbtype.Map{}
+		for key, val := range v {
+			mmdbValue, err := ConvertToMMDBType(val)
+			if err != nil {
+				return nil, fmt.Errorf("failed to convert value to MMDB type: %v", err)
+			}
+			subMap[mmdbtype.String(key)] = mmdbValue
+		}
+		return subMap, nil
+	case []interface{}:
+		subSlice := mmdbtype.Slice{}
+		for _, val := range v {
+			mmdbValue, err := ConvertToMMDBType(val)
+			if err != nil {
+				return nil, fmt.Errorf("failed to convert value to MMDB type: %v", err)
+			}
+			subSlice = append(subSlice, mmdbValue)
+		}
+		return subSlice, nil
+	default:
+		outJson, err := json.Marshal(v)
+		if err != nil {
+			return nil, err
+		}
+		return mmdbtype.String(outJson), nil
+	}
 }

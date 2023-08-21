@@ -18,13 +18,13 @@ if [ -z "$KEY" ]; then
     exit 1
 fi
 
-# building the package package 
+# building the package
 cd $ROOT
-debuild -us -uc -S -d 
+debuild -us -uc -S -d
 
 # signing the package
 cd $ROOT/..
 debsign -k $KEY ipinfo_${VSN}.dsc ipinfo_${VSN}_source.changes
 
-# uploading the package to ppa 
+# uploading the package to ppa
 dput ppa:ipinfo/ppa ipinfo_${VSN}_source.changes

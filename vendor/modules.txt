@@ -10,12 +10,12 @@ github.com/hashicorp/errwrap
 # github.com/hashicorp/go-multierror v1.1.1
 ## explicit; go 1.13
 github.com/hashicorp/go-multierror
-# github.com/ipinfo/go/v2 v2.9.2
+# github.com/ipinfo/go/v2 v2.9.4
 ## explicit; go 1.15
 github.com/ipinfo/go/v2/ipinfo
 github.com/ipinfo/go/v2/ipinfo/cache
-# github.com/ipinfo/mmdbctl v0.0.0-20230605073329-ce5a017c8886
-## explicit; go 1.17
+# github.com/ipinfo/mmdbctl v0.0.0-20230726080357-558a20ba8524
+## explicit; go 1.20
 github.com/ipinfo/mmdbctl/lib
 # github.com/jszwec/csvutil v1.4.0
 ## explicit; go 1.13
