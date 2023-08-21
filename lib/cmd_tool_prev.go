@@ -34,11 +34,10 @@ func CmdToolPrev(
 	}
 
 	decrement := -1
-
 	actionFunc := func(input string, inputType INPUT_TYPE) error {
 		switch inputType {
 		case INPUT_TYPE_IP:
-			ActionForIPNextPrev(input, decrement)
+			UpdateIPAddress(input, decrement)
 		default:
 			return ErrNotIP
 		}

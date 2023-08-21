@@ -35,11 +35,10 @@ func CmdToolNext(
 	}
 
 	increment := 1
-
 	actionFunc := func(input string, inputType INPUT_TYPE) error {
 		switch inputType {
 		case INPUT_TYPE_IP:
-			ActionForIPNextPrev(input, increment)
+			UpdateIPAddress(input, increment)
 		default:
 			return ErrNotIP
 		}
@@ -52,7 +51,7 @@ func CmdToolNext(
 	return nil
 }
 
-func ActionForIPNextPrev(input string, delta int) {
+func UpdateIPAddress(input string, delta int) {
 	ip := net.ParseIP(input)
 	if ip != nil {
 		nextPrevIP := make(net.IP, len(ip))
