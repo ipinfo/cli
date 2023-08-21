@@ -12,6 +12,8 @@ import (
 var completionsTool = &complete.Command{
 	Sub: map[string]*complete.Command{
 		"aggregate": completionsToolAggregate,
+		"is_v4":     completionsToolIs_v4,
+		"is_v6":     completionsToolIs_v6,
 	},
 	Flags: map[string]complete.Predictor{
 		"-h":     predict.Nothing,
@@ -26,6 +28,8 @@ func printHelpTool() {
 
 Commands:
   aggregate    aggregate IPs, IP ranges, and CIDRs.
+  is_v4        reports whether ip is an IPv4 address.
+  is_v6        reports whether ip is an IPv6 address.
 
 Options:
   --help, -h
@@ -56,6 +60,10 @@ func cmdTool() error {
 	switch {
 	case cmd == "aggregate":
 		err = cmdToolAggregate()
+	case cmd == "is_v4":
+		err = cmdToolIs_v4()
+	case cmd == "is_v6":
+		err = cmdToolIs_v6()
 	default:
 		err = toolHelp()
 	}
