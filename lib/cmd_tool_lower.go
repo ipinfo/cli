@@ -34,6 +34,7 @@ func CmdToolLower(
 		printHelp()
 		return nil
 	}
+
 	actionFunc := func(input string, inputType INPUT_TYPE) error {
 		switch inputType {
 		case INPUT_TYPE_IP:
@@ -51,14 +52,12 @@ func CmdToolLower(
 	if err != nil {
 		fmt.Println(err)
 	}
+
 	return nil
 }
 
 func ActionForIP(input string) {
-	ip := net.ParseIP(input)
-	if ip != nil {
-		fmt.Println(ip)
-	}
+	fmt.Println(input)
 }
 
 func ActionForRange(input string) {
@@ -67,7 +66,7 @@ func ActionForRange(input string) {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(ipRange.Start) // Print the start IP of the range
+	fmt.Println(ipRange.Start)
 }
 
 func ActionForCIDR(input string) {
@@ -76,5 +75,5 @@ func ActionForCIDR(input string) {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(ipnet.IP) // Print the start IP of the CIDR
+	fmt.Println(ipnet.IP)
 }

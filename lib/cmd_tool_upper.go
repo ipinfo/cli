@@ -2,7 +2,6 @@ package lib
 
 import (
 	"fmt"
-	"net"
 
 	"github.com/spf13/pflag"
 )
@@ -34,6 +33,7 @@ func CmdToolUpper(
 		printHelp()
 		return nil
 	}
+
 	actionFunc := func(input string, inputType INPUT_TYPE) error {
 		switch inputType {
 		case INPUT_TYPE_IP:
@@ -47,18 +47,16 @@ func CmdToolUpper(
 		}
 		return nil
 	}
-    err := GetInputFrom(args, true, true, actionFunc)
+	err := GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
 	}
+
 	return nil
 }
 
 func ActionForIPUpper(input string) {
-	ip := net.ParseIP(input)
-	if ip != nil {
-		fmt.Println(ip)
-	}
+	fmt.Println(input)
 }
 
 func ActionForRangeUpper(input string) {
@@ -67,19 +65,14 @@ func ActionForRangeUpper(input string) {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(ipRange.End) // Print the end IP of the range
+	fmt.Println(ipRange.End)
 }
 
 func ActionForCIDRUpper(input string) {
-	_, ipnet, err := net.ParseCIDR(input)
+	ipRange, err := IPRangeStrFromCIDR(input)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	ipRange, err := IPRangeStrFromCIDR(ipnet.String())
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(ipRange.End) // Print the end IP of the CIDR
+	fmt.Println(ipRange.End)
 }

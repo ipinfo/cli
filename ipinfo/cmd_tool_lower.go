@@ -27,17 +27,17 @@ Description:
   Input can be a mixture of IPs, IP ranges or CIDRs.
   
 Examples:
-# Finds lower IP for CIDR.
-$ %[1]s tool lower 192.168.1.0/24
+  # Finds lower IP for CIDR.
+  $ %[1]s tool lower 192.168.1.0/24
 
-# Finds lower IP for IP range.
-$ %[1]s tool lower 1.1.1.0-1.1.1.244
+  # Finds lower IP for IP range.
+  $ %[1]s tool lower 1.1.1.0-1.1.1.244
 
-# Finds lower IPs from stdin.
-$ cat /path/to/file.txt | %[1]s tool lower
+  # Finds lower IPs from stdin.
+  $ cat /path/to/file.txt | %[1]s tool lower
 
-# Find lower IPs from file.
-$ %[1]s tool lower /path/to/file1.txt 
+  # Find lower IPs from file.
+  $ %[1]s tool lower /path/to/file1.txt 
 
 Options:
   --help, -h
