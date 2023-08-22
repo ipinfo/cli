@@ -23,8 +23,8 @@ func printHelpToolPrev() {
 		`Usage: %s tool prev [<opts>] <ip | filepath>
 
 Description:
-  Finds the previous IP address for given input efficiently 
-  Input must be IPs.
+  Finds the previous IP address for the given input IP.
+  Inputs must be IPs.
 
 Examples:
   # Find the previous IP for the given inputs 

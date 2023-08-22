@@ -31,8 +31,8 @@ func printHelpTool() {
 
 Commands:
   aggregate    aggregate IPs, IP ranges, and CIDRs.
-  next         get next IP of IPs
-  prev         get previous IP of IPs
+  next         get the next IP of the input IP
+  prev         get the previous IP of the input IP
   ip2n         converts an IPv4 or IPv6 address to its decimal representation.
   n2ip	       evaluates a mathematical expression and converts it to an IPv4 or IPv6.
   n2ip6	       evaluates a mathematical expression and converts it to an IPv6.

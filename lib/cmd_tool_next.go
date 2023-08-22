@@ -48,32 +48,76 @@ func CmdToolNext(
 	if err != nil {
 		fmt.Println(err)
 	}
+	
 	return nil
 }
 
 func UpdateIPAddress(input string, delta int) {
 	ip := net.ParseIP(input)
 	if ip != nil {
-		nextPrevIP := make(net.IP, len(ip))
-		copy(nextPrevIP, ip)
-
-		for i := len(nextPrevIP) - 1; i >= 0; i-- {
-			if delta > 0 {
-				if nextPrevIP[i] < 255-byte(delta) {
-					nextPrevIP[i] += byte(delta)
-					break
-				} else {
-					nextPrevIP[i] = 255
-				}
-			} else if delta < 0 {
-				if nextPrevIP[i] >= byte(-delta) {
-					nextPrevIP[i] += byte(delta)
-					break
-				} else {
-					nextPrevIP[i] = 0
-				}
-			}
+		if ip.To4() != nil {
+			ipInt := ipToUint32(ip)
+			nextPrevIPInt := ipInt + uint32(delta)
+			adjustedIPInt := adjustIPUint32(nextPrevIPInt)
+			nextPrevIP := uint32ToIP(adjustedIPInt)
+			fmt.Println(nextPrevIP)
+		} else {
+			ipInt := ipToBigInt(ip)
+			deltaBigInt := new(big.Int).SetInt64(int64(delta))
+			nextPrevIPInt := new(big.Int).Add(ipInt, deltaBigInt)
+			adjustedIPInt := adjustIPBigInt(nextPrevIPInt)
+			nextPrevIP := bigIntToIP(adjustedIPInt)
+			fmt.Println(nextPrevIP)
 		}
-		fmt.Println(nextPrevIP)
 	}
 }
+
+func ipToUint32(ip net.IP) uint32 {
+	return binary.BigEndian.Uint32(ip.To4())
+}
+
+func uint32ToIP(ipInt uint32) net.IP {
+	ip := make(net.IP, net.IPv4len)
+	binary.BigEndian.PutUint32(ip, ipInt)
+	return ip
+}
+
+func adjustIPUint32(ipInt uint32) uint32 {
+	if ipInt > math.MaxUint32 {
+		return ipInt - math.MaxUint32
+	}
+	if ipInt < 0 {
+		return ipInt + math.MaxUint32
+	}
+	return ipInt
+}
+
+func ipToBigInt(ip net.IP) *big.Int {
+	ipInt := new(big.Int)
+	ipInt.SetBytes(ip)
+	return ipInt
+}
+
+func bigIntToIP(ipInt *big.Int) net.IP {
+	ip := make(net.IP, net.IPv6len)
+	ipIntBytes := ipInt.Bytes()
+	if len(ipIntBytes) > net.IPv6len {
+		ipIntBytes = ipIntBytes[len(ipIntBytes)-net.IPv6len:]
+	}
+	copy(ip[net.IPv6len-len(ipIntBytes):], ipIntBytes)
+	return ip
+}
+
+func adjustIPBigInt(ipInt *big.Int) *big.Int {
+	if ipInt.Cmp(maxIPv6BigInt) == 0 {
+		return big.NewInt(0)
+	}
+	if ipInt.Cmp(big.NewInt(0)) == 0 {
+		return maxIPv6BigInt
+	}
+	return ipInt
+}
+
+var (
+	maxIPv6BigInt, _ = new(big.Int).SetString("340282366920938463463374607431768211455", 10) // 2^128 - 1
+)

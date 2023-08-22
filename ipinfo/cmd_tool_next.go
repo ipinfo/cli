@@ -23,8 +23,8 @@ func printHelpToolNext() {
 		`Usage: %s tool next [<opts>] <ip | filepath>
 
 Description:
-  Finds the next IP address for given input efficiently 
-  Input must be IPs.
+  Finds the next IP address for the given input IP.
+  Inputs must be IPs.
 
 Examples:
   # Find the next IP for the given inputs 

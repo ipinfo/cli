@@ -43,10 +43,10 @@ func CmdToolPrev(
 		}
 		return nil
 	}
-
 	err := GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
 	}
+
 	return nil
 }
