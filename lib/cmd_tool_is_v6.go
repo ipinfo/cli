@@ -48,11 +48,11 @@ func CmdToolIs_v6(
 		}
 		return nil
 	}
-
 	err := GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
 	}
+
 	return nil
 }
 
@@ -73,7 +73,7 @@ func ActionForIsV6Range(input string) {
 		fmt.Println("Invalid IP range input:", err)
 		return
 	}
-
+	
 	startIP := net.ParseIP(ipRange.Start)
 	isIPv6 := startIP != nil && startIP.To16() != nil && startIP.To4() == nil
 

@@ -24,10 +24,10 @@ func printHelpToolIs_v4() {
 
 Description:
   Checks if the input is an IPv4 address.
-  Input can be IPs, IP ranges, CIDRs, or filepath to a file
+  Inputs can be IPs, IP ranges, CIDRs, or filepath to a file
 
 Examples:
-  # Check two CIDR.
+  # Check CIDR.
   $ %[1]s tool is_v4 1.1.1.0/30
 
   # Check IP range.

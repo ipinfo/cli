@@ -23,21 +23,21 @@ func printHelpToolIs_v6() {
 		`Usage: %s tool is_v6 [<opts>] <cidr | ip | ip-range | filepath>
 
 Description:
-Checks if the input is an IPv6 address.
-Input can be IPs, IP ranges, CIDRs, or filepath to a file
+  Checks if the input is an IPv6 address.
+  Inputs can be IPs, IP ranges, CIDRs, or filepath to a file
 
 Examples:
-# Check two CIDR.
-$ %[1]s tool is_v6 1.1.1.0/30
+  # Check CIDR.
+  $ %[1]s tool is_v6 1.1.1.0/30
 
-# Check IP range.
-$ %[1]s tool is_v6 1.1.1.0-1.1.1.244
+  # Check IP range.
+  $ %[1]s tool is_v6 1.1.1.0-1.1.1.244
 
-# Check for file.
-$ %[1]s tool is_v6 /path/to/file.txt 
+  # Check for file.
+  $ %[1]s tool is_v6 /path/to/file.txt 
 
-# Check entries from stdin.
-$ cat /path/to/file1.txt | %[1]s tool is_v6
+  # Check entries from stdin.
+  $ cat /path/to/file1.txt | %[1]s tool is_v6
 
 Options:
   --help, -h

@@ -48,11 +48,11 @@ func CmdToolIs_v4(
 		}
 		return nil
 	}
-
 	err := GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
 	}
+
 	return nil
 }
 
