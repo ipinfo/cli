@@ -38,7 +38,10 @@ func CmdToolNext(
 	actionFunc := func(input string, inputType INPUT_TYPE) error {
 		switch inputType {
 		case INPUT_TYPE_IP:
-			UpdateIPAddress(input, increment)
+			newIP := ipAdd(input, increment)
+			if newIP != nil {
+				fmt.Println(newIP)
+			}
 		default:
 			return ErrNotIP
 		}
@@ -52,24 +55,25 @@ func CmdToolNext(
 	return nil
 }
 
-func UpdateIPAddress(input string, delta int) {
+func ipAdd(input string, delta int) net.IP {
 	ip := net.ParseIP(input)
 	if ip != nil {
 		if ip.To4() != nil {
 			ipInt := ipToUint32(ip)
-			nextPrevIPInt := ipInt + uint32(delta)
-			adjustedIPInt := adjustIPUint32(nextPrevIPInt)
-			nextPrevIP := uint32ToIP(adjustedIPInt)
-			fmt.Println(nextPrevIP)
+			newIPInt := ipInt + uint32(delta)
+			adjustedIPInt := adjustIPUint32(newIPInt)
+			newIP := uint32ToIP(adjustedIPInt)
+			return newIP
 		} else {
 			ipInt := ipToBigInt(ip)
 			deltaBigInt := new(big.Int).SetInt64(int64(delta))
-			nextPrevIPInt := new(big.Int).Add(ipInt, deltaBigInt)
-			adjustedIPInt := adjustIPBigInt(nextPrevIPInt)
-			nextPrevIP := bigIntToIP(adjustedIPInt)
-			fmt.Println(nextPrevIP)
+			newIPInt := new(big.Int).Add(ipInt, deltaBigInt)
+			adjustedIPInt := adjustIPBigInt(newIPInt)
+			newIP := bigIntToIP(adjustedIPInt)
+			return newIP
 		}
 	}
+	return nil
 }
 
 func ipToUint32(ip net.IP) uint32 {
@@ -83,10 +87,10 @@ func uint32ToIP(ipInt uint32) net.IP {
 }
 
 func adjustIPUint32(ipInt uint32) uint32 {
-	if ipInt > math.MaxUint32 {
+	if ipInt == math.MaxUint32 {
 		return ipInt - math.MaxUint32
 	}
-	if ipInt < 0 {
+	if ipInt == 0 {
 		return ipInt + math.MaxUint32
 	}
 	return ipInt

@@ -37,7 +37,10 @@ func CmdToolPrev(
 	actionFunc := func(input string, inputType INPUT_TYPE) error {
 		switch inputType {
 		case INPUT_TYPE_IP:
-			UpdateIPAddress(input, decrement)
+			newIP := ipAdd(input, decrement)
+			if newIP != nil {
+				fmt.Println(newIP)
+			}
 		default:
 			return ErrNotIP
 		}
