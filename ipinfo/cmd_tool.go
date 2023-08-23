@@ -14,6 +14,8 @@ var completionsTool = &complete.Command{
 		"aggregate": completionsToolAggregate,
 		"next":      completionsToolNext,
 		"prev":      completionsToolPrev,
+		"lower":     completionsToolLower,
+		"upper":     completionsToolUpper,
 		"ip2n":      completionsToolIP2n,
 		"n2ip":      completionsToolN2IP,
 		"n2ip6":     completionsToolN2IP6,
@@ -33,6 +35,8 @@ Commands:
   aggregate    aggregate IPs, IP ranges, and CIDRs.
   next         get the next IP of the input IP
   prev         get the previous IP of the input IP
+  lower        get start IP of IPs, IP ranges, and CIDRs.
+  upper        get end IP of IPs, IP ranges, and CIDRs.
   ip2n         converts an IPv4 or IPv6 address to its decimal representation.
   n2ip	       evaluates a mathematical expression and converts it to an IPv4 or IPv6.
   n2ip6	       evaluates a mathematical expression and converts it to an IPv6.
@@ -70,6 +74,10 @@ func cmdTool() error {
 		err = cmdToolNext()
 	case cmd == "prev":
 		err = cmdToolPrev()
+	case cmd == "lower":
+		err = cmdToolLower()
+	case cmd == "upper":
+		err = cmdToolUpper()
 	case cmd == "ip2n":
 		err = cmdToolIP2n()
 	case cmd == "n2ip":
