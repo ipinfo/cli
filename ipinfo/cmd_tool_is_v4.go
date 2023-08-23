@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/pflag"
 )
 
-var completionsToolIs_v4 = &complete.Command{
+var completionsToolIsV4 = &complete.Command{
 	Flags: map[string]complete.Predictor{
 		"-h":      predict.Nothing,
 		"--help":  predict.Nothing,
@@ -18,7 +18,7 @@ var completionsToolIs_v4 = &complete.Command{
 	},
 }
 
-func printHelpToolIs_v4() {
+func printHelpToolIsV4() {
 	fmt.Printf(
 		`Usage: %s tool is_v4 [<opts>] <cidr | ip | ip-range | filepath>
 
@@ -47,10 +47,10 @@ Options:
 `, progBase)
 }
 
-func cmdToolIs_v4() (err error) {
-	f := lib.CmdToolIs_v4Flags{}
+func cmdToolIsV4() (err error) {
+	f := lib.CmdToolIsV4Flags{}
 	f.Init()
 	pflag.Parse()
 
-	return lib.CmdToolIs_v4(f, pflag.Args()[2:], printHelpToolIs_v4)
+	return lib.CmdToolIsV4(f, pflag.Args()[2:], printHelpToolIsV4)
 }

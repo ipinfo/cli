@@ -7,12 +7,12 @@ import (
 	"github.com/spf13/pflag"
 )
 
-type CmdToolIs_v4Flags struct {
+type CmdToolIsV4Flags struct {
 	Help  bool
 	Quiet bool
 }
 
-func (f *CmdToolIs_v4Flags) Init() {
+func (f *CmdToolIsV4Flags) Init() {
 	pflag.BoolVarP(
 		&f.Help,
 		"help", "h", false,
@@ -25,8 +25,8 @@ func (f *CmdToolIs_v4Flags) Init() {
 	)
 }
 
-func CmdToolIs_v4(
-	f CmdToolIs_v4Flags,
+func CmdToolIsV4(
+	f CmdToolIsV4Flags,
 	args []string,
 	printHelp func(),
 ) error {
@@ -58,11 +58,9 @@ func CmdToolIs_v4(
 
 func ActionForIsV4(input string) {
 	ip := net.ParseIP(input)
-	if ip != nil && ip.To4() != nil {
-		fmt.Printf("%s is an IPv4 input\n", input)
-	} else {
-		fmt.Printf("%s is not an IPv4 input\n", input)
-	}
+	isIPv4 := IsIPv4(ip)
+
+	fmt.Printf("%s,%v\n", input, isIPv4)
 }
 
 func ActionForIsV4Range(input string) {
@@ -71,24 +69,27 @@ func ActionForIsV4Range(input string) {
 		fmt.Println("Invalid IP range input:", err)
 		return
 	}
+
 	startIP := net.ParseIP(ipRange.Start)
-	if startIP != nil && startIP.To4() != nil {
-		fmt.Printf("%s is an IPv4 input\n", input)
-	} else {
-		fmt.Printf("%s is not an IPv4 input\n", input)
-	}
+	isIPv4 := IsIPv4(startIP)
+
+	fmt.Printf("%s,%v\n", input, isIPv4)
 }
 
 func ActionForIsV4CIDR(input string) {
 	_, ipnet, err := net.ParseCIDR(input)
 	if err == nil {
-		isCIDRIPv4 := ipnet.IP.To4() != nil
-		if isCIDRIPv4 {
-			fmt.Printf("%s is an IPv4 input\n", input)
-		} else {
-			fmt.Printf("%s is not an IPv4 input.\n", input)
-		}
+		isCIDRIPv4 := IsCIDRIPv4(ipnet)
+		fmt.Printf("%s,%v\n", input, isCIDRIPv4)
 	} else {
 		fmt.Println("Invalid CIDR input:", err)
 	}
+}
+
+func IsIPv4(ip net.IP) bool {
+	return ip != nil && ip.To4() != nil
+}
+
+func IsCIDRIPv4(ipnet *net.IPNet) bool {
+	return ipnet != nil && ipnet.IP.To4() != nil
 }

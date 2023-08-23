@@ -12,8 +12,8 @@ import (
 var completionsTool = &complete.Command{
 	Sub: map[string]*complete.Command{
 		"aggregate": completionsToolAggregate,
-		"is_v4":     completionsToolIs_v4,
-		"is_v6":     completionsToolIs_v6,
+		"is_v4":     completionsToolIsV4,
+		"is_v6":     completionsToolIsV6,
 		"ip2n":      completionsToolIP2n,
 		"n2ip":      completionsToolN2IP,
 		"n2ip6":     completionsToolN2IP6,
@@ -67,9 +67,9 @@ func cmdTool() error {
 	case cmd == "aggregate":
 		err = cmdToolAggregate()
 	case cmd == "is_v4":
-		err = cmdToolIs_v4()
+		err = cmdToolIsV4()
 	case cmd == "is_v6":
-		err = cmdToolIs_v6()
+		err = cmdToolIsV6()
 	case cmd == "ip2n":
 		err = cmdToolIP2n()
 	case cmd == "n2ip":

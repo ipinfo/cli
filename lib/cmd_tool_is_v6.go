@@ -7,12 +7,12 @@ import (
 	"github.com/spf13/pflag"
 )
 
-type CmdToolIs_v6Flags struct {
+type CmdToolIsV6Flags struct {
 	Help  bool
 	Quiet bool
 }
 
-func (f *CmdToolIs_v6Flags) Init() {
+func (f *CmdToolIsV6Flags) Init() {
 	pflag.BoolVarP(
 		&f.Help,
 		"help", "h", false,
@@ -25,8 +25,8 @@ func (f *CmdToolIs_v6Flags) Init() {
 	)
 }
 
-func CmdToolIs_v6(
-	f CmdToolIs_v6Flags,
+func CmdToolIsV6(
+	f CmdToolIsV6Flags,
 	args []string,
 	printHelp func(),
 ) error {
@@ -58,13 +58,9 @@ func CmdToolIs_v6(
 
 func ActionForIsV6(input string) {
 	ip := net.ParseIP(input)
-	isIPv6 := ip != nil && ip.To16() != nil && ip.To4() == nil
+	isIPv6 := IsIPv6(ip)
 
-	if isIPv6 {
-		fmt.Printf("%s is an IPv6 input.\n", input)
-	} else {
-		fmt.Printf("%s is not an IPv6 input.\n", input)
-	}
+	fmt.Printf("%s,%v\n", input, isIPv6)
 }
 
 func ActionForIsV6Range(input string) {
@@ -73,27 +69,27 @@ func ActionForIsV6Range(input string) {
 		fmt.Println("Invalid IP range input:", err)
 		return
 	}
-	
-	startIP := net.ParseIP(ipRange.Start)
-	isIPv6 := startIP != nil && startIP.To16() != nil && startIP.To4() == nil
 
-	if isIPv6 {
-		fmt.Printf("%s is an IPv6 input.\n", input)
-	} else {
-		fmt.Printf("%s is not an IPv6 input.\n", input)
-	}
+	startIP := net.ParseIP(ipRange.Start)
+	isIPv6 := IsIPv6(startIP)
+
+	fmt.Printf("%s,%v\n", input, isIPv6)
 }
 
 func ActionForIsV6CIDR(input string) {
 	_, ipnet, err := net.ParseCIDR(input)
 	if err == nil {
-		isCIDRIPv6 := ipnet.IP.To16() != nil && ipnet.IP.To4() == nil
-		if isCIDRIPv6 {
-			fmt.Printf("%s is an IPv6 input.\n", input)
-		} else {
-			fmt.Printf("%s is not an IPv6 input.\n", input)
-		}
+		isCIDRIPv6 := IsCIDRIPv6(ipnet)
+		fmt.Printf("%s,%v\n", input, isCIDRIPv6)
 	} else {
 		fmt.Println("Invalid CIDR input:", err)
 	}
+}
+
+func IsIPv6(ip net.IP) bool {
+	return ip != nil && ip.To16() != nil && ip.To4() == nil
+}
+
+func IsCIDRIPv6(ipnet *net.IPNet) bool {
+	return ipnet != nil && ipnet.IP.To16() != nil && ipnet.IP.To4() == nil
 }

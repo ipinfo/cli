@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/pflag"
 )
 
-var completionsToolIs_v6 = &complete.Command{
+var completionsToolIsV6 = &complete.Command{
 	Flags: map[string]complete.Predictor{
 		"-h":      predict.Nothing,
 		"--help":  predict.Nothing,
@@ -18,7 +18,7 @@ var completionsToolIs_v6 = &complete.Command{
 	},
 }
 
-func printHelpToolIs_v6() {
+func printHelpToolIsV6() {
 	fmt.Printf(
 		`Usage: %s tool is_v6 [<opts>] <cidr | ip | ip-range | filepath>
 
@@ -28,13 +28,13 @@ Description:
 
 Examples:
   # Check CIDR.
-  $ %[1]s tool is_v6 1.1.1.0/30
+  $ %[1]s tool is_v6 2001:db8::/32
 
   # Check IP range.
-  $ %[1]s tool is_v6 1.1.1.0-1.1.1.244
+  $ %[1]s tool is_v6 2001:db8::1-2001:db8::10
 
   # Check for file.
-  $ %[1]s tool is_v6 /path/to/file.txt 
+  $ %[1]s tool is_v6 /path/to/file1.txt 
 
   # Check entries from stdin.
   $ cat /path/to/file1.txt | %[1]s tool is_v6
@@ -47,10 +47,10 @@ Options:
 `, progBase)
 }
 
-func cmdToolIs_v6() (err error) {
-	f := lib.CmdToolIs_v6Flags{}
+func cmdToolIsV6() (err error) {
+	f := lib.CmdToolIsV6Flags{}
 	f.Init()
 	pflag.Parse()
 
-	return lib.CmdToolIs_v6(f, pflag.Args()[2:], printHelpToolIs_v6)
+	return lib.CmdToolIsV6(f, pflag.Args()[2:], printHelpToolIsV6)
 }
