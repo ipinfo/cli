@@ -58,13 +58,12 @@ func CmdToolNext(
 func ipAdd(input string, delta int) net.IP {
 	ip := net.ParseIP(input)
 	if ip != nil {
-		if ip.To4() != nil {
+		if ip != nil && ip.To4() != nil {
 			ipInt := ipToUint32(ip)
 			newIPInt := ipInt + uint32(delta)
-			adjustedIPInt := adjustIPUint32(newIPInt)
-			newIP := uint32ToIP(adjustedIPInt)
+			newIP := uint32ToIP(newIPInt)
 			return newIP
-		} else {
+		}else {
 			ipInt := ipToBigInt(ip)
 			deltaBigInt := new(big.Int).SetInt64(int64(delta))
 			newIPInt := new(big.Int).Add(ipInt, deltaBigInt)
@@ -84,16 +83,6 @@ func uint32ToIP(ipInt uint32) net.IP {
 	ip := make(net.IP, net.IPv4len)
 	binary.BigEndian.PutUint32(ip, ipInt)
 	return ip
-}
-
-func adjustIPUint32(ipInt uint32) uint32 {
-	if ipInt == math.MaxUint32 {
-		return ipInt - math.MaxUint32
-	}
-	if ipInt == 0 {
-		return ipInt + math.MaxUint32
-	}
-	return ipInt
 }
 
 func ipToBigInt(ip net.IP) *big.Int {
