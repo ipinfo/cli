@@ -58,12 +58,12 @@ func CmdToolNext(
 func ipAdd(input string, delta int) net.IP {
 	ip := net.ParseIP(input)
 	if ip != nil {
-		if ip != nil && ip.To4() != nil {
+		if ip.To4() != nil {
 			ipInt := ipToUint32(ip)
 			newIPInt := ipInt + uint32(delta)
 			newIP := uint32ToIP(newIPInt)
 			return newIP
-		}else {
+		} else {
 			ipInt := ipToBigInt(ip)
 			deltaBigInt := new(big.Int).SetInt64(int64(delta))
 			newIPInt := new(big.Int).Add(ipInt, deltaBigInt)
