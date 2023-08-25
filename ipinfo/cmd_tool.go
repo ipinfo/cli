@@ -12,6 +12,8 @@ import (
 var completionsTool = &complete.Command{
 	Sub: map[string]*complete.Command{
 		"aggregate": completionsToolAggregate,
+		"next":      completionsToolNext,
+		"prev":      completionsToolPrev,
 		"is_v4":     completionsToolIsV4,
 		"lower":     completionsToolLower,
 		"upper":     completionsToolUpper,
@@ -32,6 +34,8 @@ func printHelpTool() {
 
 Commands:
   aggregate    aggregate IPs, IP ranges, and CIDRs.
+  next         get the next IP of the input IP
+  prev         get the previous IP of the input IP
   is_v4        reports whether input is an IPv4 address.
   is_v6        reports whether input is an IPv6 address.
   lower        get start IP of IPs, IP ranges, and CIDRs.
@@ -69,6 +73,10 @@ func cmdTool() error {
 	switch {
 	case cmd == "aggregate":
 		err = cmdToolAggregate()
+	case cmd == "next":
+		err = cmdToolNext()
+	case cmd == "prev":
+		err = cmdToolPrev()
 	case cmd == "is_v4":
 		err = cmdToolIsV4()
 	case cmd == "is_v6":
