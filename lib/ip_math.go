@@ -40,12 +40,13 @@ func ipToBigInt(ip net.IP) *big.Int {
 }
 
 func bigIntToIP(ipInt *big.Int) net.IP {
-	ip := make(net.IP, net.IPv6len)
 	ipIntBytes := ipInt.Bytes()
-	if len(ipIntBytes) > net.IPv6len {
-		ipIntBytes = ipIntBytes[len(ipIntBytes)-net.IPv6len:]
+	ip := make(net.IP, net.IPv6len)
+	copyLength := len(ipIntBytes)
+	if copyLength > net.IPv6len {
+		copyLength = net.IPv6len
 	}
-	copy(ip[net.IPv6len-len(ipIntBytes):], ipIntBytes)
+	copy(ip[net.IPv6len-copyLength:], ipIntBytes)
 	return ip
 }
 
