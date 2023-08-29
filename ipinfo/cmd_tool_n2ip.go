@@ -21,7 +21,7 @@ var completionsToolN2IP = &complete.Command{
 // printHelpToolN2IP prints the help message for the "n2ip" command.
 func printHelpToolN2IP() {
 	fmt.Printf(
-		`Usage: %s n2ip tool [<opts>] <number>
+		`Usage: %s tool n2ip [<opts>] <number>
 
 Description:
   Converts a given numeric representation to its corresponding IPv4 or IPv6 address,
