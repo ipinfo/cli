@@ -6,13 +6,13 @@ import (
 	"net"
 )
 
-// CmdToolIsSingleIpFlags are flags expected by CmdToolIP2n
-type CmdToolIsSingleIpFlags struct {
+// CmdToolIsOneIpFlags are flags expected by CmdToolIP2n
+type CmdToolIsOneIpFlags struct {
 	Help bool
 }
 
-// Init initializes the common flags available to CmdToolIsSingleIp with sensible
-func (f *CmdToolIsSingleIpFlags) Init() {
+// Init initializes the common flags available to CmdToolIsOneIp with sensible
+func (f *CmdToolIsOneIpFlags) Init() {
 	pflag.BoolVarP(
 		&f.Help,
 		"help", "h", false,
@@ -20,7 +20,7 @@ func (f *CmdToolIsSingleIpFlags) Init() {
 	)
 }
 
-func CmdToolIsSingleIp(f CmdToolIsSingleIpFlags, args []string, printHelp func()) error {
+func CmdToolIsOneIp(f CmdToolIsOneIpFlags, args []string, printHelp func()) error {
 	if len(args) == 0 || f.Help {
 		printHelp()
 		return nil
