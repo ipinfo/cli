@@ -8,7 +8,6 @@ import (
 // CmdToolIs4In6Flags are flags expected by CmdToolIs4In6
 type CmdToolIs4In6Flags struct {
 	Help bool
-	ipv6 bool
 }
 
 // Init initializes the common flags available to CmdToolIs4In6 with sensible
