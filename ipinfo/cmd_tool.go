@@ -11,15 +11,17 @@ import (
 
 var completionsTool = &complete.Command{
 	Sub: map[string]*complete.Command{
-		"aggregate": completionsToolAggregate,
-		"next":      completionsToolNext,
-		"prev":      completionsToolPrev,
-		"is_v4":     completionsToolIsV4,
-		"lower":     completionsToolLower,
-		"upper":     completionsToolUpper,
-		"ip2n":      completionsToolIP2n,
-		"n2ip":      completionsToolN2IP,
-		"n2ip6":     completionsToolN2IP6,
+		"aggregate":  completionsToolAggregate,
+		"next":       completionsToolNext,
+		"prev":       completionsToolPrev,
+		"is_v4":      completionsToolIsV4,
+		"is_v6":      completionsToolIsV6,
+		"isSingleIp": completionsToolIsSingleIp,
+		"lower":      completionsToolLower,
+		"upper":      completionsToolUpper,
+		"ip2n":       completionsToolIP2n,
+		"n2ip":       completionsToolN2IP,
+		"n2ip6":      completionsToolN2IP6,
 	},
 	Flags: map[string]complete.Predictor{
 		"-h":     predict.Nothing,
@@ -38,6 +40,7 @@ Commands:
   prev         get the previous IP of the input IP
   is_v4        reports whether input is an IPv4 address.
   is_v6        reports whether input is an IPv6 address.
+  isSingleIp   checks whether a CIDR contains exactly one IP.
   lower        get start IP of IPs, IP ranges, and CIDRs.
   upper        get end IP of IPs, IP ranges, and CIDRs.
   ip2n         converts an IPv4 or IPv6 address to its decimal representation.
@@ -81,6 +84,8 @@ func cmdTool() error {
 		err = cmdToolIsV4()
 	case cmd == "is_v6":
 		err = cmdToolIsV6()
+	case cmd == "isSingleIp":
+		err = cmdToolIsSingleIp()
 	case cmd == "lower":
 		err = cmdToolLower()
 	case cmd == "upper":
