@@ -2,7 +2,6 @@ package lib
 
 import (
 	"fmt"
-	"net"
 	"github.com/spf13/pflag"
 )
 
