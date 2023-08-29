@@ -19,7 +19,7 @@ func (f *CmdToolIs4In6Flags) Init() {
 	)
 }
 
-// CmdToolIs4In6 converts a number to an IP address
+// CmdToolIs4In6 checks if given ip is an IPv4-mapped IPv6 address.
 func CmdToolIs4In6(f CmdToolIs4In6Flags, args []string, printHelp func()) error {
 	if f.Help {
 		printHelp()
