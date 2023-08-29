@@ -15,6 +15,7 @@ var completionsTool = &complete.Command{
 		"next":      completionsToolNext,
 		"prev":      completionsToolPrev,
 		"is_v4":     completionsToolIsV4,
+		"isValid":   completionsToolIsValid,
 		"lower":     completionsToolLower,
 		"upper":     completionsToolUpper,
 		"ip2n":      completionsToolIP2n,
@@ -38,6 +39,7 @@ Commands:
   prev         get the previous IP of the input IP
   is_v4        reports whether input is an IPv4 address.
   is_v6        reports whether input is an IPv6 address.
+  isValid      reports whether the Addr is an initialized address (not the zero Addr).
   lower        get start IP of IPs, IP ranges, and CIDRs.
   upper        get end IP of IPs, IP ranges, and CIDRs.
   ip2n         converts an IPv4 or IPv6 address to its decimal representation.
@@ -81,6 +83,8 @@ func cmdTool() error {
 		err = cmdToolIsV4()
 	case cmd == "is_v6":
 		err = cmdToolIsV6()
+	case cmd == "isValid":
+		err = cmdToolIsValid()
 	case cmd == "lower":
 		err = cmdToolLower()
 	case cmd == "upper":
