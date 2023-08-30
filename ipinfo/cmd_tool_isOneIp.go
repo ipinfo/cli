@@ -18,26 +18,26 @@ var completionsToolIsOneIp = &complete.Command{
 
 func printHelpToolIsOneIp() {
 	fmt.Printf(
-		`Usage: %s tool isOneIp [<opts>] <cidr | ip | ip-range | filepath>
+		`Usage: %s tool is_one_ip [<opts>] <cidr | ip | ip-range | filepath>
 
 Description:
   checks whether a CIDR or ip range contains exactly one IP.
 
 Examples:
   # Check CIDR.
-  $ %[1]s tool isOneIp 1.1.1.0/30
+  $ %[1]s tool is_one_ip 1.1.1.0/30
 
   # Check IP.
-  $ %[1]s tool isOneIp 1.1.1.1
+  $ %[1]s tool is_one_ip 1.1.1.1
 
   # Check IP range.
-  $ %[1]s tool isOneIp 1.1.1.1-2.2.2.2
+  $ %[1]s tool is_one_ip 1.1.1.1-2.2.2.2
   
   # Check for file.
-  $ %[1]s tool isOneIp /path/to/file.txt 
+  $ %[1]s tool is_one_ip /path/to/file.txt 
 
   # Check entries from stdin.
-  $ cat /path/to/file1.txt | %[1]s tool isOneIp
+  $ cat /path/to/file1.txt | %[1]s tool is_one_ip
 
 Options:
   --help, -h
