@@ -38,7 +38,7 @@ func CmdToolIsOneIp(f CmdToolIsOneIpFlags, args []string, printHelp func()) erro
 		default:
 			return ErrInvalidInput
 		}
-		fmt.Printf("%s %v\n", input, isOneIp)
+		fmt.Printf("%s,%v\n", input, isOneIp)
 		return nil
 	}
 
