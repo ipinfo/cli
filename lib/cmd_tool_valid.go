@@ -30,9 +30,9 @@ func CmdToolIsValid(f CmdToolIsValidFlags, args []string, printHelp func()) erro
 	op := func(input string, input_type INPUT_TYPE) error {
 		switch input_type {
 		case INPUT_TYPE_IP:
-			fmt.Printf("%s %v\n", input, true)
+			fmt.Printf("%s,%v\n", input, true)
 		default:
-			fmt.Printf("%s %v\n", input, false)
+			fmt.Printf("%s,%v\n", input, false)
 		}
 		return nil
 	}
