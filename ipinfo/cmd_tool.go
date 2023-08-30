@@ -34,7 +34,7 @@ Commands:
   aggregate    aggregate IPs, IP ranges, and CIDRs.
   lower        get start IP of IPs, IP ranges, and CIDRs.
   upper        get end IP of IPs, IP ranges, and CIDRs.
-  is4In6       reports whether ip is an IPv4-mapped IPv6 address.
+  is4In6       get whether the IP is an IPv4-mapped IPv6 address.
   ip2n         converts an IPv4 or IPv6 address to its decimal representation.
   n2ip	       evaluates a mathematical expression and converts it to an IPv4 or IPv6.
   n2ip6	       evaluates a mathematical expression and converts it to an IPv6.
