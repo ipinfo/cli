@@ -15,7 +15,7 @@ var completionsToolIsValid = &complete.Command{
 	},
 }
 
-// printHelpToolIsValid prints the help message for the "IsValid" command.
+// printHelpToolIsValid prints the help message for the "is_valid" command.
 func printHelpToolIsValid() {
 	fmt.Printf(
 		`Usage: %s tool is_valid <ip>
@@ -37,7 +37,7 @@ Options:
 `, progBase)
 }
 
-// cmdToolIsValid is the handler for the "IsValid" command.
+// cmdToolIsValid is the handler for the "is_valid" command.
 func cmdToolIsValid() error {
 	f := lib.CmdToolIsValidFlags{}
 	f.Init()
