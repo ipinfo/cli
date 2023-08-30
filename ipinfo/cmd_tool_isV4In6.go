@@ -28,6 +28,8 @@ Examples:
   %[1]s is_v4in6 "::7f00:1"
   %[1]s is_v4in6 "::ffff:
   %[1]s is_v4in6 "::ffff:
+  %[1]s is_v4in6 "aaaa::7f00:1"
+
 Options:
   General:
     --help, -h

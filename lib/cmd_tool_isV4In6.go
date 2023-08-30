@@ -29,7 +29,7 @@ func CmdToolIsV4In6(f CmdToolIsV4In6Flags, args []string, printHelp func()) erro
 	op := func(input string, inputType INPUT_TYPE) error {
 		switch inputType {
 		case INPUT_TYPE_IP:
-			fmt.Printf("%s %t\n", input, isV4in6(input))
+			fmt.Printf("%s,%t\n", input, isV4in6(input))
 		default:
 			return ErrInvalidInput
 		}
