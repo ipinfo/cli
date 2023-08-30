@@ -27,12 +27,18 @@ func CmdToolIsOneIp(f CmdToolIsOneIpFlags, args []string, printHelp func()) erro
 	}
 
 	op := func(input string, inputType INPUT_TYPE) error {
+		isOneIp := false
 		switch inputType {
 		case INPUT_TYPE_CIDR:
-			fmt.Printf("%s %v\n", input, CIDRContainsExactlyOneIP(input))
+			isOneIp = CIDRContainsExactlyOneIP(input)
+		case INPUT_TYPE_IP:
+			isOneIp = true
+		case INPUT_TYPE_IP_RANGE:
+			isOneIp = ipRangeContainsExactlyOneIP(input)
 		default:
-			return ErrNotCIDR
+			return ErrInvalidInput
 		}
+		fmt.Printf("%s %v\n", input, isOneIp)
 		return nil
 	}
 
@@ -55,4 +61,13 @@ func CIDRContainsExactlyOneIP(cidrStr string) bool {
 	}
 
 	return false
+}
+
+func ipRangeContainsExactlyOneIP(ipRangeStr string) bool {
+	ipRange, err := IPRangeStrFromStr(ipRangeStr)
+	if err != nil {
+		return false
+	}
+
+	return ipRange.Start == ipRange.End
 }
