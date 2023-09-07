@@ -22,13 +22,15 @@ func printHelpToolUnmap() {
 		`Usage: %s tool unmap [<opts>] <ip>
 
 Description:
-  Unmap returns ip with any IPv4-mapped IPv6 address prefix removed.
-  That is, if ip is an IPv6 address wrapping an IPv4 address, it returns the wrapped IPv4 address. Otherwise it returns ip unmodified.
+  Unmap returns an IP with any IPv4-mapped IPv6 address prefix removed.
+
+  That is, if the IP is an IPv6 address wrapping an IPv4 address, it returns the
+  wrapped IPv4 address. Otherwise it returns the IP unmodified.
 
 Examples:
-  %[1]s unmap "::ffff:8.8.8.8"
-  %[1]s unmap "192.180.32.1"
-  %[1]s unmap "::ffff:192.168.1.1"
+  %[1]s tool unmap "::ffff:8.8.8.8"
+  %[1]s tool unmap "192.180.32.1"
+  %[1]s tool unmap "::ffff:192.168.1.1"
 
 Options:
   General:
