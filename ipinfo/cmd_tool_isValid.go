@@ -21,7 +21,7 @@ func printHelpToolIsValid() {
 		`Usage: %s tool is_valid <ip>
 
 Description:
-  reports whether an IP is valid.
+  Reports whether an IP is valid.
 
 Examples:
   %[1]s is_valid "190.87.89.1"
