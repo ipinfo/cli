@@ -2,7 +2,6 @@ package lib
 
 import (
 	"fmt"
-	"net"
 	"github.com/spf13/pflag"
 )
 
@@ -48,6 +47,6 @@ func CmdToolNext(
 	if err != nil {
 		fmt.Println(err)
 	}
-	
+
 	return nil
 }
