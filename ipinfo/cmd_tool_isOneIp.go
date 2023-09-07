@@ -21,7 +21,7 @@ func printHelpToolIsOneIp() {
 		`Usage: %s tool is_one_ip [<opts>] <cidr | ip | ip-range | filepath>
 
 Description:
-  checks whether a CIDR or ip range contains exactly one IP.
+  Checks whether a CIDR or IP Range contains exactly one IP.
 
 Examples:
   # Check CIDR.
