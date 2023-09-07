@@ -17,6 +17,7 @@ var completionsTool = &complete.Command{
 		"is_v4":     completionsToolIsV4,
 		"lower":     completionsToolLower,
 		"upper":     completionsToolUpper,
+		"is_v4in6":  completionsToolIs4In6,
 		"ip2n":      completionsToolIP2n,
 		"n2ip":      completionsToolN2IP,
 		"n2ip6":     completionsToolN2IP6,
@@ -40,6 +41,7 @@ Commands:
   is_v6        reports whether input is an IPv6 address.
   lower        get start IP of IPs, IP ranges, and CIDRs.
   upper        get end IP of IPs, IP ranges, and CIDRs.
+  is_v4in6     get whether the IP is an IPv4-mapped IPv6 address.
   ip2n         converts an IPv4 or IPv6 address to its decimal representation.
   n2ip	       evaluates a mathematical expression and converts it to an IPv4 or IPv6.
   n2ip6	       evaluates a mathematical expression and converts it to an IPv6.
@@ -85,6 +87,8 @@ func cmdTool() error {
 		err = cmdToolLower()
 	case cmd == "upper":
 		err = cmdToolUpper()
+	case cmd == "is_v4in6":
+		err = cmdToolIsV4In6()
 	case cmd == "ip2n":
 		err = cmdToolIP2n()
 	case cmd == "n2ip":
