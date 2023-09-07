@@ -21,7 +21,7 @@ func (f *CmdToolIsOneIpFlags) Init() {
 }
 
 func CmdToolIsOneIp(f CmdToolIsOneIpFlags, args []string, printHelp func()) error {
-	if len(args) == 0 || f.Help {
+	if f.Help {
 		printHelp()
 		return nil
 	}
