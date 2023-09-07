@@ -47,6 +47,6 @@ func CmdToolNext(
 	if err != nil {
 		fmt.Println(err)
 	}
-	
+
 	return nil
 }
