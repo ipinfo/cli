@@ -16,6 +16,7 @@ var completionsTool = &complete.Command{
 		"prev":      completionsToolPrev,
 		"is_v4":     completionsToolIsV4,
 		"is_v6":     completionsToolIsV6,
+		"is_valid":  completionsToolIsValid,
 		"is_one_ip": completionsToolIsOneIp,
 		"lower":     completionsToolLower,
 		"upper":     completionsToolUpper,
@@ -41,6 +42,7 @@ Commands:
   prev         get the previous IP of the input IP
   is_v4        reports whether input is an IPv4 address.
   is_v6        reports whether input is an IPv6 address.
+  is_valid     reports whether an IP is valid.
   is_one_ip    checks whether a CIDR or IP Range contains exactly one IP.
   lower        get start IP of IPs, IP ranges, and CIDRs.
   upper        get end IP of IPs, IP ranges, and CIDRs.
@@ -86,6 +88,8 @@ func cmdTool() error {
 		err = cmdToolIsV4()
 	case cmd == "is_v6":
 		err = cmdToolIsV6()
+	case cmd == "is_valid":
+		err = cmdToolIsValid()
 	case cmd == "is_one_ip":
 		err = cmdToolIsOneIp()
 	case cmd == "lower":
