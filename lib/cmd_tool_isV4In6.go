@@ -3,6 +3,7 @@ package lib
 import (
 	"fmt"
 	"github.com/spf13/pflag"
+	"net/netip"
 )
 
 // CmdToolIsV4In6Flags are flags expected by CmdToolIsV4In6
@@ -29,7 +30,12 @@ func CmdToolIsV4In6(f CmdToolIsV4In6Flags, args []string, printHelp func()) erro
 	op := func(input string, inputType INPUT_TYPE) error {
 		switch inputType {
 		case INPUT_TYPE_IP:
-			fmt.Printf("%s,%t\n", input, isV4in6(input))
+			addr, err := netip.ParseAddr(input)
+			if err != nil {
+				return ErrInvalidInput
+			}
+
+			fmt.Printf("%s,%t\n", input, addr.Is4In6())
 		default:
 			return ErrInvalidInput
 		}
@@ -37,18 +43,4 @@ func CmdToolIsV4In6(f CmdToolIsV4In6Flags, args []string, printHelp func()) erro
 	}
 
 	return GetInputFrom(args, true, true, op)
-}
-
-func isV4in6(ip string) bool {
-	decimalFormat, err := IPtoDecimalStr(ip)
-	if err != nil {
-		return false
-	}
-
-	res, err := DecimalStrToIP(decimalFormat, false)
-	if err != nil {
-		return false
-	}
-
-	return StrIsIPv4Str(res.String())
 }
