@@ -2,6 +2,7 @@ package lib
 
 import (
 	"fmt"
+	"net"
 
 	"github.com/spf13/pflag"
 )
@@ -35,17 +36,18 @@ func CmdToolUpper(
 	}
 
 	actionFunc := func(input string, inputType INPUT_TYPE) error {
+		var err error
 		switch inputType {
 		case INPUT_TYPE_IP:
-			ActionForIPUpper(input)
+			fmt.Println(input)
 		case INPUT_TYPE_IP_RANGE:
-			ActionForRangeUpper(input)
+			err = ActionForRangeUpper(input)
 		case INPUT_TYPE_CIDR:
-			ActionForCIDRUpper(input)
+			err = ActionForCIDRUpper(input)
 		default:
-			return ErrNotIP
+			return ErrInvalidInput
 		}
-		return nil
+		return err
 	}
 	err := GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
@@ -55,24 +57,30 @@ func CmdToolUpper(
 	return nil
 }
 
-func ActionForIPUpper(input string) {
-	fmt.Println(input)
-}
-
-func ActionForRangeUpper(input string) {
+func ActionForRangeUpper(input string) error {
 	ipRange, err := IPRangeStrFromStr(input)
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 	fmt.Println(ipRange.End)
+	return nil
 }
 
-func ActionForCIDRUpper(input string) {
-	ipRange, err := IPRangeStrFromCIDR(input)
+func ActionForCIDRUpper(input string) error {
+	_, ipnet, err := net.ParseCIDR(input)
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
-	fmt.Println(ipRange.End)
+
+	var upper string
+	if ipnet.IP.To4() != nil {
+		ipRange, _ := IPRangeStrFromCIDR(input)
+		upper = ipRange.End
+	} else if ipnet.IP.To16() != nil {
+		ipRange, _ := IP6RangeStrFromCIDR(input)
+		upper = ipRange.End
+	}
+
+	fmt.Println(upper)
+	return nil
 }
