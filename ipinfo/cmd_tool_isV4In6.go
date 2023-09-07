@@ -22,7 +22,7 @@ func printHelpToolIsV4In6() {
 		`Usage: %s tool is_v4in6 [<opts>] <ips>
 
 Description:
-  Reports whether given ip is an IPv4-mapped IPv6 address.
+  get whether the IP is an IPv4-mapped IPv6 address.
 
 Examples:
   %[1]s is_v4in6 "::7f00:1"
