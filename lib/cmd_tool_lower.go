@@ -36,17 +36,18 @@ func CmdToolLower(
 	}
 
 	actionFunc := func(input string, inputType INPUT_TYPE) error {
+		var err error
 		switch inputType {
 		case INPUT_TYPE_IP:
-			ActionForIP(input)
+			fmt.Println(input)
 		case INPUT_TYPE_IP_RANGE:
-			ActionForRange(input)
+			err = ActionForRange(input)
 		case INPUT_TYPE_CIDR:
-			ActionForCIDR(input)
+			err = ActionForCIDR(input)
 		default:
-			return ErrNotIP
+			return ErrInvalidInput
 		}
-		return nil
+		return err
 	}
 	err := GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
@@ -56,24 +57,30 @@ func CmdToolLower(
 	return nil
 }
 
-func ActionForIP(input string) {
-	fmt.Println(input)
-}
-
-func ActionForRange(input string) {
+func ActionForRange(input string) error {
 	ipRange, err := IPRangeStrFromStr(input)
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 	fmt.Println(ipRange.Start)
+	return nil
 }
 
-func ActionForCIDR(input string) {
+func ActionForCIDR(input string) error {
 	_, ipnet, err := net.ParseCIDR(input)
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
-	fmt.Println(ipnet.IP)
+
+	var lower string
+	if ipnet.IP.To4() != nil {
+		ipRange, _ := IPRangeStrFromCIDR(input)
+		lower = ipRange.Start
+	} else if ipnet.IP.To16() != nil {
+		ipRange, _ := IP6RangeStrFromCIDR(input)
+		lower = ipRange.Start
+	}
+
+	fmt.Println(lower)
+	return nil
 }
