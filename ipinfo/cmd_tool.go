@@ -83,6 +83,8 @@ func cmdTool() error {
 		err = cmdToolIsV4()
 	case cmd == "is_v6":
 		err = cmdToolIsV6()
+	case cmd == "unmap":
+		err = cmdToolUnmap()
 	case cmd == "lower":
 		err = cmdToolLower()
 	case cmd == "upper":
