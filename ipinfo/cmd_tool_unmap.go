@@ -26,8 +26,8 @@ Description:
   That is, if ip is an IPv6 address wrapping an IPv4 address, it returns the wrapped IPv4 address. Otherwise it returns ip unmodified.
 
 Examples:
-  %[1]s unmap "::ffff:
-  %[1]s unmap "::aa"
+  %[1]s unmap "::ffff:8.8.8.8"
+  %[1]s unmap "192.180.32.1"
   %[1]s unmap "::ffff:192.168.1.1"
 
 Options:
