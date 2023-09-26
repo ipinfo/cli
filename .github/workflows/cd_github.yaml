@@ -4,7 +4,7 @@ name: Release to Github
 on:
   push:
     tags:
-      - '*'
+      - '*-*'
 
 permissions:
   contents: write
