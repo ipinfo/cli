@@ -1,69 +1,42 @@
 # Build and release binaries for all major os/archs
 
-name: Release package to github
-
+name: Release to Github
 on:
   push:
     tags:
       - '*'
 
 permissions:
-    contents: write
-    packages: write
+  contents: write
+  packages: write
 
 jobs:
-  create-release:
-    name: Create a new release from a tag
+  release:
+    name: Release to Github
     runs-on: ubuntu-latest
     steps:
-
-    - name: Create release
-      uses: softprops/action-gh-release@v1
-      with:
-        generate_release_notes: TRUE
-
-  releases-matrix:
-    name: Release Go Binaries
-    needs: create-release
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        goos: [linux, windows, darwin, solaris, openbsd, netbsd, freebsd, dragonfly]
-        goarch: ["386", amd64, arm, arm64]
-        exclude:
-          - goarch: "386"
-            goos: darwin
-          - goarch: "386"
-            goos: dragonfly
-          - goarch: "386"
-            goos: solaris
-          - goarch: arm
-            goos: darwin
-          - goarch: arm
-            goos: dragonfly
-          - goarch: arm
-            goos: solaris
-          - goarch: arm64
-            goos: windows
-          - goarch: arm64
-            goos: dragonfly
-          - goarch: arm64
-            goos: solaris
-    steps:
-
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Extract CLI name and version
+    - name: Setup GO
+      uses: actions/setup-go@v3
+      with:
+        go-version: '1.18'
+
+    - name: Extract CLI Name and Version
       run: |
         # Get the tag name from the event payload
         TAG_NAME=${{ github.ref_name }}
-        
+
         # Use a regular expression to extract the CLI name and version
         if [[ $TAG_NAME =~ ^([^-]+)-([^-]+)$ ]]; then
           CLI_NAME="${BASH_REMATCH[1]}"
           CLI_VERSION="${BASH_REMATCH[2]}"
-          
+
+          echo "CLI Name: $CLI_NAME"
+          echo "CLI Version: $CLI_VERSION"
+
+          # Add to github env
           echo "CLI_NAME=$CLI_NAME" >> $GITHUB_ENV
           echo "CLI_VERSION=$CLI_VERSION" >> $GITHUB_ENV
         else
@@ -72,14 +45,20 @@ jobs:
           exit 1
         fi
 
-    - name: Upload assets
-      uses: wangyoucao577/go-release-action@v1
+    - name: Build
+      run: ./scripts/build-github-actions.sh ${{ env.CLI_NAME }} ${{ env.CLI_VERSION }}
+
+    - name: Generate changelog
+      run: ./scripts/changelog.sh ${{ env.CLI_NAME }} ${{ env.CLI_VERSION }} > changes.md
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        goos: ${{ matrix.goos }}
-        goarch: ${{ matrix.goarch }}
-        goversion: "1.18"
-        project_path: "./${{ env.CLI_NAME }}/"
-        binary_name: "${{ env.CLI_NAME }}_${{ env.CLI_VERSION }}_${{ matrix.goos }}_${{ matrix.goarch }}"
-        asset_name: "${{ env.CLI_NAME }}_${{ env.CLI_VERSION }}_${{ matrix.goos }}_${{ matrix.goarch }}"
-        md5sum: FALSE
+        body_path: changes.md
+        files: |
+          ./build/${{ env.CLI_NAME }}_${{ env.CLI_VERSION }}*.tar.gz
+          ./build/${{ env.CLI_NAME }}_${{ env.CLI_VERSION }}*.zip
+          ./build/${{ env.CLI_NAME }}_${{ env.CLI_VERSION }}*.deb
+          ./${{ env.CLI_NAME }}/macos.sh
+          ./${{ env.CLI_NAME }}/windows.ps1
+          ./${{ env.CLI_NAME }}/deb.sh
