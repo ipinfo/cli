@@ -1,4 +1,5 @@
-## ipinfo-3.1.0
+# 3.1.0
+
 * IP calculator introduced in `calc` subcommand for doing arbitrary arithmetic
 on IP addresses.
 * Bulk ASN now supported via `asn bulk` subcommand.
@@ -19,7 +20,7 @@ address prefix removed.
 * Now performing a checksum comparison on database downloads.
 * YAML output now has null values removed for cleaner output.
 
-### Pull Requests
+## Pull Requests
 
 * [#157](https://github.com/ipinfo/cli/pull/157)
 * [#158](https://github.com/ipinfo/cli/pull/158)

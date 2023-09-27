@@ -1,4 +1,5 @@
-## range2ip-1.0.0
+# 1.0.0
+
 * `range2ip` converts IP ranges to individual IPs within those ranges.
 * The command exists as a standalone binary in addition to as a subcommand on the
 main `ipinfo` command.
