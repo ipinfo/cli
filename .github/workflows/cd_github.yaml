@@ -46,7 +46,7 @@ jobs:
         fi
 
     - name: Build
-      run: ./scripts/build-github-actions.sh ${{ env.CLI_NAME }} ${{ env.CLI_VERSION }}
+      run: ./scripts/build-archive-all.sh ${{ env.CLI_NAME }} ${{ env.CLI_VERSION }}
 
     - name: Generate changelog
       run: ./scripts/changelog.sh ${{ env.CLI_NAME }} ${{ env.CLI_VERSION }} > changes.md

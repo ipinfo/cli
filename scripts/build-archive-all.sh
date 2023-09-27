@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# NOTE: Github actions uses this script.
-# Builds cli $1 version $2 for all platforms.
+# Builds cli $1 version $2 for all platforms and packages them for release.
 
 set -e
 
@@ -22,7 +21,7 @@ if [ -z "$VSN" ]; then
 fi
 
 if [ ! -d "$CLI" ]; then
-    echo "\"$cli\" is not a cli" 2>&1
+    echo "\"$CLI\" is not a cli" 2>&1
     exit 1
 fi
 
