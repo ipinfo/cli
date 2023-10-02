@@ -38,8 +38,6 @@ func CmdToolNext(
 		case INPUT_TYPE_IP:
 			newIP := ipAdd(input, 1)
 			fmt.Println(newIP)
-		default:
-			return ErrNotIP
 		}
 		return nil
 	}

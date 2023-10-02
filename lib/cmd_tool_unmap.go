@@ -35,8 +35,6 @@ func CmdToolUnmap(f CmdToolUnmapFlags, args []string, printHelp func()) error {
 				return err
 			}
 			fmt.Println(addr.Unmap())
-		default:
-			return ErrNotIP
 		}
 		return nil
 	}

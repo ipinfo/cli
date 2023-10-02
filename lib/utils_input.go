@@ -43,8 +43,6 @@ func inputHelper(str string, op func(string, INPUT_TYPE) error) error {
 //			switch inputType {
 //			case INPUT_TYPE_IP:
 //				// Process IP here
-//			default:
-//				return ErrNotIP
 //			}
 //			return nil
 //		},

@@ -43,8 +43,6 @@ func CmdToolIsV4(
 			ActionForIsV4Range(input)
 		case INPUT_TYPE_CIDR:
 			ActionForIsV4CIDR(input)
-		default:
-			return ErrNotIP
 		}
 		return nil
 	}

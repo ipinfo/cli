@@ -9,7 +9,8 @@ import (
 	"strings"
 )
 
-// IPListFromAllSrcs is the same as IPListFrom with all flags turned on.
+// IPListFromAllSrcs returns a list of all IPs from all sources such as stdin,
+// argument list and files.
 func IPListFromAllSrcs(inputs []string) ([]net.IP, error) {
 	var ips []net.IP
 
@@ -29,8 +30,6 @@ func IPListFromAllSrcs(inputs []string) ([]net.IP, error) {
 				return err
 			}
 			ips = append(ips, r...)
-		default:
-			return ErrNotIP
 		}
 		return nil
 	}

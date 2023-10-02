@@ -43,8 +43,6 @@ func CmdToolIsV6(
 			ActionForIsV6Range(input)
 		case INPUT_TYPE_CIDR:
 			ActionForIsV6CIDR(input)
-		default:
-			return ErrNotIP
 		}
 		return nil
 	}
