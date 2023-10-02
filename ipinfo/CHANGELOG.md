@@ -1,3 +1,7 @@
+# 3.1.1
+
+* Fixed return errors in IP parsing generic funcs.
+
 # 3.1.0
 
 * IP calculator introduced in `calc` subcommand for doing arbitrary arithmetic
