@@ -32,9 +32,7 @@ func CmdToolPrefixAddr(f CmdToolPrefixAddrFlags, args []string, printHelp func()
 			if err != nil {
 				return err
 			}
-			fmt.Printf("Address: %s\n", prefix.Addr())
-		default:
-			fmt.Printf("%s,%v\n", input, false)
+			fmt.Printf("%s,%s\n", input, prefix.Addr())
 		}
 		return nil
 	}

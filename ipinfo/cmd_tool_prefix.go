@@ -24,7 +24,7 @@ func printHelpToolPrefix() {
 		`Usage: %s tool prefix <cmd> [<opts>] [<args>]
 
 Commands:
-	addr	returns prefix's IP address.
+	addr  returns IP address of CIDR using prefix.
 
 Options:
   --help, -h
