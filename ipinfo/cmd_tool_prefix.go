@@ -24,7 +24,7 @@ func printHelpToolPrefix() {
 		`Usage: %s tool prefix <cmd> [<opts>] [<args>]
 
 Commands:
-	addr  returns the base IP address of a prefix.
+  addr  returns the base IP address of a prefix.
 
 Options:
   --help, -h
