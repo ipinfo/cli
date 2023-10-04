@@ -11,7 +11,7 @@ import (
 )
 
 var progBase = filepath.Base(os.Args[0])
-var version = "3.1.1"
+var version = "3.1.2"
 
 // global flags.
 var fHelp bool
