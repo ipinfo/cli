@@ -25,6 +25,7 @@ var completionsTool = &complete.Command{
 		"ip2n":      completionsToolIP2n,
 		"n2ip":      completionsToolN2IP,
 		"n2ip6":     completionsToolN2IP6,
+		"prefix":    completionsToolPrefix,
 	},
 	Flags: map[string]complete.Predictor{
 		"-h":     predict.Nothing,
@@ -52,6 +53,7 @@ Commands:
   ip2n         converts an IPv4 or IPv6 address to its decimal representation.
   n2ip	       evaluates a mathematical expression and converts it to an IPv4 or IPv6.
   n2ip6	       evaluates a mathematical expression and converts it to an IPv6.
+  prefix       misc. prefix tools related to CIDRs.
 
 Options:
   --help, -h
@@ -108,6 +110,8 @@ func cmdTool() error {
 		err = cmdToolN2IP()
 	case cmd == "n2ip6":
 		err = cmdToolN2IP6()
+	case cmd == "prefix":
+		err = cmdToolPrefix()
 	default:
 		err = toolHelp()
 	}
