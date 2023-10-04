@@ -33,8 +33,6 @@ func CmdToolPrefixIsValid(f CmdToolPrefixIsValidFlags, args []string, printHelp 
 				return err
 			}
 			fmt.Printf("%s,%t\n", input, prefix.IsValid())
-		default:
-			return ErrInvalidInput
 		}
 		return nil
 	}

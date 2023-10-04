@@ -33,8 +33,6 @@ func CmdToolPrefixBits(f CmdToolPrefixBitsFlags, args []string, printHelp func()
 				return err
 			}
 			fmt.Printf("%s,%d\n", input, prefix.Bits())
-		default:
-			return ErrInvalidInput
 		}
 		return nil
 	}

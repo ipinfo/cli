@@ -33,8 +33,6 @@ func CmdToolPrefixMasked(f CmdToolPrefixMaskedFlags, args []string, printHelp fu
 				return err
 			}
 			fmt.Printf("%s,%s\n", input, prefix.Masked())
-		default:
-			return ErrInvalidInput
 		}
 		return nil
 	}
