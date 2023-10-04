@@ -21,7 +21,7 @@ func printHelpToolPrefixAddr() {
 		`Usage: %s tool prefix addr <cidr>
 
 Description:
-  returns the base IP address of a prefix.
+  Returns the base IP address of a prefix.
 
 Examples:
   # CIDR Valid Examples.
