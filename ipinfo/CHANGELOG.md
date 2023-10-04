@@ -1,3 +1,16 @@
+# 3.1.2
+
+* `ipinfo tool prefix` introduced with some misc. prefix tools. Currently supports following subcommands:
+    - `addr` returns the base IP address of a prefix.
+    - `bits` returns the length of a prefix and reports `-1` if invalid.
+    - `masked` returns canonical form of a prefix, masking off non-high bits, and returns the zero if invalid.
+    - `is_valid` reports whether a prefix is valid.
+
+## Pull Requests
+
+* [#179](https://github.com/ipinfo/cli/pull/179)
+* [#180](https://github.com/ipinfo/cli/pull/180)
+
 # 3.1.1
 
 * Fixed return errors in IP parsing generic funcs.
