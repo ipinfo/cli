@@ -7,11 +7,11 @@ import (
 	"github.com/spf13/pflag"
 )
 
-type CmdToolPrefixAddrFlags struct {
+type CmdToolPrefixMaskedFlags struct {
 	Help bool
 }
 
-func (f *CmdToolPrefixAddrFlags) Init() {
+func (f *CmdToolPrefixMaskedFlags) Init() {
 	pflag.BoolVarP(
 		&f.Help,
 		"help", "h", false,
@@ -19,7 +19,7 @@ func (f *CmdToolPrefixAddrFlags) Init() {
 	)
 }
 
-func CmdToolPrefixAddr(f CmdToolPrefixAddrFlags, args []string, printHelp func()) error {
+func CmdToolPrefixMasked(f CmdToolPrefixMaskedFlags, args []string, printHelp func()) error {
 	if f.Help {
 		printHelp()
 		return nil
@@ -32,7 +32,7 @@ func CmdToolPrefixAddr(f CmdToolPrefixAddrFlags, args []string, printHelp func()
 			if err != nil {
 				return err
 			}
-			fmt.Printf("%s,%s\n", input, prefix.Addr())
+			fmt.Printf("%s,%s\n", input, prefix.Masked())
 		default:
 			return ErrInvalidInput
 		}
