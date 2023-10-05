@@ -1,7 +1,10 @@
 # Build and release ipinfo cli to PPA
 
 name: Push to PPA
-on: workflow_dispatch
+on:
+  push:
+    tags:
+      - 'ipinfo-*'
 
 jobs:
   push:
@@ -12,7 +15,26 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Extract CLI Name and Version
-        run: echo "CLI_VERSION=3.1.2" >> $GITHUB_ENV
+        run: |
+          # Get the tag name from the event payload
+          TAG_NAME=${{ github.ref_name }}
+
+          # Use a regular expression to extract the CLI name and version
+          if [[ $TAG_NAME =~ ^([^-]+)-([^-]+)$ ]]; then
+            CLI_NAME="${BASH_REMATCH[1]}"
+            CLI_VERSION="${BASH_REMATCH[2]}"
+
+            echo "CLI Name: $CLI_NAME"
+            echo "CLI Version: $CLI_VERSION"
+
+            # Add to github env
+            echo "CLI_NAME=$CLI_NAME" >> $GITHUB_ENV
+            echo "CLI_VERSION=$CLI_VERSION" >> $GITHUB_ENV
+          else
+            echo "Invalid tag format: $TAG_NAME"
+            echo "Tag should be of format CLI-VSN. e.g. ipinfo-1.0.0"
+            exit 1
+          fi
 
       - name: Import GPG
         uses: crazy-max/ghaction-import-gpg@v6
