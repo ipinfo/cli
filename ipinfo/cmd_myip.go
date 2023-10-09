@@ -40,7 +40,7 @@ Options:
     --token <tok>, -t <tok>
       use <tok> as API token.
     --ipv6, -6
-      use IPv6 address.
+      get IPv6 address.
     --nocache
       do not use the cache.
     --help, -h
@@ -73,7 +73,7 @@ func cmdMyIP() error {
 	var fJSON bool
 	var fCSV bool
 	var fYAML bool
-	var fIPv6 bool
+	var fV6 bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
 	pflag.BoolVar(&fNoCache, "nocache", true, "disable the cache.")
@@ -84,7 +84,7 @@ func cmdMyIP() error {
 	pflag.BoolVarP(&fCSV, "csv", "c", false, "output CSV format.")
 	pflag.BoolVarP(&fYAML, "yaml", "y", false, "output YAML format.")
 	pflag.BoolVar(&fNoColor, "nocolor", false, "disable color output.")
-	pflag.BoolVarP(&fIPv6, "ipv6", "6", false, "use IPv6 address.")
+	pflag.BoolVarP(&fV6, "ipv6", "6", false, "use IPv6 address.")
 	pflag.Parse()
 
 	if fNoColor {
@@ -97,7 +97,7 @@ func cmdMyIP() error {
 	}
 
 	ii = prepareIpinfoClient(fTok)
-	if fIPv6 {
+	if fV6 {
 		ii.IPv6 = true
 	}
 
