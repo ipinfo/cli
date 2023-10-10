@@ -97,13 +97,13 @@ func cmdMyIP() error {
 	}
 
 	ii = prepareIpinfoClient(fTok)
+
 	var data *ipinfo.Core
 	var err error
 	if fV6 {
 		data, err = ii.GetIPInfoV6(nil)
 	} else {
 		data, err = ii.GetIPInfo(nil)
-
 	}
 	if err != nil {
 		return err
