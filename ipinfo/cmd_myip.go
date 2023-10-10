@@ -26,6 +26,8 @@ var completionsMyIP = &complete.Command{
 		"--json":    predict.Nothing,
 		"-c":        predict.Nothing,
 		"--csv":     predict.Nothing,
+		"-6":        predict.Nothing,
+		"--ipv6":    predict.Nothing,
 	},
 }
 
@@ -37,6 +39,8 @@ Options:
   General:
     --token <tok>, -t <tok>
       use <tok> as API token.
+    --ipv6, -6
+      get IPv6 address.
     --nocache
       do not use the cache.
     --help, -h
@@ -69,6 +73,7 @@ func cmdMyIP() error {
 	var fJSON bool
 	var fCSV bool
 	var fYAML bool
+	var fV6 bool
 
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
 	pflag.BoolVar(&fNoCache, "nocache", true, "disable the cache.")
@@ -79,6 +84,7 @@ func cmdMyIP() error {
 	pflag.BoolVarP(&fCSV, "csv", "c", false, "output CSV format.")
 	pflag.BoolVarP(&fYAML, "yaml", "y", false, "output YAML format.")
 	pflag.BoolVar(&fNoColor, "nocolor", false, "disable color output.")
+	pflag.BoolVarP(&fV6, "ipv6", "6", false, "use IPv6 address.")
 	pflag.Parse()
 
 	if fNoColor {
@@ -91,7 +97,14 @@ func cmdMyIP() error {
 	}
 
 	ii = prepareIpinfoClient(fTok)
-	data, err := ii.GetIPInfo(nil)
+
+	var data *ipinfo.Core
+	var err error
+	if fV6 {
+		data, err = ii.GetIPInfoV6(nil)
+	} else {
+		data, err = ii.GetIPInfo(nil)
+	}
 	if err != nil {
 		return err
 	}

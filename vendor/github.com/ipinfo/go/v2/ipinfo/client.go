@@ -12,8 +12,9 @@ import (
 )
 
 const (
-	defaultBaseURL   = "https://ipinfo.io/"
-	defaultUserAgent = "IPinfoClient/Go/2.9.4"
+	defaultBaseURL     = "https://ipinfo.io/"
+	defaultBaseURLIPv6 = "https://v6.ipinfo.io/"
+	defaultUserAgent   = "IPinfoClient/Go/2.10.0"
 )
 
 // A Client is the main handler to communicate with the IPinfo API.
@@ -64,14 +65,35 @@ func NewClient(
 	}
 }
 
-// `newRequest` creates an API request. A relative URL can be provided in
-// urlStr, in which case it is resolved relative to the BaseURL of the Client.
-// Relative URLs should always be specified without a preceding slash.
+// newRequest for IPV4
 func (c *Client) newRequest(
 	ctx context.Context,
 	method string,
 	urlStr string,
 	body io.Reader,
+) (*http.Request, error) {
+	return c.newRequestBase(ctx, method, urlStr, body, false)
+}
+
+// newRequest for IPV6
+func (c *Client) newRequestV6(
+	ctx context.Context,
+	method string,
+	urlStr string,
+	body io.Reader,
+) (*http.Request, error) {
+	return c.newRequestBase(ctx, method, urlStr, body, true)
+}
+
+// `newRequest` creates an API request. A relative URL can be provided in
+// urlStr, in which case it is resolved relative to the BaseURL of the Client.
+// Relative URLs should always be specified without a preceding slash.
+func (c *Client) newRequestBase(
+	ctx context.Context,
+	method string,
+	urlStr string,
+	body io.Reader,
+	useIPv6 bool,
 ) (*http.Request, error) {
 	if ctx == nil {
 		ctx = context.Background()
@@ -79,12 +101,17 @@ func (c *Client) newRequest(
 
 	u := new(url.URL)
 
+	baseURL := c.BaseURL
+	if useIPv6 {
+		baseURL, _ = url.Parse(defaultBaseURLIPv6)
+	}
+
 	// get final URL path.
 	if rel, err := url.Parse(urlStr); err == nil {
-		u = c.BaseURL.ResolveReference(rel)
+		u = baseURL.ResolveReference(rel)
 	} else if strings.ContainsRune(urlStr, ':') {
 		// IPv6 strings fail to parse as URLs, so let's add it as a URL Path.
-		*u = *c.BaseURL
+		*u = *baseURL
 		u.Path += urlStr
 	} else {
 		return nil, err

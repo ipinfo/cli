@@ -2,6 +2,7 @@ package ipinfo
 
 import (
 	"net"
+	"net/http"
 	"net/netip"
 )
 
@@ -107,8 +108,22 @@ func GetIPInfo(ip net.IP) (*Core, error) {
 	return DefaultClient.GetIPInfo(ip)
 }
 
+// GetIPInfoV6 returns the details for the specified IPv6 IP.
+func GetIPInfoV6(ip net.IP) (*Core, error) {
+	return DefaultClient.GetIPInfoV6(ip)
+}
+
 // GetIPInfo returns the details for the specified IP.
 func (c *Client) GetIPInfo(ip net.IP) (*Core, error) {
+	return c.getIPInfoBase(ip, false)
+}
+
+// GetIPInfoV6 returns the details for the specified IPv6 IP.
+func (c *Client) GetIPInfoV6(ip net.IP) (*Core, error) {
+	return c.getIPInfoBase(ip, true)
+}
+
+func (c *Client) getIPInfoBase(ip net.IP, ipv6 bool) (*Core, error) {
 	relURL := ""
 	if ip != nil && isBogon(netip.MustParseAddr(ip.String())) {
 		bogonResponse := new(Core)
@@ -128,7 +143,13 @@ func (c *Client) GetIPInfo(ip net.IP) (*Core, error) {
 	}
 
 	// prepare req
-	req, err := c.newRequest(nil, "GET", relURL, nil)
+	var err error
+	var req *http.Request
+	if ipv6 {
+		req, err = c.newRequestV6(nil, "GET", relURL, nil)
+	} else {
+		req, err = c.newRequest(nil, "GET", relURL, nil)
+	}
 	if err != nil {
 		return nil, err
 	}
