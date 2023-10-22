@@ -58,7 +58,7 @@ func mmdbHelp() (err error) {
 	}
 
 	if fHelp {
-		printHelpDefault()
+		printHelpMmdb()
 		return nil
 	}
 
