@@ -137,7 +137,6 @@ Options:
     --disable-metadata-pointers
       some mmdb readers fail to properly read pointers within metadata. this
       allows turning off such pointers.
-      NOTE: on by default until we use a different reader in the data repo.
       default: true.
 `, progBase)
 }
