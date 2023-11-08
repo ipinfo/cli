@@ -115,7 +115,7 @@ func cmdInit() error {
 	}
 
 	fmt.Println("1) Enter an existing API token")
-	fmt.Println("2) Create a new account")
+	fmt.Println("2) Sign up or log in at ipinfo.io with your browser")
 	_, err := fmt.Scanf("%d", &opt)
 	if err != nil {
 		return fmt.Errorf("error reading input: %v", err)
@@ -207,7 +207,7 @@ func cmdInit() error {
 					return err
 				}
 
-				fmt.Println("Account created successfully.")
+				fmt.Println("API Token fetched successfully.")
 				break
 			}
 
