@@ -9,14 +9,26 @@ import (
 
 func printHelpMatchIP() {
 	fmt.Printf(
-		`Usage: %s matchip --list <file> --overlapping-with <file>
+		`Usage: %s matchip --filter <file(s) | stdin> --criteria <file(s) | stdin>
+Description:
+  Prints the overlapping IPs and subnets.
+
+Examples:
+  # Match from a file
+  $ %[1]s matchip --filter /path/to/list1.txt --criteria /path/to/list2.txt
+
+  # Match from multiple files
+  $ %[1]s matchip --filter=/path/to/list.txt,/path/to/list1.txt --criteria=/path/to/list2.txt,/path/to/list3.txt
+
+  # Match from stdin
+  $ cat /path/to/list1.txt | %[1]s matchip --filter - --criteria /path/to/list2.txt
 
 Options:
   General:
     --filter, -f
-      file containing a list of IP, CIDR, and/or Ranges for filtering.
-    --overlap-check, -o
-      file containing a list of CIDR and/or Ranges to check for overlap.
+      IPs, CIDRs, and/or Ranges to be filtered.
+    --criteria, -c
+      CIDRs and/or Ranges to check overlap with.
     --help
       show help.
 `, progBase)

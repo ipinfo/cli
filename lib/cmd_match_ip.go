@@ -3,6 +3,7 @@ package lib
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"net"
 	"os"
 	"strings"
@@ -11,21 +12,21 @@ import (
 )
 
 type CmdMatchIPFlags struct {
-	FilterFile       string
-	OverlapCheckFile string
-	Help             bool
+	FilterFile   []string
+	CriteriaFile []string
+	Help         bool
 }
 
 func (f *CmdMatchIPFlags) Init() {
-	pflag.StringVarP(
+	pflag.StringSliceVarP(
 		&f.FilterFile,
-		"filter", "f", "",
-		"file containing a list of IPs, CIDRs, and/or Ranges for filtering.",
+		"filter", "f", nil,
+		"IPs, subnets to be filtered.",
 	)
-	pflag.StringVarP(
-		&f.OverlapCheckFile,
-		"overlap-check", "o", "",
-		"file containing a list of CIDRs and/or Ranges to check for overlap.",
+	pflag.StringSliceVarP(
+		&f.CriteriaFile,
+		"criteria", "c", nil,
+		"subnets to check overlap with.",
 	)
 	pflag.BoolVarP(
 		&f.Help,
@@ -39,147 +40,202 @@ func CmdMatchIP(
 	args []string,
 	printHelp func(),
 ) error {
-	if f.Help || f.FilterFile == "" || f.OverlapCheckFile == "" {
+	if f.Help || f.FilterFile[0] == "" || f.CriteriaFile[0] == "" {
 		printHelp()
 		return nil
 	}
 
-	fmt.Println(f.FilterFile, f.OverlapCheckFile)
+	stat, _ := os.Stdin.Stat()
+	isStdin := (stat.Mode() & os.ModeCharDevice) == 0
 
-	source, err := scanrdr(f.FilterFile)
-	if err != nil {
-		fmt.Printf("Error reading filter file: %v\n", err)
-		return err
+	scanrdr := func(r io.Reader) ([]string, error) {
+		var hitEOF bool
+		buf := bufio.NewReader(r)
+		var ips []string
+
+		for {
+			if hitEOF {
+				return ips, nil
+			}
+
+			d, err := buf.ReadString('\n')
+			d = strings.TrimRight(d, "\n")
+			if err == io.EOF {
+				if len(d) == 0 {
+					return ips, nil
+				}
+
+				hitEOF = true
+			} else if err != nil {
+				return ips, err
+			}
+
+			if len(d) == 0 {
+				continue
+			}
+
+			ips = append(ips, d)
+		}
 	}
 
-	filter, err := scanrdr(f.OverlapCheckFile)
-	if err != nil {
-		fmt.Printf("Error reading overlap check file: %v\n", err)
-		return err
+	var filter []string
+	var err error
+	if len(f.FilterFile) == 1 && f.FilterFile[0] == "-" && isStdin {
+		filter, err = scanrdr(os.Stdin)
+		if err != nil {
+			return err
+		}
+	} else {
+		for _, file := range f.FilterFile {
+			f, err := os.Open(file)
+			if err != nil {
+				return err
+			}
+
+			res, err := scanrdr(f)
+			if err != nil {
+				return err
+			}
+			filter = append(filter, res...)
+		}
 	}
 
-	matches := findOverlappingIPs(source, filter)
+	var criteria []string
+	if len(f.CriteriaFile) == 1 && f.CriteriaFile[0] == "-" && isStdin {
+		criteria, err = scanrdr(os.Stdin)
+		if err != nil {
+			return err
+		}
+	} else {
+		for _, file := range f.CriteriaFile {
+			f, err := os.Open(file)
+			if err != nil {
+				return err
+			}
 
-	fmt.Println("matches:", matches)
+			res, err := scanrdr(f)
+			if err != nil {
+				return err
+			}
+			criteria = append(criteria, res...)
+		}
+	}
+
+	matches := findOverlapping(filter, criteria)
+	for _, v := range matches {
+		fmt.Println(v)
+	}
 
 	return nil
 }
 
-func scanrdr(filename string) ([]string, error) {
-	var ips []string
-
-	file, err := os.Open(filename)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		ips = append(ips, scanner.Text())
-	}
-
-	if err := scanner.Err(); err != nil {
-		return nil, err
-	}
-
-	return ips, nil
+type SubnetPair struct {
+	Raw    string
+	Parsed []net.IPNet
 }
 
-func parseInput(rows []string) ([]net.IPNet, []net.IP) {
-	parseCIDRs := func(cidrs []string) []net.IPNet {
-		parsedCIDRs := make([]net.IPNet, 0)
-		for _, cidrStr := range cidrs {
-			_, ipNet, err := net.ParseCIDR(cidrStr)
-			if err != nil {
-				fmt.Printf("Invalid CIDR: %s\n", cidrStr)
-				continue
-			}
-			parsedCIDRs = append(parsedCIDRs, *ipNet)
-		}
-
-		return parsedCIDRs
-	}
-
-	parsedCIDRs := make([]net.IPNet, 0)
-	parsedIPs := make([]net.IP, 0)
-	var separator string
-	for _, rowStr := range rows {
-		if strings.ContainsAny(rowStr, ",-") {
-			if delim := strings.ContainsRune(rowStr, ','); delim {
-				separator = ","
-			} else {
-				separator = "-"
-			}
-
-			ipRange := strings.Split(rowStr, separator)
-			if len(ipRange) != 2 {
-				fmt.Printf("Invalid IP range: %s\n", rowStr)
-				continue
-			}
-
-			if strings.ContainsRune(rowStr, ':') {
-				cidrs, err := CIDRsFromIP6RangeStrRaw(rowStr)
-				if err == nil {
-					parsedCIDRs = append(parsedCIDRs, parseCIDRs(cidrs)...)
-					continue
-				} else {
-					fmt.Printf("Invalid IP range %s. Err: %v\n", rowStr, err)
+func findOverlapping(filter, criteria []string) []string {
+	parseInput := func(rows []string) ([]SubnetPair, []net.IP) {
+		parseCIDRs := func(cidrs []string) []net.IPNet {
+			parsedCIDRs := make([]net.IPNet, 0)
+			for _, cidrStr := range cidrs {
+				_, ipNet, err := net.ParseCIDR(cidrStr)
+				if err != nil {
 					continue
 				}
-			} else {
-				cidrs, err := CIDRsFromIPRangeStrRaw(rowStr)
-				if err == nil {
-					parsedCIDRs = append(parsedCIDRs, parseCIDRs(cidrs)...)
-					continue
+				parsedCIDRs = append(parsedCIDRs, *ipNet)
+			}
+
+			return parsedCIDRs
+		}
+
+		parsedCIDRs := make([]SubnetPair, 0)
+		parsedIPs := make([]net.IP, 0)
+		var separator string
+		for _, rowStr := range rows {
+			if strings.ContainsAny(rowStr, ",-") {
+				if delim := strings.ContainsRune(rowStr, ','); delim {
+					separator = ","
 				} else {
-					fmt.Printf("Invalid IP range %s. Err: %v\n", rowStr, err)
+					separator = "-"
+				}
+
+				ipRange := strings.Split(rowStr, separator)
+				if len(ipRange) != 2 {
 					continue
 				}
-			}
-		} else if strings.ContainsRune(rowStr, '/') {
-			parsedCIDRs = append(parsedCIDRs, parseCIDRs([]string{rowStr})...)
-			continue
-		} else {
-			if ip := net.ParseIP(rowStr); ip != nil {
-				parsedIPs = append(parsedIPs, ip)
+
+				if strings.ContainsRune(rowStr, ':') {
+					cidrs, err := CIDRsFromIP6RangeStrRaw(rowStr)
+					if err == nil {
+						pair := SubnetPair{
+							Raw:    rowStr,
+							Parsed: parseCIDRs(cidrs),
+						}
+						parsedCIDRs = append(parsedCIDRs, pair)
+					} else {
+						continue
+					}
+				} else {
+					cidrs, err := CIDRsFromIPRangeStrRaw(rowStr)
+					if err == nil {
+						pair := SubnetPair{
+							Raw:    rowStr,
+							Parsed: parseCIDRs(cidrs),
+						}
+						parsedCIDRs = append(parsedCIDRs, pair)
+					} else {
+						continue
+					}
+				}
+			} else if strings.ContainsRune(rowStr, '/') {
+				pair := SubnetPair{
+					Raw:    rowStr,
+					Parsed: parseCIDRs([]string{rowStr}),
+				}
+				parsedCIDRs = append(parsedCIDRs, pair)
 			} else {
-				fmt.Printf("Invalid input: %s\n", rowStr)
+				if ip := net.ParseIP(rowStr); ip != nil {
+					parsedIPs = append(parsedIPs, ip)
+				}
 			}
 		}
+
+		return parsedCIDRs, parsedIPs
 	}
 
-	return parsedCIDRs, parsedIPs
-}
+	sourceCIDRs, sourceIPs := parseInput(filter)
+	filterCIDRs, filterIPs := parseInput(criteria)
 
-func isCIDROverlapping(cidr1, cidr2 *net.IPNet) bool {
-	return cidr1.Contains(cidr2.IP) || cidr2.Contains(cidr1.IP)
-}
-
-func isIPRangeOverlapping(ip *net.IP, cidr *net.IPNet) bool {
-	return cidr.Contains(*ip)
-}
-
-func findOverlappingIPs(source, filter []string) []string {
 	var matches []string
-
-	sourceCIDRs, sourceIPs := parseInput(source)
-	filterCIDRs, filterIPs := parseInput(filter)
-
 	for _, sourceCIDR := range sourceCIDRs {
-		for _, filterCIDR := range filterCIDRs {
-			if isCIDROverlapping(&sourceCIDR, &filterCIDR) {
-				matches = append(matches, sourceCIDR.String())
-				break
+		foundMatch := false
+		for _, v := range sourceCIDR.Parsed {
+			for _, filterCIDR := range filterCIDRs {
+				for _, fv := range filterCIDR.Parsed {
+					if isCIDROverlapping(&v, &fv) {
+						if !foundMatch {
+							matches = append(matches, sourceCIDR.Raw)
+							foundMatch = true
+						}
+						break
+					}
+				}
 			}
 		}
 	}
 
 	for _, sourceIP := range sourceIPs {
+		foundMatch := false
 		for _, filterCIDR := range filterCIDRs {
-			if isIPRangeOverlapping(&sourceIP, &filterCIDR) {
-				matches = append(matches, sourceIP.String())
-				break
+			for _, fv := range filterCIDR.Parsed {
+				if isIPRangeOverlapping(&sourceIP, &fv) {
+					if !foundMatch {
+						matches = append(matches, sourceIP.String())
+						foundMatch = true
+					}
+					break
+				}
 			}
 		}
 
@@ -192,4 +248,12 @@ func findOverlappingIPs(source, filter []string) []string {
 	}
 
 	return matches
+}
+
+func isCIDROverlapping(cidr1, cidr2 *net.IPNet) bool {
+	return cidr1.Contains(cidr2.IP) || cidr2.Contains(cidr1.IP)
+}
+
+func isIPRangeOverlapping(ip *net.IP, cidr *net.IPNet) bool {
+	return cidr.Contains(*ip)
 }
