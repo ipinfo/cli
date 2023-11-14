@@ -157,6 +157,8 @@ func CmdGrepIP(
 		rexp = v4CidrRegex
 	} else if ipv == 4 && f.RangesOnly {
 		rexp = v4RangeRegex
+	} else if ipv == 4 {
+		rexp = ipV4Regex
 	} else if ipv == 6 && f.CIDRsOnly && f.RangesOnly {
 		rexp = v6SubnetRegex
 	} else if ipv == 6 && f.IncludeCIDRs && f.IncludeRanges {
@@ -169,8 +171,6 @@ func CmdGrepIP(
 		rexp = v6CidrRegex
 	} else if ipv == 6 && f.RangesOnly {
 		rexp = v6RangeRegex
-	} else if ipv == 4 {
-		rexp = ipV4Regex
 	} else if ipv == 6 {
 		rexp = ipV6Regex
 	} else if f.IncludeCIDRs && f.IncludeRanges {
