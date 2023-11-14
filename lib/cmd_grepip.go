@@ -17,14 +17,18 @@ import (
 
 // CmdGrepIPFlags are flags expected by CmdGrepIP.
 type CmdGrepIPFlags struct {
-	OnlyMatching bool
-	NoFilename   bool
-	NoRecurse    bool
-	Help         bool
-	NoColor      bool
-	V4           bool
-	V6           bool
-	ExclRes      bool
+	OnlyMatching  bool
+	IncludeCIDRs  bool
+	IncludeRanges bool
+	CIDRsOnly     bool
+	RangesOnly    bool
+	NoFilename    bool
+	NoRecurse     bool
+	Help          bool
+	NoColor       bool
+	V4            bool
+	V6            bool
+	ExclRes       bool
 }
 
 // Init initializes the common flags available to CmdGrepIP with sensible
@@ -36,6 +40,26 @@ func (f *CmdGrepIPFlags) Init() {
 		&f.OnlyMatching,
 		"only-matching", "o", false,
 		"print only matched IPs in result line.",
+	)
+	pflag.BoolVarP(
+		&f.IncludeCIDRs,
+		"include-cidrs", "c", false,
+		"print cidrs too.",
+	)
+	pflag.BoolVarP(
+		&f.IncludeRanges,
+		"include-ranges", "r", false,
+		"print ranges too.",
+	)
+	pflag.BoolVarP(
+		&f.CIDRsOnly,
+		"cidrs-only", "", false,
+		"print cidrs.",
+	)
+	pflag.BoolVarP(
+		&f.RangesOnly,
+		"ranges-only", "", false,
+		"print ranges.",
 	)
 	pflag.BoolVarP(
 		&f.NoFilename,
@@ -121,10 +145,46 @@ func CmdGrepIP(
 
 	// prepare regexp
 	var rexp *regexp.Regexp
-	if ipv == 4 {
+	if ipv == 4 && f.CIDRsOnly && f.RangesOnly {
+		rexp = v4SubnetRegex
+	} else if ipv == 4 && f.IncludeCIDRs && f.IncludeRanges {
+		rexp = v4IpSubnetRegex
+	} else if ipv == 4 && f.IncludeCIDRs {
+		rexp = v4IpCidrRegex
+	} else if ipv == 4 && f.IncludeRanges {
+		rexp = v4IpRangeRegex
+	} else if ipv == 4 && f.CIDRsOnly {
+		rexp = v4CidrRegex
+	} else if ipv == 4 && f.RangesOnly {
+		rexp = v4RangeRegex
+	} else if ipv == 6 && f.CIDRsOnly && f.RangesOnly {
+		rexp = v6SubnetRegex
+	} else if ipv == 6 && f.IncludeCIDRs && f.IncludeRanges {
+		rexp = v6IpSubnetRegex
+	} else if ipv == 6 && f.IncludeCIDRs {
+		rexp = v6IpCidrRegex
+	} else if ipv == 6 && f.IncludeRanges {
+		rexp = v6IpRangeRegex
+	} else if ipv == 6 && f.CIDRsOnly {
+		rexp = v6CidrRegex
+	} else if ipv == 6 && f.RangesOnly {
+		rexp = v6RangeRegex
+	} else if ipv == 4 {
 		rexp = ipV4Regex
 	} else if ipv == 6 {
 		rexp = ipV6Regex
+	} else if f.IncludeCIDRs && f.IncludeRanges {
+		rexp = ipSubnetRegex
+	} else if f.IncludeCIDRs {
+		rexp = ipCidrRegex
+	} else if f.IncludeRanges {
+		rexp = ipRangeRegex
+	} else if f.RangesOnly && f.CIDRsOnly {
+		rexp = subnetRegex
+	} else if f.CIDRsOnly {
+		rexp = cidrRegex
+	} else if f.RangesOnly {
+		rexp = rangeRegex
 	} else {
 		rexp = ipRegex
 	}
