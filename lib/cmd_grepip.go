@@ -145,48 +145,51 @@ func CmdGrepIP(
 
 	// prepare regexp
 	var rexp *regexp.Regexp
-	if ipv == 4 && f.CIDRsOnly && f.RangesOnly {
-		rexp = v4SubnetRegex
-	} else if ipv == 4 && f.IncludeCIDRs && f.IncludeRanges {
-		rexp = v4IpSubnetRegex
-	} else if ipv == 4 && f.IncludeCIDRs {
-		rexp = v4IpCidrRegex
-	} else if ipv == 4 && f.IncludeRanges {
-		rexp = v4IpRangeRegex
-	} else if ipv == 4 && f.CIDRsOnly {
-		rexp = v4CidrRegex
-	} else if ipv == 4 && f.RangesOnly {
-		rexp = v4RangeRegex
-	} else if ipv == 4 {
+	if ipv == 4 {
 		rexp = ipV4Regex
-	} else if ipv == 6 && f.CIDRsOnly && f.RangesOnly {
-		rexp = v6SubnetRegex
-	} else if ipv == 6 && f.IncludeCIDRs && f.IncludeRanges {
-		rexp = v6IpSubnetRegex
-	} else if ipv == 6 && f.IncludeCIDRs {
-		rexp = v6IpCidrRegex
-	} else if ipv == 6 && f.IncludeRanges {
-		rexp = v6IpRangeRegex
-	} else if ipv == 6 && f.CIDRsOnly {
-		rexp = v6CidrRegex
-	} else if ipv == 6 && f.RangesOnly {
-		rexp = v6RangeRegex
+		if f.CIDRsOnly && f.RangesOnly {
+			rexp = v4SubnetRegex
+		} else if f.IncludeCIDRs && f.IncludeRanges {
+			rexp = v4IpSubnetRegex
+		} else if f.IncludeCIDRs {
+			rexp = v4IpCidrRegex
+		} else if f.IncludeRanges {
+			rexp = v4IpRangeRegex
+		} else if f.CIDRsOnly {
+			rexp = v4CidrRegex
+		} else if f.RangesOnly {
+			rexp = v4RangeRegex
+		}
 	} else if ipv == 6 {
 		rexp = ipV6Regex
-	} else if f.IncludeCIDRs && f.IncludeRanges {
-		rexp = ipSubnetRegex
-	} else if f.IncludeCIDRs {
-		rexp = ipCidrRegex
-	} else if f.IncludeRanges {
-		rexp = ipRangeRegex
-	} else if f.RangesOnly && f.CIDRsOnly {
-		rexp = subnetRegex
-	} else if f.CIDRsOnly {
-		rexp = cidrRegex
-	} else if f.RangesOnly {
-		rexp = rangeRegex
+		if f.CIDRsOnly && f.RangesOnly {
+			rexp = v6SubnetRegex
+		} else if f.IncludeCIDRs && f.IncludeRanges {
+			rexp = v6IpSubnetRegex
+		} else if f.IncludeCIDRs {
+			rexp = v6IpCidrRegex
+		} else if f.IncludeRanges {
+			rexp = v6IpRangeRegex
+		} else if f.CIDRsOnly {
+			rexp = v6CidrRegex
+		} else if f.RangesOnly {
+			rexp = v6RangeRegex
+		}
 	} else {
 		rexp = ipRegex
+		if f.CIDRsOnly && f.RangesOnly {
+			rexp = subnetRegex
+		} else if f.IncludeCIDRs && f.IncludeRanges {
+			rexp = ipSubnetRegex
+		} else if f.IncludeCIDRs {
+			rexp = ipCidrRegex
+		} else if f.IncludeRanges {
+			rexp = ipRangeRegex
+		} else if f.CIDRsOnly {
+			rexp = cidrRegex
+		} else if f.RangesOnly {
+			rexp = rangeRegex
+		}
 	}
 
 	fmtSrc := color.New(color.FgMagenta)
