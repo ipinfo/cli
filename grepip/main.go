@@ -12,7 +12,7 @@ import (
 )
 
 var progBase = filepath.Base(os.Args[0])
-var version = "1.2.2"
+var version = "1.2.3"
 
 func printHelp() {
 	fmt.Printf(
@@ -22,6 +22,14 @@ Options:
   General:
     --only-matching, -o
       print only matched IP in result line, excluding surrounding content.
+    --include-cidrs
+      prints the CIDRs too.
+    --include-ranges
+      prints the Ranges too.
+    --cidrs-only
+      prints the CIDRs only.
+    --ranges-only
+      prints the Ranges only.
     --no-filename, -h
       don't print source of match in result lines when more than 1 source.
     --no-recurse

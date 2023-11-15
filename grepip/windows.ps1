@@ -1,4 +1,4 @@
-$VSN = "1.2.2"
+$VSN = "1.2.3"
 
 # build the filename for the Zip archive and exe file
 $FileName = "grepip_$($VSN)_windows_amd64"
