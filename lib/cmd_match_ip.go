@@ -12,21 +12,15 @@ import (
 )
 
 type CmdMatchIPFlags struct {
-	FilterFile   []string
-	CriteriaFile []string
-	Help         bool
+	Expression []string
+	Help       bool
 }
 
 func (f *CmdMatchIPFlags) Init() {
 	pflag.StringSliceVarP(
-		&f.FilterFile,
-		"filter", "f", nil,
+		&f.Expression,
+		"expression", "e", nil,
 		"IPs, subnets to be filtered.",
-	)
-	pflag.StringSliceVarP(
-		&f.CriteriaFile,
-		"criteria", "c", nil,
-		"subnets to check overlap with.",
 	)
 	pflag.BoolVarP(
 		&f.Help,
