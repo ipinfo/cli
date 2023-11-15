@@ -114,8 +114,13 @@ func CmdMatchIP(
 			if err != nil {
 				return err
 			}
-		} else {
+		} else if FileExists(expr) {
 			err = ProcessStringsFromFile(expr, filter_op)
+			if err != nil {
+				return err
+			}
+		} else {
+			err = InputHelper(expr, filter_op)
 			if err != nil {
 				return err
 			}
@@ -128,8 +133,13 @@ func CmdMatchIP(
 			if err != nil {
 				return err
 			}
-		} else {
+		} else if FileExists(arg) {
 			err = ProcessStringsFromFile(arg, source_op)
+			if err != nil {
+				return err
+			}
+		} else {
+			err = InputHelper(arg, source_op)
 			if err != nil {
 				return err
 			}
