@@ -18,7 +18,7 @@ var completionsGrepDom = &complete.Command{
 		"--no-recurse":    predict.Nothing,
 		"--help":          predict.Nothing,
 		"--nocolor":       predict.Nothing,
-		"--punycode":      predict.Nothing,
+		"--no-punycode":   predict.Nothing,
 	},
 }
 
@@ -42,8 +42,8 @@ Options:
       disable colored output.
 
   Filters:
-  --no-punycode, -n
-  	do not convert domains to punycode.
+    --no-punycode, -n
+  	  do not convert domains to punycode.
 `, progBase)
 }
 

@@ -7,15 +7,11 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
-	"regexp"
 
 	"github.com/fatih/color"
 	"github.com/spf13/pflag"
 	"golang.org/x/net/idna"
 )
-
-// regular expression that matches simple domains and IDN ones.
-var domainRegex = regexp.MustCompile(`\b(?:[a-zA-Z0-9-]+\.){1,}[a-zA-Z]{2,}\b|([^\s.]+\.)+[^\s]{2,}\b`)
 
 type CmdGrepDomainFlags struct {
 	OnlyMatching bool
@@ -93,7 +89,7 @@ func CmdGrepDomain(f CmdGrepDomainFlags, args []string, printHelp func()) error 
 	fmtSrc := color.New(color.FgMagenta)
 	fmtMatch := color.New(color.Bold, color.FgRed)
 
-	rexp := domainRegex
+	rexp := DomainRegex
 
 	// Actual scanner logic for domains
 	scanrdr := func(src string, r io.Reader) {
@@ -122,13 +118,10 @@ func CmdGrepDomain(f CmdGrepDomainFlags, args []string, printHelp func()) error 
 			if !f.ExcludePuny {
 				for _, m := range allMatches {
 					mDomainStr := d[m[0]:m[1]]
-					puny, err := idna.ToASCII(mDomainStr)
+					_, err := idna.ToASCII(mDomainStr)
 					if err != nil {
 						goto next_match
 					}
-					// print original domain and the corresponding punycode
-					fmt.Printf("Original domain: %s\n", mDomainStr)
-					fmt.Printf("Punycode: %s\n", puny)
 					matches = append(matches, m)
 				next_match:
 				}
@@ -154,11 +147,21 @@ func CmdGrepDomain(f CmdGrepDomainFlags, args []string, printHelp func()) error 
 				if !f.OnlyMatching {
 					fmt.Printf("%s", d[prevMatchEnd:m[0]])
 				}
-				// print the match itself.
-				fmtMatch.Printf("%s", d[m[0]:m[1]])
+				// Print the punycode converted domain.
+				mDomainStr := d[m[0]:m[1]]
+				if !f.ExcludePuny {
+					mDomain, err := idna.ToASCII(mDomainStr)
+					if err == nil {
+						fmtMatch.Printf("%s", mDomain)
+					} else {
+						fmtMatch.Printf("%s", mDomainStr) // Print the original domain if punycode conversion fails.
+					}
+				} else {
+					fmtMatch.Printf("%s", mDomainStr)
+				}
 
 				if f.OnlyMatching {
-					fmt.Printf("\n\n")
+					fmt.Printf("\n")
 				}
 
 				prevMatchEnd = m[1]
@@ -169,7 +172,7 @@ func CmdGrepDomain(f CmdGrepDomainFlags, args []string, printHelp func()) error 
 			if !f.OnlyMatching {
 				m := matches[len(matches)-1]
 				if m[1] < len(d) {
-					fmt.Printf("%s\n", d[m[1]:])
+					fmt.Printf("%s", d[m[1]:])
 				}
 			}
 		}

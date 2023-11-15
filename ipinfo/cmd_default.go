@@ -26,7 +26,7 @@ Commands:
   map         open a URL to a map showing the locations of a group of IPs.
   prips       print IP list from CIDR or range.
   grepip      grep for IPs matching criteria from any source.
-  grepdom 	  grep for domains matching criteria from any source.
+  grepdom     grep for domains matching criteria from any source.
   cidr2range  convert CIDRs to IP ranges.
   cidr2ip     convert CIDRs to individual IPs within those CIDRs.
   range2cidr  convert IP ranges to CIDRs.
