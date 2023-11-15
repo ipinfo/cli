@@ -110,12 +110,12 @@ func CmdMatchIP(
 
 	for _, expr := range f.Expression {
 		if expr == "-" && isStdin {
-			err = ProcessStringsFromStdin(source_op)
+			err = ProcessStringsFromStdin(filter_op)
 			if err != nil {
 				return err
 			}
 		} else {
-			err = ProcessStringsFromFile(expr, source_op)
+			err = ProcessStringsFromFile(expr, filter_op)
 			if err != nil {
 				return err
 			}
@@ -124,12 +124,12 @@ func CmdMatchIP(
 
 	for _, arg := range args {
 		if arg == "-" && isStdin {
-			err = ProcessStringsFromStdin(filter_op)
+			err = ProcessStringsFromStdin(source_op)
 			if err != nil {
 				return err
 			}
 		} else {
-			err = ProcessStringsFromFile(arg, filter_op)
+			err = ProcessStringsFromFile(arg, source_op)
 			if err != nil {
 				return err
 			}
