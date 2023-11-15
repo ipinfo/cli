@@ -27,6 +27,11 @@ func (f *CmdMatchIPFlags) Init() {
 	)
 }
 
+type SubnetPair struct {
+	Raw    string
+	Parsed []net.IPNet
+}
+
 func CmdMatchIP(
 	f CmdMatchIPFlags,
 	args []string,
@@ -150,11 +155,6 @@ func rangeToCidrs(r string) ([]string, error) {
 		}
 		return cidrs, nil
 	}
-}
-
-type SubnetPair struct {
-	Raw    string
-	Parsed []net.IPNet
 }
 
 func findOverlapping(sourceCIDRs, filterCIDRs []SubnetPair, sourceIPs, filterIPs []net.IP) []string {
