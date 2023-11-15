@@ -52,20 +52,19 @@ func CmdMatchIP(
 			}
 			parsedCIDRs = append(parsedCIDRs, *ipNet)
 		}
-
 		return parsedCIDRs
 	}
 
-	source_op := func(s string, inputType INPUT_TYPE) error {
+	processInput := func(container *[]SubnetPair, ips *[]net.IP, s string, inputType INPUT_TYPE) error {
 		switch inputType {
 		case INPUT_TYPE_IP:
-			sourceIPs = append(sourceIPs, net.ParseIP(s))
+			*ips = append(*ips, net.ParseIP(s))
 		case INPUT_TYPE_CIDR:
 			pair := SubnetPair{
 				Raw:    s,
 				Parsed: parseCIDRs([]string{s}),
 			}
-			sourceCIDRs = append(sourceCIDRs, pair)
+			*container = append(*container, pair)
 		case INPUT_TYPE_IP_RANGE:
 			cidrs, err := rangeToCidrs(s)
 			if err == nil {
@@ -73,7 +72,7 @@ func CmdMatchIP(
 					Raw:    s,
 					Parsed: parseCIDRs(cidrs),
 				}
-				sourceCIDRs = append(sourceCIDRs, pair)
+				*container = append(*container, pair)
 			}
 		default:
 			return ErrInvalidInput
@@ -81,29 +80,12 @@ func CmdMatchIP(
 		return nil
 	}
 
+	source_op := func(s string, inputType INPUT_TYPE) error {
+		return processInput(&sourceCIDRs, &sourceIPs, s, inputType)
+	}
+
 	filter_op := func(s string, inputType INPUT_TYPE) error {
-		switch inputType {
-		case INPUT_TYPE_IP:
-			filterIPs = append(filterIPs, net.ParseIP(s))
-		case INPUT_TYPE_CIDR:
-			pair := SubnetPair{
-				Raw:    s,
-				Parsed: parseCIDRs([]string{s}),
-			}
-			filterCIDRs = append(filterCIDRs, pair)
-		case INPUT_TYPE_IP_RANGE:
-			cidrs, err := rangeToCidrs(s)
-			if err == nil {
-				pair := SubnetPair{
-					Raw:    s,
-					Parsed: parseCIDRs(cidrs),
-				}
-				filterCIDRs = append(filterCIDRs, pair)
-			}
-		default:
-			return ErrInvalidInput
-		}
-		return nil
+		return processInput(&filterCIDRs, &filterIPs, s, inputType)
 	}
 
 	var err error
