@@ -37,7 +37,7 @@ func CmdMatchIP(
 	args []string,
 	printHelp func(),
 ) error {
-	if f.Help || len(f.Expression) == 0 || args[0] == "" {
+	if f.Help || len(f.Expression) == 0 || len(args) == 0 {
 		printHelp()
 		return nil
 	}
