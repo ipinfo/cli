@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"strings"
 
 	"github.com/spf13/pflag"
 )
@@ -106,6 +107,22 @@ func CmdMatchIP(
 	}
 
 	return nil
+}
+
+func rangeToCidrs(r string) ([]string, error) {
+	if strings.ContainsRune(r, ':') {
+		cidrs, err := CIDRsFromIP6RangeStrRaw(r)
+		if err != nil {
+			return nil, err
+		}
+		return cidrs, nil
+	} else {
+		cidrs, err := CIDRsFromIPRangeStrRaw(r)
+		if err != nil {
+			return nil, err
+		}
+		return cidrs, nil
+	}
 }
 
 type SubnetPair struct {
