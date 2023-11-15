@@ -45,7 +45,7 @@ func CmdMatchIP(
 	source_op := func(s string, inputType INPUT_TYPE) error {
 		switch inputType {
 		case INPUT_TYPE_IP:
-			sourceIPs = append(sourceIPs, s)
+			sourceIPs = append(sourceIPs, net.ParseIP(s))
 		case INPUT_TYPE_CIDR:
 			sourceCIDRs = append(sourceCIDRs, s)
 		case INPUT_TYPE_IP_RANGE:
@@ -59,7 +59,7 @@ func CmdMatchIP(
 	filter_op := func(s string, inputType INPUT_TYPE) error {
 		switch inputType {
 		case INPUT_TYPE_IP:
-			filterIPs = append(filterIPs, s)
+			filterIPs = append(filterIPs, net.ParseIP(s))
 		case INPUT_TYPE_CIDR:
 			filterCIDRs = append(filterCIDRs, s)
 		case INPUT_TYPE_IP_RANGE:
