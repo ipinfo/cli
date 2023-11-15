@@ -4,8 +4,18 @@ import (
 	"fmt"
 
 	"github.com/ipinfo/cli/lib"
+	"github.com/ipinfo/cli/lib/complete"
+	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/spf13/pflag"
 )
+
+var completionsMatchIP = &complete.Command{
+	Flags: map[string]complete.Predictor{
+		"-e":           predict.Nothing,
+		"--expression": predict.Nothing,
+		"--help":       predict.Nothing,
+	},
+}
 
 func printHelpMatchIP() {
 	fmt.Printf(
