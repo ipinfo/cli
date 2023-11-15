@@ -16,24 +16,27 @@ var version = "1.0.0"
 
 func printHelp() {
 	fmt.Printf(
-		`Usage: %s [flags] <expression(s)> <file(s) | stdin>
+		`Usage: %s [flags] <expression(s)> <file(s) | stdin | cidr | ip | ip-range>
 
 Description:
   Prints the overlapping IPs and subnets.
 
 Examples:
   # Single expression + single file
-  $ %[1]s 127.0.0.1 file1.txt
+  $ %[1]s 127.0.0.1/24 file1.txt
 
   # Single expression + multiple files
-  $ %[1]s 127.0.0.1 file1.txt file2.txt file3.txt
+  $ %[1]s 127.0.0.1/24 file1.txt file2.txt file3.txt
 
   # Multi-expression + any files
-  $ cat expression-list1.txt | %[1]s -e 127.0.0.1 -e 8.8.8.8 -e - -e expression-list2.txt file1.txt file2.txt file3.txt
+  $ cat expression-list1.txt | %[1]s -e 127.0.0.1/24 -e 8.8.8.8-8.8.9.10 -e - -e expression-list2.txt file1.txt file2.txt file3.txt
+
+  # First arg is expression
+  $ %[1]s 8.8.8.8-8.8.9.10 8.8.0.0/16 8.8.0.10
 
 Flags:
   --expression, -e
-      IPs, CIDRs, and/or Ranges to be filtered. Can be used multiple times.
+      CIDRs, ip-ranges to to check overlap with. Can be used multiple times.
   --help
       Show help.
 
