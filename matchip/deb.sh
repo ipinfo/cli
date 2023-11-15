@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VSN=1.2.2
+VSN=1.0.0
 
 curl -LO https://github.com/ipinfo/cli/releases/download/matchip-${VSN}/matchip${VSN}.deb
 sudo dpkg -i matchip_${VSN}.deb
