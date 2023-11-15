@@ -34,7 +34,7 @@ func CmdMatchIP(
 	args []string,
 	printHelp func(),
 ) error {
-	if f.Help || f.FilterFile[0] == "" || f.CriteriaFile[0] == "" {
+	if f.Help || len(f.Expression) == 0 || args[0] == "" {
 		printHelp()
 		return nil
 	}
@@ -74,40 +74,42 @@ func CmdMatchIP(
 
 	var filter []string
 	var err error
-	if len(f.FilterFile) == 1 && f.FilterFile[0] == "-" && isStdin {
-		filter, err = scanrdr(os.Stdin)
-		if err != nil {
-			return err
-		}
-	} else {
-		for _, file := range f.FilterFile {
-			f, err := os.Open(file)
+
+	for _, expr := range f.Expression {
+		if expr == "-" && isStdin {
+			exprs, err := scanrdr(os.Stdin)
+			if err != nil {
+				return err
+			}
+			filter = append(filter, exprs...)
+		} else {
+			file, err := os.Open(expr)
 			if err != nil {
 				return err
 			}
 
-			res, err := scanrdr(f)
+			exprs, err := scanrdr(file)
 			if err != nil {
 				return err
 			}
-			filter = append(filter, res...)
+			filter = append(filter, exprs...)
 		}
 	}
 
 	var criteria []string
-	if len(f.CriteriaFile) == 1 && f.CriteriaFile[0] == "-" && isStdin {
-		criteria, err = scanrdr(os.Stdin)
-		if err != nil {
-			return err
-		}
-	} else {
-		for _, file := range f.CriteriaFile {
-			f, err := os.Open(file)
+	for _, arg := range args {
+		if arg == "-" && isStdin {
+			criteria, err = scanrdr(os.Stdin)
+			if err != nil {
+				return err
+			}
+		} else {
+			file, err := os.Open(arg)
 			if err != nil {
 				return err
 			}
 
-			res, err := scanrdr(f)
+			res, err := scanrdr(file)
 			if err != nil {
 				return err
 			}
@@ -115,7 +117,7 @@ func CmdMatchIP(
 		}
 	}
 
-	matches := findOverlapping(filter, criteria)
+	matches := findOverlapping(sourceCIDRs, filterCIDRs, sourceIPs, filterIPs)
 	for _, v := range matches {
 		fmt.Println(v)
 	}
