@@ -27,10 +27,13 @@ Description:
 Examples:
   # Single expression + single file
   $ %[1]s matchip 127.0.0.1 file1.txt
+
   # Single expression + multiple files
   $ %[1]s matchip 127.0.0.1 file1.txt file2.txt file3.txt
+
   # Multi-expression + any files
   $ cat expression-list1.txt | %[1]s matchip -e 127.0.0.1 -e 8.8.8.8 -e - -e expression-list2.txt file1.txt file2.txt file3.txt
+
 Flags:
   --expression, -e
       IPs, CIDRs, and/or Ranges to be filtered. Can be used multiple times.
