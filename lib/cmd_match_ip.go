@@ -38,16 +38,32 @@ func CmdMatchIP(
 
 	stat, _ := os.Stdin.Stat()
 	isStdin := (stat.Mode() & os.ModeCharDevice) == 0
-	var ips, cidrs []string
 
-	op := func(s string, inputType INPUT_TYPE) error {
+	var sourceCIDRs, filterCIDRs []SubnetPair
+	var sourceIPs, filterIPs []net.IP
+
+	source_op := func(s string, inputType INPUT_TYPE) error {
 		switch inputType {
 		case INPUT_TYPE_IP:
-			ips = append(ips, s)
+			sourceIPs = append(sourceIPs, s)
 		case INPUT_TYPE_CIDR:
-			cidrs = append(cidrs, s)
+			sourceCIDRs = append(sourceCIDRs, s)
 		case INPUT_TYPE_IP_RANGE:
-			cidrs = append(cidrs, s)
+			sourceCIDRs = append(sourceCIDRs, s)
+		default:
+			return ErrInvalidInput
+		}
+		return nil
+	}
+
+	filter_op := func(s string, inputType INPUT_TYPE) error {
+		switch inputType {
+		case INPUT_TYPE_IP:
+			filterIPs = append(filterIPs, s)
+		case INPUT_TYPE_CIDR:
+			filterCIDRs = append(filterCIDRs, s)
+		case INPUT_TYPE_IP_RANGE:
+			filterCIDRs = append(filterCIDRs, s)
 		default:
 			return ErrInvalidInput
 		}
@@ -58,12 +74,12 @@ func CmdMatchIP(
 
 	for _, expr := range f.Expression {
 		if expr == "-" && isStdin {
-			err = ProcessStringsFromStdin(op)
+			err = ProcessStringsFromStdin(source_op)
 			if err != nil {
 				return err
 			}
 		} else {
-			err = ProcessStringsFromFile(expr, op)
+			err = ProcessStringsFromFile(expr, source_op)
 			if err != nil {
 				return err
 			}
@@ -72,12 +88,12 @@ func CmdMatchIP(
 
 	for _, arg := range args {
 		if arg == "-" && isStdin {
-			err = ProcessStringsFromStdin(op)
+			err = ProcessStringsFromStdin(filter_op)
 			if err != nil {
 				return err
 			}
 		} else {
-			err = ProcessStringsFromFile(arg, op)
+			err = ProcessStringsFromFile(arg, filter_op)
 			if err != nil {
 				return err
 			}
