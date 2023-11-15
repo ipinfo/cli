@@ -43,12 +43,12 @@ func (f *CmdGrepIPFlags) Init() {
 	)
 	pflag.BoolVarP(
 		&f.IncludeCIDRs,
-		"include-cidrs", "c", false,
+		"include-cidrs", "", false,
 		"print cidrs too.",
 	)
 	pflag.BoolVarP(
 		&f.IncludeRanges,
-		"include-ranges", "r", false,
+		"include-ranges", "", false,
 		"print ranges too.",
 	)
 	pflag.BoolVarP(

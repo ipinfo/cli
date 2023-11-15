@@ -13,9 +13,7 @@ var completionsGrepIP = &complete.Command{
 	Flags: map[string]complete.Predictor{
 		"-o":                 predict.Nothing,
 		"--only-matching":    predict.Nothing,
-		"-c":                 predict.Nothing,
 		"--include-cidrs":    predict.Nothing,
-		"-r":                 predict.Nothing,
 		"--include-ranges":   predict.Nothing,
 		"--cidrs-only":       predict.Nothing,
 		"--ranges-only":      predict.Nothing,
@@ -41,9 +39,9 @@ Options:
   General:
     --only-matching, -o
       print only matched IP in result line, excluding surrounding content.
-    --include-cidrs, -c
+    --include-cidrs
       prints the CIDRs too.
-    --include-ranges, -r
+    --include-ranges
       prints the Ranges too.
     --cidrs-only
       prints the CIDRs only.
