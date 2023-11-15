@@ -1,12 +1,9 @@
 package lib
 
 import (
-	"bufio"
 	"fmt"
-	"io"
 	"net"
 	"os"
-	"strings"
 
 	"github.com/spf13/pflag"
 )
@@ -41,79 +38,49 @@ func CmdMatchIP(
 
 	stat, _ := os.Stdin.Stat()
 	isStdin := (stat.Mode() & os.ModeCharDevice) == 0
+	var ips, cidrs []string
 
-	scanrdr := func(r io.Reader) ([]string, error) {
-		var hitEOF bool
-		buf := bufio.NewReader(r)
-		var ips []string
-
-		for {
-			if hitEOF {
-				return ips, nil
-			}
-
-			d, err := buf.ReadString('\n')
-			d = strings.TrimRight(d, "\n")
-			if err == io.EOF {
-				if len(d) == 0 {
-					return ips, nil
-				}
-
-				hitEOF = true
-			} else if err != nil {
-				return ips, err
-			}
-
-			if len(d) == 0 {
-				continue
-			}
-
-			ips = append(ips, d)
+	op := func(s string, inputType INPUT_TYPE) error {
+		switch inputType {
+		case INPUT_TYPE_IP:
+			ips = append(ips, s)
+		case INPUT_TYPE_CIDR:
+			cidrs = append(cidrs, s)
+		case INPUT_TYPE_IP_RANGE:
+			cidrs = append(cidrs, s)
+		default:
+			return ErrInvalidInput
 		}
+		return nil
 	}
 
-	var filter []string
 	var err error
 
 	for _, expr := range f.Expression {
 		if expr == "-" && isStdin {
-			exprs, err := scanrdr(os.Stdin)
+			err = ProcessStringsFromStdin(op)
 			if err != nil {
 				return err
 			}
-			filter = append(filter, exprs...)
 		} else {
-			file, err := os.Open(expr)
+			err = ProcessStringsFromFile(expr, op)
 			if err != nil {
 				return err
 			}
-
-			exprs, err := scanrdr(file)
-			if err != nil {
-				return err
-			}
-			filter = append(filter, exprs...)
 		}
 	}
 
-	var criteria []string
 	for _, arg := range args {
 		if arg == "-" && isStdin {
-			criteria, err = scanrdr(os.Stdin)
+			err = ProcessStringsFromStdin(op)
 			if err != nil {
 				return err
 			}
 		} else {
-			file, err := os.Open(arg)
+			err = ProcessStringsFromFile(arg, op)
 			if err != nil {
 				return err
 			}
-
-			res, err := scanrdr(file)
-			if err != nil {
-				return err
-			}
-			criteria = append(criteria, res...)
 		}
 	}
 
