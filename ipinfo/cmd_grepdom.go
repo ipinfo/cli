@@ -43,7 +43,7 @@ Options:
 
   Filters:
     --no-punycode, -n
-  	  do not convert domains to punycode.
+      do not convert domains to punycode.
 `, progBase)
 }
 
