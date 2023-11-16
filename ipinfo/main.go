@@ -55,6 +55,8 @@ func main() {
 		err = cmdPrips()
 	case cmd == "grepip":
 		err = cmdGrepIP()
+	case cmd == "grepdom":
+		err = cmdGrepDom()
 	case cmd == "cidr2range":
 		err = cmdCIDR2Range()
 	case cmd == "cidr2ip":

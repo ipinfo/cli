@@ -17,6 +17,7 @@ var completions = &complete.Command{
 		"map":        completionsMap,
 		"prips":      completionsPrips,
 		"grepip":     completionsGrepIP,
+		"grepdom":    completionsGrepDom,
 		"cidr2range": completionsCIDR2Range,
 		"cidr2ip":    completionsCIDR2IP,
 		"range2cidr": completionsRange2CIDR,
