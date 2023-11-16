@@ -39,9 +39,9 @@ Examples:
 
 Flags:
   --expression, -e
-      CIDRs, ip-ranges to to check overlap with. Can be used multiple times.
+    CIDRs, ip-ranges to to check overlap with. Can be used multiple times.
   --help
-      Show help.
+    Show help.
 `, progBase)
 }
 
