@@ -192,26 +192,10 @@ func CmdToolAggregate(
 	}
 
 	// Sort and merge collected CIDRs and IPs.
-	aggregatedCIDRs := aggregateCIDRs(parsedCIDRs)
-	outlierIPs := make([]net.IP, 0)
-	length := len(aggregatedCIDRs)
-	for _, ip := range parsedIPs {
-		for i, cidr := range aggregatedCIDRs {
-			if cidr.Contains(ip) {
-				break
-			} else if i == length-1 {
-				outlierIPs = append(outlierIPs, ip)
-			}
-		}
-	}
+	merged := mergeOverlapping(parsedCIDRs)
 
 	// Print the aggregated CIDRs.
-	for _, r := range aggregatedCIDRs {
-		fmt.Println(r.String())
-	}
-
-	// Print outliers.
-	for _, r := range outlierIPs {
+	for _, r := range merged {
 		fmt.Println(r.String())
 	}
 
@@ -219,30 +203,30 @@ func CmdToolAggregate(
 }
 
 // Helper function to aggregate IP ranges.
-func aggregateCIDRs(cidrs []net.IPNet) []net.IPNet {
-	aggregatedCIDRs := make([]net.IPNet, 0)
+func mergeOverlapping(cidrs []net.IPNet) []net.IPNet {
+	merged := make([]net.IPNet, 0)
 
 	// Sort CIDRs by starting IP.
 	sortCIDRs(cidrs)
 
 	for _, r := range cidrs {
-		if len(aggregatedCIDRs) == 0 {
-			aggregatedCIDRs = append(aggregatedCIDRs, r)
+		if len(merged) == 0 {
+			merged = append(merged, r)
 			continue
 		}
 
-		last := len(aggregatedCIDRs) - 1
-		prev := aggregatedCIDRs[last]
+		last := len(merged) - 1
+		prev := merged[last]
 
 		if canAggregate(prev, r) {
 			// Merge overlapping CIDRs.
-			aggregatedCIDRs[last] = aggregateCIDR(prev, r)
+			merged[last] = merge(prev, r)
 		} else {
-			aggregatedCIDRs = append(aggregatedCIDRs, r)
+			merged = append(merged, r)
 		}
 	}
 
-	return aggregatedCIDRs
+	return merged
 }
 
 // Helper function to sort IP ranges by starting IP.
@@ -258,7 +242,7 @@ func canAggregate(r1, r2 net.IPNet) bool {
 }
 
 // Helper function to aggregate two CIDRs.
-func aggregateCIDR(r1, r2 net.IPNet) net.IPNet {
+func merge(r1, r2 net.IPNet) net.IPNet {
 	mask1, _ := r1.Mask.Size()
 	mask2, _ := r2.Mask.Size()
 
