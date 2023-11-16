@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VSN=1.2.2
+VSN=1.2.3
 PLAT=darwin_amd64
 
 curl -LO https://github.com/ipinfo/cli/releases/download/grepip-${VSN}/grepip_${VSN}_${PLAT}.tar.gz

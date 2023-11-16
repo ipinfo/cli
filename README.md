@@ -193,7 +193,7 @@ Currently these subcommands are separately shipped:
 
 | CLI        | Version                                                               |
 | ---------- | --------------------------------------------------------------------- |
-| grepip     | [1.2.2](https://github.com/ipinfo/cli/releases/tag/grepip-1.2.2)      |
+| grepip     | [1.2.2](https://github.com/ipinfo/cli/releases/tag/grepip-1.2.3)      |
 | matchip    | [1.0.0](https://github.com/ipinfo/cli/releases/tag/matchip-1.0.0)     |
 | prips      | [1.0.0](https://github.com/ipinfo/cli/releases/tag/prips-1.0.0)       |
 | cidr2range | [1.2.0](https://github.com/ipinfo/cli/releases/tag/cidr2range-1.2.0)  |

@@ -1,6 +1,6 @@
 Source: grepip
 Section: utils
-Version: 1.2.2
+Version: 1.2.3
 Priority: optional
 Maintainer: IPinfo <support@ipinfo.io>
 Vcs-Git: https://github.com/ipinfo/cli
