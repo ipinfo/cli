@@ -6,6 +6,7 @@ golint                                                                        \
     ./lib/...                                                                 \
     ./ipinfo/...                                                              \
     ./grepip/...                                                              \
+    ./matchip/...                                                             \
     ./prips/...                                                               \
     ./cidr2range/...                                                          \
     ./range2cidr/...                                                          \

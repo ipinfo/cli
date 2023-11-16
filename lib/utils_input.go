@@ -17,7 +17,7 @@ const (
 	INPUT_TYPE_UNKNOWN  INPUT_TYPE = "Unknown"
 )
 
-func inputHelper(str string, op func(string, INPUT_TYPE) error) error {
+func InputHelper(str string, op func(string, INPUT_TYPE) error) error {
 	switch {
 	case StrIsIPStr(str):
 		return op(str, INPUT_TYPE_IP)
@@ -118,7 +118,7 @@ func ProcessStringsFromFile(filename string, op func(input string, inputType INP
 	scanner.Split(bufio.ScanWords) // Set the scanner to split on spaces and newlines
 
 	for scanner.Scan() {
-		err = inputHelper(scanner.Text(), op)
+		err = InputHelper(scanner.Text(), op)
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -136,7 +136,7 @@ func ProcessStringsFromStdin(op func(input string, inputType INPUT_TYPE) error) 
 		if line == "" {
 			break
 		}
-		err := inputHelper(line, op)
+		err := InputHelper(line, op)
 		if err != nil {
 			return err
 		}
