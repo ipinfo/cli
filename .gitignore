@@ -11,6 +11,7 @@ tmp/
 !randip/dist/DEBIAN/
 ipinfo/dist/
 grepip/dist/
+matchip/dist/
 prips/dist/
 cidr2range/dist/
 cidr2ip/dist/
