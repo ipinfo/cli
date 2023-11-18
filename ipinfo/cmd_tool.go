@@ -21,6 +21,10 @@ var completionsTool = &complete.Command{
 		"is_loopback":completionsToolIsLoopBack,
 		"is_multicast":completionsToolIsMulticast,
 		"is_unspecified":completionsToolIsUnspecified,
+		"is_global_unicast":completionsToolIsGlobalUnicast,
+		"is_interface_local_multicast":completionsToolIsInterfaceLocalMulticast,
+		"is_link_local_multicast":completionsToolIsLinkLocalMulticast,
+		"is_link_local_unicast":completionsToolIsLinkLocalUnicast,
 		"unmap":     completionsToolUnmap,
 		"lower":     completionsToolLower,
 		"upper":     completionsToolUpper,
@@ -49,9 +53,13 @@ Commands:
   is_v6        reports whether input is an IPv6 address.
   is_valid     reports whether an IP is valid.
   is_one_ip    checks whether a CIDR or IP Range contains exactly one IP.
-  is_loopback  reports whether an IP is a valid Loopback address
-  is_multicast reports whether an IP is a valid Multicast address
-  is_unspecified reports whether an IP is an Unspecified address
+  is_loopback  reports whether an IP is a valid Loopback address.
+  is_multicast reports whether an IP is a valid Multicast address.
+  is_unspecified reports whether an IP is an Unspecified address.
+  is_global_unicast reports whether an IP is a global unicast address.
+  is_interface_local_multicast reports whether an IP is a interface local multicast
+  is_link_local_multicast reports whether IP is a Link Local Multicast address
+  is_link_local_unicast reports whether IP is a Link Local Unicast
   unmap        returns ip with any IPv4-mapped IPv6 address prefix removed.	
   lower        get start IP of IPs, IP ranges, and CIDRs.
   upper        get end IP of IPs, IP ranges, and CIDRs.
@@ -108,6 +116,14 @@ func cmdTool() error {
 		err = cmdToolIsMultiCast()
 	case cmd == "is_unspecified":
 		err = cmdToolIsUnspecified()
+	case cmd == "is_global_unicast":
+		err = cmdToolisGlobalUnicast()
+	case cmd == "is_interface_local_multicast":
+		err = cmdToolIsInterfaceLocalMulticast()
+	case cmd == "is_link_local_multicast":
+		err = cmdToolIsLinkLocalMulticast()
+	case cmd == "is_link_local_unicast":
+		err = cmdToolIsLinkLocalUnicast()
 	case cmd == "unmap":
 		err = cmdToolUnmap()
 	case cmd == "lower":
