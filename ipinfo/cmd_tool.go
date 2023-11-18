@@ -20,6 +20,7 @@ var completionsTool = &complete.Command{
 		"is_one_ip": completionsToolIsOneIp,
 		"is_loopback":completionsToolIsLoopBack,
 		"is_multicast":completionsToolIsMulticast,
+		"is_unspecified":completionsToolIsUnspecified,
 		"unmap":     completionsToolUnmap,
 		"lower":     completionsToolLower,
 		"upper":     completionsToolUpper,
@@ -50,12 +51,13 @@ Commands:
   is_one_ip    checks whether a CIDR or IP Range contains exactly one IP.
   is_loopback  reports whether an IP is a valid Loopback address
   is_multicast reports whether an IP is a valid Multicast address
+  is_unspecified reports whether an IP is an Unspecified address
   unmap        returns ip with any IPv4-mapped IPv6 address prefix removed.	
   lower        get start IP of IPs, IP ranges, and CIDRs.
   upper        get end IP of IPs, IP ranges, and CIDRs.
   is_v4in6     get whether the IP is an IPv4-mapped IPv6 address.
   ip2n         converts an IPv4 or IPv6 address to its decimal representation.
-  n2ip	       evaluates a mathematical expression and converts it to an IPv4 or IPv6.
+  n2ip	 evaluates a mathematical expression and converts it to an IPv4 or IPv6.
   n2ip6	       evaluates a mathematical expression and converts it to an IPv6.
   prefix       misc. prefix tools related to CIDRs.
 
@@ -104,6 +106,8 @@ func cmdTool() error {
 		err = cmdToolIsLoopBack()
 	case cmd == "is_multicast":
 		err = cmdToolIsMultiCast()
+	case cmd == "is_unspecified":
+		err = cmdToolIsUnspecified()
 	case cmd == "unmap":
 		err = cmdToolUnmap()
 	case cmd == "lower":

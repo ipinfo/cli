@@ -22,7 +22,7 @@ func printHelpToolIsMultiCast(){
 	fmt.Printf(`
 %s tool is_multicast [<opts>] <cidr | ip | ip-range | filepath>
 
-Description: Checks the provided address is a loopback
+Description: Checks the provided address is a multicast
 Inputs can be any IPv4 or IPv6 Address
 
 Examples
