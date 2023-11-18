@@ -18,6 +18,8 @@ var completionsTool = &complete.Command{
 		"is_v6":     completionsToolIsV6,
 		"is_valid":  completionsToolIsValid,
 		"is_one_ip": completionsToolIsOneIp,
+		"is_loopback":completionsToolIsLoopBack,
+		"is_multicast":completionsToolIsMulticast,
 		"unmap":     completionsToolUnmap,
 		"lower":     completionsToolLower,
 		"upper":     completionsToolUpper,
@@ -46,6 +48,8 @@ Commands:
   is_v6        reports whether input is an IPv6 address.
   is_valid     reports whether an IP is valid.
   is_one_ip    checks whether a CIDR or IP Range contains exactly one IP.
+  is_loopback  reports whether an IP is a valid Loopback address
+  is_multicast reports whether an IP is a valid Multicast address
   unmap        returns ip with any IPv4-mapped IPv6 address prefix removed.	
   lower        get start IP of IPs, IP ranges, and CIDRs.
   upper        get end IP of IPs, IP ranges, and CIDRs.
@@ -96,6 +100,10 @@ func cmdTool() error {
 		err = cmdToolIsValid()
 	case cmd == "is_one_ip":
 		err = cmdToolIsOneIp()
+	case cmd == "is_loopback":
+		err = cmdToolIsLoopBack()
+	case cmd == "is_multicast":
+		err = cmdToolIsMultiCast()
 	case cmd == "unmap":
 		err = cmdToolUnmap()
 	case cmd == "lower":
