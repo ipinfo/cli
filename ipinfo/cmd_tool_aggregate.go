@@ -23,9 +23,7 @@ func printHelpToolAggregate() {
 		`Usage: %s tool aggregate [<opts>] <cidr | ip | ip-range | filepath>
 
 Description:
-  Accepts IPs, IP ranges, and CIDRs, aggregating them efficiently.
-  Input can be IPs, IP ranges, CIDRs, and/or filepath to a file
-  containing any of these. Works for IPv4 only.
+  Accepts IPv4 IPs and CIDRs, aggregating them efficiently.
 
   If input contains single IPs, it tries to merge them into the input CIDRs,
   otherwise they are printed to the output as they are.
@@ -36,9 +34,6 @@ Description:
 Examples:
   # Aggregate two CIDRs.
   $ %[1]s tool aggregate 1.1.1.0/30 1.1.1.0/28
-
-  # Aggregate IP range and CIDR.
-  $ %[1]s tool aggregate 1.1.1.0-1.1.1.244 1.1.1.0/28
 
   # Aggregate enteries from 2 files.
   $ %[1]s tool aggregate /path/to/file1.txt /path/to/file2.txt
