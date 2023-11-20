@@ -9,4 +9,4 @@ ROOT=$DIR/..
 
 VSN=$1
 
-$ROOT/scripts/build-all-platforms.sh "grepdom" $VSN
+$ROOT/scripts/build-all-platforms.sh "grepdomain" $VSN

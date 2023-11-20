@@ -13,5 +13,6 @@ ctags \
     --totals=yes \
         ./lib \
         ./ipinfo \
+        ./grepdomain \
         ./grepip \
         ./matchip

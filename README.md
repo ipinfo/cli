@@ -24,7 +24,7 @@ brew install ipinfo-cli
 OR to install the latest `amd64` version without automatic updates:
 
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-3.1.2/macos.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-3.2.0/macos.sh | sh
 ```
 
 ### Ubuntu PPA
@@ -43,14 +43,14 @@ _Note_: this is a one-time installation; updates are not automatic. Use the PPA
 for automatic updates.
 
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-3.1.2/deb.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-3.2.0/deb.sh | sh
 ```
 
 OR
 
 ```bash
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-3.1.2/ipinfo_3.1.2.deb
-sudo dpkg -i ipinfo_3.1.2.deb
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-3.2.0/ipinfo_3.2.0.deb
+sudo dpkg -i ipinfo_3.2.0.deb
 ```
 
 ### FreeBSD
@@ -71,7 +71,7 @@ makepkg -si
 _Note_: run powershell as administrator before executing this command.
 
 ```bash
-iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-3.1.2/windows.ps1 | iex
+iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-3.2.0/windows.ps1 | iex
 ```
 
 ### Scoop
@@ -83,7 +83,7 @@ scoop install ipinfo-cli
 ### Docker
 
 ```bash
-docker run --rm -it ipinfo/ipinfo:3.1.2
+docker run --rm -it ipinfo/ipinfo:3.2.0
 ```
 
 To save the CLI's config, add `-v "/path_to_config:/root/.config/ipinfo"`. For
@@ -91,7 +91,7 @@ example, the following command saves the config to the `ipinfo` directory in
 the current working directory.
 
 ```bash
-docker run --rm -it -v "$PWD/ipinfo:/root/.config/ipinfo" ipinfo/ipinfo:3.1.2
+docker run --rm -it -v "$PWD/ipinfo:/root/.config/ipinfo" ipinfo/ipinfo:3.2.0
 ```
 
 ### Using `go install`
@@ -142,12 +142,12 @@ After choosing a platform `PLAT` from above, run:
 
 ```bash
 # for Windows, use ".zip" instead of ".tar.gz"
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-3.1.2/ipinfo_3.1.2_${PLAT}.tar.gz
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-3.2.0/ipinfo_3.2.0_${PLAT}.tar.gz
 # OR
-wget https://github.com/ipinfo/cli/releases/download/ipinfo-3.1.2/ipinfo_3.1.2_${PLAT}.tar.gz
+wget https://github.com/ipinfo/cli/releases/download/ipinfo-3.2.0/ipinfo_3.2.0_${PLAT}.tar.gz
 
-tar -xvf ipinfo_3.1.2_${PLAT}.tar.gz
-mv ipinfo_3.1.2_${PLAT} /usr/local/bin/ipinfo
+tar -xvf ipinfo_3.2.0_${PLAT}.tar.gz
+mv ipinfo_3.2.0_${PLAT} /usr/local/bin/ipinfo
 ```
 
 ### Using `git`
@@ -182,8 +182,9 @@ Replace `<path>` with the required location.
 
 ## Additional CLIs
 
-The `ipinfo` CLI has some subcommands like `grepip`, `matchip`, `prips`, `cidr2range`, `cidr2ip`,
-`range2cidr`, `range2ip`, `splitcidr`, `randip` and `mmdb` which are also shipped as standalone binaries.
+The `ipinfo` CLI has some subcommands like `grepip`, `grepdomain`, `matchip`,
+`prips`, `cidr2range`, `cidr2ip`, `range2cidr`, `range2ip`, `splitcidr`,
+`randip` and `mmdb` which are also shipped as standalone binaries.
 
 These binaries are available via all the **same installation methods** as
 mentioned above for `ipinfo`, except you must change only the name to the name
@@ -193,7 +194,8 @@ Currently these subcommands are separately shipped:
 
 | CLI        | Version                                                               |
 | ---------- | --------------------------------------------------------------------- |
-| grepip     | [1.2.2](https://github.com/ipinfo/cli/releases/tag/grepip-1.2.3)      |
+| grepip     | [1.2.3](https://github.com/ipinfo/cli/releases/tag/grepip-1.2.3)      |
+| grepdomain | [1.0.0](https://github.com/ipinfo/cli/releases/tag/grepdomain-1.0.0)  |
 | matchip    | [1.0.0](https://github.com/ipinfo/cli/releases/tag/matchip-1.0.0)     |
 | prips      | [1.0.0](https://github.com/ipinfo/cli/releases/tag/prips-1.0.0)       |
 | cidr2range | [1.2.0](https://github.com/ipinfo/cli/releases/tag/cidr2range-1.2.0)  |

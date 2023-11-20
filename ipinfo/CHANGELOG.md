@@ -1,4 +1,22 @@
-# 3.1.2
+# 3.2.0
+
+- Support CIDRs & Ranges in `grepip`.
+- New subcommand `matchip` which helps to grep for IP CIDRs/Ranges that
+  overlap.
+- New command `grepdomain` which is like `grepip` but for domains.
+- Added `-6` flag to `myip`.
+- Fixed a bug with the signup process; now works smoothly.
+
+## Pull Requests
+
+- [#183](https://github.com/ipinfo/cli/pull/183)
+- [#184](https://github.com/ipinfo/cli/pull/184)
+- [#189](https://github.com/ipinfo/cli/pull/189)
+- [#188](https://github.com/ipinfo/cli/pull/188)
+- [#185](https://github.com/ipinfo/cli/pull/185)
+- [#190](https://github.com/ipinfo/cli/pull/190)
+
+# 3.2.0
 
 * `ipinfo tool prefix` introduced with some misc. prefix tools. Currently supports following subcommands:
     - `addr` returns the base IP address of a prefix.

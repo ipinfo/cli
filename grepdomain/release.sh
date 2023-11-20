@@ -9,4 +9,4 @@ ROOT=$DIR/..
 
 VSN=$1
 
-$ROOT/scripts/release.sh "grepdom" $VSN
+$ROOT/scripts/release.sh "grepdomain" $VSN

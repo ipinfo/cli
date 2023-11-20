@@ -11,7 +11,7 @@ import (
 )
 
 var progBase = filepath.Base(os.Args[0])
-var version = "3.1.2"
+var version = "3.2.0"
 
 // global flags.
 var fHelp bool
@@ -57,8 +57,8 @@ func main() {
 		err = cmdGrepIP()
 	case cmd == "matchip":
 		err = cmdMatchIP()
-	case cmd == "grepdom":
-		err = cmdGrepDom()
+	case cmd == "grepdomain":
+		err = cmdGrepDomain()
 	case cmd == "cidr2range":
 		err = cmdCIDR2Range()
 	case cmd == "cidr2ip":

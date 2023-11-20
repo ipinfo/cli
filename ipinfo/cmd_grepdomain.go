@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/pflag"
 )
 
-var completionsGrepDom = &complete.Command{
+var completionsGrepDomain = &complete.Command{
 	Flags: map[string]complete.Predictor{
 		"-o":              predict.Nothing,
 		"--only-matching": predict.Nothing,
@@ -22,9 +22,9 @@ var completionsGrepDom = &complete.Command{
 	},
 }
 
-func printHelpGrepDom() {
+func printHelpGrepDomain() {
 	fmt.Printf(
-		`Usage: %s grepdom [<opts>]
+		`Usage: %s grepdomain [<opts>]
 
 Options:
   General:
@@ -47,10 +47,10 @@ Options:
 `, progBase)
 }
 
-func cmdGrepDom() error {
+func cmdGrepDomain() error {
 	f := lib.CmdGrepDomainFlags{}
 	f.Init()
 	pflag.Parse()
 
-	return lib.CmdGrepDomain(f, pflag.Args()[1:], printHelpGrepDom)
+	return lib.CmdGrepDomain(f, pflag.Args()[1:], printHelpGrepDomain)
 }

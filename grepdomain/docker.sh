@@ -11,4 +11,4 @@ ROOT=$DIR/..
 VSN=$1
 RELEASE=$2
 
-$ROOT/scripts/docker.sh "grepdom" $VSN $RELEASE
+$ROOT/scripts/docker.sh "grepdomain" $VSN $RELEASE

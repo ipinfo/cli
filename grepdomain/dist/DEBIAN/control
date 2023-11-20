@@ -1,4 +1,4 @@
-Source: grepdom
+Source: grepdomain
 Section: utils
 Version: 1.0.0
 Priority: optional
@@ -6,6 +6,6 @@ Maintainer: IPinfo <support@ipinfo.io>
 Vcs-Git: https://github.com/ipinfo/cli
 Vcs-browser: https://github.com/ipinfo/cli
 Homepage: https://ipinfo.io
-Package: grepdom
+Package: grepdomain
 Architecture: amd64
 Description: A grep-like tool for matching domain names.
