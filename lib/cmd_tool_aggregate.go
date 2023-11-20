@@ -3,7 +3,6 @@ package lib
 import (
 	"bufio"
 	"bytes"
-	"encoding/binary"
 	"fmt"
 	"io"
 	"net"
@@ -232,13 +231,23 @@ func CmdToolAggregate(
 // The adjacency condition is that the prefixes have the same mask length,
 // and the second prefix is exactly one larger than the first prefix.
 func areAdjacent(r1, r2 net.IPNet) bool {
-	prefix1 := binary.BigEndian.Uint32(r1.IP.To4())
-	prefix2 := binary.BigEndian.Uint32(r2.IP.To4())
-
 	mask1, _ := r1.Mask.Size()
 	mask2, _ := r2.Mask.Size()
 
-	return mask1 == mask2 && (prefix1%(2<<(32-mask1)) == 0) && (prefix2-prefix1 == (1 << (32 - mask1)))
+	if mask1 != mask2 {
+		return false
+	}
+
+	var prefix1, prefix2 uint32
+	var isAdjacent bool = false
+
+	if r1.IP.To4() != nil && r2.IP.To4() != nil {
+		prefix1 = ipToUint32(r1.IP.To4())
+		prefix2 = ipToUint32(r2.IP.To4())
+		isAdjacent = (prefix1%(2<<(32-mask1)) == 0) && (prefix2-prefix1 == (1 << (32 - mask1)))
+	}
+
+	return isAdjacent
 }
 
 func combineAdjacentCIDRs(r1, r2 net.IPNet) net.IPNet {
