@@ -7,20 +7,20 @@ import (
 	"github.com/spf13/pflag"
 )
 
-type CmdToolIsInterfaceLocalMulticastFlags struct{
-	Help bool
+type CmdToolIsInterfaceLocalMulticastFlags struct {
+	Help  bool
 	Quiet bool
 }
 
-func (f *CmdToolIsInterfaceLocalMulticastFlags) Init(){
+func (f *CmdToolIsInterfaceLocalMulticastFlags) Init() {
 	pflag.BoolVarP(
 		&f.Help,
-		"help","h",false,
+		"help", "h", false,
 		"show help",
 	)
 	pflag.BoolVarP(
 		&f.Quiet,
-		"quiet","q",false,
+		"quiet", "q", false,
 		"quiet mode; suppress additional output.",
 	)
 }
@@ -29,13 +29,13 @@ func CmdToolIsInterfaceLocalMulticast(
 	f CmdToolIsInterfaceLocalMulticastFlags,
 	args []string,
 	printHelp func(),
-)error{
-	if f.Help{
+) error {
+	if f.Help {
 		printHelp()
 		return nil
 	}
-	actionFunc:=func(input string,inputType INPUT_TYPE)error{
-		switch inputType{
+	actionFunc := func(input string, inputType INPUT_TYPE) error {
+		switch inputType {
 		case INPUT_TYPE_IP:
 			ActionIsInterfaceLocalMulticast(input)
 		case INPUT_TYPE_IP_RANGE:
@@ -45,38 +45,38 @@ func CmdToolIsInterfaceLocalMulticast(
 		}
 		return nil
 	}
-	err:=GetInputFrom(args,true,true,actionFunc)
-	if err!=nil{
+	err := GetInputFrom(args, true, true, actionFunc)
+	if err != nil {
 		fmt.Println(err)
 		return err
 	}
 	return nil
 }
-func ActionIsInterfaceLocalMulticast(input string){
-	ip:=net.ParseIP(input)
+func ActionIsInterfaceLocalMulticast(input string) {
+	ip := net.ParseIP(input)
 
-	isInterfaceLocalMulticast:=ip.IsInterfaceLocalMulticast()
+	isInterfaceLocalMulticast := ip.IsInterfaceLocalMulticast()
 
-	fmt.Printf("%s,%v\n",input,isInterfaceLocalMulticast)
+	fmt.Printf("%s,%v\n", input, isInterfaceLocalMulticast)
 }
-func ActionIsInterfaceLocalMulticastRange(input string){
-	ipRange,err:=IPRangeStrFromStr(input)
-	if err!=nil{
-		fmt.Println("Invalid IP Range Input",err)
+func ActionIsInterfaceLocalMulticastRange(input string) {
+	ipRange, err := IPRangeStrFromStr(input)
+	if err != nil {
+		fmt.Println("Invalid IP Range Input", err)
 		return
 	}
-	ipStart:=net.ParseIP(ipRange.Start)
-	isInterfaceLocalMulticast:=ipStart.IsInterfaceLocalMulticast()
+	ipStart := net.ParseIP(ipRange.Start)
+	isInterfaceLocalMulticast := ipStart.IsInterfaceLocalMulticast()
 
-	fmt.Printf("%s,%v\n",input,isInterfaceLocalMulticast)
+	fmt.Printf("%s,%v\n", input, isInterfaceLocalMulticast)
 }
-func ActionIsInterfaceLocalMulticastCIDR(input string){
-	_,ipNet,err:=net.ParseCIDR(input)
-	if err!=nil{
-		fmt.Println("Invalid CIDR Input",err)
+func ActionIsInterfaceLocalMulticastCIDR(input string) {
+	_, ipNet, err := net.ParseCIDR(input)
+	if err != nil {
+		fmt.Println("Invalid CIDR Input", err)
 		return
 	}
-	isInterfaceLocalMulticast:=ipNet.IP.IsInterfaceLocalMulticast()
+	isInterfaceLocalMulticast := ipNet.IP.IsInterfaceLocalMulticast()
 
-	fmt.Printf("%s,%v\n",input,isInterfaceLocalMulticast)
+	fmt.Printf("%s,%v\n", input, isInterfaceLocalMulticast)
 }

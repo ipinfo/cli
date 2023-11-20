@@ -7,19 +7,20 @@ import (
 	"github.com/spf13/pflag"
 )
 
-type CmdToolIsMulticastFlags struct{
-	Help bool
+type CmdToolIsMulticastFlags struct {
+	Help  bool
 	Quiet bool
 }
-func (f *CmdToolIsMulticastFlags) Init(){
+
+func (f *CmdToolIsMulticastFlags) Init() {
 	pflag.BoolVarP(
 		&f.Help,
-		"help","h",false,
+		"help", "h", false,
 		"show help.",
 	)
 	pflag.BoolVarP(
 		&f.Quiet,
-		"quiet","q",false,
+		"quiet", "q", false,
 		"quiet mode; suppress additional output.",
 	)
 }
@@ -27,13 +28,13 @@ func CmdToolIsMulticast(
 	f CmdToolIsMulticastFlags,
 	args []string,
 	printHelp func(),
-)error{
-	if f.Help{
+) error {
+	if f.Help {
 		printHelp()
 		return nil
 	}
-	actionFunc:=func(input string,inputType INPUT_TYPE) error{
-		switch inputType{
+	actionFunc := func(input string, inputType INPUT_TYPE) error {
+		switch inputType {
 		case INPUT_TYPE_IP:
 			ActionForIsMulticast(input)
 		case INPUT_TYPE_IP_RANGE:
@@ -43,44 +44,44 @@ func CmdToolIsMulticast(
 		}
 		return nil
 	}
-	err:=GetInputFrom(args,true,true,actionFunc)
-	if err!=nil{
+	err := GetInputFrom(args, true, true, actionFunc)
+	if err != nil {
 		fmt.Println(err)
 		return err
 	}
 	return nil
 }
 
-func ActionForIsMulticast(input string){
-	ip:=net.ParseIP(input)
+func ActionForIsMulticast(input string) {
+	ip := net.ParseIP(input)
 
-	isMulticast:=ip.IsMulticast()
+	isMulticast := ip.IsMulticast()
 
-	fmt.Printf("%s,%v\n",input,isMulticast)
+	fmt.Printf("%s,%v\n", input, isMulticast)
 }
 
-func ActionForIsMulticastRange(input string){
-	ipRange,err := IPRangeStrFromStr(input)
-	if err!=nil{
+func ActionForIsMulticastRange(input string) {
+	ipRange, err := IPRangeStrFromStr(input)
+	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	ipStart:=net.ParseIP(ipRange.Start)
+	ipStart := net.ParseIP(ipRange.Start)
 
-	isMulticast:=ipStart.IsMulticast()
+	isMulticast := ipStart.IsMulticast()
 
-	fmt.Printf("%s,%v\n",ipStart,isMulticast)
+	fmt.Printf("%s,%v\n", ipStart, isMulticast)
 }
 
-func ActionForIsMulticastCIDR(input string){
-	_,ipnet,err:=net.ParseCIDR(input)
+func ActionForIsMulticastCIDR(input string) {
+	_, ipnet, err := net.ParseCIDR(input)
 
-	if err!=nil{
+	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	isCIDRMulticast:=ipnet.IP.IsMulticast()
+	isCIDRMulticast := ipnet.IP.IsMulticast()
 
-	fmt.Printf("%s,%v\n",input,isCIDRMulticast)
+	fmt.Printf("%s,%v\n", input, isCIDRMulticast)
 
 }

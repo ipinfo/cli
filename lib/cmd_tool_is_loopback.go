@@ -7,20 +7,20 @@ import (
 	"github.com/spf13/pflag"
 )
 
-type CmdToolIsLoopbackFlags struct{
-	Help bool
+type CmdToolIsLoopbackFlags struct {
+	Help  bool
 	Quiet bool
 }
 
-func (f *CmdToolIsLoopbackFlags) Init(){
+func (f *CmdToolIsLoopbackFlags) Init() {
 	pflag.BoolVarP(
 		&f.Help,
-		"help","h",false,
+		"help", "h", false,
 		"show help.",
 	)
 	pflag.BoolVarP(
 		&f.Quiet,
-		"quiet","q",false,
+		"quiet", "q", false,
 		"quiet mode; suppress additional output.",
 	)
 }
@@ -29,13 +29,13 @@ func CmdToolIsLoopback(
 	f CmdToolIsLoopbackFlags,
 	args []string,
 	printHelp func(),
-)error{
-	if f.Help{
+) error {
+	if f.Help {
 		printHelp()
 		return nil
 	}
-	actionFuncLoopBack:=func(input string,inputType INPUT_TYPE) error{
-		switch inputType{
+	actionFuncLoopBack := func(input string, inputType INPUT_TYPE) error {
+		switch inputType {
 		case INPUT_TYPE_IP:
 			ActionForIsLoopBack(input)
 		case INPUT_TYPE_IP_RANGE:
@@ -45,44 +45,42 @@ func CmdToolIsLoopback(
 		}
 		return nil
 	}
-	err:=GetInputFrom(args,true,true,actionFuncLoopBack)
-	if err !=nil{
+	err := GetInputFrom(args, true, true, actionFuncLoopBack)
+	if err != nil {
 		fmt.Println(err)
 	}
 
 	return nil
 }
 
-func ActionForIsLoopBack(input string){
-	ip:=net.ParseIP(input)
+func ActionForIsLoopBack(input string) {
+	ip := net.ParseIP(input)
 
-	isLoopBack:=ip.IsLoopback()
+	isLoopBack := ip.IsLoopback()
 
-
-
-	fmt.Printf("%s,%v\n",input,isLoopBack)
+	fmt.Printf("%s,%v\n", input, isLoopBack)
 
 }
 
-func ActionForISLoopBackRange(input string){
-	ipRange,err:=IPRangeStrFromStr(input)
+func ActionForISLoopBackRange(input string) {
+	ipRange, err := IPRangeStrFromStr(input)
 
-	if(err !=nil){
-		fmt.Println("Invalid Ip Range input:",err)
+	if err != nil {
+		fmt.Println("Invalid Ip Range input:", err)
 		return
 	}
-	ipStart:=net.ParseIP(ipRange.Start)
-	isLoopBack:=ipStart.IsLoopback()
+	ipStart := net.ParseIP(ipRange.Start)
+	isLoopBack := ipStart.IsLoopback()
 
-	fmt.Printf("%s,%v\n",input,isLoopBack)
+	fmt.Printf("%s,%v\n", input, isLoopBack)
 }
 
-func ActionForIsLoopBackCIDR(input string){
-	_,ipnet,err:=net.ParseCIDR(input)
-	if err!=nil{
-		fmt.Println("Invalid CIDR Format:",err)
+func ActionForIsLoopBackCIDR(input string) {
+	_, ipnet, err := net.ParseCIDR(input)
+	if err != nil {
+		fmt.Println("Invalid CIDR Format:", err)
 		return
 	}
-	isCIDRLoopBack:=ipnet.IP.IsLoopback()
-	fmt.Printf("%s,%v\n",input,isCIDRLoopBack)
+	isCIDRLoopBack := ipnet.IP.IsLoopback()
+	fmt.Printf("%s,%v\n", input, isCIDRLoopBack)
 }
