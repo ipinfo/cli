@@ -67,51 +67,17 @@ func CmdToolAggregate(
 	parseInput := func(rows []string) ([]string, []net.IP) {
 		parsedCIDRs := make([]string, 0)
 		parsedIPs := make([]net.IP, 0)
-		var separator string
 		for _, rowStr := range rows {
 			if strings.ContainsAny(rowStr, ",-") {
-				if delim := strings.ContainsRune(rowStr, ','); delim {
-					separator = ","
-				} else {
-					separator = "-"
-				}
-
-				ipRange := strings.Split(rowStr, separator)
-				if len(ipRange) != 2 {
-					if !f.Quiet {
-						fmt.Printf("Invalid IP range: %s\n", rowStr)
-					}
-					continue
-				}
-
-				if strings.ContainsRune(rowStr, ':') {
-					cidrs, err := CIDRsFromIP6RangeStrRaw(rowStr)
-					if err == nil {
-						parsedCIDRs = append(parsedCIDRs, cidrs...)
-						continue
-					} else {
-						if !f.Quiet {
-							fmt.Printf("Invalid IP range %s. Err: %v\n", rowStr, err)
-						}
-						continue
-					}
-				} else {
-					cidrs, err := CIDRsFromIPRangeStrRaw(rowStr)
-					if err == nil {
-						parsedCIDRs = append(parsedCIDRs, cidrs...)
-						continue
-					} else {
-						if !f.Quiet {
-							fmt.Printf("Invalid IP range %s. Err: %v\n", rowStr, err)
-						}
-						continue
-					}
-				}
+				continue
 			} else if strings.ContainsRune(rowStr, '/') {
-				parsedCIDRs = append(parsedCIDRs, []string{rowStr}...)
+				_, ipnet, err := net.ParseCIDR(rowStr)
+				if err == nil && IsCIDRIPv4(ipnet) {
+					parsedCIDRs = append(parsedCIDRs, []string{rowStr}...)
+				}
 				continue
 			} else {
-				if ip := net.ParseIP(rowStr); ip != nil {
+				if ip := net.ParseIP(rowStr); IsIPv4(ip) {
 					parsedIPs = append(parsedIPs, ip)
 				} else {
 					if !f.Quiet {
