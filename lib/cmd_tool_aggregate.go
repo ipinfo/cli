@@ -149,7 +149,7 @@ func CmdToolAggregate(
 		parsedIPs = append(parsedIPs, ips...)
 	}
 
-	adjacentCombined := CombineAdjacent(StripOverlapping(List(parsedCIDRs)))
+	adjacentCombined := combineAdjacent(stripOverlapping(list(parsedCIDRs)))
 
 	outlierIPs := make([]net.IP, 0)
 	length := len(adjacentCombined)
@@ -180,8 +180,8 @@ func CmdToolAggregate(
 	return nil
 }
 
-// New creates a new CIDR structure.
-func New(s string) *CIDR {
+// newCidr creates a newCidr CIDR structure.
+func newCidr(s string) *CIDR {
 	ip, ipnet, err := net.ParseCIDR(s)
 	if err != nil {
 		panic(err)
@@ -213,11 +213,11 @@ func (c *CIDR) Size() int {
 	return int(math.Pow(2, float64(bits-ones)))
 }
 
-// List returns a slice of sorted CIDR structures.
-func List(s []string) []*CIDR {
+// list returns a slice of sorted CIDR structures.
+func list(s []string) []*CIDR {
 	out := make([]*CIDR, 0)
 	for _, c := range s {
-		out = append(out, New(c))
+		out = append(out, newCidr(c))
 	}
 	sort.Sort(cidrSort(out))
 	return out
@@ -233,9 +233,9 @@ func (s cidrSort) Less(i, j int) bool {
 	return cmp < 0 || (cmp == 0 && s[i].MaskLen() < s[j].MaskLen())
 }
 
-// StripOverlapping returns a slice of CIDR structures with overlapping ranges
+// stripOverlapping returns a slice of CIDR structures with overlapping ranges
 // stripped.
-func StripOverlapping(s []*CIDR) []*CIDR {
+func stripOverlapping(s []*CIDR) []*CIDR {
 	l := len(s)
 	for i := 0; i < l-1; i++ {
 		if s[i] == nil {
@@ -255,9 +255,9 @@ func overlaps(a, b *CIDR) bool {
 		(b.PrefixUint32() / (1 << (32 - b.MaskLen())))
 }
 
-// CombineAdjacent returns a slice of CIDR structures with adjacent ranges
+// combineAdjacent returns a slice of CIDR structures with adjacent ranges
 // combined.
-func CombineAdjacent(s []*CIDR) []*CIDR {
+func combineAdjacent(s []*CIDR) []*CIDR {
 	for {
 		found := false
 		l := len(s)
@@ -271,7 +271,7 @@ func CombineAdjacent(s []*CIDR) []*CIDR {
 				}
 				if adjacent(s[i], s[j]) {
 					c := fmt.Sprintf("%s/%d", s[i].IP.String(), s[i].MaskLen()-1)
-					s[i] = New(c)
+					s[i] = newCidr(c)
 					s[j] = nil
 					found = true
 				}
@@ -299,18 +299,4 @@ func filter(s []*CIDR) []*CIDR {
 		}
 	}
 	return out
-}
-
-// Aggregate returns a slice of CIDR structures with adjacent ranges combined
-// and overlapping ranges stripped.
-func Aggregate(s []string) []*CIDR {
-	return CombineAdjacent(StripOverlapping(List(s)))
-}
-
-// Size calculates an overal size of a slice of CIDR structures.
-func Size(s []*CIDR) (i int) {
-	for _, x := range s {
-		i += x.Size()
-	}
-	return
 }
