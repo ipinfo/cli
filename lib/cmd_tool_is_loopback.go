@@ -34,6 +34,7 @@ func CmdToolIsLoopback(
 		printHelp()
 		return nil
 	}
+
 	actionFuncLoopBack := func(input string, inputType INPUT_TYPE) error {
 		switch inputType {
 		case INPUT_TYPE_IP:
@@ -43,8 +44,10 @@ func CmdToolIsLoopback(
 		case INPUT_TYPE_CIDR:
 			ActionForIsLoopBackCIDR(input)
 		}
+
 		return nil
 	}
+
 	err := GetInputFrom(args, true, true, actionFuncLoopBack)
 	if err != nil {
 		fmt.Println(err)
@@ -59,17 +62,16 @@ func ActionForIsLoopBack(input string) {
 	isLoopBack := ip.IsLoopback()
 
 	fmt.Printf("%s,%v\n", input, isLoopBack)
-
 }
 
 func ActionForISLoopBackRange(input string) {
 	ipRange, err := IPRangeStrFromStr(input)
-
 	if err != nil {
-		fmt.Println("Invalid Ip Range input:", err)
 		return
 	}
+
 	ipStart := net.ParseIP(ipRange.Start)
+
 	isLoopBack := ipStart.IsLoopback()
 
 	fmt.Printf("%s,%v\n", input, isLoopBack)
@@ -78,9 +80,10 @@ func ActionForISLoopBackRange(input string) {
 func ActionForIsLoopBackCIDR(input string) {
 	_, ipnet, err := net.ParseCIDR(input)
 	if err != nil {
-		fmt.Println("Invalid CIDR Format:", err)
 		return
 	}
+
 	isCIDRLoopBack := ipnet.IP.IsLoopback()
+
 	fmt.Printf("%s,%v\n", input, isCIDRLoopBack)
 }

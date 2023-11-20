@@ -24,6 +24,7 @@ func (f *CmdToolIsUnspecifiedFlags) Init() {
 		"quiet mode;suppress additional output.",
 	)
 }
+
 func CmdToolIsUnspecified(
 	f CmdToolIsUnspecifiedFlags,
 	args []string,
@@ -33,20 +34,25 @@ func CmdToolIsUnspecified(
 		printHelp()
 		return nil
 	}
+
 	actionFunc := func(input string, inputType INPUT_TYPE) error {
 		switch inputType {
 		case INPUT_TYPE_IP:
 			ActionIsUnspecified(input)
 		}
+
 		return nil
 	}
+
 	err := GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
+
 	return nil
 }
+
 func ActionIsUnspecified(input string) {
 	ip := net.ParseIP(input)
 

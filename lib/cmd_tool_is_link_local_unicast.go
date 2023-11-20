@@ -24,6 +24,7 @@ func (f *CmdToolIsLinkLocalUnicastFlags) Init() {
 		"quiet mode; suppress additional output.",
 	)
 }
+
 func CmdToolIsLinkLocalUnicast(
 	f CmdToolIsLinkLocalUnicastFlags,
 	args []string,
@@ -33,6 +34,7 @@ func CmdToolIsLinkLocalUnicast(
 		printHelp()
 		return nil
 	}
+
 	actionFunc := func(input string, inputType INPUT_TYPE) error {
 		switch inputType {
 		case INPUT_TYPE_IP:
@@ -42,15 +44,19 @@ func CmdToolIsLinkLocalUnicast(
 		case INPUT_TYPE_CIDR:
 			ActionIsLinkLocalUnicastCIDR(input)
 		}
+
 		return nil
 	}
+
 	err := GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
+
 	return nil
 }
+
 func ActionIsLinkLocalUnicast(input string) {
 	ip := net.ParseIP(input)
 
@@ -58,24 +64,26 @@ func ActionIsLinkLocalUnicast(input string) {
 
 	fmt.Printf("%s,%v\n", input, isLinkLocalUnicast)
 }
+
 func ActionIsLinkLocalUnicastRange(input string) {
 	ipRange, err := IPRangeStrFromStr(input)
 	if err != nil {
-		fmt.Println("Invalid Range Input", err)
 		return
 	}
+
 	ipStart := net.ParseIP(ipRange.Start)
 
 	isLinkLocalUnicast := ipStart.IsLinkLocalMulticast()
 
 	fmt.Printf("%s,%v\n", input, isLinkLocalUnicast)
 }
+
 func ActionIsLinkLocalUnicastCIDR(input string) {
 	_, ipnet, err := net.ParseCIDR(input)
 	if err != nil {
-		fmt.Println("Invalid CIDR Input", err)
 		return
 	}
+
 	isLinkLocalUnicast := ipnet.IP.IsLinkLocalUnicast()
 
 	fmt.Printf("%s,%v\n", input, isLinkLocalUnicast)

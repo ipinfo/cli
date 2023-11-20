@@ -24,6 +24,7 @@ func (f *CmdToolIsMulticastFlags) Init() {
 		"quiet mode; suppress additional output.",
 	)
 }
+
 func CmdToolIsMulticast(
 	f CmdToolIsMulticastFlags,
 	args []string,
@@ -33,6 +34,7 @@ func CmdToolIsMulticast(
 		printHelp()
 		return nil
 	}
+
 	actionFunc := func(input string, inputType INPUT_TYPE) error {
 		switch inputType {
 		case INPUT_TYPE_IP:
@@ -42,13 +44,16 @@ func CmdToolIsMulticast(
 		case INPUT_TYPE_CIDR:
 			ActionForIsMulticastCIDR(input)
 		}
+
 		return nil
 	}
+
 	err := GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
+
 	return nil
 }
 
@@ -63,9 +68,9 @@ func ActionForIsMulticast(input string) {
 func ActionForIsMulticastRange(input string) {
 	ipRange, err := IPRangeStrFromStr(input)
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
+
 	ipStart := net.ParseIP(ipRange.Start)
 
 	isMulticast := ipStart.IsMulticast()
@@ -75,13 +80,11 @@ func ActionForIsMulticastRange(input string) {
 
 func ActionForIsMulticastCIDR(input string) {
 	_, ipnet, err := net.ParseCIDR(input)
-
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
+
 	isCIDRMulticast := ipnet.IP.IsMulticast()
 
 	fmt.Printf("%s,%v\n", input, isCIDRMulticast)
-
 }

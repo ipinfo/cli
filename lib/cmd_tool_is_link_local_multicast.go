@@ -24,6 +24,7 @@ func (f *CmdToolIsLinkLocalMulticastFlags) Init() {
 		"quiet mode; suppress additional output.",
 	)
 }
+
 func CmdToolIsLinkLocalMulticast(
 	f CmdToolIsLinkLocalMulticastFlags,
 	args []string,
@@ -33,6 +34,7 @@ func CmdToolIsLinkLocalMulticast(
 		printHelp()
 		return nil
 	}
+
 	actionFunc := func(input string, inputType INPUT_TYPE) error {
 		switch inputType {
 		case INPUT_TYPE_IP:
@@ -42,15 +44,19 @@ func CmdToolIsLinkLocalMulticast(
 		case INPUT_TYPE_CIDR:
 			ActionIsLinkLocalMulticastCIDR(input)
 		}
+
 		return nil
 	}
+
 	err := GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
+
 	return nil
 }
+
 func ActionIsLinkLocalMulticast(input string) {
 	ip := net.ParseIP(input)
 
@@ -58,24 +64,26 @@ func ActionIsLinkLocalMulticast(input string) {
 
 	fmt.Printf("%s,%v\n", input, isLinkLocalMulticast)
 }
+
 func ActionIsLinkLocalMulticastRange(input string) {
 	ipRange, err := IPRangeStrFromStr(input)
 	if err != nil {
-		fmt.Println("Invalid Range Input", err)
 		return
 	}
+
 	ipStart := net.ParseIP(ipRange.Start)
 
 	isLinkLocalMulticast := ipStart.IsLinkLocalMulticast()
 
 	fmt.Printf("%s,%v\n", input, isLinkLocalMulticast)
 }
+
 func ActionIsLinkLocalMulticastCIDR(input string) {
 	_, ipNet, err := net.ParseCIDR(input)
 	if err != nil {
-		fmt.Println("Invalid CIDR input", err)
 		return
 	}
+
 	isLinkLocalMulticast := ipNet.IP.IsLinkLocalMulticast()
 
 	fmt.Printf("%s,%v\n", input, isLinkLocalMulticast)
