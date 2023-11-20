@@ -200,9 +200,29 @@ func CmdToolAggregate(
 
 	// Combine adjacent entries.
 	adjacentCombined := combineAdjacent(merged)
+	outlierIPs := make([]net.IP, 0)
+	length := len(adjacentCombined)
+	if length != 0 {
+		for _, ip := range parsedIPs {
+			for i, cidr := range adjacentCombined {
+				if cidr.Contains(ip) {
+					break
+				} else if i == length-1 {
+					outlierIPs = append(outlierIPs, ip)
+				}
+			}
+		}
+	} else {
+		outlierIPs = append(outlierIPs, parsedIPs...)
+	}
 
 	// Print the aggregated CIDRs.
 	for _, r := range adjacentCombined {
+		fmt.Println(r.String())
+	}
+
+	// Print the outlierIPs.
+	for _, r := range outlierIPs {
 		fmt.Println(r.String())
 	}
 
