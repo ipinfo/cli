@@ -26,15 +26,15 @@ Description: Checks the provided address is a Link Local Unicast
 Inputs can be IPs, IP ranges, CIDRs, or filepath to a file
 
 Examples
-  #IPv4/IPv6 Address.
+  # IPv4/IPv6 Address.
   $ %[1]s tool is_link_local_unicast 169.254.0.0 | fe80::
   $ %[1]s tool is_link_local_unicast 224.200.0.0 | 2000::
 
-  #IPv4/IPv6 Address Range
+  # IPv4/IPv6 Address Range
   $ %[1]s tool is_link_local_unicast 169.254.0.1-169.254.255.255 | fe80::-fe80::ffff
   $ %[1]s tool is_link_local_unicast 168.254.0.1-169.254.255.255 | 2000::-2000::ffff
 
-  #Check CIDR
+  # Check CIDR
   $ %[1]s tool is_link_local_unicast 169.0.0.1/32 | fe80::1/64
   $ %[1]s tool is_link_local_unicast 127.0.0.1/32 | 2000::1/64
 

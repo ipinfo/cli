@@ -26,15 +26,15 @@ Description: Checks the provided address is a Link Local Multicast
 Inputs can be IPs, IP ranges, CIDRs, or filepath to a file
 
 Examples
-  #IPv4/IPv6 Address.
+  # IPv4/IPv6 Address.
   $ %[1]s tool is_link_local_multicast 224.0.0.0 | ff02::2
   $ %[1]s tool is_link_local_multicast 169.200.0.0 | fe80::
 
-  #IPv4/IPv6 Address Range
+  # IPv4/IPv6 Address Range
   $ %[1]s tool is_link_local_multicast 224.0.0.1-224.254.255.255 | ff02::1-ff02::ffff
   $ %[1]s tool is_link_local_multicast 169.254.0.1-169.254.255.255 | fe80::1-fe80::ffff
 
-  #Check CIDR
+  # Check CIDR
   $ %[1]s tool is_link_local_multicast 224.0.0.0/32 | ff02::1/64
   $ %[1]s tool is_link_local_multicast 169.200.0.0/32 | fe80::1/64
 

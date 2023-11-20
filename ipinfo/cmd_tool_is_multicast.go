@@ -26,11 +26,11 @@ Description: Checks the provided address is a Multicast Address
 Inputs can be IPs, IP ranges, CIDRs, or filepath to a file
 
 Examples
-  #IPv4/IPv6 Address.
+  # IPv4/IPv6 Address.
   $ %[1]s tool is_multicast 239.0.0.0 | ff00::
   $ %[1]s tool is_multicast 127.0.0.0 | ::1
 
-  #IPv4/IPv6 Address Range
+  # IPv4/IPv6 Address Range
   $ %[1]s tool is_multicast 239.0.0.0-239.255.255.1 | ff00::1-ff00::ffff
   $ %[1]s tool is_multicast 240.0.0.0-240.255.255.1 | ::1-::ffff
 

@@ -26,7 +26,7 @@ Description: Checks the provided address is an Unspecified Address
 Inputs can be any IPv4 or IPv6 Address or filepath to a file
 
 Examples
-  #IPv4/IPv6 Address.
+  # IPv4/IPv6 Address.
   $ %[1]s tool is_unspecified 0.0.0.0 | ::
   $ %[1]s tool is_unspecified 124.198.16.8 | fe80::2
 

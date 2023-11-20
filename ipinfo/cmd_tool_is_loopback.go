@@ -26,15 +26,15 @@ Description: Checks the provided address is a Loopback Address
 Inputs can be IPs, IP ranges, CIDRs, or filepath to a file
 
 Examples
-  #IPv4/IPv6 Address.
+  # IPv4/IPv6 Address.
   $ %[1]s tool is_loopback 127.0.0.1 | ::1
   $ %[1]s tool is_loopback 128.0.0.1 | ff02::1
 
-  #IPv4/IPv6 Address Range
+  # IPv4/IPv6 Address Range
   $ %[1]s tool is_loopback 127.0.0.1-127.8.95.6 | ::1-::ffff
   $ %[1]s tool is_loopback 128.0.0.1-128.8.95.6 | ff02::1-ff02::ffff
 
-  #Check CIDR
+  # Check CIDR
   $ %[1]s tool is_loopback 127.0.0.1/32 | ::1/64
   $ %[1]s tool is_loopback 154.0.0.1/32 | ff02::1/64
 
