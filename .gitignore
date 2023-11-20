@@ -3,6 +3,7 @@ tmp/
 
 !ipinfo/dist/DEBIAN/
 !grepip/dist/DEBIAN/
+!grepdomain/dist/DEBIAN/
 !prips/dist/DEBIAN/
 !cidr2range/dist/DEBIAN/
 !cidr2ip/dist/DEBIAN/
@@ -11,6 +12,7 @@ tmp/
 !randip/dist/DEBIAN/
 ipinfo/dist/
 grepip/dist/
+grepdomain/dist/
 matchip/dist/
 prips/dist/
 cidr2range/dist/
