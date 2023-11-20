@@ -3,8 +3,10 @@ package lib
 import (
 	"bufio"
 	"bytes"
+	"encoding/binary"
 	"fmt"
 	"io"
+	"math"
 	"net"
 	"os"
 	"sort"
@@ -36,6 +38,12 @@ func (f *CmdToolAggregateFlags) Init() {
 	)
 }
 
+// CIDR represens a Classless Inter-Domain Routing structure.
+type CIDR struct {
+	IP      net.IP
+	Network *net.IPNet
+}
+
 // CmdToolAggregate is the common core logic for aggregating IPs, IP ranges and CIDRs.
 func CmdToolAggregate(
 	f CmdToolAggregateFlags,
@@ -55,26 +63,9 @@ func CmdToolAggregate(
 		return nil
 	}
 
-	// Parses a list of CIDRs.
-	parseCIDRs := func(cidrs []string) []net.IPNet {
-		parsedCIDRs := make([]net.IPNet, 0)
-		for _, cidrStr := range cidrs {
-			_, ipNet, err := net.ParseCIDR(cidrStr)
-			if err != nil {
-				if !f.Quiet {
-					fmt.Printf("Invalid CIDR: %s\n", cidrStr)
-				}
-				continue
-			}
-			parsedCIDRs = append(parsedCIDRs, *ipNet)
-		}
-
-		return parsedCIDRs
-	}
-
 	// Input parser.
-	parseInput := func(rows []string) ([]net.IPNet, []net.IP) {
-		parsedCIDRs := make([]net.IPNet, 0)
+	parseInput := func(rows []string) ([]string, []net.IP) {
+		parsedCIDRs := make([]string, 0)
 		parsedIPs := make([]net.IP, 0)
 		var separator string
 		for _, rowStr := range rows {
@@ -96,7 +87,7 @@ func CmdToolAggregate(
 				if strings.ContainsRune(rowStr, ':') {
 					cidrs, err := CIDRsFromIP6RangeStrRaw(rowStr)
 					if err == nil {
-						parsedCIDRs = append(parsedCIDRs, parseCIDRs(cidrs)...)
+						parsedCIDRs = append(parsedCIDRs, cidrs...)
 						continue
 					} else {
 						if !f.Quiet {
@@ -107,7 +98,7 @@ func CmdToolAggregate(
 				} else {
 					cidrs, err := CIDRsFromIPRangeStrRaw(rowStr)
 					if err == nil {
-						parsedCIDRs = append(parsedCIDRs, parseCIDRs(cidrs)...)
+						parsedCIDRs = append(parsedCIDRs, cidrs...)
 						continue
 					} else {
 						if !f.Quiet {
@@ -117,7 +108,7 @@ func CmdToolAggregate(
 					}
 				}
 			} else if strings.ContainsRune(rowStr, '/') {
-				parsedCIDRs = append(parsedCIDRs, parseCIDRs([]string{rowStr})...)
+				parsedCIDRs = append(parsedCIDRs, []string{rowStr}...)
 				continue
 			} else {
 				if ip := net.ParseIP(rowStr); ip != nil {
@@ -165,7 +156,7 @@ func CmdToolAggregate(
 	}
 
 	// Vars to contain CIDRs/IPs from all input sources.
-	parsedCIDRs := make([]net.IPNet, 0)
+	parsedCIDRs := make([]string, 0)
 	parsedIPs := make([]net.IP, 0)
 
 	// Collect CIDRs/IPs from stdin.
@@ -187,24 +178,19 @@ func CmdToolAggregate(
 		rows := scanrdr(file)
 		file.Close()
 		cidrs, ips := parseInput(rows)
+
 		parsedCIDRs = append(parsedCIDRs, cidrs...)
 		parsedIPs = append(parsedIPs, ips...)
 	}
 
-	// Sort CIDRs by starting IP.
-	sortCIDRs(parsedCIDRs)
+	adjacentCombined := CombineAdjacent(StripOverlapping(List(parsedCIDRs)))
 
-	// Remove prefixes which are included in another prefix.
-	merged := mergeOverlapping(parsedCIDRs)
-
-	// Combine adjacent entries.
-	adjacentCombined := combineAdjacent(merged)
 	outlierIPs := make([]net.IP, 0)
 	length := len(adjacentCombined)
 	if length != 0 {
 		for _, ip := range parsedIPs {
 			for i, cidr := range adjacentCombined {
-				if cidr.Contains(ip) {
+				if cidr.Network.Contains(ip) {
 					break
 				} else if i == length-1 {
 					outlierIPs = append(outlierIPs, ip)
@@ -228,110 +214,137 @@ func CmdToolAggregate(
 	return nil
 }
 
-// The adjacency condition is that the prefixes have the same mask length,
-// and the second prefix is exactly one larger than the first prefix.
-func areAdjacent(r1, r2 net.IPNet) bool {
-	mask1, _ := r1.Mask.Size()
-	mask2, _ := r2.Mask.Size()
-
-	if mask1 != mask2 {
-		return false
+// New creates a new CIDR structure.
+func New(s string) *CIDR {
+	ip, ipnet, err := net.ParseCIDR(s)
+	if err != nil {
+		panic(err)
 	}
-
-	var prefix1, prefix2 uint32
-	var isAdjacent bool = false
-
-	if r1.IP.To4() != nil && r2.IP.To4() != nil {
-		prefix1 = ipToUint32(r1.IP.To4())
-		prefix2 = ipToUint32(r2.IP.To4())
-		isAdjacent = (prefix1%(2<<(32-mask1)) == 0) && (prefix2-prefix1 == (1 << (32 - mask1)))
+	return &CIDR{
+		IP:      ip,
+		Network: ipnet,
 	}
-
-	return isAdjacent
 }
 
-func combineAdjacentCIDRs(r1, r2 net.IPNet) net.IPNet {
-	mask1, _ := r1.Mask.Size()
-
-	commonPrefixLen := mask1 - 1
-	commonPrefix := r1.IP.Mask(r1.Mask)
-
-	return net.IPNet{IP: commonPrefix, Mask: net.CIDRMask(commonPrefixLen, len(commonPrefix)*8)}
+func (c *CIDR) String() string {
+	return c.Network.String()
 }
 
-func combineAdjacent(cidrs []net.IPNet) []net.IPNet {
-	res := make([]net.IPNet, 0)
+// MaskLen returns a network mask length.
+func (c *CIDR) MaskLen() uint32 {
+	i, _ := c.Network.Mask.Size()
+	return uint32(i)
+}
 
-	for i := 0; i < len(cidrs)-1; i++ {
+// PrefixUint32 returns a prefix.
+func (c *CIDR) PrefixUint32() uint32 {
+	return binary.BigEndian.Uint32(c.IP.To4())
+}
 
-		if areAdjacent(cidrs[i], cidrs[i+1]) {
-			res = append(res, combineAdjacentCIDRs(cidrs[i], cidrs[i+1]))
-			i++
-		} else {
-			res = append(res, cidrs[i])
-			if i == len(cidrs)-2 {
-				res = append(res, cidrs[i+1])
+// Size returns a size of a CIDR range.
+func (c *CIDR) Size() int {
+	ones, bits := c.Network.Mask.Size()
+	return int(math.Pow(2, float64(bits-ones)))
+}
+
+// List returns a slice of sorted CIDR structures.
+func List(s []string) []*CIDR {
+	out := make([]*CIDR, 0)
+	for _, c := range s {
+		out = append(out, New(c))
+	}
+	sort.Sort(cidrSort(out))
+	return out
+}
+
+type cidrSort []*CIDR
+
+func (s cidrSort) Len() int      { return len(s) }
+func (s cidrSort) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
+
+func (s cidrSort) Less(i, j int) bool {
+	cmp := bytes.Compare(s[i].IP, s[j].IP)
+	return cmp < 0 || (cmp == 0 && s[i].MaskLen() < s[j].MaskLen())
+}
+
+// StripOverlapping returns a slice of CIDR structures with overlapping ranges
+// stripped.
+func StripOverlapping(s []*CIDR) []*CIDR {
+	l := len(s)
+	for i := 0; i < l-1; i++ {
+		if s[i] == nil {
+			continue
+		}
+		for j := i + 1; j < l; j++ {
+			if overlaps(s[j], s[i]) {
+				s[j] = nil
 			}
 		}
 	}
-
-	return res
+	return filter(s)
 }
 
-// Helper function to aggregate IP ranges.
-func mergeOverlapping(cidrs []net.IPNet) []net.IPNet {
-	merged := make([]net.IPNet, 0)
+func overlaps(a, b *CIDR) bool {
+	return (a.PrefixUint32() / (1 << (32 - b.MaskLen()))) ==
+		(b.PrefixUint32() / (1 << (32 - b.MaskLen())))
+}
 
-	// Sort CIDRs by starting IP.
-	for _, r := range cidrs {
-		if len(merged) == 0 {
-			merged = append(merged, r)
-			continue
+// CombineAdjacent returns a slice of CIDR structures with adjacent ranges
+// combined.
+func CombineAdjacent(s []*CIDR) []*CIDR {
+	for {
+		found := false
+		l := len(s)
+		for i := 0; i < l-1; i++ {
+			if s[i] == nil {
+				continue
+			}
+			for j := i + 1; j < l; j++ {
+				if s[j] == nil {
+					continue
+				}
+				if adjacent(s[i], s[j]) {
+					c := fmt.Sprintf("%s/%d", s[i].IP.String(), s[i].MaskLen()-1)
+					s[i] = New(c)
+					s[j] = nil
+					found = true
+				}
+			}
 		}
 
-		last := len(merged) - 1
-		prev := merged[last]
-
-		if canAggregate(prev, r) {
-			// Merge overlapping CIDRs.
-			merged[last] = merge(prev, r)
-		} else {
-			merged = append(merged, r)
+		if !found {
+			break
 		}
 	}
-
-	return merged
+	return filter(s)
 }
 
-// Helper function to sort IP ranges by starting IP.
-func sortCIDRs(ipRanges []net.IPNet) {
-	sort.SliceStable(ipRanges, func(i, j int) bool {
-		return bytes.Compare(ipRanges[i].IP, ipRanges[j].IP) < 0
-	})
+func adjacent(a, b *CIDR) bool {
+	return (a.MaskLen() == b.MaskLen()) &&
+		(a.PrefixUint32()%(2<<(32-b.MaskLen())) == 0) &&
+		(b.PrefixUint32()-a.PrefixUint32() == (1 << (32 - a.MaskLen())))
 }
 
-// Helper function to check if two CIDRs can be aggregated.
-func canAggregate(r1, r2 net.IPNet) bool {
-	return r1.Contains(r2.IP) || r2.Contains(r1.IP)
-}
-
-// Helper function to aggregate two CIDRs.
-func merge(r1, r2 net.IPNet) net.IPNet {
-	mask1, _ := r1.Mask.Size()
-	mask2, _ := r2.Mask.Size()
-
-	ipLen := net.IPv6len * 8
-	if r1.IP.To4() != nil {
-		ipLen = net.IPv4len * 8
+func filter(s []*CIDR) []*CIDR {
+	out := s[:0]
+	for _, x := range s {
+		if x != nil {
+			out = append(out, x)
+		}
 	}
+	return out
+}
 
-	// Find the common prefix length
-	commonPrefixLen := mask1
-	if mask2 < commonPrefixLen {
-		commonPrefixLen = mask2
+// Aggregate returns a slice of CIDR structures with adjacent ranges combined
+// and overlapping ranges stripped.
+func Aggregate(s []string) []*CIDR {
+	return CombineAdjacent(StripOverlapping(List(s)))
+}
+
+// Size calculates an overal size of a slice of CIDR structures.
+func Size(s []*CIDR) (i int) {
+	for _, x := range s {
+		i += x.Size()
 	}
-
-	commonPrefix := r1.IP.Mask(net.CIDRMask(commonPrefixLen, ipLen))
-
-	return net.IPNet{IP: commonPrefix, Mask: net.CIDRMask(commonPrefixLen, ipLen)}
+	return
 }
