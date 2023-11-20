@@ -3,6 +3,7 @@ package lib
 import (
 	"bufio"
 	"bytes"
+	"encoding/binary"
 	"fmt"
 	"io"
 	"net"
@@ -191,15 +192,58 @@ func CmdToolAggregate(
 		parsedIPs = append(parsedIPs, ips...)
 	}
 
-	// Sort and merge collected CIDRs and IPs.
+	// Sort CIDRs by starting IP.
+	sortCIDRs(parsedCIDRs)
+
+	// Remove prefixes which are included in another prefix.
 	merged := mergeOverlapping(parsedCIDRs)
 
+	// Combine adjacent entries.
+	adjacentCombined := combineAdjacent(merged)
+
 	// Print the aggregated CIDRs.
-	for _, r := range merged {
+	for _, r := range adjacentCombined {
 		fmt.Println(r.String())
 	}
 
 	return nil
+}
+
+// The adjacency condition is that the prefixes have the same mask length,
+// and the second prefix is exactly one larger than the first prefix.
+func areAdjacent(r1, r2 net.IPNet) bool {
+	prefix1 := binary.BigEndian.Uint32(r1.IP.To4())
+	prefix2 := binary.BigEndian.Uint32(r2.IP.To4())
+
+	fmt.Println("prefix1, prefix2", prefix1, prefix2)
+	mask1, _ := r1.Mask.Size()
+	mask2, _ := r2.Mask.Size()
+
+	return mask1 == mask2 && (prefix1%(2<<(32-mask1)) == 0) && (prefix2-prefix1 == (1 << (32 - mask1)))
+}
+
+func combineAdjacentCIDRs(r1, r2 net.IPNet) net.IPNet {
+	mask1, _ := r1.Mask.Size()
+
+	commonPrefixLen := mask1 - 1
+	commonPrefix := r1.IP.Mask(r1.Mask)
+
+	return net.IPNet{IP: commonPrefix, Mask: net.CIDRMask(commonPrefixLen, len(commonPrefix)*8)}
+}
+
+func combineAdjacent(cidrs []net.IPNet) []net.IPNet {
+	res := make([]net.IPNet, 0)
+
+	for i := 0; i < len(cidrs)-1; i++ {
+		if areAdjacent(cidrs[i], cidrs[i+1]) {
+			res = append(res, combineAdjacentCIDRs(cidrs[i], cidrs[i+1]))
+			i++
+		} else {
+			res = append(res, cidrs[i])
+		}
+	}
+
+	return res
 }
 
 // Helper function to aggregate IP ranges.
@@ -207,8 +251,6 @@ func mergeOverlapping(cidrs []net.IPNet) []net.IPNet {
 	merged := make([]net.IPNet, 0)
 
 	// Sort CIDRs by starting IP.
-	sortCIDRs(cidrs)
-
 	for _, r := range cidrs {
 		if len(merged) == 0 {
 			merged = append(merged, r)
