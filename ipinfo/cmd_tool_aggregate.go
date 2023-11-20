@@ -25,7 +25,7 @@ func printHelpToolAggregate() {
 Description:
   Accepts IPs, IP ranges, and CIDRs, aggregating them efficiently.
   Input can be IPs, IP ranges, CIDRs, and/or filepath to a file
-  containing any of these. Works for both IPv4 and IPv6.
+  containing any of these. Works for IPv4 only.
 
   If input contains single IPs, it tries to merge them into the input CIDRs,
   otherwise they are printed to the output as they are.
