@@ -215,7 +215,6 @@ func areAdjacent(r1, r2 net.IPNet) bool {
 	prefix1 := binary.BigEndian.Uint32(r1.IP.To4())
 	prefix2 := binary.BigEndian.Uint32(r2.IP.To4())
 
-	fmt.Println("prefix1, prefix2", prefix1, prefix2)
 	mask1, _ := r1.Mask.Size()
 	mask2, _ := r2.Mask.Size()
 
@@ -235,11 +234,15 @@ func combineAdjacent(cidrs []net.IPNet) []net.IPNet {
 	res := make([]net.IPNet, 0)
 
 	for i := 0; i < len(cidrs)-1; i++ {
+
 		if areAdjacent(cidrs[i], cidrs[i+1]) {
 			res = append(res, combineAdjacentCIDRs(cidrs[i], cidrs[i+1]))
 			i++
 		} else {
 			res = append(res, cidrs[i])
+			if i == len(cidrs)-2 {
+				res = append(res, cidrs[i+1])
+			}
 		}
 	}
 
