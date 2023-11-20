@@ -55,7 +55,7 @@ func (f *CmdGrepDomainFlags) Init() {
 	)
 }
 
-// CmdGrepDomain is the common core logic for the grepdom command.
+// CmdGrepDomain is the common core logic for the grepdomain command.
 func CmdGrepDomain(f CmdGrepDomainFlags, args []string, printHelp func()) error {
 	if f.NoColor {
 		color.NoColor = true
