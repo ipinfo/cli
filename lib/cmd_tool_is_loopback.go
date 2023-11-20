@@ -86,5 +86,3 @@ func ActionForIsLoopBackCIDR(input string){
 	isCIDRLoopBack:=ipnet.IP.IsLoopback()
 	fmt.Printf("%s,%v\n",input,isCIDRLoopBack)
 }
-
-
