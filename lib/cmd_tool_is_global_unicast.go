@@ -44,10 +44,8 @@ func CmdToolIsGlobalUnicast(
 		case INPUT_TYPE_CIDR:
 			ActionIsGlobalUnicastCIDR(input)
 		}
-
 		return nil
 	}
-
 	err := GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
@@ -59,7 +57,6 @@ func CmdToolIsGlobalUnicast(
 
 func ActionIsGlobalUnicast(input string) {
 	ip := net.ParseIP(input)
-
 	isGlobalUnicast := ip.IsGlobalUnicast()
 
 	fmt.Printf("%s,%v\n", input, isGlobalUnicast)
@@ -72,7 +69,6 @@ func ActionIsGlobalUnicastRange(input string) {
 	}
 
 	ipStart := net.ParseIP(ipRange.Start)
-
 	isGlobalUnicast := ipStart.IsGlobalUnicast()
 
 	fmt.Printf("%s,%v\n", input, isGlobalUnicast)

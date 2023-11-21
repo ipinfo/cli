@@ -19,14 +19,14 @@ var completionsToolIsUnspecified = &complete.Command{
 }
 
 func printHelpToolIsUnspecified() {
-	fmt.Printf(`
-%s tool is_unspecified [<opts>] <ip | filepath>
+	fmt.Printf(
+		`Usage: %s tool is_unspecified [<opts>] <ip | filepath>
 
-Description: Checks the provided address is an Unspecified Address
-Inputs can be any IPv4 or IPv6 Address or filepath to a file
+Description:
+  Checks if the input is an unspecified address.
+  Inputs can be IPs or filepath to a file
 
-Examples
-  # IPv4/IPv6 Address.
+Examples:
   $ %[1]s tool is_unspecified 0.0.0.0 | ::
   $ %[1]s tool is_unspecified 124.198.16.8 | fe80::2
 
@@ -36,7 +36,7 @@ Examples
   # Check entries from stdin.
   $ cat /path/to/file1.txt | %[1]s tool is_unspecified
 
-  Options:
+Options:
   --help, -h
     show help.
   --quiet, -q

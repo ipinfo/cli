@@ -40,10 +40,8 @@ func CmdToolIsUnspecified(
 		case INPUT_TYPE_IP:
 			ActionIsUnspecified(input)
 		}
-
 		return nil
 	}
-
 	err := GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
@@ -55,7 +53,6 @@ func CmdToolIsUnspecified(
 
 func ActionIsUnspecified(input string) {
 	ip := net.ParseIP(input)
-
 	isUnspecified := ip.IsUnspecified()
 
 	fmt.Printf("%s,%v\n", input, isUnspecified)

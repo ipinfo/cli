@@ -44,10 +44,8 @@ func CmdToolIsLinkLocalUnicast(
 		case INPUT_TYPE_CIDR:
 			ActionIsLinkLocalUnicastCIDR(input)
 		}
-
 		return nil
 	}
-
 	err := GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
@@ -59,7 +57,6 @@ func CmdToolIsLinkLocalUnicast(
 
 func ActionIsLinkLocalUnicast(input string) {
 	ip := net.ParseIP(input)
-
 	isLinkLocalUnicast := ip.IsLinkLocalUnicast()
 
 	fmt.Printf("%s,%v\n", input, isLinkLocalUnicast)
@@ -72,7 +69,6 @@ func ActionIsLinkLocalUnicastRange(input string) {
 	}
 
 	ipStart := net.ParseIP(ipRange.Start)
-
 	isLinkLocalUnicast := ipStart.IsLinkLocalMulticast()
 
 	fmt.Printf("%s,%v\n", input, isLinkLocalUnicast)

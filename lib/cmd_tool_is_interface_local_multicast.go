@@ -44,10 +44,8 @@ func CmdToolIsInterfaceLocalMulticast(
 		case INPUT_TYPE_CIDR:
 			ActionIsInterfaceLocalMulticastCIDR(input)
 		}
-
 		return nil
 	}
-
 	err := GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
@@ -59,7 +57,6 @@ func CmdToolIsInterfaceLocalMulticast(
 
 func ActionIsInterfaceLocalMulticast(input string) {
 	ip := net.ParseIP(input)
-
 	isInterfaceLocalMulticast := ip.IsInterfaceLocalMulticast()
 
 	fmt.Printf("%s,%v\n", input, isInterfaceLocalMulticast)
@@ -72,7 +69,6 @@ func ActionIsInterfaceLocalMulticastRange(input string) {
 	}
 
 	ipStart := net.ParseIP(ipRange.Start)
-
 	isInterfaceLocalMulticast := ipStart.IsInterfaceLocalMulticast()
 
 	fmt.Printf("%s,%v\n", input, isInterfaceLocalMulticast)

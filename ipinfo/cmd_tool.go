@@ -61,13 +61,13 @@ Commands:
   n2ip	                       evaluates a mathematical expression and converts it to an IPv4 or IPv6.
   n2ip6	                       evaluates a mathematical expression and converts it to an IPv6.
   prefix                       misc. prefix tools related to CIDRs.
-  is_loopback                  reports whether an IP is a valid Loopback address.
-  is_multicast                 reports whether an IP is a valid Multicast address.
-  is_unspecified               reports whether an IP is an Unspecified address.
+  is_loopback                  reports whether an IP is a valid loopback address.
+  is_multicast                 reports whether an IP is a valid multicast address.
+  is_unspecified               reports whether an IP is an unspecified address.
   is_global_unicast            reports whether an IP is a global unicast address.
-  is_link_local_unicast        reports whether IP is a Link Local Unicast
-  is_link_local_multicast      reports whether IP is a Link Local Multicast address
-  is_interface_local_multicast reports whether an IP is a interface local multicast
+  is_link_local_unicast        reports whether IP is a link local unicast.
+  is_link_local_multicast      reports whether IP is a link local multicast address.
+  is_interface_local_multicast reports whether an IP is an interface local multicast.
 
 Options:
   --help, -h

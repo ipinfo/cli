@@ -19,24 +19,24 @@ var completionsToolIsLoopBack = &complete.Command{
 }
 
 func printHelpToolIsLoopBack() {
-	fmt.Printf(`
-%s tool is_loopback [<opts>] <cidr | ip | ip-range | filepath>
+	fmt.Printf(
+		`Usage: %s tool is_loopback [<opts>] <cidr | ip | ip-range | filepath>
 
-Description: Checks the provided address is a Loopback Address
-Inputs can be IPs, IP ranges, CIDRs, or filepath to a file
+Description:
+  Checks if the input is a loopback address.
+  Inputs can be IPs, IP ranges, CIDRs, or filepath to a file
 
-Examples
-  # IPv4/IPv6 Address.
-  $ %[1]s tool is_loopback 127.0.0.1 | ::1
-  $ %[1]s tool is_loopback 128.0.0.1 | ff02::1
+Examples:
+  $ %[1]s tool is_loopback 127.0.0.0 | ::1
+  $ %[1]s tool is_loopback 160.0.0.0 | fe08::2
 
-  # IPv4/IPv6 Address Range
-  $ %[1]s tool is_loopback 127.0.0.1-127.8.95.6 | ::1-::ffff
-  $ %[1]s tool is_loopback 128.0.0.1-128.8.95.6 | ff02::1-ff02::ffff
+  # Check CIDR.
+  $ %[1]s tool is_loopback 127.0.0.0/32 | ::1/64
+  $ %[1]s tool is_loopback 128.0.0.0/32 | fe08::2/64
 
-  # Check CIDR
-  $ %[1]s tool is_loopback 127.0.0.1/32 | ::1/64
-  $ %[1]s tool is_loopback 154.0.0.1/32 | ff02::1/64
+  # Check IP range.
+  $ %[1]s tool is_loopback 127.0.0.1-127.20.1.244
+  $ %[1]s tool is_loopback 128.0.0.1-128.30.1.125
 
   # Check for file.
   $ %[1]s tool is_loopback /path/to/file.txt 
@@ -44,7 +44,7 @@ Examples
   # Check entries from stdin.
   $ cat /path/to/file1.txt | %[1]s tool is_loopback
 
-  Options:
+Options:
   --help, -h
     show help.
   --quiet, -q

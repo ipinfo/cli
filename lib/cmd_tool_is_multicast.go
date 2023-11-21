@@ -44,10 +44,8 @@ func CmdToolIsMulticast(
 		case INPUT_TYPE_CIDR:
 			ActionForIsMulticastCIDR(input)
 		}
-
 		return nil
 	}
-
 	err := GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
@@ -59,7 +57,6 @@ func CmdToolIsMulticast(
 
 func ActionForIsMulticast(input string) {
 	ip := net.ParseIP(input)
-
 	isMulticast := ip.IsMulticast()
 
 	fmt.Printf("%s,%v\n", input, isMulticast)
@@ -72,7 +69,6 @@ func ActionForIsMulticastRange(input string) {
 	}
 
 	ipStart := net.ParseIP(ipRange.Start)
-
 	isMulticast := ipStart.IsMulticast()
 
 	fmt.Printf("%s,%v\n", ipStart, isMulticast)
