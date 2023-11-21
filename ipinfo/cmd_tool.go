@@ -67,7 +67,7 @@ Commands:
   is_global_unicast            reports whether an IP is a global unicast address.
   is_link_local_unicast        reports whether IP is a link local unicast.
   is_link_local_multicast      reports whether IP is a link local multicast address.
-  is_interface_local_multicast reports whether an IP is an interface local multicast.
+  is_interface_local_multicast reports whether IP is an interface local multicast.
 
 Options:
   --help, -h
