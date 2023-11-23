@@ -65,6 +65,7 @@ func ActionForIsMulticast(input string) {
 func ActionForIsMulticastRange(input string) {
 	ipRange, err := IPRangeStrFromStr(input)
 	if err != nil {
+		fmt.Println("Invalid IP range input:", err)
 		return
 	}
 
@@ -77,6 +78,7 @@ func ActionForIsMulticastRange(input string) {
 func ActionForIsMulticastCIDR(input string) {
 	_, ipnet, err := net.ParseCIDR(input)
 	if err != nil {
+		fmt.Println("Invalid CIDR input:", err)
 		return
 	}
 

@@ -29,14 +29,20 @@ Description:
 Examples:
   $ %[1]s tool is_global_unicast 10.255.0.0 | 2000::1
   $ %[1]s tool is_global_unicast 255.255.255.255 | ff00::1
+  $ %[1]s tool is_global_unicast 2000::1
+  $ %[1]s tool is_global_unicast ff00::1
 
   # Check CIDR.
-  $ %[1]s tool is_global_unicast 10.255.0.0/32 | 2000::1/64
-  $ %[1]s tool is_global_unicast 154.0.0.1/32 | ff00::1/64
+  $ %[1]s tool is_global_unicast 10.255.0.0/32
+  $ %[1]s tool is_global_unicast 154.0.0.1/32
+  $ %[1]s tool is_global_unicast 2000::1/64
+  $ %[1]s tool is_global_unicast ff00::1/64
 
   # Check IP range.
-  $ %[1]s tool is_global_unicast 10.0.0.1-10.8.95.6 | 2000::1-2000::ffff
-  $ %[1]s tool is_global_unicast 0.0.0.0-0.255.95.6 | ff00::1-ff00::ffff
+  $ %[1]s tool is_global_unicast 10.0.0.1-10.8.95.6
+  $ %[1]s tool is_global_unicast 0.0.0.0-0.255.95.6
+  $ %[1]s tool is_global_unicast 2000::1-2000::ffff
+  $ %[1]s tool is_global_unicast ff00::1-ff00::ffff
 
   # Check for file.
   $ %[1]s tool is_global_unicast /path/to/file.txt 

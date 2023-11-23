@@ -27,16 +27,22 @@ Description:
   Inputs can be IPs, IP ranges, CIDRs, or filepath to a file
 
 Examples:
-  $ %[1]s tool is_link_local_unicast 169.254.0.0 | fe80::
-  $ %[1]s tool is_link_local_unicast 127.0.0.0 | ::1
+  $ %[1]s tool is_link_local_unicast 169.254.0.0
+  $ %[1]s tool is_link_local_unicast 127.0.0.0
+  $ %[1]s tool is_link_local_unicast fe80::1
+  $ %[1]s tool is_link_local_unicast ::1
 
   # Check CIDR.
-  $ %[1]s tool is_link_local_unicast 169.254.0.0/32 | fe80::1/64
-  $ %[1]s tool is_link_local_unicast 139.0.0.0/32 | ::1/64
+  $ %[1]s tool is_link_local_unicast 169.254.0.0/32
+  $ %[1]s tool is_link_local_unicast 139.0.0.0/32
+  $ %[1]s tool is_link_local_unicast fe80::1/64
+  $ %[1]s tool is_link_local_unicast ::1/64
 
   # Check IP range.
-  $ %[1]s tool is_link_local_unicast 169.254.0.0-169.254.255.1 | fe80::1-feb0::1
-  $ %[1]s tool is_link_local_unicast 240.0.0.0-240.255.255.1 | ::1-::ffff
+  $ %[1]s tool is_link_local_unicast 169.254.0.0-169.254.255.1
+  $ %[1]s tool is_link_local_unicast 240.0.0.0-240.255.255.1
+  $ %[1]s tool is_link_local_unicast fe80::1-feb0::1
+  $ %[1]s tool is_link_local_unicast ::1-::ffff
 
   # Check for file.
   $ %[1]s tool is_link_local_unicast /path/to/file.txt 

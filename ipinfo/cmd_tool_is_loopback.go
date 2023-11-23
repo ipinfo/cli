@@ -27,12 +27,16 @@ Description:
   Inputs can be IPs, IP ranges, CIDRs, or filepath to a file
 
 Examples:
-  $ %[1]s tool is_loopback 127.0.0.0 | ::1
-  $ %[1]s tool is_loopback 160.0.0.0 | fe08::2
+  $ %[1]s tool is_loopback 127.0.0.0
+  $ %[1]s tool is_loopback 160.0.0.0
+  $ %[1]s tool is_loopback ::1
+  $ %[1]s tool is_loopback fe08::2
 
   # Check CIDR.
-  $ %[1]s tool is_loopback 127.0.0.0/32 | ::1/64
-  $ %[1]s tool is_loopback 128.0.0.0/32 | fe08::2/64
+  $ %[1]s tool is_loopback 127.0.0.0/32
+  $ %[1]s tool is_loopback 128.0.0.0/32
+  $ %[1]s tool is_loopback ::1/64
+  $ %[1]s tool is_loopback fe08::2/64
 
   # Check IP range.
   $ %[1]s tool is_loopback 127.0.0.1-127.20.1.244

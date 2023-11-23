@@ -27,8 +27,10 @@ Description:
   Inputs can be IPs or filepath to a file
 
 Examples:
-  $ %[1]s tool is_unspecified 0.0.0.0 | ::
-  $ %[1]s tool is_unspecified 124.198.16.8 | fe80::2
+  $ %[1]s tool is_unspecified 0.0.0.0
+  $ %[1]s tool is_unspecified ::
+  $ %[1]s tool is_unspecified 124.198.16.8
+  $ %[1]s tool is_unspecified fe08::1
 
   # Check for file.
   $ %[1]s tool is_unspecified /path/to/file.txt 

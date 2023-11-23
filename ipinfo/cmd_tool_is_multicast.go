@@ -27,16 +27,22 @@ Description:
   Inputs can be IPs, IP ranges, CIDRs, or filepath to a file
 
 Examples:
-  $ %[1]s tool is_multicast 239.0.0.0 | ff00::
-  $ %[1]s tool is_multicast 127.0.0.0 | ::1
+  $ %[1]s tool is_multicast 239.0.0.0
+  $ %[1]s tool is_multicast ff00::
+  $ %[1]s tool is_multicast 127.0.0.0
+  $ %[1]s tool is_multicast ::1
 
   # Check CIDR.
-  $ %[1]s tool is_multicast 239.0.0.0/32 | ff00::1/64
-  $ %[1]s tool is_multicast 139.0.0.0/32 | ::1/64
+  $ %[1]s tool is_multicast 239.0.0.0/32
+  $ %[1]s tool is_multicast 139.0.0.0/32
+  $ %[1]s tool is_multicast ff00::1/64
+  $ %[1]s tool is_multicast ::1/64
 
   # Check IP range.
-  $ %[1]s tool is_multicast 239.0.0.0-239.255.255.1 | ff00::1-ff00::ffff
-  $ %[1]s tool is_multicast 240.0.0.0-240.255.255.1 | ::1-::ffff
+  $ %[1]s tool is_multicast 239.0.0.0-239.255.255.1
+  $ %[1]s tool is_multicast 240.0.0.0-240.255.255.1
+  $ %[1]s tool is_multicast ff00::1-ff00::ffff
+  $ %[1]s tool is_multicast ::1-::ffff
 
   # Check for file.
   $ %[1]s tool is_multicast /path/to/file.txt 

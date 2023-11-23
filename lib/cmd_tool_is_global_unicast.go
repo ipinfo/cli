@@ -65,6 +65,7 @@ func ActionIsGlobalUnicast(input string) {
 func ActionIsGlobalUnicastRange(input string) {
 	ipRange, err := IPRangeStrFromStr(input)
 	if err != nil {
+		fmt.Println("Invalid IP range input:", err)
 		return
 	}
 
@@ -77,6 +78,7 @@ func ActionIsGlobalUnicastRange(input string) {
 func ActionIsGlobalUnicastCIDR(input string) {
 	_, ipnet, err := net.ParseCIDR(input)
 	if err != nil {
+		fmt.Println("Invalid CIDR input:", err)
 		return
 	}
 

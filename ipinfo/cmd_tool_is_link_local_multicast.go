@@ -27,16 +27,22 @@ Description:
   Inputs can be IPs, IP ranges, CIDRs, or filepath to a file
 
 Examples:
-  $ %[1]s tool is_link_local_multicast 224.0.0.0 | ff02::2
-  $ %[1]s tool is_link_local_multicast 169.200.0.0 | fe80::
+  $ %[1]s tool is_link_local_multicast 224.0.0.0
+  $ %[1]s tool is_link_local_multicast 169.200.0.0
+  $ %[1]s tool is_link_local_multicast ff02::2
+  $ %[1]s tool is_link_local_multicast fe80::
 
   # Check CIDR.
   $ %[1]s tool is_link_local_multicast 224.0.0.0/32 | ff02::1/64
   $ %[1]s tool is_link_local_multicast 169.200.0.0/32 | fe80::1/64
+  $ %[1]s tool is_link_local_multicast ff02::1/64
+  $ %[1]s tool is_link_local_multicast fe80::1/64
 
   # Check IP range.
-  $ %[1]s tool is_link_local_multicast 224.0.0.1-224.255.255.255 | ff02::1-ff02::ffff
-  $ %[1]s tool is_link_local_multicast 169.254.0.1-169.254.255.0 | fe80::1-fe80::ffff
+  $ %[1]s tool is_link_local_multicast 224.0.0.1-224.255.255.255
+  $ %[1]s tool is_link_local_multicast 169.254.0.1-169.254.255.0
+  $ %[1]s tool is_link_local_multicast ff02::1-ff02::ffff
+  $ %[1]s tool is_link_local_multicast fe80::1-fe80::ffff
 
   # Check for file.
   $ %[1]s tool is_link_local_multicast /path/to/file.txt 
