@@ -27,8 +27,8 @@ Description:
   Inputs can be IPs, IP ranges, CIDRs, or filepath to a file
 
 Examples:
-  $ %[1]s tool is_global_unicast 10.255.0.0 | 2000::1
-  $ %[1]s tool is_global_unicast 255.255.255.255 | ff00::1
+  $ %[1]s tool is_global_unicast 10.255.0.0
+  $ %[1]s tool is_global_unicast 255.255.255.255
   $ %[1]s tool is_global_unicast 2000::1
   $ %[1]s tool is_global_unicast ff00::1
 
