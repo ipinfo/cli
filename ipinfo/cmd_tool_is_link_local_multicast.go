@@ -33,8 +33,8 @@ Examples:
   $ %[1]s tool is_link_local_multicast fe80::
 
   # Check CIDR.
-  $ %[1]s tool is_link_local_multicast 224.0.0.0/32 | ff02::1/64
-  $ %[1]s tool is_link_local_multicast 169.200.0.0/32 | fe80::1/64
+  $ %[1]s tool is_link_local_multicast 224.0.0.0/32
+  $ %[1]s tool is_link_local_multicast 169.200.0.0/32
   $ %[1]s tool is_link_local_multicast ff02::1/64
   $ %[1]s tool is_link_local_multicast fe80::1/64
 

@@ -70,7 +70,7 @@ func ActionIsLinkLocalUnicastRange(input string) {
 	}
 
 	ipStart := net.ParseIP(ipRange.Start)
-	isLinkLocalUnicast := ipStart.IsLinkLocalMulticast()
+	isLinkLocalUnicast := ipStart.IsLinkLocalUnicast()
 
 	fmt.Printf("%s,%v\n", input, isLinkLocalUnicast)
 }

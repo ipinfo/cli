@@ -28,8 +28,8 @@ Description:
 
 Examples:
   $ %[1]s tool is_unspecified 0.0.0.0
-  $ %[1]s tool is_unspecified ::
   $ %[1]s tool is_unspecified 124.198.16.8
+  $ %[1]s tool is_unspecified ::
   $ %[1]s tool is_unspecified fe08::1
 
   # Check for file.

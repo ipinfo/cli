@@ -34,7 +34,7 @@ Examples:
 
   # Check CIDR.
   $ %[1]s tool is_global_unicast 10.255.0.0/32
-  $ %[1]s tool is_global_unicast 154.0.0.1/32
+  $ %[1]s tool is_global_unicast 255.255.255.255/32
   $ %[1]s tool is_global_unicast 2000::1/64
   $ %[1]s tool is_global_unicast ff00::1/64
 

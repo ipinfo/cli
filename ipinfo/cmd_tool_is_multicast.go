@@ -28,8 +28,8 @@ Description:
 
 Examples:
   $ %[1]s tool is_multicast 239.0.0.0
-  $ %[1]s tool is_multicast ff00::
   $ %[1]s tool is_multicast 127.0.0.0
+  $ %[1]s tool is_multicast ff00::
   $ %[1]s tool is_multicast ::1
 
   # Check CIDR.
