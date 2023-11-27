@@ -65,7 +65,6 @@ func ActionIsLinkLocalMulticast(input string) {
 func ActionIsLinkLocalMulticastRange(input string) {
 	ipRange, err := IPRangeStrFromStr(input)
 	if err != nil {
-		fmt.Println("Invalid IP range input:", err)
 		return
 	}
 
@@ -78,7 +77,6 @@ func ActionIsLinkLocalMulticastRange(input string) {
 func ActionIsLinkLocalMulticastCIDR(input string) {
 	_, ipNet, err := net.ParseCIDR(input)
 	if err != nil {
-		fmt.Println("Invalid CIDR input:", err)
 		return
 	}
 

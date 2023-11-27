@@ -64,7 +64,6 @@ func ActionForIsLoopBack(input string) {
 func ActionForISLoopBackRange(input string) {
 	ipRange, err := IPRangeStrFromStr(input)
 	if err != nil {
-		fmt.Println("Invalid IP range input:", err)
 		return
 	}
 
@@ -77,7 +76,6 @@ func ActionForISLoopBackRange(input string) {
 func ActionForIsLoopBackCIDR(input string) {
 	_, ipnet, err := net.ParseCIDR(input)
 	if err != nil {
-		fmt.Println("Invalid CIDR input:", err)
 		return
 	}
 

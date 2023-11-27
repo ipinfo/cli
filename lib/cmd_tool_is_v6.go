@@ -64,7 +64,6 @@ func ActionForIsV6(input string) {
 func ActionForIsV6Range(input string) {
 	ipRange, err := IPRangeStrFromStr(input)
 	if err != nil {
-		fmt.Println("Invalid IP range input:", err)
 		return
 	}
 
@@ -80,7 +79,7 @@ func ActionForIsV6CIDR(input string) {
 		isCIDRIPv6 := IsCIDRIPv6(ipnet)
 		fmt.Printf("%s,%v\n", input, isCIDRIPv6)
 	} else {
-		fmt.Println("Invalid CIDR input:", err)
+		return
 	}
 }
 
