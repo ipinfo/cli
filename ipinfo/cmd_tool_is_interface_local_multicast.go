@@ -29,7 +29,6 @@ Description:
 Examples:
   $ %[1]s tool is_interface_local_multicast ff01::1
   $ %[1]s tool is_interface_local_multicast ::1
-  $ %[1]s tool is_interface_local_multicast 169.254.0.0
 
   # Check CIDR.
   $ %[1]s tool is_interface_local_multicast ff01::ffff/32

@@ -35,7 +35,7 @@ Examples:
   # Check CIDR.
   $ %[1]s tool is_loopback 127.0.0.0/32
   $ %[1]s tool is_loopback 128.0.0.0/32
-  $ %[1]s tool is_loopback ::1/64
+  $ %[1]s tool is_loopback ::1/128
   $ %[1]s tool is_loopback fe08::2/64
 
   # Check IP range.
