@@ -7,12 +7,12 @@ import (
 	"github.com/spf13/pflag"
 )
 
-type CmdToolIsV4Flags struct {
+type CmdToolIsGlobalUnicastFlags struct {
 	Help  bool
 	Quiet bool
 }
 
-func (f *CmdToolIsV4Flags) Init() {
+func (f *CmdToolIsGlobalUnicastFlags) Init() {
 	pflag.BoolVarP(
 		&f.Help,
 		"help", "h", false,
@@ -25,8 +25,8 @@ func (f *CmdToolIsV4Flags) Init() {
 	)
 }
 
-func CmdToolIsV4(
-	f CmdToolIsV4Flags,
+func CmdToolIsGlobalUnicast(
+	f CmdToolIsGlobalUnicastFlags,
 	args []string,
 	printHelp func(),
 ) error {
@@ -38,55 +38,49 @@ func CmdToolIsV4(
 	actionFunc := func(input string, inputType INPUT_TYPE) error {
 		switch inputType {
 		case INPUT_TYPE_IP:
-			ActionForIsV4(input)
+			ActionIsGlobalUnicast(input)
 		case INPUT_TYPE_IP_RANGE:
-			ActionForIsV4Range(input)
+			ActionIsGlobalUnicastRange(input)
 		case INPUT_TYPE_CIDR:
-			ActionForIsV4CIDR(input)
+			ActionIsGlobalUnicastCIDR(input)
 		}
 		return nil
 	}
 	err := GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
+		return err
 	}
 
 	return nil
 }
 
-func ActionForIsV4(input string) {
+func ActionIsGlobalUnicast(input string) {
 	ip := net.ParseIP(input)
-	isIPv4 := IsIPv4(ip)
+	isGlobalUnicast := ip.IsGlobalUnicast()
 
-	fmt.Printf("%s,%v\n", input, isIPv4)
+	fmt.Printf("%s,%v\n", input, isGlobalUnicast)
 }
 
-func ActionForIsV4Range(input string) {
+func ActionIsGlobalUnicastRange(input string) {
 	ipRange, err := IPRangeStrFromStr(input)
 	if err != nil {
 		return
 	}
 
-	startIP := net.ParseIP(ipRange.Start)
-	isIPv4 := IsIPv4(startIP)
+	ipStart := net.ParseIP(ipRange.Start)
+	isGlobalUnicast := ipStart.IsGlobalUnicast()
 
-	fmt.Printf("%s,%v\n", input, isIPv4)
+	fmt.Printf("%s,%v\n", input, isGlobalUnicast)
 }
 
-func ActionForIsV4CIDR(input string) {
+func ActionIsGlobalUnicastCIDR(input string) {
 	_, ipnet, err := net.ParseCIDR(input)
-	if err == nil {
-		isCIDRIPv4 := IsCIDRIPv4(ipnet)
-		fmt.Printf("%s,%v\n", input, isCIDRIPv4)
-	} else {
+	if err != nil {
 		return
 	}
-}
 
-func IsIPv4(ip net.IP) bool {
-	return ip != nil && ip.To4() != nil
-}
+	isGlobalUnicast := ipnet.IP.IsGlobalUnicast()
 
-func IsCIDRIPv4(ipnet *net.IPNet) bool {
-	return ipnet != nil && ipnet.IP.To4() != nil
+	fmt.Printf("%s,%v\n", input, isGlobalUnicast)
 }

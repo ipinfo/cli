@@ -7,12 +7,12 @@ import (
 	"github.com/spf13/pflag"
 )
 
-type CmdToolIsV4Flags struct {
+type CmdToolIsMulticastFlags struct {
 	Help  bool
 	Quiet bool
 }
 
-func (f *CmdToolIsV4Flags) Init() {
+func (f *CmdToolIsMulticastFlags) Init() {
 	pflag.BoolVarP(
 		&f.Help,
 		"help", "h", false,
@@ -25,8 +25,8 @@ func (f *CmdToolIsV4Flags) Init() {
 	)
 }
 
-func CmdToolIsV4(
-	f CmdToolIsV4Flags,
+func CmdToolIsMulticast(
+	f CmdToolIsMulticastFlags,
 	args []string,
 	printHelp func(),
 ) error {
@@ -38,55 +38,49 @@ func CmdToolIsV4(
 	actionFunc := func(input string, inputType INPUT_TYPE) error {
 		switch inputType {
 		case INPUT_TYPE_IP:
-			ActionForIsV4(input)
+			ActionForIsMulticast(input)
 		case INPUT_TYPE_IP_RANGE:
-			ActionForIsV4Range(input)
+			ActionForIsMulticastRange(input)
 		case INPUT_TYPE_CIDR:
-			ActionForIsV4CIDR(input)
+			ActionForIsMulticastCIDR(input)
 		}
 		return nil
 	}
 	err := GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
+		return err
 	}
 
 	return nil
 }
 
-func ActionForIsV4(input string) {
+func ActionForIsMulticast(input string) {
 	ip := net.ParseIP(input)
-	isIPv4 := IsIPv4(ip)
+	isMulticast := ip.IsMulticast()
 
-	fmt.Printf("%s,%v\n", input, isIPv4)
+	fmt.Printf("%s,%v\n", input, isMulticast)
 }
 
-func ActionForIsV4Range(input string) {
+func ActionForIsMulticastRange(input string) {
 	ipRange, err := IPRangeStrFromStr(input)
 	if err != nil {
 		return
 	}
 
-	startIP := net.ParseIP(ipRange.Start)
-	isIPv4 := IsIPv4(startIP)
+	ipStart := net.ParseIP(ipRange.Start)
+	isMulticast := ipStart.IsMulticast()
 
-	fmt.Printf("%s,%v\n", input, isIPv4)
+	fmt.Printf("%s,%v\n", ipStart, isMulticast)
 }
 
-func ActionForIsV4CIDR(input string) {
+func ActionForIsMulticastCIDR(input string) {
 	_, ipnet, err := net.ParseCIDR(input)
-	if err == nil {
-		isCIDRIPv4 := IsCIDRIPv4(ipnet)
-		fmt.Printf("%s,%v\n", input, isCIDRIPv4)
-	} else {
+	if err != nil {
 		return
 	}
-}
 
-func IsIPv4(ip net.IP) bool {
-	return ip != nil && ip.To4() != nil
-}
+	isCIDRMulticast := ipnet.IP.IsMulticast()
 
-func IsCIDRIPv4(ipnet *net.IPNet) bool {
-	return ipnet != nil && ipnet.IP.To4() != nil
+	fmt.Printf("%s,%v\n", input, isCIDRMulticast)
 }
