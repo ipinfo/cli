@@ -67,7 +67,7 @@ func formatCommandsAndOptions(commands, options string) string {
 		if len(lines) == 1 {
 			subHeading := strings.ToLower(strings.TrimSuffix(strings.TrimSpace(strings.TrimPrefix(lines[0], ".B")), " OPTIONS:"))
 
-			//To convert Subheadings of Options sections (GENERAL, OUTPUT, FORMAT) to (General, Output, Format).
+			//To convert Subheadings of Options section (GENERAL, OUTPUT, FORMAT) to (General, Output, Format).
 			subHeadingRunes := []rune(subHeading)
 			subHeadingRunes[0] = unicode.ToUpper(subHeadingRunes[0])
 			subHeading = string(subHeadingRunes)
