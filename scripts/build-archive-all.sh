@@ -10,7 +10,6 @@ ROOT=$DIR/..
 CLI=$1
 VSN=$2
 
-
 if [ -z "$CLI" ]; then
     echo "require cli as first parameter" 2>&1
     exit 1
@@ -45,9 +44,4 @@ cd ..
 rm -rf $ROOT/${CLI}/dist/usr
 mkdir -p $ROOT/${CLI}/dist/usr/local/bin
 cp $ROOT/build/${CLI}_${VSN}_linux_amd64 $ROOT/${CLI}/dist/usr/local/bin/${CLI}
-
-# Copy man page to the appropriate location
-mkdir -p $ROOT/${CLI}/dist/usr/share/man/man1
-cp $ROOT/ipinfo/ipinfo.1 $ROOT/${CLI}/dist/usr/share/man/man1/
-
 dpkg-deb -Zgzip --build ${ROOT}/${CLI}/dist build/${CLI}_${VSN}.deb
