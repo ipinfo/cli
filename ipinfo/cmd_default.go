@@ -83,7 +83,14 @@ Options:
 
 func pageHelp(detailedHelp string) error {
 
-	cmd := exec.Command("less")
+	pagerCmd := os.Getenv("PAGER")
+
+	if pagerCmd == "" {
+		// If PAGER is not set, use a default pager (e.g., less)
+		pagerCmd = "less"
+	}
+
+	cmd := exec.Command(pagerCmd)
 
 	// Create an io.Reader from the detailed help string
 	reader := io.Reader(strings.NewReader(detailedHelp))
@@ -109,7 +116,7 @@ func cmdDefault() (err error) {
 	pflag.BoolVar(&fNoCache, "nocache", false, "disable the cache.")
 	pflag.BoolVarP(&fVsn, "version", "v", false, "print binary release number.")
 	pflag.BoolVarP(&fHelp, "short-help", "h", false, "show help.")
-	pflag.BoolVar(&fLess, "help", false, "use less for detailed help")
+	pflag.BoolVar(&fPage, "help", false, "use pager for detailed help")
 	pflag.StringSliceVarP(&fField, "field", "f", nil, "specific field to lookup.")
 	pflag.BoolVarP(&fPretty, "pretty", "p", true, "output pretty format.")
 	pflag.BoolVarP(&fJSON, "json", "j", true, "output JSON format. (default)")
@@ -127,8 +134,8 @@ func cmdDefault() (err error) {
 		return nil
 	}
 
-	if fLess {
-		// Read the contents of the help file and pipe to less
+	if fPage {
+		// Read the string and display it using a pager
 		err = pageHelp(DetailedHelp)
 		return err
 	}

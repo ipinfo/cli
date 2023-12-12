@@ -1211,10 +1211,4 @@ Options:
     --nocache          Do not use the cache.
     --version          Show the version number.
     --help, -h         Show this help message.
-    --pretty, -p       Output pretty format.
-
-
-Examples:
-    ipinfo myip
-    ipinfo --token <your_token> --json bulk --file ip_list.txt --output results.json
-    ipinfo completion --install bash`
+    --pretty, -p       Output pretty format.`
