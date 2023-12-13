@@ -20,9 +20,8 @@ func HelpDetailed(detailedHelp string, printHelpDefault func()) error {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	err := cmd.Run()
 	//if an error occurs running the pager, display the default help
-	if err != nil {
+	if err := cmd.Run(); err != nil {
 		printHelpDefault()
 	}
 	return nil
