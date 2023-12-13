@@ -4,11 +4,8 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
-	"io"
 	"net"
 	"os"
-	"os/exec"
-	"strings"
 
 	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib"
@@ -81,27 +78,6 @@ Options:
 `, progBase)
 }
 
-func pageHelp(detailedHelp string) error {
-
-	pagerCmd := os.Getenv("PAGER")
-
-	if pagerCmd == "" {
-		// If PAGER is not set, use a default pager (e.g., less)
-		pagerCmd = "less"
-	}
-
-	cmd := exec.Command(pagerCmd)
-
-	// Create an io.Reader from the detailed help string
-	reader := io.Reader(strings.NewReader(detailedHelp))
-	cmd.Stdin = reader
-
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	return cmd.Run()
-}
-
 func cmdDefault() (err error) {
 	var ips []net.IP
 	var fTok string
@@ -115,8 +91,8 @@ func cmdDefault() (err error) {
 	pflag.StringVarP(&fTok, "token", "t", "", "the token to use.")
 	pflag.BoolVar(&fNoCache, "nocache", false, "disable the cache.")
 	pflag.BoolVarP(&fVsn, "version", "v", false, "print binary release number.")
-	pflag.BoolVarP(&fHelp, "short-help", "h", false, "show help.")
-	pflag.BoolVar(&fPage, "help", false, "use pager for detailed help")
+	pflag.BoolVarP(&fHelp, "", "h", false, "show help.")
+	pflag.BoolVar(&fHelpDetailed, "help", false, "show detailed help")
 	pflag.StringSliceVarP(&fField, "field", "f", nil, "specific field to lookup.")
 	pflag.BoolVarP(&fPretty, "pretty", "p", true, "output pretty format.")
 	pflag.BoolVarP(&fJSON, "json", "j", true, "output JSON format. (default)")
@@ -134,10 +110,17 @@ func cmdDefault() (err error) {
 		return nil
 	}
 
-	if fPage {
+	if fHelpDetailed {
 		// Read the string and display it using a pager
-		err = pageHelp(DetailedHelp)
-		return err
+		err = lib.HelpDetailed(DetailedHelp)
+
+		//if error occurs running the pager, display the default help
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error displaying detailed help: %v\n\n", err)
+			printHelpDefault()
+		}
+
+		return nil
 	}
 
 	if fVsn {
