@@ -7,25 +7,23 @@ import (
 	"strings"
 )
 
-func HelpDetailed(detailedHelp string) error {
-
+func HelpDetailed(detailedHelp string, printHelpDefault func()) error {
 	pagerCmd := os.Getenv("PAGER")
-
 	if pagerCmd == "" {
 		// If PAGER is not set, use a default pager (e.g., less)
 		pagerCmd = "less"
 	}
 
 	cmd := exec.Command(pagerCmd)
-
-	// Create an io.Reader from the detailed help string
 	reader := io.Reader(strings.NewReader(detailedHelp))
 	cmd.Stdin = reader
-
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	// returns an error if the command doesn't execute properly. Otherwise, it returns nil and executes the command
-	return cmd.Run()
-
+	err := cmd.Run()
+	//if an error occurs running the pager, display the default help
+	if err != nil {
+		printHelpDefault()
+	}
+	return nil
 }

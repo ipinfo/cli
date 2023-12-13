@@ -112,14 +112,7 @@ func cmdDefault() (err error) {
 
 	if fHelpDetailed {
 		// Read the string and display it using a pager
-		err = lib.HelpDetailed(DetailedHelp)
-
-		//if error occurs running the pager, display the default help
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error displaying detailed help: %v\n\n", err)
-			printHelpDefault()
-		}
-
+		lib.HelpDetailed(DetailedHelp, printHelpDefault)
 		return nil
 	}
 
