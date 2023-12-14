@@ -15,7 +15,6 @@ func HelpDetailed(detailedHelp string, printHelpDefault func()) error {
 	}
 
 	cmd := exec.Command(pagerCmd)
-	// This allows the string to be treated as an input for the command
 	reader := io.Reader(strings.NewReader(detailedHelp))
 	cmd.Stdin = reader
 	cmd.Stdout = os.Stdout
