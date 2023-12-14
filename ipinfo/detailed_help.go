@@ -1,6 +1,8 @@
 package main
 
-var DetailedHelp = `Usage: ipinfo <cmd> [<opts>] [<args>]
+import "fmt"
+
+var DetailedHelp = fmt.Sprintf(`Usage: %s <cmd> [<opts>] [<args>]
 
 Commands:
   <ip>        look up details for an IP address, e.g. 8.8.8.8.
@@ -21,7 +23,7 @@ Commands:
   randip      Generates random IPs.
   splitcidr   splits a larger CIDR into smaller CIDRs.
   mmdb        read, import and export mmdb files.
-  calc        evaluates a mathematical expression that may contain IP addresses.
+  calc 	      evaluates a mathematical expression that may contain IP addresses.
   tool        misc. tools related to IPs, IP ranges and CIDRs.
   download    download free ipinfo database files.
   cache       manage the cache.
@@ -59,4 +61,5 @@ Options:
     --csv, -c
       output CSV format.
     --yaml, -y
-      output YAML format.`
+      output YAML format.
+`, progBase)
