@@ -15,6 +15,7 @@ var version = "3.2.0"
 
 // global flags.
 var fHelp bool
+var fHelpDetailed bool
 var fNoCache bool
 var fNoColor bool
 
