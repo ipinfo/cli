@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/ipinfo/cli/lib/ipUtils"
 	"github.com/spf13/pflag"
 )
 
@@ -35,18 +36,18 @@ func CmdToolIsLoopback(
 		return nil
 	}
 
-	actionFuncLoopBack := func(input string, inputType INPUT_TYPE) error {
+	actionFuncLoopBack := func(input string, inputType ipUtils.INPUT_TYPE) error {
 		switch inputType {
-		case INPUT_TYPE_IP:
+		case ipUtils.INPUT_TYPE_IP:
 			ActionForIsLoopBack(input)
-		case INPUT_TYPE_IP_RANGE:
+		case ipUtils.INPUT_TYPE_IP_RANGE:
 			ActionForISLoopBackRange(input)
-		case INPUT_TYPE_CIDR:
+		case ipUtils.INPUT_TYPE_CIDR:
 			ActionForIsLoopBackCIDR(input)
 		}
 		return nil
 	}
-	err := GetInputFrom(args, true, true, actionFuncLoopBack)
+	err := ipUtils.GetInputFrom(args, true, true, actionFuncLoopBack)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -62,7 +63,7 @@ func ActionForIsLoopBack(input string) {
 }
 
 func ActionForISLoopBackRange(input string) {
-	ipRange, err := IPRangeStrFromStr(input)
+	ipRange, err := ipUtils.IPRangeStrFromStr(input)
 	if err != nil {
 		return
 	}

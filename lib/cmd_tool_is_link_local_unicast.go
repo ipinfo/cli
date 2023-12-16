@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/ipinfo/cli/lib/ipUtils"
 	"github.com/spf13/pflag"
 )
 
@@ -35,18 +36,18 @@ func CmdToolIsLinkLocalUnicast(
 		return nil
 	}
 
-	actionFunc := func(input string, inputType INPUT_TYPE) error {
+	actionFunc := func(input string, inputType ipUtils.INPUT_TYPE) error {
 		switch inputType {
-		case INPUT_TYPE_IP:
+		case ipUtils.INPUT_TYPE_IP:
 			ActionIsLinkLocalUnicast(input)
-		case INPUT_TYPE_IP_RANGE:
+		case ipUtils.INPUT_TYPE_IP_RANGE:
 			ActionIsLinkLocalUnicastRange(input)
-		case INPUT_TYPE_CIDR:
+		case ipUtils.INPUT_TYPE_CIDR:
 			ActionIsLinkLocalUnicastCIDR(input)
 		}
 		return nil
 	}
-	err := GetInputFrom(args, true, true, actionFunc)
+	err := ipUtils.GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
 		return err
@@ -63,7 +64,7 @@ func ActionIsLinkLocalUnicast(input string) {
 }
 
 func ActionIsLinkLocalUnicastRange(input string) {
-	ipRange, err := IPRangeStrFromStr(input)
+	ipRange, err := ipUtils.IPRangeStrFromStr(input)
 	if err != nil {
 		return
 	}

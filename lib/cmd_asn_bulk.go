@@ -2,9 +2,11 @@ package lib
 
 import (
 	"errors"
+	"strings"
+
+	"github.com/ipinfo/cli/lib/ipUtils"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
-	"strings"
 )
 
 // CmdASNBulkFlags are flags expected by CmdASNBulk
@@ -63,16 +65,16 @@ func CmdASNBulk(f CmdASNBulkFlags, ii *ipinfo.Client, args []string, printHelp f
 
 	var asns []string
 
-	op := func(string string, inputType INPUT_TYPE) error {
+	op := func(string string, inputType ipUtils.INPUT_TYPE) error {
 		switch inputType {
-		case INPUT_TYPE_ASN:
+		case ipUtils.INPUT_TYPE_ASN:
 			asns = append(asns, strings.ToUpper(string))
 		default:
-			return ErrInvalidInput
+			return ipUtils.ErrInvalidInput
 		}
 		return nil
 	}
-	err := GetInputFrom(args, true, true, op)
+	err := ipUtils.GetInputFrom(args, true, true, op)
 	if err != nil {
 		return nil, err
 	}

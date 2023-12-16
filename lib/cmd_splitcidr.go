@@ -5,6 +5,7 @@ import (
 	"net"
 	"strconv"
 
+	"github.com/ipinfo/cli/lib/ipUtils"
 	"github.com/spf13/pflag"
 )
 
@@ -53,7 +54,7 @@ func CmdSplitCIDR(
 	}
 
 	if ip.To4() != nil {
-		ipsubnet, err := IPSubnetFromCidr(cidrString)
+		ipsubnet, err := ipUtils.IPSubnetFromCidr(cidrString)
 		if err != nil {
 			return err
 		}
@@ -67,7 +68,7 @@ func CmdSplitCIDR(
 			fmt.Println(s.ToCIDR())
 		}
 	} else {
-		ipsubnet, err := IP6SubnetFromCidr(cidrString)
+		ipsubnet, err := ipUtils.IP6SubnetFromCidr(cidrString)
 		if err != nil {
 			return err
 		}

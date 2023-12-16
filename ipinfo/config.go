@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/ipinfo/cli/lib"
+	"github.com/ipinfo/cli/lib/ipUtils"
 )
 
 // global config.
@@ -62,7 +62,7 @@ func InitConfig() error {
 	}
 
 	// create default config if none yet.
-	if !lib.FileExists(configpath) {
+	if !ipUtils.FileExists(configpath) {
 		gConfig = NewConfig()
 
 		tokenpath, err := TokenPath()
@@ -71,7 +71,7 @@ func InitConfig() error {
 		}
 
 		// if token exists, migrate it to the config file.
-		if lib.FileExists(tokenpath) {
+		if ipUtils.FileExists(tokenpath) {
 			token, err := ReadTokenFile()
 			if err != nil {
 				return err

@@ -3,9 +3,9 @@ package main
 import (
 	"os"
 
-	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
+	"github.com/ipinfo/cli/lib/ipUtils"
 )
 
 var completions = &complete.Command{
@@ -50,9 +50,9 @@ func handleCompletions() {
 	args := complete.Parse(line)
 	if len(args) > 1 {
 		cmdSecondArg := args[1].Text
-		if lib.StrIsIPStr(cmdSecondArg) {
+		if ipUtils.StrIsIPStr(cmdSecondArg) {
 			completions.Sub[cmdSecondArg] = completionsIP
-		} else if lib.StrIsASNStr(cmdSecondArg) {
+		} else if ipUtils.StrIsASNStr(cmdSecondArg) {
 			completions.Sub[cmdSecondArg] = completionsASNSingle
 		}
 	}

@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/ipinfo/cli/lib/ipUtils"
 	"github.com/spf13/pflag"
 )
 
@@ -84,7 +85,7 @@ func CmdRange2CIDR(
 				// if so, try again against the next delim.
 				if sepIdx != len(d)-1 &&
 					d[sepIdx] == ',' &&
-					StrIsIPStr(d[:sepIdx]) {
+					ipUtils.StrIsIPStr(d[:sepIdx]) {
 					nextSepIdx := strings.IndexAny(d[sepIdx+1:], ",\n")
 					if nextSepIdx == -1 {
 						sepIdx = len(d)
@@ -113,7 +114,7 @@ func CmdRange2CIDR(
 				}
 			}
 			if strings.IndexByte(rangeStr, ':') == -1 {
-				if cidrs, err := CIDRsFromIPRangeStrRaw(rangeStr); err == nil {
+				if cidrs, err := ipUtils.CIDRsFromIPRangeStrRaw(rangeStr); err == nil {
 					for _, cidr := range cidrs {
 						fmt.Printf("%s%s", cidr, rem)
 					}
@@ -121,7 +122,7 @@ func CmdRange2CIDR(
 					goto noip
 				}
 			} else {
-				if cidrs, err := CIDRsFromIP6RangeStrRaw(rangeStr); err == nil {
+				if cidrs, err := ipUtils.CIDRsFromIP6RangeStrRaw(rangeStr); err == nil {
 					for _, cidr := range cidrs {
 						fmt.Printf("%s%s", cidr, rem)
 					}
@@ -164,14 +165,14 @@ func CmdRange2CIDR(
 		if err != nil {
 			// is it an IP range?
 			if strings.IndexByte(arg, ':') == -1 {
-				if cidrs, err := CIDRsFromIPRangeStrRaw(arg); err == nil {
+				if cidrs, err := ipUtils.CIDRsFromIPRangeStrRaw(arg); err == nil {
 					for _, cidr := range cidrs {
 						fmt.Println(cidr)
 					}
 					continue
 				}
 			} else {
-				if cidrs, err := CIDRsFromIP6RangeStrRaw(arg); err == nil {
+				if cidrs, err := ipUtils.CIDRsFromIP6RangeStrRaw(arg); err == nil {
 					for _, cidr := range cidrs {
 						fmt.Println(cidr)
 					}

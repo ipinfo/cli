@@ -2,14 +2,16 @@ package lib
 
 import (
 	"fmt"
-	"github.com/fatih/color"
-	"github.com/spf13/pflag"
 	"math"
 	"math/big"
 	"net"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/fatih/color"
+	"github.com/ipinfo/cli/lib/ipUtils"
+	"github.com/spf13/pflag"
 )
 
 // CmdCalcFlags are flags expected by CmdCalc
@@ -105,7 +107,7 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 		if el == "" {
 			continue
 		}
-		if isFloat(el) || StrIsIPv4Str(el) || StrIsIPv6Str(el) {
+		if isFloat(el) || ipUtils.StrIsIPv4Str(el) || ipUtils.StrIsIPv6Str(el) {
 			postfixStack.Push(el)
 			continue
 		}
@@ -113,13 +115,13 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 		// if operator pop two elements off of the stack.
 		strNum1, isEmpty := postfixStack.Pop()
 		if isEmpty {
-			return big.NewFloat(0), ErrInvalidInput
+			return big.NewFloat(0), ipUtils.ErrInvalidInput
 		}
 		num1, _, _ := big.ParseFloat(strNum1, 10, precision, big.ToZero)
 
 		strNum2, isEmpty := postfixStack.Pop()
 		if isEmpty {
-			return big.NewFloat(0), ErrInvalidInput
+			return big.NewFloat(0), ipUtils.ErrInvalidInput
 		}
 		num2, _, _ := big.ParseFloat(strNum2, 10, precision, big.ToZero)
 
@@ -136,7 +138,7 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 		case operator == "/":
 			// Check for division by zero
 			if num1.Cmp(big.NewFloat(0)) == 0 {
-				return big.NewFloat(0), ErrInvalidInput
+				return big.NewFloat(0), ipUtils.ErrInvalidInput
 			}
 			result = new(big.Float).Quo(num2, num1)
 		case operator == "^":
@@ -148,7 +150,7 @@ func EvaluatePostfix(postfix []string) (*big.Float, error) {
 			res := math.Pow(num2F64, num1F64)
 			result = new(big.Float).SetPrec(precision).SetFloat64(res)
 		default:
-			return big.NewFloat(0), ErrInvalidInput
+			return big.NewFloat(0), ipUtils.ErrInvalidInput
 		}
 		strResult := result.Text('f', 50)
 		postfixStack.Push(strResult)
@@ -175,19 +177,19 @@ func translateToken(tempToken string, tokens []string) ([]string, error) {
 
 	if isFloat(tempToken) {
 		tokens = append(tokens, tempToken)
-	} else if StrIsIPv4Str(tempToken) {
+	} else if ipUtils.StrIsIPv4Str(tempToken) {
 		// Convert ipv4 to decimal then append to tokens
 		ip := net.ParseIP(tempToken)
-		decimalIP := IP4toInt(ip)
+		decimalIP := ipUtils.IP4toInt(ip)
 		res := strconv.FormatInt(decimalIP, 10)
 		tokens = append(tokens, res)
 
-	} else if StrIsIPv6Str(tempToken) {
+	} else if ipUtils.StrIsIPv6Str(tempToken) {
 		ip := net.ParseIP(tempToken)
-		decimalIP := IP6toInt(ip)
+		decimalIP := ipUtils.IP6toInt(ip)
 		tokens = append(tokens, decimalIP.String())
 	} else {
-		return []string{}, ErrInvalidInput
+		return []string{}, ipUtils.ErrInvalidInput
 	}
 	return tokens, nil
 }
@@ -324,7 +326,7 @@ func CmdCalc(f CmdCalcFlags, args []string, printHelp func()) error {
 
 	infix := args[0]
 	if IsInvalidInfix(infix) {
-		return ErrInvalidInput
+		return ipUtils.ErrInvalidInput
 	}
 
 	tokens, err := TokenizeInfix(infix)

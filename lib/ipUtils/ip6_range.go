@@ -1,4 +1,4 @@
-package lib
+package ipUtils
 
 import (
 	"encoding/binary"

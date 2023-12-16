@@ -2,8 +2,10 @@ package lib
 
 import (
 	"fmt"
-	"github.com/spf13/pflag"
 	"net/netip"
+
+	"github.com/ipinfo/cli/lib/ipUtils"
+	"github.com/spf13/pflag"
 )
 
 // CmdToolUnmapFlags are flags expected by CmdToolUnmap
@@ -27,9 +29,9 @@ func CmdToolUnmap(f CmdToolUnmapFlags, args []string, printHelp func()) error {
 		return nil
 	}
 
-	op := func(input string, input_type INPUT_TYPE) error {
+	op := func(input string, input_type ipUtils.INPUT_TYPE) error {
 		switch input_type {
-		case INPUT_TYPE_IP:
+		case ipUtils.INPUT_TYPE_IP:
 			addr, err := netip.ParseAddr(input)
 			if err != nil {
 				return err
@@ -39,5 +41,5 @@ func CmdToolUnmap(f CmdToolUnmapFlags, args []string, printHelp func()) error {
 		return nil
 	}
 
-	return GetInputFrom(args, true, true, op)
+	return ipUtils.GetInputFrom(args, true, true, op)
 }

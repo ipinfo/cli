@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/ipinfo/cli/lib/ipUtils"
 	"github.com/spf13/pflag"
 )
 
@@ -35,21 +36,21 @@ func CmdToolUpper(
 		return nil
 	}
 
-	actionFunc := func(input string, inputType INPUT_TYPE) error {
+	actionFunc := func(input string, inputType ipUtils.INPUT_TYPE) error {
 		var err error
 		switch inputType {
-		case INPUT_TYPE_IP:
+		case ipUtils.INPUT_TYPE_IP:
 			fmt.Println(input)
-		case INPUT_TYPE_IP_RANGE:
+		case ipUtils.INPUT_TYPE_IP_RANGE:
 			err = ActionForRangeUpper(input)
-		case INPUT_TYPE_CIDR:
+		case ipUtils.INPUT_TYPE_CIDR:
 			err = ActionForCIDRUpper(input)
 		default:
-			return ErrInvalidInput
+			return ipUtils.ErrInvalidInput
 		}
 		return err
 	}
-	err := GetInputFrom(args, true, true, actionFunc)
+	err := ipUtils.GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -58,7 +59,7 @@ func CmdToolUpper(
 }
 
 func ActionForRangeUpper(input string) error {
-	ipRange, err := IPRangeStrFromStr(input)
+	ipRange, err := ipUtils.IPRangeStrFromStr(input)
 	if err != nil {
 		return err
 	}
@@ -74,10 +75,10 @@ func ActionForCIDRUpper(input string) error {
 
 	var upper string
 	if ipnet.IP.To4() != nil {
-		ipRange, _ := IPRangeStrFromCIDR(input)
+		ipRange, _ := ipUtils.IPRangeStrFromCIDR(input)
 		upper = ipRange.End
 	} else if ipnet.IP.To16() != nil {
-		ipRange, _ := IP6RangeStrFromCIDR(input)
+		ipRange, _ := ipUtils.IP6RangeStrFromCIDR(input)
 		upper = ipRange.End
 	}
 

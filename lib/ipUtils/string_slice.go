@@ -1,4 +1,4 @@
-package lib
+package ipUtils
 
 // StringSliceRev reverses the order of elements inside of a string slice.
 func StringSliceRev(s []string) {

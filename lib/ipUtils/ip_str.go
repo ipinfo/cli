@@ -1,4 +1,4 @@
-package lib
+package ipUtils
 
 import (
 	"net"
@@ -11,10 +11,10 @@ func StrIsIPStr(ipStr string) bool {
 
 // StrIsIPv4Str checks if the given string is an IPv4 address
 func StrIsIPv4Str(expression string) bool {
-	return ipV4Regex.MatchString(expression)
+	return IpV4Regex.MatchString(expression)
 }
 
 // StrIsIPv6Str checks if the given string is an IPv6 address
 func StrIsIPv6Str(expression string) bool {
-	return ipV6Regex.MatchString(expression)
+	return IpV6Regex.MatchString(expression)
 }

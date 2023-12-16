@@ -2,8 +2,10 @@ package lib
 
 import (
 	"fmt"
-	"github.com/spf13/pflag"
 	"net/netip"
+
+	"github.com/ipinfo/cli/lib/ipUtils"
+	"github.com/spf13/pflag"
 )
 
 // CmdToolIsOneIpFlags are flags expected by CmdToolIP2n
@@ -26,31 +28,31 @@ func CmdToolIsOneIp(f CmdToolIsOneIpFlags, args []string, printHelp func()) erro
 		return nil
 	}
 
-	op := func(input string, inputType INPUT_TYPE) error {
+	op := func(input string, inputType ipUtils.INPUT_TYPE) error {
 		isOneIp := false
 		switch inputType {
-		case INPUT_TYPE_CIDR:
+		case ipUtils.INPUT_TYPE_CIDR:
 			prefix, err := netip.ParsePrefix(input)
 			if err != nil {
-				return ErrInvalidInput
+				return ipUtils.ErrInvalidInput
 			}
 			isOneIp = prefix.IsSingleIP()
-		case INPUT_TYPE_IP:
+		case ipUtils.INPUT_TYPE_IP:
 			isOneIp = true
-		case INPUT_TYPE_IP_RANGE:
+		case ipUtils.INPUT_TYPE_IP_RANGE:
 			isOneIp = ipRangeContainsExactlyOneIP(input)
 		default:
-			return ErrInvalidInput
+			return ipUtils.ErrInvalidInput
 		}
 		fmt.Printf("%s,%v\n", input, isOneIp)
 		return nil
 	}
 
-	return GetInputFrom(args, true, true, op)
+	return ipUtils.GetInputFrom(args, true, true, op)
 }
 
 func ipRangeContainsExactlyOneIP(ipRangeStr string) bool {
-	ipRange, err := IPRangeStrFromStr(ipRangeStr)
+	ipRange, err := ipUtils.IPRangeStrFromStr(ipRangeStr)
 	if err != nil {
 		return false
 	}
