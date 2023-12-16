@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/ipinfo/cli/lib/ipUtils"
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/spf13/pflag"
 )
 
@@ -36,14 +36,14 @@ func CmdToolIsUnspecified(
 		return nil
 	}
 
-	actionFunc := func(input string, inputType ipUtils.INPUT_TYPE) error {
+	actionFunc := func(input string, inputType iputil.INPUT_TYPE) error {
 		switch inputType {
-		case ipUtils.INPUT_TYPE_IP:
+		case iputil.INPUT_TYPE_IP:
 			ActionIsUnspecified(input)
 		}
 		return nil
 	}
-	err := ipUtils.GetInputFrom(args, true, true, actionFunc)
+	err := iputil.GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
 		return err

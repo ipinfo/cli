@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/ipinfo/cli/lib/ipUtils"
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
 )
@@ -65,16 +65,16 @@ func CmdASNBulk(f CmdASNBulkFlags, ii *ipinfo.Client, args []string, printHelp f
 
 	var asns []string
 
-	op := func(string string, inputType ipUtils.INPUT_TYPE) error {
+	op := func(string string, inputType iputil.INPUT_TYPE) error {
 		switch inputType {
-		case ipUtils.INPUT_TYPE_ASN:
+		case iputil.INPUT_TYPE_ASN:
 			asns = append(asns, strings.ToUpper(string))
 		default:
-			return ipUtils.ErrInvalidInput
+			return iputil.ErrInvalidInput
 		}
 		return nil
 	}
-	err := ipUtils.GetInputFrom(args, true, true, op)
+	err := iputil.GetInputFrom(args, true, true, op)
 	if err != nil {
 		return nil, err
 	}

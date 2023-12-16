@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/ipinfo/cli/lib/ipUtils"
+	"github.com/ipinfo/cli/lib/iputil"
 )
 
 var progBase = filepath.Base(os.Args[0])
@@ -35,9 +35,9 @@ func main() {
 	}
 
 	switch {
-	case ipUtils.StrIsIPStr(cmd):
+	case iputil.StrIsIPStr(cmd):
 		err = cmdIP(cmd)
-	case ipUtils.StrIsASNStr(cmd):
+	case iputil.StrIsASNStr(cmd):
 		asn := strings.ToUpper(cmd)
 		err = cmdASNSingle(asn)
 	case len(cmd) >= 3 && strings.IndexByte(cmd, '.') != -1:

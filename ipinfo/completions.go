@@ -5,7 +5,7 @@ import (
 
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
-	"github.com/ipinfo/cli/lib/ipUtils"
+	"github.com/ipinfo/cli/lib/iputil"
 )
 
 var completions = &complete.Command{
@@ -50,9 +50,9 @@ func handleCompletions() {
 	args := complete.Parse(line)
 	if len(args) > 1 {
 		cmdSecondArg := args[1].Text
-		if ipUtils.StrIsIPStr(cmdSecondArg) {
+		if iputil.StrIsIPStr(cmdSecondArg) {
 			completions.Sub[cmdSecondArg] = completionsIP
-		} else if ipUtils.StrIsASNStr(cmdSecondArg) {
+		} else if iputil.StrIsASNStr(cmdSecondArg) {
 			completions.Sub[cmdSecondArg] = completionsASNSingle
 		}
 	}

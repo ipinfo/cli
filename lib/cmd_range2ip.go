@@ -3,7 +3,7 @@ package lib
 import (
 	"os"
 
-	"github.com/ipinfo/cli/lib/ipUtils"
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/spf13/pflag"
 )
 
@@ -38,5 +38,5 @@ func CmdRange2IP(f CmdRange2IPFlags, args []string, printHelp func()) error {
 		return nil
 	}
 
-	return ipUtils.IPListWriteFrom(args, true, true, true, false, true)
+	return iputil.IPListWriteFrom(args, true, true, true, false, true)
 }

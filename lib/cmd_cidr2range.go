@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ipinfo/cli/lib/ipUtils"
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/spf13/pflag"
 )
 
@@ -83,13 +83,13 @@ func CmdCIDR2Range(
 
 			cidrStr := d[:sepIdx]
 			if strings.IndexByte(cidrStr, ':') == -1 {
-				if r, err := ipUtils.IPRangeStrFromCIDR(cidrStr); err == nil {
+				if r, err := iputil.IPRangeStrFromCIDR(cidrStr); err == nil {
 					fmt.Printf("%s%s", r.String(), rem)
 				} else {
 					goto noip
 				}
 			} else {
-				if r, err := ipUtils.IP6RangeStrFromCIDR(cidrStr); err == nil {
+				if r, err := iputil.IP6RangeStrFromCIDR(cidrStr); err == nil {
 					fmt.Printf("%s%s", r.String(), rem)
 				} else {
 					goto noip
@@ -124,12 +124,12 @@ func CmdCIDR2Range(
 		if err != nil {
 			// is it a CIDR?
 			if strings.IndexByte(arg, ':') == -1 {
-				if r, err := ipUtils.IPRangeStrFromCIDR(arg); err == nil {
+				if r, err := iputil.IPRangeStrFromCIDR(arg); err == nil {
 					fmt.Println(r.String())
 					continue
 				}
 			} else {
-				if r, err := ipUtils.IP6RangeStrFromCIDR(arg); err == nil {
+				if r, err := iputil.IP6RangeStrFromCIDR(arg); err == nil {
 					fmt.Println(r.String())
 					continue
 				}

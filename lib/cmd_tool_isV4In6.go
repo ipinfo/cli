@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/netip"
 
-	"github.com/ipinfo/cli/lib/ipUtils"
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/spf13/pflag"
 )
 
@@ -29,20 +29,20 @@ func CmdToolIsV4In6(f CmdToolIsV4In6Flags, args []string, printHelp func()) erro
 		return nil
 	}
 
-	op := func(input string, inputType ipUtils.INPUT_TYPE) error {
+	op := func(input string, inputType iputil.INPUT_TYPE) error {
 		switch inputType {
-		case ipUtils.INPUT_TYPE_IP:
+		case iputil.INPUT_TYPE_IP:
 			addr, err := netip.ParseAddr(input)
 			if err != nil {
-				return ipUtils.ErrInvalidInput
+				return iputil.ErrInvalidInput
 			}
 
 			fmt.Printf("%s,%t\n", input, addr.Is4In6())
 		default:
-			return ipUtils.ErrInvalidInput
+			return iputil.ErrInvalidInput
 		}
 		return nil
 	}
 
-	return ipUtils.GetInputFrom(args, true, true, op)
+	return iputil.GetInputFrom(args, true, true, op)
 }

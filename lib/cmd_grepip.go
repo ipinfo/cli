@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/ipinfo/cli/lib/ipUtils"
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/spf13/pflag"
 )
 
@@ -147,49 +147,49 @@ func CmdGrepIP(
 	// prepare regexp
 	var rexp *regexp.Regexp
 	if ipv == 4 {
-		rexp = ipUtils.IpV4Regex
+		rexp = iputil.IpV4Regex
 		if f.CIDRsOnly && f.RangesOnly {
-			rexp = ipUtils.V4SubnetRegex
+			rexp = iputil.V4SubnetRegex
 		} else if f.IncludeCIDRs && f.IncludeRanges {
-			rexp = ipUtils.V4IpSubnetRegex
+			rexp = iputil.V4IpSubnetRegex
 		} else if f.IncludeCIDRs {
-			rexp = ipUtils.V4IpCidrRegex
+			rexp = iputil.V4IpCidrRegex
 		} else if f.IncludeRanges {
-			rexp = ipUtils.V4IpRangeRegex
+			rexp = iputil.V4IpRangeRegex
 		} else if f.CIDRsOnly {
-			rexp = ipUtils.V4CidrRegex
+			rexp = iputil.V4CidrRegex
 		} else if f.RangesOnly {
-			rexp = ipUtils.V4RangeRegex
+			rexp = iputil.V4RangeRegex
 		}
 	} else if ipv == 6 {
-		rexp = ipUtils.IpV6Regex
+		rexp = iputil.IpV6Regex
 		if f.CIDRsOnly && f.RangesOnly {
-			rexp = ipUtils.V6SubnetRegex
+			rexp = iputil.V6SubnetRegex
 		} else if f.IncludeCIDRs && f.IncludeRanges {
-			rexp = ipUtils.V6IpSubnetRegex
+			rexp = iputil.V6IpSubnetRegex
 		} else if f.IncludeCIDRs {
-			rexp = ipUtils.V6IpCidrRegex
+			rexp = iputil.V6IpCidrRegex
 		} else if f.IncludeRanges {
-			rexp = ipUtils.V6IpRangeRegex
+			rexp = iputil.V6IpRangeRegex
 		} else if f.CIDRsOnly {
-			rexp = ipUtils.V6CidrRegex
+			rexp = iputil.V6CidrRegex
 		} else if f.RangesOnly {
-			rexp = ipUtils.V6RangeRegex
+			rexp = iputil.V6RangeRegex
 		}
 	} else {
-		rexp = ipUtils.IpRegex
+		rexp = iputil.IpRegex
 		if f.CIDRsOnly && f.RangesOnly {
-			rexp = ipUtils.SubnetRegex
+			rexp = iputil.SubnetRegex
 		} else if f.IncludeCIDRs && f.IncludeRanges {
-			rexp = ipUtils.IpSubnetRegex
+			rexp = iputil.IpSubnetRegex
 		} else if f.IncludeCIDRs {
-			rexp = ipUtils.IpCidrRegex
+			rexp = iputil.IpCidrRegex
 		} else if f.IncludeRanges {
-			rexp = ipUtils.IpRangeRegex
+			rexp = iputil.IpRangeRegex
 		} else if f.CIDRsOnly {
-			rexp = ipUtils.CidrRegex
+			rexp = iputil.CidrRegex
 		} else if f.RangesOnly {
-			rexp = ipUtils.RangeRegex
+			rexp = iputil.RangeRegex
 		}
 	}
 
@@ -233,15 +233,15 @@ func CmdGrepIP(
 						goto next_match
 					}
 					if strings.Contains(mIPStr, ":") {
-						ip, _ := ipUtils.IP6FromStdIP(mIP.To16())
-						for _, r := range ipUtils.BogonIP6List {
+						ip, _ := iputil.IP6FromStdIP(mIP.To16())
+						for _, r := range iputil.BogonIP6List {
 							if ip.Gte(r.Start) && ip.Lte(r.End) {
 								goto next_match
 							}
 						}
 					} else {
-						ip := ipUtils.IPFromStdIP(mIP)
-						for _, r := range ipUtils.BogonIP4List {
+						ip := iputil.IPFromStdIP(mIP)
+						for _, r := range iputil.BogonIP4List {
 							if ip >= r.Start && ip <= r.End {
 								goto next_match
 							}

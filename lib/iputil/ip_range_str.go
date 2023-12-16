@@ -1,4 +1,4 @@
-package ipUtils
+package iputil
 
 import (
 	"encoding/binary"

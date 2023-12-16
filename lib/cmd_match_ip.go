@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ipinfo/cli/lib/ipUtils"
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/spf13/pflag"
 )
 
@@ -66,17 +66,17 @@ func CmdMatchIP(
 		return parsedCIDRs
 	}
 
-	processInput := func(container *[]SubnetPair, ips *[]net.IP, s string, inputType ipUtils.INPUT_TYPE) error {
+	processInput := func(container *[]SubnetPair, ips *[]net.IP, s string, inputType iputil.INPUT_TYPE) error {
 		switch inputType {
-		case ipUtils.INPUT_TYPE_IP:
+		case iputil.INPUT_TYPE_IP:
 			*ips = append(*ips, net.ParseIP(s))
-		case ipUtils.INPUT_TYPE_CIDR:
+		case iputil.INPUT_TYPE_CIDR:
 			pair := SubnetPair{
 				Raw:    s,
 				Parsed: parseCIDRs([]string{s}),
 			}
 			*container = append(*container, pair)
-		case ipUtils.INPUT_TYPE_IP_RANGE:
+		case iputil.INPUT_TYPE_IP_RANGE:
 			cidrs, err := rangeToCidrs(s)
 			if err == nil {
 				pair := SubnetPair{
@@ -86,16 +86,16 @@ func CmdMatchIP(
 				*container = append(*container, pair)
 			}
 		default:
-			return ipUtils.ErrInvalidInput
+			return iputil.ErrInvalidInput
 		}
 		return nil
 	}
 
-	source_op := func(s string, inputType ipUtils.INPUT_TYPE) error {
+	source_op := func(s string, inputType iputil.INPUT_TYPE) error {
 		return processInput(&sourceCIDRs, &sourceIPs, s, inputType)
 	}
 
-	filter_op := func(s string, inputType ipUtils.INPUT_TYPE) error {
+	filter_op := func(s string, inputType iputil.INPUT_TYPE) error {
 		return processInput(&filterCIDRs, &filterIPs, s, inputType)
 	}
 
@@ -103,17 +103,17 @@ func CmdMatchIP(
 
 	for _, expr := range f.Expression {
 		if expr == "-" && isStdin {
-			err = ipUtils.ProcessStringsFromStdin(filter_op)
+			err = iputil.ProcessStringsFromStdin(filter_op)
 			if err != nil {
 				return err
 			}
-		} else if ipUtils.FileExists(expr) {
-			err = ipUtils.ProcessStringsFromFile(expr, filter_op)
+		} else if iputil.FileExists(expr) {
+			err = iputil.ProcessStringsFromFile(expr, filter_op)
 			if err != nil {
 				return err
 			}
 		} else {
-			err = ipUtils.InputHelper(expr, filter_op)
+			err = iputil.InputHelper(expr, filter_op)
 			if err != nil {
 				return err
 			}
@@ -122,17 +122,17 @@ func CmdMatchIP(
 
 	for _, arg := range args {
 		if arg == "-" && isStdin {
-			err = ipUtils.ProcessStringsFromStdin(source_op)
+			err = iputil.ProcessStringsFromStdin(source_op)
 			if err != nil {
 				return err
 			}
-		} else if ipUtils.FileExists(arg) {
-			err = ipUtils.ProcessStringsFromFile(arg, source_op)
+		} else if iputil.FileExists(arg) {
+			err = iputil.ProcessStringsFromFile(arg, source_op)
 			if err != nil {
 				return err
 			}
 		} else {
-			err = ipUtils.InputHelper(arg, source_op)
+			err = iputil.InputHelper(arg, source_op)
 			if err != nil {
 				return err
 			}
@@ -149,13 +149,13 @@ func CmdMatchIP(
 
 func rangeToCidrs(r string) ([]string, error) {
 	if strings.ContainsRune(r, ':') {
-		cidrs, err := ipUtils.CIDRsFromIP6RangeStrRaw(r)
+		cidrs, err := iputil.CIDRsFromIP6RangeStrRaw(r)
 		if err != nil {
 			return nil, err
 		}
 		return cidrs, nil
 	} else {
-		cidrs, err := ipUtils.CIDRsFromIPRangeStrRaw(r)
+		cidrs, err := iputil.CIDRsFromIPRangeStrRaw(r)
 		if err != nil {
 			return nil, err
 		}

@@ -3,7 +3,7 @@ package lib
 import (
 	"fmt"
 
-	"github.com/ipinfo/cli/lib/ipUtils"
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/spf13/pflag"
 )
 
@@ -29,7 +29,7 @@ func CmdToolIP2n(f CmdToolIP2nFlags, args []string, printHelp func()) error {
 	}
 
 	ipString := args[0]
-	res, err := ipUtils.IPtoDecimalStr(ipString)
+	res, err := iputil.IPtoDecimalStr(ipString)
 	if err != nil {
 		return err
 	}

@@ -1,4 +1,4 @@
-package ipUtils
+package iputil
 
 // these lists are initialized on startup inside this pkg's `init`.
 var BogonIP4List []IPRange

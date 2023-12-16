@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/netip"
 
-	"github.com/ipinfo/cli/lib/ipUtils"
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/spf13/pflag"
 )
 
@@ -26,9 +26,9 @@ func CmdToolPrefixIsValid(f CmdToolPrefixIsValidFlags, args []string, printHelp 
 		return nil
 	}
 
-	op := func(input string, inputType ipUtils.INPUT_TYPE) error {
+	op := func(input string, inputType iputil.INPUT_TYPE) error {
 		switch inputType {
-		case ipUtils.INPUT_TYPE_CIDR:
+		case iputil.INPUT_TYPE_CIDR:
 			prefix, err := netip.ParsePrefix(input)
 			if err != nil {
 				return err
@@ -38,5 +38,5 @@ func CmdToolPrefixIsValid(f CmdToolPrefixIsValidFlags, args []string, printHelp 
 		return nil
 	}
 
-	return ipUtils.GetInputFrom(args, true, true, op)
+	return iputil.GetInputFrom(args, true, true, op)
 }
