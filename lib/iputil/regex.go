@@ -30,8 +30,8 @@ var V4SubnetRegex *regexp.Regexp
 var V6SubnetRegex *regexp.Regexp
 var SubnetRegex *regexp.Regexp
 
-const V4octet = `(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)`
-const IPv4RegexPattern = `(` + V4octet + `\.){3}` + V4octet
+const V4Octet = `(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)`
+const IPv4RegexPattern = `(` + V4Octet + `\.){3}` + V4Octet
 const IPv4RangeRegexPattern = IPv4RegexPattern + `[-,]` + IPv4RegexPattern
 const IPv4CIDRRegexPattern = IPv4RegexPattern + `\/([1-2]?[0-9]|3[0-2])`
 

@@ -80,7 +80,7 @@ func CmdASNBulk(f CmdASNBulkFlags, ii *ipinfo.Client, args []string, printHelp f
 	}
 
 	if ii.Token == "" {
-		return nil, errors.New("bulk lookups require a token; login via `ipinfo init`.")
+		return nil, errors.New("bulk lookups require a token; login via `ipinfo init`")
 	}
 
 	return ii.GetASNDetailsBatch(asns, ipinfo.BatchReqOpts{

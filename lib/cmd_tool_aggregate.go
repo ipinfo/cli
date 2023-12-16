@@ -140,7 +140,7 @@ func CmdToolAggregate(
 		parsedIPs = append(parsedIPs, ips...)
 	}
 
-	adjacentCombined := combineAdjacent(stripOverlapping(iputil.List(parsedCIDRs)))
+	adjacentCombined := combineAdjacent(stripOverlapping(iputil.NewCidrList(parsedCIDRs)))
 
 	outlierIPs := make([]net.IP, 0)
 	length := len(adjacentCombined)
