@@ -8,6 +8,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib"
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
 )
@@ -196,7 +197,7 @@ func cmdDefault() (err error) {
 		return nil
 	}
 
-	ips = lib.IPListFromStdin()
+	ips = iputil.IPListFromStdin()
 	if len(ips) == 0 {
 		fmt.Println("no input ips")
 		return nil

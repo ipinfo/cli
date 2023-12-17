@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/spf13/pflag"
 )
 
@@ -35,18 +36,18 @@ func CmdToolIsGlobalUnicast(
 		return nil
 	}
 
-	actionFunc := func(input string, inputType INPUT_TYPE) error {
+	actionFunc := func(input string, inputType iputil.INPUT_TYPE) error {
 		switch inputType {
-		case INPUT_TYPE_IP:
+		case iputil.INPUT_TYPE_IP:
 			ActionIsGlobalUnicast(input)
-		case INPUT_TYPE_IP_RANGE:
+		case iputil.INPUT_TYPE_IP_RANGE:
 			ActionIsGlobalUnicastRange(input)
-		case INPUT_TYPE_CIDR:
+		case iputil.INPUT_TYPE_CIDR:
 			ActionIsGlobalUnicastCIDR(input)
 		}
 		return nil
 	}
-	err := GetInputFrom(args, true, true, actionFunc)
+	err := iputil.GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
 		return err
@@ -63,7 +64,7 @@ func ActionIsGlobalUnicast(input string) {
 }
 
 func ActionIsGlobalUnicastRange(input string) {
-	ipRange, err := IPRangeStrFromStr(input)
+	ipRange, err := iputil.IPRangeStrFromStr(input)
 	if err != nil {
 		return
 	}

@@ -6,9 +6,9 @@ import (
 	"net"
 
 	"github.com/fatih/color"
-	"github.com/ipinfo/cli/lib"
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
 )
@@ -111,7 +111,7 @@ func cmdBulk() (err error) {
 		return nil
 	}
 
-	ips, err = lib.IPListFromAllSrcs(pflag.Args()[1:])
+	ips, err = iputil.IPListFromAllSrcs(pflag.Args()[1:])
 	if err != nil {
 		return err
 	}

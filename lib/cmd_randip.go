@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/spf13/pflag"
 )
 
@@ -87,7 +88,7 @@ func CmdRandIP(f CmdRandIPFlags, args []string, printHelp func()) error {
 		if f.EndIP == "" {
 			f.EndIP = "255.255.255.255"
 		}
-		if err := RandIP4RangeListWrite(f.StartIP, f.EndIP, f.N, f.ExcludeRes, f.Unique); err != nil {
+		if err := iputil.RandIP4RangeListWrite(f.StartIP, f.EndIP, f.N, f.ExcludeRes, f.Unique); err != nil {
 			return err
 		}
 	} else if f.IPv6 {
@@ -97,7 +98,7 @@ func CmdRandIP(f CmdRandIPFlags, args []string, printHelp func()) error {
 		if f.EndIP == "" {
 			f.EndIP = "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"
 		}
-		if err := RandIP6RangeListWrite(f.StartIP, f.EndIP, f.N, f.ExcludeRes, f.Unique); err != nil {
+		if err := iputil.RandIP6RangeListWrite(f.StartIP, f.EndIP, f.N, f.ExcludeRes, f.Unique); err != nil {
 			return err
 		}
 	}

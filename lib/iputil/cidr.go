@@ -1,4 +1,4 @@
-package lib
+package iputil
 
 import (
 	"bytes"
@@ -14,8 +14,8 @@ type CIDR struct {
 	Network *net.IPNet
 }
 
-// newCidr creates a newCidr CIDR structure.
-func newCidr(s string) *CIDR {
+// NewCidr creates a NewCidr CIDR structure.
+func NewCidr(s string) *CIDR {
 	ip, ipnet, err := net.ParseCIDR(s)
 	if err != nil {
 		panic(err)
@@ -47,11 +47,11 @@ func (c *CIDR) Size() int {
 	return int(math.Pow(2, float64(bits-ones)))
 }
 
-// list returns a slice of sorted CIDR structures.
-func list(s []string) []*CIDR {
+// NewCidrList returns a slice of sorted CIDR structures.
+func NewCidrList(s []string) []*CIDR {
 	out := make([]*CIDR, 0)
 	for _, c := range s {
-		out = append(out, newCidr(c))
+		out = append(out, NewCidr(c))
 	}
 	sort.Sort(cidrSort(out))
 	return out

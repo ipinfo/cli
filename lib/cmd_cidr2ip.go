@@ -3,6 +3,7 @@ package lib
 import (
 	"os"
 
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/spf13/pflag"
 )
 
@@ -37,5 +38,5 @@ func CmdCIDR2IP(f CmdCIDR2IPFlags, args []string, printHelp func()) error {
 		return nil
 	}
 
-	return IPListWriteFrom(args, true, false, false, true, true)
+	return iputil.IPListWriteFrom(args, true, false, false, true, true)
 }

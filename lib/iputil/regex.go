@@ -1,37 +1,37 @@
-package lib
+package iputil
 
 import "regexp"
 
-var ipV4Regex *regexp.Regexp
-var ipV6Regex *regexp.Regexp
-var ipRegex *regexp.Regexp
+var IpV4Regex *regexp.Regexp
+var IpV6Regex *regexp.Regexp
+var IpRegex *regexp.Regexp
 
-var v4IpCidrRegex *regexp.Regexp
-var v6IpCidrRegex *regexp.Regexp
-var ipCidrRegex *regexp.Regexp
+var V4IpCidrRegex *regexp.Regexp
+var V6IpCidrRegex *regexp.Regexp
+var IpCidrRegex *regexp.Regexp
 
-var v4IpRangeRegex *regexp.Regexp
-var v6IpRangeRegex *regexp.Regexp
-var ipRangeRegex *regexp.Regexp
+var V4IpRangeRegex *regexp.Regexp
+var V6IpRangeRegex *regexp.Regexp
+var IpRangeRegex *regexp.Regexp
 
-var v4IpSubnetRegex *regexp.Regexp
-var v6IpSubnetRegex *regexp.Regexp
-var ipSubnetRegex *regexp.Regexp
+var V4IpSubnetRegex *regexp.Regexp
+var V6IpSubnetRegex *regexp.Regexp
+var IpSubnetRegex *regexp.Regexp
 
-var v4CidrRegex *regexp.Regexp
-var v6CidrRegex *regexp.Regexp
-var cidrRegex *regexp.Regexp
+var V4CidrRegex *regexp.Regexp
+var V6CidrRegex *regexp.Regexp
+var CidrRegex *regexp.Regexp
 
-var v4RangeRegex *regexp.Regexp
-var v6RangeRegex *regexp.Regexp
-var rangeRegex *regexp.Regexp
+var V4RangeRegex *regexp.Regexp
+var V6RangeRegex *regexp.Regexp
+var RangeRegex *regexp.Regexp
 
-var v4SubnetRegex *regexp.Regexp
-var v6SubnetRegex *regexp.Regexp
-var subnetRegex *regexp.Regexp
+var V4SubnetRegex *regexp.Regexp
+var V6SubnetRegex *regexp.Regexp
+var SubnetRegex *regexp.Regexp
 
-const v4octet = `(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)`
-const IPv4RegexPattern = `(` + v4octet + `\.){3}` + v4octet
+const V4Octet = `(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)`
+const IPv4RegexPattern = `(` + V4Octet + `\.){3}` + V4Octet
 const IPv4RangeRegexPattern = IPv4RegexPattern + `[-,]` + IPv4RegexPattern
 const IPv4CIDRRegexPattern = IPv4RegexPattern + `\/([1-2]?[0-9]|3[0-2])`
 

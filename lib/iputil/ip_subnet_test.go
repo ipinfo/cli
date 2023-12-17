@@ -1,9 +1,9 @@
-package lib_test
+package iputil_test
 
 import (
 	"testing"
 
-	"github.com/ipinfo/cli/lib"
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -16,7 +16,7 @@ func assertCIDRsFromIPRangeStrRaw(
 	var _cidrs []string
 	var err error
 
-	_cidrs, err = lib.CIDRsFromIPRangeStrRaw(start + "-" + end)
+	_cidrs, err = iputil.CIDRsFromIPRangeStrRaw(start + "-" + end)
 	assert.Nil(t, err)
 	assert.Equal(t, len(cidrs), len(_cidrs))
 	for i := 0; i < len(cidrs); i++ {
@@ -24,7 +24,7 @@ func assertCIDRsFromIPRangeStrRaw(
 	}
 
 	// test reverse direction
-	_cidrs, err = lib.CIDRsFromIPRangeStrRaw(end + "-" + start)
+	_cidrs, err = iputil.CIDRsFromIPRangeStrRaw(end + "-" + start)
 	assert.Nil(t, err)
 	assert.Equal(t, len(cidrs), len(_cidrs))
 	for i := len(cidrs) - 1; i >= 0; i-- {

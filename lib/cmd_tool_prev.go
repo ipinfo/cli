@@ -2,6 +2,8 @@ package lib
 
 import (
 	"fmt"
+
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/spf13/pflag"
 )
 
@@ -33,15 +35,15 @@ func CmdToolPrev(
 		return nil
 	}
 
-	actionFunc := func(input string, inputType INPUT_TYPE) error {
+	actionFunc := func(input string, inputType iputil.INPUT_TYPE) error {
 		switch inputType {
-		case INPUT_TYPE_IP:
-			newIP := ipAdd(input, -1)
+		case iputil.INPUT_TYPE_IP:
+			newIP := iputil.IpAdd(input, -1)
 			fmt.Println(newIP)
 		}
 		return nil
 	}
-	err := GetInputFrom(args, true, true, actionFunc)
+	err := iputil.GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
 		fmt.Println(err)
 	}

@@ -1,4 +1,4 @@
-package lib
+package iputil
 
 import (
 	"encoding/binary"

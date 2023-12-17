@@ -3,6 +3,8 @@ package lib
 import (
 	"errors"
 	"fmt"
+
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/spf13/pflag"
 )
 
@@ -29,7 +31,7 @@ func CmdToolN2IP6(f CmdToolN2IP6Flags, args []string, printHelp func()) error {
 
 	expression := args[0]
 	if IsInvalidInfix(expression) {
-		return ErrInvalidInput
+		return iputil.ErrInvalidInput
 	}
 
 	// NOTE: n2ip6 also accepts an expression, hence the tokenization and evaluation.
@@ -49,7 +51,7 @@ func CmdToolN2IP6(f CmdToolN2IP6Flags, args []string, printHelp func()) error {
 	// Convert to IP
 	// Precision should be 0 i.e. number of digits after decimal
 	// as ip cannot be derived from a float
-	res, err := DecimalStrToIP(result.Text('f', 0), true)
+	res, err := iputil.DecimalStrToIP(result.Text('f', 0), true)
 	if err != nil {
 		return errors.New("number is too large")
 	}

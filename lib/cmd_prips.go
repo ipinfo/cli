@@ -3,6 +3,7 @@ package lib
 import (
 	"os"
 
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/spf13/pflag"
 )
 
@@ -42,5 +43,5 @@ func CmdPrips(
 		return nil
 	}
 
-	return IPListWriteFromAllSrcs(args)
+	return iputil.IPListWriteFromAllSrcs(args)
 }

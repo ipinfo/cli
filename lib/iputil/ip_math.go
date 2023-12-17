@@ -1,4 +1,4 @@
-package lib
+package iputil
 
 import (
 	"encoding/binary"
@@ -6,7 +6,7 @@ import (
 	"net"
 )
 
-func ipAdd(input string, delta int) net.IP {
+func IpAdd(input string, delta int) net.IP {
 	ip := net.ParseIP(input)
 	if ip.To4() != nil {
 		ipInt := ipToUint32(ip)

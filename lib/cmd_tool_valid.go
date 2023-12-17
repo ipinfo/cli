@@ -2,6 +2,8 @@ package lib
 
 import (
 	"fmt"
+
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/spf13/pflag"
 )
 
@@ -27,9 +29,9 @@ func CmdToolIsValid(f CmdToolIsValidFlags, args []string, printHelp func()) erro
 		return nil
 	}
 
-	op := func(input string, input_type INPUT_TYPE) error {
+	op := func(input string, input_type iputil.INPUT_TYPE) error {
 		switch input_type {
-		case INPUT_TYPE_IP:
+		case iputil.INPUT_TYPE_IP:
 			fmt.Printf("%s,%v\n", input, true)
 		default:
 			fmt.Printf("%s,%v\n", input, false)
@@ -37,5 +39,5 @@ func CmdToolIsValid(f CmdToolIsValidFlags, args []string, printHelp func()) erro
 		return nil
 	}
 
-	return GetInputFrom(args, true, true, op)
+	return iputil.GetInputFrom(args, true, true, op)
 }

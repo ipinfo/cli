@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/spf13/pflag"
 )
 
@@ -139,7 +140,7 @@ func CmdToolAggregate(
 		parsedIPs = append(parsedIPs, ips...)
 	}
 
-	adjacentCombined := combineAdjacent(stripOverlapping(list(parsedCIDRs)))
+	adjacentCombined := combineAdjacent(stripOverlapping(iputil.NewCidrList(parsedCIDRs)))
 
 	outlierIPs := make([]net.IP, 0)
 	length := len(adjacentCombined)
@@ -172,7 +173,7 @@ func CmdToolAggregate(
 
 // stripOverlapping returns a slice of CIDR structures with overlapping ranges
 // stripped.
-func stripOverlapping(s []*CIDR) []*CIDR {
+func stripOverlapping(s []*iputil.CIDR) []*iputil.CIDR {
 	l := len(s)
 	for i := 0; i < l-1; i++ {
 		if s[i] == nil {
@@ -187,14 +188,14 @@ func stripOverlapping(s []*CIDR) []*CIDR {
 	return filter(s)
 }
 
-func overlaps(a, b *CIDR) bool {
+func overlaps(a, b *iputil.CIDR) bool {
 	return (a.PrefixUint32() / (1 << (32 - b.MaskLen()))) ==
 		(b.PrefixUint32() / (1 << (32 - b.MaskLen())))
 }
 
 // combineAdjacent returns a slice of CIDR structures with adjacent ranges
 // combined.
-func combineAdjacent(s []*CIDR) []*CIDR {
+func combineAdjacent(s []*iputil.CIDR) []*iputil.CIDR {
 	for {
 		found := false
 		l := len(s)
@@ -208,7 +209,7 @@ func combineAdjacent(s []*CIDR) []*CIDR {
 				}
 				if adjacent(s[i], s[j]) {
 					c := fmt.Sprintf("%s/%d", s[i].IP.String(), s[i].MaskLen()-1)
-					s[i] = newCidr(c)
+					s[i] = iputil.NewCidr(c)
 					s[j] = nil
 					found = true
 				}
@@ -222,13 +223,13 @@ func combineAdjacent(s []*CIDR) []*CIDR {
 	return filter(s)
 }
 
-func adjacent(a, b *CIDR) bool {
+func adjacent(a, b *iputil.CIDR) bool {
 	return (a.MaskLen() == b.MaskLen()) &&
 		(a.PrefixUint32()%(2<<(32-b.MaskLen())) == 0) &&
 		(b.PrefixUint32()-a.PrefixUint32() == (1 << (32 - a.MaskLen())))
 }
 
-func filter(s []*CIDR) []*CIDR {
+func filter(s []*iputil.CIDR) []*iputil.CIDR {
 	out := s[:0]
 	for _, x := range s {
 		if x != nil {
