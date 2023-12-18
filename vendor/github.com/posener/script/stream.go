@@ -15,10 +15,9 @@
 package script
 
 import (
+	"errors"
 	"io"
 	"reflect"
-
-	"github.com/hashicorp/go-multierror"
 )
 
 // Stream is a chain of operations on a stream of bytes. The stdout of each operation in the stream
@@ -50,18 +49,18 @@ func (s Stream) Read(b []byte) (int, error) {
 // Close closes all the stages in the stream and return the errors that occurred in all of the
 // stages.
 func (s Stream) Close() error {
-	var errors *multierror.Error
+	var merr error
 	for cur := &s; cur != nil; cur = cur.parent {
 		if cur.err != nil {
-			errors = multierror.Append(errors, cur.err)
+			merr = errors.Join(merr, cur.err)
 		}
 		if closer, ok := cur.r.(io.Closer); ok {
 			if err := closer.Close(); err != nil {
-				errors = multierror.Append(errors, err)
+				merr = errors.Join(merr, err)
 			}
 		}
 	}
-	return errors.ErrorOrNil()
+	return merr
 }
 
 // Through passes the current stream through a pipe. This function can be used to add custom

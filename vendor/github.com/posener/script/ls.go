@@ -1,10 +1,9 @@
 package script
 
 import (
+	"errors"
 	"fmt"
-	"github.com/hashicorp/go-multierror"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -47,14 +46,14 @@ func Ls(paths ...string) Files {
 	}
 
 	var (
-		files  []FileInfo
-		errors *multierror.Error
+		files []FileInfo
+		merr  error
 	)
 
 	for _, path := range paths {
 		info, err := os.Stat(path)
 		if err != nil {
-			errors = multierror.Append(errors, fmt.Errorf("stat path: %s", err))
+			merr = errors.Join(merr, fmt.Errorf("stat path %s: %w", path, err))
 			continue
 		}
 
@@ -65,13 +64,17 @@ func Ls(paths ...string) Files {
 		}
 
 		// Path is a directory.
-		infos, err := ioutil.ReadDir(path)
+		dirEntries, err := os.ReadDir(path)
 		if err != nil {
-			errors = multierror.Append(errors, fmt.Errorf("read dir: %s", err))
+			merr = errors.Join(merr, fmt.Errorf("read dir %s: %w", path, err))
 			continue
 		}
 
-		for _, info := range infos {
+		for _, entry := range dirEntries {
+			info, err := entry.Info()
+			if err != nil {
+				merr = errors.Join(merr, fmt.Errorf("failed to get file info from dir entry: %w", err))
+			}
 			files = append(files, FileInfo{Path: filepath.Join(path, info.Name()), FileInfo: info})
 		}
 	}
@@ -80,7 +83,7 @@ func Ls(paths ...string) Files {
 		Stream: Stream{
 			stage: fmt.Sprintf("ls (%+v)", paths),
 			r:     &filesReader{files: files},
-			err:   errors.ErrorOrNil(),
+			err:   merr,
 		},
 		Files: files,
 	}

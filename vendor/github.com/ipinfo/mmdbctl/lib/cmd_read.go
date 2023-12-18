@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/fatih/color"
-	"github.com/ipinfo/cli/lib"
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/oschwald/maxminddb-golang"
 	"github.com/spf13/pflag"
 )
@@ -85,7 +85,7 @@ func CmdRead(f CmdReadFlags, args []string, printHelp func()) error {
 	defer db.Close()
 
 	// get IP list.
-	ips, err := lib.IPListFromAllSrcs(args[:len(args)-1])
+	ips, err := iputil.IPListFromAllSrcs(args[:len(args)-1])
 	if err != nil {
 		return fmt.Errorf("couldn't get IP list: %w", err)
 	}

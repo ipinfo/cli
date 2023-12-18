@@ -66,31 +66,34 @@ func (r *record) insert(
 	newDepth int,
 ) error {
 	switch r.recordType {
-	case recordTypeNode, recordTypeFixedNode:
+	case recordTypeNode:
+		err := r.node.insert(iRec, newDepth)
+		if err != nil {
+			return err
+		}
+		return r.maybeMergeChildren(iRec)
+	case recordTypeFixedNode:
+		return r.node.insert(iRec, newDepth)
 	case recordTypeEmpty, recordTypeData:
 		if newDepth >= iRec.prefixLen {
 			r.node = iRec.insertedNode
 			r.recordType = iRec.recordType
 			if iRec.recordType == recordTypeData {
-				var data mmdbtype.DataType
+				var oldData mmdbtype.DataType
 				if r.value != nil {
-					data = r.value.data
-
-					// Potentially we could avoid this if the
-					// new value is the same, but it would likely
-					// not save us much and the code would be a
-					// bit more complicated.
-					iRec.dataMap.remove(r.value)
+					oldData = r.value.data
 				}
-				value, err := iRec.inserter(data)
+				newData, err := iRec.inserter(oldData)
 				if err != nil {
 					return err
 				}
-				if value == nil {
+				if newData == nil {
+					iRec.dataMap.remove(r.value)
 					r.recordType = recordTypeEmpty
 					r.value = nil
-				} else {
-					value, err := iRec.dataMap.store(value)
+				} else if oldData == nil || !oldData.Equal(newData) {
+					iRec.dataMap.remove(r.value)
+					value, err := iRec.dataMap.store(newData)
 					if err != nil {
 						return err
 					}
@@ -107,13 +110,14 @@ func (r *record) insert(
 		r.node = &node{children: [2]record{*r, *r}}
 		r.value = nil
 		r.recordType = recordTypeNode
+		err := r.node.insert(iRec, newDepth)
+		if err != nil {
+			return err
+		}
+		return r.maybeMergeChildren(iRec)
 	case recordTypeReserved:
 		if iRec.prefixLen >= newDepth {
-			return fmt.Errorf(
-				"attempt to insert %s/%d, which is in a reserved network",
-				iRec.ip,
-				iRec.prefixLen,
-			)
+			return newReservedNetworkError(iRec.ip, newDepth, iRec.prefixLen)
 		}
 		// If we are inserting a network that contains a reserved network,
 		// we silently remove the reserved network.
@@ -125,16 +129,40 @@ func (r *record) insert(
 			return nil
 		}
 		// attempting to insert _into_ an aliased network
-		return fmt.Errorf(
-			"attempt to insert %s/%d, which is in an aliased network",
-			iRec.ip,
-			iRec.prefixLen,
-		)
+		return newAliasedNetworkError(iRec.ip, newDepth, iRec.prefixLen)
 	default:
 		return fmt.Errorf("inserting into record type %d is not implemented", r.recordType)
 	}
+}
 
-	return r.node.insert(iRec, newDepth)
+func (r *record) maybeMergeChildren(iRec insertRecord) error {
+	// Check to see if the children are the same and can be merged.
+	child0 := r.node.children[0]
+	child1 := r.node.children[1]
+	if child0.recordType != child1.recordType {
+		return nil
+	}
+	switch child0.recordType {
+	// Nodes can't be merged
+	case recordTypeFixedNode, recordTypeNode:
+		return nil
+	case recordTypeEmpty, recordTypeReserved:
+		r.recordType = child0.recordType
+		r.node = nil
+		return nil
+	case recordTypeData:
+		if child0.value.key != child1.value.key {
+			return nil
+		}
+		// Children have same data and can be merged
+		r.recordType = recordTypeData
+		r.value = child0.value
+		iRec.dataMap.remove(child1.value)
+		r.node = nil
+		return nil
+	default:
+		return fmt.Errorf("merging record type %d is not implemented", child0.recordType)
+	}
 }
 
 func (n *node) get(
@@ -153,42 +181,22 @@ func (n *node) get(
 	}
 }
 
-// finalize prunes unnecessary nodes (e.g., where the two records are the same) and
-// sets the node number for the node. It returns a record pointer that is nil if
-// the node is not mergeable or the value of the merged record if it can be merged.
-// The second return value is the current node count, including the subtree.
-func (n *node) finalize(currentNum int) (*record, int) {
+// finalize  sets the node number for the node. It returns the current node
+// count, including the subtree.
+func (n *node) finalize(currentNum int) int {
 	n.nodeNum = currentNum
 	currentNum++
 
 	for i := 0; i < 2; i++ {
 		switch n.children[i].recordType {
-		case recordTypeFixedNode:
-			// We don't consider merging for fixed nodes
-			_, currentNum = n.children[i].node.finalize(currentNum)
-		case recordTypeNode:
-			record, newCurrentNum := n.children[i].node.finalize(currentNum)
-			if record == nil {
-				// nothing to merge. Use current number from child.
-				currentNum = newCurrentNum
-			} else {
-				n.children[i] = *record
-			}
+		case recordTypeFixedNode,
+			recordTypeNode:
+			currentNum = n.children[i].node.finalize(currentNum)
 		default:
 		}
 	}
 
-	if n.children[0].recordType == n.children[1].recordType &&
-		(n.children[0].recordType == recordTypeEmpty ||
-			(n.children[0].recordType == recordTypeData &&
-				n.children[0].value.key == n.children[1].value.key)) {
-		return &record{
-			recordType: n.children[0].recordType,
-			value:      n.children[0].value,
-		}, currentNum
-	}
-
-	return nil, currentNum
+	return currentNum
 }
 
 func bitAt(ip net.IP, depth int) byte {

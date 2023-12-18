@@ -52,7 +52,7 @@ func (dw *dataWriter) maybeWrite(value *dataMapValue) (int, error) {
 }
 
 func (dw *dataWriter) WriteOrWritePointer(t mmdbtype.DataType) (int64, error) {
-	keyBytes, err := dw.keyWriter.key(t)
+	keyBytes, err := dw.keyWriter.Key(t)
 	if err != nil {
 		return 0, err
 	}

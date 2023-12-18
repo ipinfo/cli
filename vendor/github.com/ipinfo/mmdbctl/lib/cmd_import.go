@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/maxmind/mmdbwriter"
 	"github.com/maxmind/mmdbwriter/inserter"
 	"github.com/maxmind/mmdbwriter/mmdbtype"
@@ -238,7 +239,7 @@ func CmdImport(f CmdImportFlags, args []string, printHelp func()) error {
 		fieldSrcCnt += 1
 	}
 	if fieldSrcCnt > 1 {
-		return errors.New("conflicting field sources specified.")
+		return errors.New("conflicting field sources specified")
 	}
 	if f.NoFields {
 		f.Fields = []string{}
@@ -502,10 +503,18 @@ func ParseCSVHeaders(parts []string, f *CmdImportFlags, dataColStart *int) {
 }
 
 func AppendCSVRecord(f CmdImportFlags, dataColStart int, delim rune, parts []string, tree *mmdbwriter.Tree) error {
+	if startIp, _ := iputil.DecimalStrToIP(parts[0], false); startIp != nil {
+		parts[0] = startIp.String()
+	}
+
 	networkStr := parts[0]
 
 	// convert 2 IPs into IP range?
 	if f.RangeMultiCol {
+		if endIp, _ := iputil.DecimalStrToIP(parts[1], false); endIp != nil {
+			parts[1] = endIp.String()
+		}
+
 		networkStr = parts[0] + "-" + parts[1]
 	}
 

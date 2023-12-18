@@ -13,7 +13,7 @@ import (
 	"github.com/maxmind/mmdbwriter/inserter"
 	"github.com/maxmind/mmdbwriter/mmdbtype"
 	"github.com/oschwald/maxminddb-golang"
-	"inet.af/netaddr"
+	"go4.org/netipx"
 )
 
 var (
@@ -78,6 +78,17 @@ type Options struct {
 	// to `inserter.ReplaceWith`, which replaces any conflicting old value
 	// entirely with the new.
 	Inserter inserter.FuncGenerator
+
+	// KeyGenerator is used to generate unique keys for the top-level record
+	// values inserted into the database. This is used to deduplicate data
+	// in memory as the tree is being created. The KeyGenerator must
+	// generate a unique key for the value. If two different values have
+	// the same key, only one will be used.
+	//
+	// The default key generator serializes the value and generates a
+	// SHA-256 hash from it. Although this is relatively safe, it can be
+	// resource intensive for large data structures.
+	KeyGenerator KeyGenerator
 }
 
 // Tree represents an MaxMind DB search tree.
@@ -101,7 +112,6 @@ type Tree struct {
 func New(opts Options) (*Tree, error) {
 	tree := &Tree{
 		buildEpoch:              time.Now().Unix(),
-		dataMap:                 newDataMap(),
 		databaseType:            opts.DatabaseType,
 		description:             map[string]string{},
 		disableMetadataPointers: opts.DisableMetadataPointers,
@@ -121,6 +131,12 @@ func New(opts Options) (*Tree, error) {
 
 	if opts.IPVersion != 0 {
 		tree.ipVersion = opts.IPVersion
+	}
+
+	if opts.KeyGenerator == nil {
+		tree.dataMap = newDataMap(newKeyWriter())
+	} else {
+		tree.dataMap = newDataMap(opts.KeyGenerator)
 	}
 
 	if opts.Languages != nil {
@@ -310,22 +326,22 @@ func (t *Tree) insertRange(
 	inserterFunc inserter.Func,
 	node *node,
 ) error {
-	_start, ok := netaddr.FromStdIP(start)
+	startNetIP, ok := netipx.FromStdIP(start)
 	if !ok {
 		return errors.New("start IP is invalid")
 	}
-	_end, ok := netaddr.FromStdIP(end)
+	endNetIP, ok := netipx.FromStdIP(end)
 	if !ok {
 		return errors.New("end IP is invalid")
 	}
 
-	r := netaddr.IPRangeFrom(_start, _end)
+	r := netipx.IPRangeFrom(startNetIP, endNetIP)
 	if !r.IsValid() {
 		return errors.New("start & end IPs did not give valid range")
 	}
 	subnets := r.Prefixes()
 	for _, subnet := range subnets {
-		if err := t.insert(subnet.IPNet(), recordType, inserterFunc, node); err != nil {
+		if err := t.insert(netipx.PrefixIPNet(subnet), recordType, inserterFunc, node); err != nil {
 			return err
 		}
 	}
@@ -339,6 +355,7 @@ func (t *Tree) insertStringNetwork(
 	inserterFunc inserter.Func,
 	node *node,
 ) error {
+	//nolint:forbidigo // code predates netip
 	_, ipnet, err := net.ParseCIDR(network)
 	if err != nil {
 		return fmt.Errorf("parsing network (%s): %w", network, err)
@@ -353,6 +370,7 @@ var ipv4AliasNetworks = []string{
 }
 
 func (t *Tree) insertIPv4Aliases() error {
+	//nolint:forbidigo // code predates netip
 	_, ipv4Root, err := net.ParseCIDR("::/96")
 	if err != nil {
 		return fmt.Errorf("parsing IPv4 root: %w", err)
@@ -406,17 +424,16 @@ func (t *Tree) Get(ip net.IP) (*net.IPNet, mmdbtype.DataType) {
 		// the MaxMind DB format has the record for 1.1.1.1 at ::1.1.1.1.
 		if ipv4 := ip.To4(); ipv4 != nil {
 			lookupIP = ipV4ToV6(ipv4)
+
+			// This simplifies the logic around creating the IPNet. If we didn't
+			// do this, we would need to specifically adjust the prefix length
+			// when creating the mask and we would also need to worry about
+			// what to do if there isn't an IPv4 tree.
+			ip = ip.To16()
 		}
 	}
 
 	prefixLen, r := t.root.get(lookupIP, 0)
-
-	// This is so that if you look up an IPv4 address in a database that has
-	// an IPv4 subtree, you will get back an IPv4 network. This matches what
-	// github.com/oschwald/maxminddb-golang does.
-	if prefixLen >= 96 && len(ip) == 4 {
-		prefixLen -= 96
-	}
 
 	mask := net.CIDRMask(prefixLen, t.treeDepth)
 
@@ -433,7 +450,7 @@ func (t *Tree) Get(ip net.IP) (*net.IPNet, mmdbtype.DataType) {
 
 // finalize prepares the tree for writing. It is not threadsafe.
 func (t *Tree) finalize() {
-	_, t.nodeCount = t.root.finalize(0)
+	t.nodeCount = t.root.finalize(0)
 }
 
 // WriteTo writes the tree to the provided Writer.

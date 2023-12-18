@@ -93,6 +93,11 @@ func (m *modPipe) Read(out []byte) (n int, err error) {
 		}
 
 		m.partialOut, n = copyBytes(out, line)
+		// If n is zero and err is nil, don't return. Otherwise, scanner.Scanners will
+		// return io.ErrNoProgress when (0, nil) is returned too many times.
+		if n == 0 && m.err == nil {
+			continue
+		}
 		return n, nil
 	}
 }

@@ -2,12 +2,16 @@
 package mmdbtype
 
 import (
+	"bytes"
 	"encoding/binary"
 	"fmt"
 	"io"
 	"math/big"
 	"math/bits"
-	"sort"
+	"reflect"
+
+	// TODO: Once the min Go version is 1.21, switch this to "slices".
+	"golang.org/x/exp/slices"
 )
 
 type typeNum byte
@@ -43,6 +47,7 @@ type writer interface {
 // DataType represents a MaxMind DB data type.
 type DataType interface {
 	Copy() DataType
+	Equal(DataType) bool
 	size() int
 	typeNum() typeNum
 	WriteTo(writer) (int64, error)
@@ -51,8 +56,16 @@ type DataType interface {
 // Bool is the MaxMind DB boolean type.
 type Bool bool
 
+var _ DataType = (*Bool)(nil)
+
 // Copy the value.
 func (t Bool) Copy() DataType { return t }
+
+// Equal checks for equality.
+func (t Bool) Equal(other DataType) bool {
+	otherT, ok := other.(Bool)
+	return ok && t == otherT
+}
 
 func (t Bool) size() int {
 	if t {
@@ -73,11 +86,23 @@ func (t Bool) WriteTo(w writer) (int64, error) {
 // Bytes is the MaxMind DB bytes type.
 type Bytes []byte
 
+var _ DataType = Bytes(nil)
+
 // Copy the value.
 func (t Bytes) Copy() DataType {
 	nv := make(Bytes, len(t))
 	copy(nv, t)
 	return nv
+}
+
+// Equal checks for equality.
+func (t Bytes) Equal(other DataType) bool {
+	otherT, ok := other.(Bytes)
+	if !ok {
+		return false
+	}
+
+	return bytes.Equal(t, otherT)
 }
 
 func (t Bytes) size() int {
@@ -106,8 +131,16 @@ func (t Bytes) WriteTo(w writer) (int64, error) {
 // Float32 is the MaxMind DB float type.
 type Float32 float32
 
+var _ DataType = (*Float32)(nil)
+
 // Copy the value.
 func (t Float32) Copy() DataType { return t }
+
+// Equal checks for equality.
+func (t Float32) Equal(other DataType) bool {
+	otherT, ok := other.(Float32)
+	return ok && t == otherT
+}
 
 func (t Float32) size() int {
 	return 4
@@ -134,8 +167,16 @@ func (t Float32) WriteTo(w writer) (int64, error) {
 // Float64 is the MaxMind DB double type.
 type Float64 float64
 
+var _ DataType = (*Float64)(nil)
+
 // Copy the value.
 func (t Float64) Copy() DataType { return t }
+
+// Equal checks for equality.
+func (t Float64) Equal(other DataType) bool {
+	otherT, ok := other.(Float64)
+	return ok && t == otherT
+}
 
 func (t Float64) size() int {
 	return 8
@@ -162,8 +203,16 @@ func (t Float64) WriteTo(w writer) (int64, error) {
 // Int32 is the MaxMind DB signed 32-bit integer type.
 type Int32 int32
 
+var _ DataType = (*Int32)(nil)
+
 // Copy the value.
 func (t Int32) Copy() DataType { return t }
+
+// Equal checks for equality.
+func (t Int32) Equal(other DataType) bool {
+	otherT, ok := other.(Int32)
+	return ok && t == otherT
+}
 
 func (t Int32) size() int {
 	return 4 - bits.LeadingZeros32(uint32(t))/8
@@ -194,6 +243,8 @@ func (t Int32) WriteTo(w writer) (int64, error) {
 // Map is the MaxMind DB map type.
 type Map map[String]DataType
 
+var _ DataType = Map(nil)
+
 // Copy makes a deep copy of the Map.
 func (t Map) Copy() DataType {
 	newMap := make(Map, len(t))
@@ -201,6 +252,29 @@ func (t Map) Copy() DataType {
 		newMap[k] = v.Copy()
 	}
 	return newMap
+}
+
+// Equal checks for equality.
+func (t Map) Equal(other DataType) bool {
+	otherT, ok := other.(Map)
+	if !ok {
+		return false
+	}
+
+	if len(t) != len(otherT) {
+		return false
+	}
+
+	if reflect.ValueOf(t).Pointer() == reflect.ValueOf(otherT).Pointer() {
+		return true
+	}
+
+	for k, v := range t {
+		if ov, ok := otherT[k]; !ok || !v.Equal(ov) {
+			return false
+		}
+	}
+	return true
 }
 
 func (t Map) size() int {
@@ -226,7 +300,7 @@ func (t Map) WriteTo(w writer) (int64, error) {
 	for k := range t {
 		keys = append(keys, string(k))
 	}
-	sort.Strings(keys)
+	slices.Sort(keys)
 
 	for _, ks := range keys {
 		k := String(ks)
@@ -249,8 +323,16 @@ func (t Map) WriteTo(w writer) (int64, error) {
 // mmdbwriter.Tree. Doing so may result in a corrupt database.
 type Pointer uint32
 
+var _ DataType = (*Pointer)(nil)
+
 // Copy the value.
 func (t Pointer) Copy() DataType { return t }
+
+// Equal checks for equality.
+func (t Pointer) Equal(other DataType) bool {
+	otherT, ok := other.(Pointer)
+	return ok && t == otherT
+}
 
 const (
 	pointerMaxSize0 = 1 << 11
@@ -354,6 +436,8 @@ func (t Pointer) WriteTo(w writer) (int64, error) {
 // Slice is the MaxMind DB array type.
 type Slice []DataType
 
+var _ DataType = Slice(nil)
+
 // Copy makes a deep copy of the Slice.
 func (t Slice) Copy() DataType {
 	newSlice := make(Slice, len(t))
@@ -361,6 +445,29 @@ func (t Slice) Copy() DataType {
 		newSlice[k] = v.Copy()
 	}
 	return newSlice
+}
+
+// Equal checks for equality.
+func (t Slice) Equal(other DataType) bool {
+	otherT, ok := other.(Slice)
+	if !ok {
+		return false
+	}
+
+	if len(t) != len(otherT) {
+		return false
+	}
+
+	if reflect.ValueOf(t).Pointer() == reflect.ValueOf(otherT).Pointer() {
+		return true
+	}
+
+	for i, v := range t {
+		if !otherT[i].Equal(v) {
+			return false
+		}
+	}
+	return true
 }
 
 func (t Slice) size() int {
@@ -391,8 +498,16 @@ func (t Slice) WriteTo(w writer) (int64, error) {
 // String is the MaxMind DB string type.
 type String string
 
+var _ DataType = (*String)(nil)
+
 // Copy the value.
 func (t String) Copy() DataType { return t }
+
+// Equal checks for equality.
+func (t String) Equal(other DataType) bool {
+	otherT, ok := other.(String)
+	return ok && t == otherT
+}
 
 func (t String) size() int {
 	return len(t)
@@ -420,8 +535,16 @@ func (t String) WriteTo(w writer) (int64, error) {
 // Uint16 is the MaxMind DB unsigned 16-bit integer type.
 type Uint16 uint16
 
+var _ DataType = (*Uint16)(nil)
+
 // Copy the value.
 func (t Uint16) Copy() DataType { return t }
+
+// Equal checks for equality.
+func (t Uint16) Equal(other DataType) bool {
+	otherT, ok := other.(Uint16)
+	return ok && t == otherT
+}
 
 func (t Uint16) size() int {
 	return 2 - bits.LeadingZeros16(uint16(t))/8
@@ -451,6 +574,14 @@ func (t Uint16) WriteTo(w writer) (int64, error) {
 
 // Uint32 is the MaxMind DB unsigned 32-bit integer type.
 type Uint32 uint32
+
+var _ DataType = (*Uint32)(nil)
+
+// Equal checks for equality.
+func (t Uint32) Equal(other DataType) bool {
+	otherT, ok := other.(Uint32)
+	return ok && t == otherT
+}
 
 // Copy the value.
 func (t Uint32) Copy() DataType { return t }
@@ -484,8 +615,16 @@ func (t Uint32) WriteTo(w writer) (int64, error) {
 // Uint64 is the MaxMind DB unsigned 64-bit integer type.
 type Uint64 uint64
 
+var _ DataType = (*Uint64)(nil)
+
 // Copy the value.
 func (t Uint64) Copy() DataType { return t }
+
+// Equal checks for equality.
+func (t Uint64) Equal(other DataType) bool {
+	otherT, ok := other.(Uint64)
+	return ok && t == otherT
+}
 
 func (t Uint64) size() int {
 	return 8 - bits.LeadingZeros64(uint64(t))/8
@@ -517,12 +656,20 @@ func (t Uint64) WriteTo(w writer) (int64, error) {
 // Uint128 is the MaxMind DB unsigned 128-bit integer type.
 type Uint128 big.Int
 
+var _ DataType = (*Uint128)(nil)
+
 // Copy make a deep copy of the Uint128.
 func (t *Uint128) Copy() DataType {
 	nv := big.Int{}
 	nv.Set((*big.Int)(t))
 	uv := Uint128(nv)
 	return &uv
+}
+
+// Equal checks for equality.
+func (t *Uint128) Equal(other DataType) bool {
+	otherT, ok := other.(*Uint128)
+	return ok && (*big.Int)(t).Cmp((*big.Int)(otherT)) == 0
 }
 
 func (t *Uint128) size() int {
@@ -560,16 +707,16 @@ const (
 func writeCtrlByte(w writer, t DataType) (int64, error) {
 	size := t.size()
 
-	typeNum := t.typeNum()
+	typeN := t.typeNum()
 
 	var firstByte byte
 	var secondByte byte
 
-	if typeNum < 8 {
-		firstByte = byte(typeNum << 5)
+	if typeN < 8 {
+		firstByte = byte(typeN << 5)
 	} else {
 		firstByte = byte(typeNumExtended << 5)
-		secondByte = byte(typeNum - 7)
+		secondByte = byte(typeN - 7)
 	}
 
 	leftOver := 0
@@ -577,15 +724,15 @@ func writeCtrlByte(w writer, t DataType) (int64, error) {
 	switch {
 	case size < firstSize:
 		firstByte |= byte(size)
-	case size <= secondSize:
+	case size < secondSize:
 		firstByte |= 29
 		leftOver = size - firstSize
 		leftOverSize = 1
-	case size <= thirdSize:
+	case size < thirdSize:
 		firstByte |= 30
 		leftOver = size - secondSize
 		leftOverSize = 2
-	case size <= maxSize:
+	case size < maxSize:
 		firstByte |= 31
 		leftOver = size - thirdSize
 		leftOverSize = 3
@@ -593,7 +740,7 @@ func writeCtrlByte(w writer, t DataType) (int64, error) {
 		return 0, fmt.Errorf(
 			"cannot store %d bytes; max size is %d",
 			size,
-			maxSize,
+			maxSize-1,
 		)
 	}
 
@@ -601,7 +748,7 @@ func writeCtrlByte(w writer, t DataType) (int64, error) {
 	if err != nil {
 		return 0, fmt.Errorf(
 			"writing first ctrl byte (type: %d, size: %d): %w",
-			typeNum,
+			typeN,
 			size,
 			err,
 		)
@@ -613,7 +760,7 @@ func writeCtrlByte(w writer, t DataType) (int64, error) {
 		if err != nil {
 			return numBytes, fmt.Errorf(
 				"writing second ctrl byte (type: %d, size: %d): %w",
-				typeNum,
+				typeN,
 				size,
 				err,
 			)
@@ -627,7 +774,7 @@ func writeCtrlByte(w writer, t DataType) (int64, error) {
 		if err != nil {
 			return numBytes, fmt.Errorf(
 				"writing remaining ctrl bytes (type: %d, size: %d, value: %d): %w",
-				typeNum,
+				typeN,
 				size,
 				v,
 				err,

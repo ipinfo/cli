@@ -1,12 +1,10 @@
 package script
 
 import (
+	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os/exec"
-
-	"github.com/hashicorp/go-multierror"
 )
 
 // Exec executes a command and returns a stream of the stdout of the command.
@@ -51,7 +49,7 @@ func (e exe) Name() string {
 
 func (e exe) Pipe(stdin io.Reader) (io.Reader, error) {
 	cmd := exec.Command(e.cmd, e.args...)
-	var errors *multierror.Error
+	var merr error
 
 	// Pipe previous stdin if available.
 	if stdin != nil {
@@ -61,23 +59,23 @@ func (e exe) Pipe(stdin io.Reader) (io.Reader, error) {
 	// Pipe stdout to the current command output.
 	cmdOut, err := cmd.StdoutPipe()
 	if err != nil {
-		errors = multierror.Append(errors, fmt.Errorf("pipe stdout: %v", err))
+		merr = errors.Join(merr, fmt.Errorf("pipe stdout: %w", err))
 	}
 
 	if e.stderr == nil {
-		e.stderr = ioutil.Discard
+		e.stderr = io.Discard
 	}
 	cmd.Stderr = e.stderr
 
 	// start the process
 	err = cmd.Start()
 	if err != nil {
-		errors = multierror.Append(errors, fmt.Errorf("start process: %v", err))
+		merr = errors.Join(merr, fmt.Errorf("start process: %w", err))
 	}
 	return readcloser{
 		Reader: cmdOut,
 		Closer: closerFn(func() error { return cmd.Wait() }),
-	}, errors.ErrorOrNil()
+	}, merr
 }
 
 type closerFn func() error
