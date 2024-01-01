@@ -1,4 +1,4 @@
-# 3.2.0
+# 3.3.0
 
 - Support CIDRs & Ranges in `grepip`.
 - New subcommand `matchip` which helps to grep for IP CIDRs/Ranges that
@@ -16,7 +16,7 @@
 - [#185](https://github.com/ipinfo/cli/pull/185)
 - [#190](https://github.com/ipinfo/cli/pull/190)
 
-# 3.2.0
+# 3.3.0
 
 * `ipinfo tool prefix` introduced with some misc. prefix tools. Currently supports following subcommands:
     - `addr` returns the base IP address of a prefix.
