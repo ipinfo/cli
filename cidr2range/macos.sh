@@ -1,12 +1,16 @@
 #!/bin/sh
 
+set -e
+
 VSN=1.2.0
 PLAT=darwin_amd64
 
-curl -LO https://github.com/ipinfo/cli/releases/download/cidr2range-${VSN}/cidr2range_${VSN}_${PLAT}.tar.gz && \
-tar -xf cidr2range_${VSN}_${PLAT}.tar.gz && \
-rm cidr2range_${VSN}_${PLAT}.tar.gz && \
-sudo mv cidr2range_${VSN}_${PLAT} /usr/local/bin/cidr2range && \
+curl -LO https://github.com/ipinfo/cli/releases/download/cidr2range-${VSN}/cidr2range_${VSN}_${PLAT}.tar.gz
+tar -xf cidr2range_${VSN}_${PLAT}.tar.gz
+rm cidr2range_${VSN}_${PLAT}.tar.gz
+sudo mv cidr2range_${VSN}_${PLAT} /usr/local/bin/cidr2range
+
+echo
 echo 'You can now run `cidr2range`.'
 
 if [ -f "$0" ]; then
