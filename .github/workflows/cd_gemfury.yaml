@@ -1,0 +1,55 @@
+# Build and release ipinfo cli to gemfury (apt)
+
+name: Release to Gemfury
+on:
+  push:
+    tags:
+      - 'ipinfo-*'
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup GO
+      uses: actions/setup-go@v3
+      with:
+        go-version: '1.20'
+
+    - name: Extract CLI Name and Version
+      run: |
+        # Get the tag name from the event payload
+        TAG_NAME=${{ github.ref_name }}
+
+        # Use a regular expression to extract the CLI name and version
+        if [[ $TAG_NAME =~ ^([^-]+)-([^-]+)$ ]]; then
+          CLI_NAME="${BASH_REMATCH[1]}"
+          CLI_VERSION="${BASH_REMATCH[2]}"
+
+          echo "CLI Name: $CLI_NAME"
+          echo "CLI Version: $CLI_VERSION"
+
+          # Add to github env
+          echo "CLI_NAME=$CLI_NAME" >> $GITHUB_ENV
+          echo "CLI_VERSION=$CLI_VERSION" >> $GITHUB_ENV
+        else
+          echo "Invalid tag format: $TAG_NAME"
+          echo "Tag should be of format CLI-VSN. e.g. ipinfo-1.0.0"
+          exit 1
+        fi
+
+    - name: Build
+      run: ./scripts/build-archive-all.sh ${{ env.CLI_NAME }} ${{ env.CLI_VERSION }} true
+
+    - name: Install dependencies
+      run: |
+        echo "deb [trusted=yes] https://apt.fury.io/cli/ * *" | sudo tee /etc/apt/sources.list.d/fury-cli.list
+        sudo apt-get update
+        sudo apt-get install -y fury-cli
+
+    - name: Upload
+      run: |
+        fury push ./build/${{ env.CLI_NAME }}_${{ env.CLI_VERSION }}_linux_*.deb --api-token  ${{ secrets.IPINFO_GEMFURY_PUSH_TOKEN }}

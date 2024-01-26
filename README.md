@@ -32,12 +32,12 @@ curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.0/macos.sh |
 _Note_: this installs our full suite of binaries and keeps them up-to-date.
 
 ```bash
-sudo add-apt-repository ppa:ipinfo/ppa
+echo "deb [trusted=yes] https://ppa.ipinfo.net/ /" | sudo tee  "/etc/apt/sources.list.d/ipinfo.ppa.list"
 sudo apt update
 sudo apt install ipinfo
 ```
 
-### Debian / Ubuntu (amd64)
+### Debian / Ubuntu
 
 _Note_: this is a one-time installation; updates are not automatic. Use the PPA
 for automatic updates.
@@ -49,9 +49,11 @@ curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.0/deb.sh | s
 OR
 
 ```bash
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.0/ipinfo_3.3.0.deb
-sudo dpkg -i ipinfo_3.3.0.deb
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.0/ipinfo_3.3.0_linux_{arch}.deb
+sudo dpkg -i ipinfo_3.3.0_linux_{arch}.deb
 ```
+
+where `{arch}` can be 386, amd64, arm, or arm64.
 
 ### FreeBSD
 
@@ -147,7 +149,7 @@ curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.0/ipinfo_3.3
 wget https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.0/ipinfo_3.3.0_${PLAT}.tar.gz
 
 tar -xvf ipinfo_3.3.0_${PLAT}.tar.gz
-mv ipinfo_3.3.0_${PLAT} /usr/local/bin/ipinfo
+sudo mv ipinfo_3.3.0_${PLAT} /usr/local/bin/ipinfo
 ```
 
 ### Using `git`

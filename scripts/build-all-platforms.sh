@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Build binary for all platforms for cli $1 & version $2.
+# Optional param LINUX_ONLY can be set to `true`, to build for linux only.
 
 set -e
 
@@ -9,6 +10,7 @@ ROOT=$DIR/..
 
 CLI=$1
 VSN=$2
+LINUX_ONLY=$3
 
 if [ -z "$CLI" ]; then
     echo "require cli as first parameter" 2>&1
@@ -53,6 +55,11 @@ do
     os="${t%_*}"
     arch="${t#*_}"
     output="${CLI}_${VSN}_${os}_${arch}"
+
+    if [ "$LINUX_ONLY" == true ] && [ "$os" != "linux" ]; then
+        echo "skipping platform: ${os}_${arch}"
+        continue
+    fi
 
     if [ "$os" == "windows" ] ; then
         output+=".exe"
