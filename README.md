@@ -27,12 +27,12 @@ OR to install the latest `amd64` version without automatic updates:
 curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.0/macos.sh | sh
 ```
 
-### Ubuntu APT
+### Ubuntu PPA
 
 _Note_: this installs our full suite of binaries and keeps them up-to-date.
 
 ```bash
-echo "deb [trusted=yes] https://apt.fury.io/ipinfo/ /" | sudo tee  "/etc/apt/sources.list.d/ipinfo.fury.list"
+echo "deb [trusted=yes] https://ppa.ipinfo.net/ /" | sudo tee  "/etc/apt/sources.list.d/ipinfo.ppa.list"
 sudo apt update
 sudo apt install ipinfo
 ```
@@ -52,6 +52,7 @@ OR
 curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.0/ipinfo_3.3.0_linux_{arch}.deb
 sudo dpkg -i ipinfo_3.3.0_linux_{arch}.deb
 ```
+
 where `{arch}` can be 386, amd64, arm, or arm64.
 
 ### FreeBSD
