@@ -2,20 +2,45 @@ name: Publish to WinGet
 on:
   release:
     types: [released]
+
 jobs:
+  check-release:
+    runs-on: ubuntu-latest
+    outputs:
+      valid-cli: ${{ steps.cli-name.outputs.valid }}
+      cli-vsn: ${{ steps.cli-name.outputs.cli-vsn }}
+    steps:
+      - name: Confirm that this is the release of ipinfo cli
+        id: cli-name
+        run: |
+          releaseName="${{ github.event.release.name }}"
+
+          if [[ $releaseName =~ ^ipinfo-([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            echo "Release name matches pattern 'ipinfo-x.x.x'"
+            echo "cli-vsn=${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${BASH_REMATCH[3]}" >> "$GITHUB_OUTPUT"
+            echo "valid=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Invalid release name format: $releaseName"
+            echo "Release name should be of format ipinfo-x.x.x"
+            exit 1
+          fi
+
   publish:
+    needs: check-release
+    if: needs.check-release.outputs.valid-cli == true
     runs-on: windows-latest
     steps:
-      - name: Get version
-        id: get-version
-        run: |
-          # Finding the version from release name
-          $VERSION="${{ github.event.release.name }}" -match '\d+\.\d+\.\d+'
-          "version=$VERSION" >> $env:GITHUB_OUTPUT
-        shell: pwsh
+      - name: Get Github App Token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.GITHUB_APP_ID }}
+          private-key: ${{ secrets.GITHUB_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
       - uses: vedantmgoyal2009/winget-releaser@v2
         with:
           identifier: ipinfo.ipinfo
           installers-regex: '_windows_\w+\.zip$'
-          version: ${{ steps.get-version.outputs.version }}
-          token: ${{ secrets.WINGET_TOKEN }}
+          version: ${{ needs.check-release.outputs.cli-vsn }}
+          token: ${{ steps.app-token.outputs.token }}
