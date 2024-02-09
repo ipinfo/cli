@@ -38,8 +38,14 @@ jobs:
         run: |
           cd chocolatey-packages\ipinfo
           .\update.ps1
-      
+
+      - name: Test installation
+        run: |
+          cd chocolatey-packages\ipinfo
+          Test-Package
+
       - name: Upload to choco
         run: |
+          cd chocolatey-packages\ipinfo
           choco apikey --key ${{ secrets.CHOCO_API_KEY }} --source https://push.chocolatey.org/
           choco push ipinfo.${{ needs.check-release.outputs.cli-vsn }}.nupkg --source https://push.chocolatey.org/
