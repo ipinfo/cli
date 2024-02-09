@@ -22,7 +22,7 @@ jobs:
           else
             echo "Invalid release name format: $releaseName"
             echo "Release name should be of format ipinfo-x.x.x"
-            exit 1
+            exit 0
           fi
 
   publish:
