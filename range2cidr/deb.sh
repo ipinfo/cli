@@ -22,7 +22,11 @@ case $ARCH in
         ;;
 esac
 curl -LO https://github.com/ipinfo/cli/releases/download/range2cidr-${VSN}/range2cidr_${VSN}_linux_${ARCH_NAME}.deb
-sudo dpkg -i range2cidr_${VSN}_linux_${ARCH_NAME}.deb
+if command -v sudo >/dev/null 2>&1; then
+    sudo dpkg -i range2cidr_${VSN}_linux_${ARCH_NAME}.deb
+else
+    dpkg -i range2cidr_${VSN}_linux_${ARCH_NAME}.deb
+fi
 rm range2cidr_${VSN}_linux_${ARCH_NAME}.deb
 
 echo

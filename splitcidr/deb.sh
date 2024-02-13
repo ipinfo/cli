@@ -22,7 +22,11 @@ case $ARCH in
         ;;
 esac
 curl -LO https://github.com/ipinfo/cli/releases/download/splitcidr-${VSN}/splitcidr_${VSN}_linux_${ARCH_NAME}.deb
-sudo dpkg -i splitcidr_${VSN}_linux_${ARCH_NAME}.deb
+if command -v sudo >/dev/null 2>&1; then
+    sudo dpkg -i splitcidr_${VSN}_linux_${ARCH_NAME}.deb
+else
+    dpkg -i splitcidr_${VSN}_linux_${ARCH_NAME}.deb
+fi
 rm splitcidr_${VSN}_linux_${ARCH_NAME}.deb
 
 echo

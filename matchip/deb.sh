@@ -22,7 +22,11 @@ case $ARCH in
         ;;
 esac
 curl -LO https://github.com/ipinfo/cli/releases/download/matchip-${VSN}/matchip_${VSN}_linux_${ARCH_NAME}.deb
-sudo dpkg -i matchip_${VSN}_linux_${ARCH_NAME}.deb
+if command -v sudo >/dev/null 2>&1; then
+    sudo dpkg -i matchip_${VSN}_linux_${ARCH_NAME}.deb
+else
+    dpkg -i matchip_${VSN}_linux_${ARCH_NAME}.deb
+fi
 rm matchip_${VSN}_linux_${ARCH_NAME}.deb
 
 echo
