@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [ "$(id -u)" -ne 0 ]; then
+    echo "This script requires root privileges. Please run it as root or with sudo." >&2
+    exit 1
+fi
+
 VSN=1.2.0
 DEFAULT_ARCH=amd64
 
@@ -22,7 +27,7 @@ case $ARCH in
         ;;
 esac
 curl -LO https://github.com/ipinfo/cli/releases/download/cidr2range-${VSN}/cidr2range_${VSN}_linux_${ARCH_NAME}.deb
-sudo dpkg -i cidr2range_${VSN}_linux_${ARCH_NAME}.deb
+dpkg -i cidr2range_${VSN}_linux_${ARCH_NAME}.deb
 rm cidr2range_${VSN}_linux_${ARCH_NAME}.deb
 
 echo

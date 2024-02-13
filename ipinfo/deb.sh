@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [ "$(id -u)" -ne 0 ]; then
+    echo "This script requires root privileges. Please run it as root or with sudo." >&2
+    exit 1
+fi
+
 VSN=3.3.0
 DEFAULT_ARCH=amd64
 
@@ -23,7 +28,7 @@ case $ARCH in
 esac
 
 curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-${VSN}/ipinfo_${VSN}_linux_${ARCH_NAME}.deb
-sudo dpkg -i ipinfo_${VSN}_linux_${ARCH_NAME}.deb
+dpkg -i ipinfo_${VSN}_linux_${ARCH_NAME}.deb
 rm ipinfo_${VSN}_linux_${ARCH_NAME}.deb
 
 echo
