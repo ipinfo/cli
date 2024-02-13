@@ -1,10 +1,5 @@
 #!/bin/sh
 
-if [ "$(id -u)" -ne 0 ]; then
-    echo "This script requires root privileges. Please run it as root or with sudo." >&2
-    exit 1
-fi
-
 VSN=1.2.3
 DEFAULT_ARCH=amd64
 
@@ -27,7 +22,11 @@ case $ARCH in
         ;;
 esac
 curl -LO https://github.com/ipinfo/cli/releases/download/grepip-${VSN}/grepip_${VSN}_linux_${ARCH_NAME}.deb
-dpkg -i grepip_${VSN}_linux_${ARCH_NAME}.deb
+if command -v sudo >/dev/null 2>&1; then
+    sudo dpkg -i grepip_${VSN}_linux_${ARCH_NAME}.deb
+else
+    dpkg -i grepip_${VSN}_linux_${ARCH_NAME}.deb
+fi
 rm grepip_${VSN}_linux_${ARCH_NAME}.deb
 
 echo
