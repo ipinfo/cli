@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>ipinfo</id>
+    <version>1.0.0</version>
+    <owners>ipinfo</owners>
+    <title>ipinfo</title>
+    <authors>IPInfo</authors>
+    <projectUrl>https://github.com/ipinfo/cli</projectUrl>
+    <packageSourceUrl>https://github.com/ipinfo/cli/tree/master/chocolatey-packages/ipinfo</packageSourceUrl>
+    <!--<iconUrl>https://raw.github.com/jbpaux/chocolatey-packages/tree/master/ipinfo/ipinfo.png</iconUrl>-->
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <tags>ipinfo cli</tags>
+    <summary>Official Command Line Interface for the IPinfo API (IP geolocation and other types of IP data).</summary>
+    <description><![CDATA[This is the official CLI for the IPinfo.io IP address API, allowing you to:
+
+    Look up IP details in bulk or one-by-one.
+    Look up ASN details.
+    Summarize the details of up to 1000 IPs at a time.
+    Open a map of IP locations for any set of IPs.
+    Filter IPv4/IPv6 addresses from any input.
+    Print out IP lists for any CIDR or IP range.
+    And more!
+]]></description>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>

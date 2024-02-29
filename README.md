@@ -138,6 +138,7 @@ solaris_amd64
 windows_386
 windows_amd64
 windows_arm
+windows_arm64
 ```
 
 After choosing a platform `PLAT` from above, run:

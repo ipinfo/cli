@@ -1,0 +1,54 @@
+name: Publish to Chocolatey
+on:
+  release:
+    types: [released]
+
+jobs:
+  check-release:
+    runs-on: ubuntu-latest
+    outputs:
+      valid-cli: ${{ steps.cli-name.outputs.valid }}
+      cli-vsn: ${{ steps.cli-name.outputs.cli-vsn }}
+    
+    steps:
+      - name: Confirm that this is the release of ipinfo cli
+        id: cli-name
+        run: |
+          releaseName="${{ github.event.release.name }}"
+
+          if [[ $releaseName =~ ^ipinfo-([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            echo "Release name matches pattern 'ipinfo-x.x.x'"
+            echo "cli-vsn=${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${BASH_REMATCH[3]}" >> "$GITHUB_OUTPUT"
+            echo "valid=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Invalid release name format: $releaseName"
+            echo "Release name should be of format ipinfo-x.x.x"
+          fi
+
+  publish:
+    needs: check-release
+    if: needs.check-release.outputs.valid-cli == true
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install au module
+        run: |
+          choco install au -y
+
+      - name: Update package version
+        run: |
+          cd chocolatey-packages\ipinfo
+          .\update.ps1
+
+      - name: Test installation
+        run: |
+          cd chocolatey-packages\ipinfo
+          Test-Package
+
+      - name: Upload to choco
+        run: |
+          cd chocolatey-packages\ipinfo
+          choco apikey --key ${{ secrets.CHOCO_API_KEY }} --source https://push.chocolatey.org/
+          choco push ipinfo.${{ needs.check-release.outputs.cli-vsn }}.nupkg --source https://push.chocolatey.org/
