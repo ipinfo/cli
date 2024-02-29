@@ -33,6 +33,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Install au module
+        run: |
+          choco install au -y
+
       - name: Update package version
         run: |
           cd chocolatey-packages\ipinfo
