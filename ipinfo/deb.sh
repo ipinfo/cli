@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VSN=3.3.0
+VSN=3.3.1
 DEFAULT_ARCH=amd64
 
 ARCH=$(uname -m)

@@ -1,3 +1,29 @@
+# 3.3.1
+
+- Added support for Windows ARM64.
+- Windows users can also install via Winget, Chocolatey, and Scoop.
+- Updated Ubuntu PPA source. New URL is https://ppa.ipinfo.net.
+- Added multiple arch support to PPA. These architectures are; i386, amd64, armhf, and arm64.
+- Fixed ipinfo tool aggregate not working properly for adjacent CIRDs.
+- Added some basic IP tools such as:
+  - is_loopback
+  - is_multicast
+  - is_unspecified
+  - is_global_unicast
+  - is_interface_local_multicast
+  - is_link_local_multicast
+  - is_link_local_unicast
+- Fixed some issues related to convenience scripts.
+
+## Pull Requests
+
+- [#192](https://github.com/ipinfo/cli/pull/192)
+- [#193](https://github.com/ipinfo/cli/pull/193)
+- [#203](https://github.com/ipinfo/cli/pull/203)
+- [#204](https://github.com/ipinfo/cli/pull/204)
+- [#205](https://github.com/ipinfo/cli/pull/205)
+- [#207](https://github.com/ipinfo/cli/pull/207)
+
 # 3.3.0
 
 - Support CIDRs & Ranges in `grepip`.
@@ -16,7 +42,7 @@
 - [#185](https://github.com/ipinfo/cli/pull/185)
 - [#190](https://github.com/ipinfo/cli/pull/190)
 
-# 3.3.0
+# 3.2.0
 
 * `ipinfo tool prefix` introduced with some misc. prefix tools. Currently supports following subcommands:
     - `addr` returns the base IP address of a prefix.
