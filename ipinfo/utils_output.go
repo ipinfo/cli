@@ -39,6 +39,10 @@ var coreFields = []string{
 	"company.name",
 	"company.domain",
 	"company.type",
+	"carrier",
+	"carrier.name",
+	"carrier.mcc",
+	"carrier.mnc",
 	"privacy",
 	"privacy.vpn",
 	"privacy.proxy",
@@ -204,6 +208,14 @@ func outputFriendlyCore(d *ipinfo.Core) {
 		printline("Domain", d.Company.Domain)
 		printline("Type", d.Company.Type)
 	}
+	if d.Carrier != nil {
+		fmt.Println()
+		fmtHdr.Println("Carrier")
+		printline = printlineGen("4")
+		printline("Name", d.Carrier.Name)
+		printline("MCC", d.Carrier.MCC)
+		printline("MNC", d.Carrier.MNC)
+	}
 	if d.Privacy != nil {
 		fmt.Println()
 		fmtHdr.Println("Privacy")
@@ -283,42 +295,55 @@ func outputFieldBatchCore(
 
 	hdrs := make([]string, 0, len(fields))
 	rowFuncs := make([]func(*ipinfo.Core) string, 0, len(fields))
-	var errs []error
+	var missingPermissions []string
+	var noCarrierFoundErr error
 	// We aim to print only a single error message, even if multiple
 	// fields are related to a single piece of premium data.
 	asnErrorHandled := false
 	companyErrorHandled := false
+	carrierErrorHandled := false
 	privacyErrorHandled := false
 	abuseErrorHandled := false
 	domainsErrorHandled := false
 	for _, f := range fields {
 		if strings.HasPrefix(f, "asn") && !asnErrorHandled {
 			if err := checkPremiumData(core, "asn"); err != nil {
-				errs = append(errs, err)
+				missingPermissions = append(missingPermissions, "asn")
 				asnErrorHandled = true
 				continue
 			}
 		} else if strings.HasPrefix(f, "company") && !companyErrorHandled {
 			if err := checkPremiumData(core, "company"); err != nil {
-				errs = append(errs, err)
+				missingPermissions = append(missingPermissions, "company")
 				companyErrorHandled = true
+				continue
+			}
+		} else if strings.HasPrefix(f, "carrier") && !carrierErrorHandled {
+			if err := checkPremiumData(core, "carrier"); err != nil {
+				switch err.(type) {
+				case *NoCarrierFound:
+					noCarrierFoundErr = err
+				default:
+					missingPermissions = append(missingPermissions, "carrier")
+				}
+				carrierErrorHandled = true
 				continue
 			}
 		} else if strings.HasPrefix(f, "privacy") && !privacyErrorHandled {
 			if err := checkPremiumData(core, "privacy"); err != nil {
-				errs = append(errs, err)
+				missingPermissions = append(missingPermissions, "privacy")
 				privacyErrorHandled = true
 				continue
 			}
 		} else if strings.HasPrefix(f, "abuse") && !abuseErrorHandled {
 			if err := checkPremiumData(core, "abuse"); err != nil {
-				errs = append(errs, err)
+				missingPermissions = append(missingPermissions, "abuse")
 				abuseErrorHandled = true
 				continue
 			}
 		} else if strings.HasPrefix(f, "domains") && !domainsErrorHandled {
 			if err := checkPremiumData(core, "domains"); err != nil {
-				errs = append(errs, err)
+				missingPermissions = append(missingPermissions, "domains")
 				domainsErrorHandled = true
 				continue
 			}
@@ -349,6 +374,17 @@ func outputFieldBatchCore(
 				"company_type",
 			)
 			rowFuncs = append(rowFuncs, outputFieldCoreCompany)
+		case "carrier":
+			if carrierErrorHandled {
+				continue
+			}
+			hdrs = append(
+				hdrs,
+				"carrier_name",
+				"carrier_mcc",
+				"carrier_mnc",
+			)
+			rowFuncs = append(rowFuncs, outputFieldCoreCarrier)
 		case "privacy":
 			if privacyErrorHandled {
 				continue
@@ -391,6 +427,8 @@ func outputFieldBatchCore(
 			if asnErrorHandled && strings.HasPrefix(f, "asn.") {
 				continue
 			} else if companyErrorHandled && strings.HasPrefix(f, "company.") {
+				continue
+			} else if carrierErrorHandled && strings.HasPrefix(f, "carrier.") {
 				continue
 			} else if privacyErrorHandled && strings.HasPrefix(f, "privacy.") {
 				continue
@@ -444,6 +482,12 @@ func outputFieldBatchCore(
 			rowFuncs = append(rowFuncs, outputFieldCoreCompanyDomain)
 		case "company.type":
 			rowFuncs = append(rowFuncs, outputFieldCoreCompanyType)
+		case "carrier.name":
+			rowFuncs = append(rowFuncs, outputFieldCoreCarrierName)
+		case "carrier.mcc":
+			rowFuncs = append(rowFuncs, outputFieldCoreCarrierMCC)
+		case "carrier.mnc":
+			rowFuncs = append(rowFuncs, outputFieldCoreCarrierMNC)
 		case "privacy.vpn":
 			rowFuncs = append(rowFuncs, outputFieldCorePrivacyVPN)
 		case "privacy.proxy":
@@ -486,8 +530,11 @@ func outputFieldBatchCore(
 		}
 	}
 
-	if len(errs) != 0 {
-		return errors.Join(errs...)
+	if len(missingPermissions) > 0 {
+		errMsg := fmt.Sprintf("This token doesn't have permissions to access the following data: %s", strings.Join(missingPermissions, ", "))
+		return fmt.Errorf("%s", errMsg)
+	} else if noCarrierFoundErr != nil {
+		return noCarrierFoundErr
 	}
 
 	return nil
@@ -578,33 +625,48 @@ func outputFieldBatchASNDetails(
 	return nil
 }
 
-// The core struct within the BatchCore type has 5 types of premium data.
-// 1. ASN 2. Company 3. Privacy 4. Abuse 5. Domains.
-// These 5 fields will be populated depending upon the type of the token
+type NoCarrierFound struct {
+	Message string
+}
+
+func (e *NoCarrierFound) Error() string {
+	return e.Message
+}
+
+var ErrPermission = errors.New("no permission to access this data")
+
+// The core struct within the BatchCore type has 6 types of premium data.
+// 1. ASN 2. Company 3. Carrier 4. Privacy 5. Abuse 6. Domains.
+// These 6 fields will get populated depending upon the type of the token
 // through which the API call is made.
-// If the account behind the token is on a free plan, all 5 premium data fields will be nil.
+// If the account behind the token is on a free plan, all 6 premium data fields will be nil.
 // If the account behind the token is on a basic plan, only the ASN field will get populated
 // and the rest would be nil.
 // If the account behind the token is on a standard plan, only ASN and Privacy will be populated.
-// If the account behind the token is on a business plan, all 5 fields will get populated.
+// If the account behind the token is on a business plan, every field except the Carrier one
+// would get populated. Carrier will only be populated if a specific IP has it. Not all do.
 //
 // The aim is to determine the user's token type and check what type of data the user prompted
 // the CLI to output.
 func checkPremiumData(core ipinfo.BatchCore, dataType string) error {
 	for _, coreEntry := range core {
 		if coreEntry.ASN == nil && coreEntry.Company == nil && coreEntry.Privacy == nil && coreEntry.Abuse == nil && coreEntry.Domains == nil {
-			return fmt.Errorf("this token doesn't have permissions to access %s data", dataType)
+			return ErrPermission
+			//return fmt.Errorf("this token doesn't have permissions to access %s data", dataType)
 		} else if coreEntry.ASN != nil && coreEntry.Company == nil && coreEntry.Privacy == nil && coreEntry.Abuse == nil && coreEntry.Domains == nil {
-			if dataType == "company" || dataType == "privacy" || dataType == "abuse" || dataType == "domains" {
-				return fmt.Errorf("this token doesn't have permissions to access %s data", dataType)
+			if dataType == "company" || dataType == "carrier" || dataType == "privacy" || dataType == "abuse" || dataType == "domains" {
+				return ErrPermission
 			}
 			return nil
 		} else if coreEntry.ASN != nil && coreEntry.Company == nil && coreEntry.Privacy != nil && coreEntry.Abuse == nil && coreEntry.Domains == nil {
-			if dataType == "company" || dataType == "abuse" || dataType == "domains" {
-				return fmt.Errorf("this token doesn't have permissions to access %s data", dataType)
+			if dataType == "company" || dataType == "carrier" || dataType == "abuse" || dataType == "domains" {
+				return ErrPermission
 			}
 			return nil
 		} else {
+			if coreEntry.Carrier == nil && dataType == "carrier" {
+				return &NoCarrierFound{Message: "no carrier data associated with this IP address"}
+			}
 			return nil
 		}
 	}
@@ -734,6 +796,38 @@ func outputFieldCoreCompanyType(core *ipinfo.Core) string {
 		return ""
 	}
 	return encodeToCsvLine(core.Company.Type)
+}
+
+func outputFieldCoreCarrier(core *ipinfo.Core) string {
+	if core.Carrier == nil {
+		return ",,"
+	}
+	return encodeToCsvLine([]string{
+		core.Carrier.Name,
+		core.Carrier.MCC,
+		core.Carrier.MNC,
+	})
+}
+
+func outputFieldCoreCarrierName(core *ipinfo.Core) string {
+	if core.Carrier == nil {
+		return ""
+	}
+	return encodeToCsvLine(core.Carrier.Name)
+}
+
+func outputFieldCoreCarrierMCC(core *ipinfo.Core) string {
+	if core.Carrier == nil {
+		return ""
+	}
+	return encodeToCsvLine(core.Carrier.MCC)
+}
+
+func outputFieldCoreCarrierMNC(core *ipinfo.Core) string {
+	if core.Carrier == nil {
+		return ""
+	}
+	return encodeToCsvLine(core.Carrier.MNC)
 }
 
 func outputFieldCorePrivacy(core *ipinfo.Core) string {
