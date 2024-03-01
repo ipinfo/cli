@@ -1,7 +1,10 @@
 name: Publish to WinGet
 on:
-  release:
-    types: [released]
+  workflow_dispatch:
+    inputs:
+      release_name:
+        required: true
+        type: string
 
 jobs:
   check-release:
@@ -13,12 +16,13 @@ jobs:
       - name: Confirm that this is the release of ipinfo cli
         id: cli-name
         run: |
-          releaseName="${{ github.event.release.name }}"
+          releaseName="${{ inputs.release_name }}"
 
           if [[ $releaseName =~ ^ipinfo-([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
             echo "Release name matches pattern 'ipinfo-x.x.x'"
             echo "cli-vsn=${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${BASH_REMATCH[3]}" >> "$GITHUB_OUTPUT"
             echo "valid=true" >> "$GITHUB_OUTPUT"
+            echo $GITHUB_OUTPUT
           else
             echo "Invalid release name format: $releaseName"
             echo "Release name should be of format ipinfo-x.x.x"
@@ -26,7 +30,7 @@ jobs:
 
   publish:
     needs: check-release
-    if: needs.check-release.outputs.valid-cli == true
+    if: needs.check-release.outputs.valid-cli == 'true'
     runs-on: windows-latest
     steps:
       - name: Get Github App Token
