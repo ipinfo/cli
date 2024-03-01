@@ -652,7 +652,6 @@ func checkPremiumData(core ipinfo.BatchCore, dataType string) error {
 	for _, coreEntry := range core {
 		if coreEntry.ASN == nil && coreEntry.Company == nil && coreEntry.Privacy == nil && coreEntry.Abuse == nil && coreEntry.Domains == nil {
 			return ErrPermission
-			//return fmt.Errorf("this token doesn't have permissions to access %s data", dataType)
 		} else if coreEntry.ASN != nil && coreEntry.Company == nil && coreEntry.Privacy == nil && coreEntry.Abuse == nil && coreEntry.Domains == nil {
 			if dataType == "company" || dataType == "carrier" || dataType == "privacy" || dataType == "abuse" || dataType == "domains" {
 				return ErrPermission
