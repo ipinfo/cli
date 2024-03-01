@@ -27,6 +27,7 @@ type Core struct {
 	Timezone        string          `json:"timezone,omitempty" csv:"timezone" yaml:"timezone,omitempty"`
 	ASN             *CoreASN        `json:"asn,omitempty" csv:"asn_,inline" yaml:"asn,omitempty"`
 	Company         *CoreCompany    `json:"company,omitempty" csv:"company_,inline" yaml:"company,omitempty"`
+	Carrier         *CoreCarrier    `json:"carrier,omitempty" csv:"carrier_,inline" yaml:"carrier,omitempty"`
 	Privacy         *CorePrivacy    `json:"privacy,omitempty" csv:"privacy_,inline" yaml:"privacy,omitempty"`
 	Abuse           *CoreAbuse      `json:"abuse,omitempty" csv:"abuse_,inline" yaml:"abuse,omitempty"`
 	Domains         *CoreDomains    `json:"domains,omitempty" csv:"domains_,inline" yaml:"domains,omitempty"`
@@ -46,6 +47,13 @@ type CoreCompany struct {
 	Name   string `json:"name" csv:"name"`
 	Domain string `json:"domain" csv:"domain"`
 	Type   string `json:"type" csv:"type"`
+}
+
+// CoreCarrier represents carrier data for the Core API.
+type CoreCarrier struct {
+	Name string `json:"name" csv:"name"`
+	MCC  string `json:"mcc" csv:"mcc"`
+	MNC  string `json:"mnc" csv:"mnc"`
 }
 
 // CorePrivacy represents privacy data for the Core API.
@@ -388,6 +396,22 @@ func (c *Client) GetIPCompany(ip net.IP) (*CoreCompany, error) {
 		return nil, err
 	}
 	return core.Company, nil
+}
+
+/* CARRIER */
+
+// GetIPCarrier returns the carrier details for the specified IP.
+func GetIPCarrier(ip net.IP) (*CoreCarrier, error) {
+	return DefaultClient.GetIPCarrier(ip)
+}
+
+// GetIPCarrier returns the carrier details for the specified IP.
+func (c *Client) GetIPCarrier(ip net.IP) (*CoreCarrier, error) {
+	core, err := c.GetIPInfo(ip)
+	if err != nil {
+		return nil, err
+	}
+	return core.Carrier, nil
 }
 
 /* PRIVACY */
