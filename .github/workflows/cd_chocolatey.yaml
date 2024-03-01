@@ -1,10 +1,7 @@
 name: Publish to Chocolatey
 on:
-  workflow_dispatch:
-    inputs:
-      release_name:
-        required: true
-        type: string
+  release:
+    types: [released]
 
 jobs:
   check-release:
@@ -17,7 +14,7 @@ jobs:
       - name: Confirm that this is the release of ipinfo cli
         id: cli-name
         run: |
-          releaseName="${{ inputs.release_name }}"
+          releaseName="${{ github.event.release.name }}"
 
           if [[ $releaseName =~ ^ipinfo-([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
             echo "Release name matches pattern 'ipinfo-x.x.x'"
