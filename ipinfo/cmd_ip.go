@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
+	"net"
+
 	"github.com/fatih/color"
 	"github.com/ipinfo/cli/lib/complete"
 	"github.com/ipinfo/cli/lib/complete/predict"
 	"github.com/ipinfo/go/v2/ipinfo"
 	"github.com/spf13/pflag"
-	"net"
 )
 
 var completionsIP = &complete.Command{
@@ -99,9 +100,10 @@ func cmdIP(ipStr string) error {
 	}
 
 	if len(fField) > 0 {
+		accessibleData, permissionsErr := checkTokenPermissions(data)
 		d := make(ipinfo.BatchCore, 1)
 		d[ipStr] = data
-		return outputFieldBatchCore(d, fField, false, false)
+		return outputFieldBatchCore(d, fField, false, false, WithAccessibleData(accessibleData), WithPermissionsError(permissionsErr))
 	}
 	if fJSON {
 		return outputJSON(data)
