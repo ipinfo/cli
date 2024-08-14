@@ -1,7 +1,6 @@
 package iputil
 
 import (
-	"fmt"
 	"math/big"
 	"net"
 	"strconv"
@@ -36,7 +35,6 @@ func DecimalStrToIP(decimal string, forceIPv6 bool) (net.IP, error) {
 	num, success := num.SetString(decimal, 10)
 
 	if !success {
-		fmt.Print(decimal)
 		return nil, ErrInvalidInput
 	}
 	// Convert to IPv4 if not forcing IPv6 and 'num' is within the IPv4 range
