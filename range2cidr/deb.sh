@@ -33,5 +33,5 @@ echo
 echo 'You can now run `range2cidr`'.
 
 if [ -f "$0" ]; then
-    rm $0
+    rm "$0"
 fi

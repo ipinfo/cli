@@ -34,5 +34,5 @@ echo
 echo 'You can now run `ipinfo`'.
 
 if [ -f "$0" ]; then
-    rm $0
+    rm "$0"
 fi
