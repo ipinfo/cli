@@ -5,8 +5,8 @@
 
 set -e
 
-DIR=`dirname $0`
-ROOT=$DIR/..
+DIR=`dirname "$0"`
+ROOT="$DIR"/..
 
 CLI=$1
 VSN=$2
@@ -28,11 +28,11 @@ if [ ! -d "$CLI" ]; then
 fi
 
 # build
-rm -f $ROOT/build/${CLI}_${VSN}*
-$ROOT/${CLI}/build-all-platforms.sh "$VSN" "$LINUX_ONLY"
+rm -f "$ROOT"/build/${CLI}_${VSN}*
+"$ROOT"/${CLI}/build-all-platforms.sh "$VSN" "$LINUX_ONLY"
 
 # archive
-cd $ROOT/build
+cd "$ROOT"/build
 for t in ${CLI}_${VSN}_* ; do
     if [[ $t == ${CLI}_*_windows_* ]]; then
         zip -q ${t/.exe/.zip} $t

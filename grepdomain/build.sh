@@ -4,7 +4,7 @@
 
 set -e
 
-DIR=`dirname $0`
-ROOT=$DIR/..
+DIR=`dirname "$0"`
+ROOT="$DIR"/..
 
-$ROOT/scripts/build.sh "grepdomain"
+"$ROOT"/scripts/build.sh "grepdomain"

@@ -5,8 +5,8 @@
 
 set -e
 
-DIR=`dirname $0`
-ROOT=$DIR/..
+DIR=`dirname "$0"`
+ROOT="$DIR"/..
 
 CLI=$1
 VSN=$2
@@ -68,8 +68,8 @@ do
 
     echo "building ${output}"
     GOOS=$os GOARCH=$arch go build                                            \
-        -o $ROOT/build/${output}                                              \
-        $ROOT/${CLI}
+        -o "$ROOT"/build/${output}                                              \
+        "$ROOT"/${CLI}
 done
 
 wait

@@ -7,8 +7,8 @@
 
 set -e
 
-DIR=`dirname $0`
-ROOT=$DIR/..
+DIR=`dirname "$0"`
+ROOT="$DIR"/..
 
 CLI=$1
 VSN=$2
@@ -27,14 +27,14 @@ fi
 # build
 # disable CGO to make static binary
 CGO_ENABLED=0 go build                                                        \
-    -o $ROOT/${CLI}/build/$CLI                                                \
-    $ROOT/${CLI}
+    -o "$ROOT"/${CLI}/build/$CLI                                                \
+    "$ROOT"/${CLI}
 
 # docker container
-docker build --tag ipinfo/$CLI:$VSN $ROOT/$CLI/
+docker build --tag ipinfo/$CLI:$VSN "$ROOT"/$CLI/
 
 # cleanup 
-rm -r $ROOT/$CLI/build
+rm -r "$ROOT"/$CLI/build
 
 if [ "$RELEASE" = "-r" ] || [ "$RELEASE" = "--release" ]; then
     # push on docker hub

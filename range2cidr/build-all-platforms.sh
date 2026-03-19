@@ -4,9 +4,9 @@
 
 set -e
 
-DIR=`dirname $0`
-ROOT=$DIR/..
+DIR=`dirname "$0"`
+ROOT="$DIR"/..
 
 VSN=$1
 
-$ROOT/scripts/build-all-platforms.sh "range2cidr" $VSN
+"$ROOT"/scripts/build-all-platforms.sh "range2cidr" $VSN

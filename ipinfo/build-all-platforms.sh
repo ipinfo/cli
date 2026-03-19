@@ -5,10 +5,10 @@
 
 set -e
 
-DIR=`dirname $0`
-ROOT=$DIR/..
+DIR=`dirname "$0"`
+ROOT="$DIR"/..
 
 VSN=$1
 LINUX_ONLY=$2
 
-$ROOT/scripts/build-all-platforms.sh "ipinfo" $VSN $LINUX_ONLY
+"$ROOT"/scripts/build-all-platforms.sh "ipinfo" $VSN $LINUX_ONLY

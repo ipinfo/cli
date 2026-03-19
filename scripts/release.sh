@@ -4,8 +4,8 @@
 
 set -e
 
-DIR=`dirname $0`
-ROOT=$DIR/..
+DIR=`dirname "$0"`
+ROOT="$DIR"/..
 
 CLI=$1
 VSN=$2
@@ -26,15 +26,15 @@ if [ ! -d "$CLI" ]; then
 fi
 
 # build
-$ROOT/scripts/build-archive-all.sh "$CLI" "$VSN"
+"$ROOT"/scripts/build-archive-all.sh "$CLI" "$VSN"
 
 # release
 gh release create ${CLI}-${VSN}                                               \
     -R ipinfo/cli                                                             \
     -t "${CLI}-${VSN}"                                                        \
-    $ROOT/build/${CLI}_${VSN}*.tar.gz                                         \
-    $ROOT/build/${CLI}_${VSN}*.zip                                            \
-    $ROOT/build/${CLI}_${VSN}*.deb                                            \
-    $ROOT/${CLI}/macos.sh                                                     \
-    $ROOT/${CLI}/windows.ps1                                                  \
-    $ROOT/${CLI}/deb.sh
+    "$ROOT"/build/${CLI}_${VSN}*.tar.gz                                         \
+    "$ROOT"/build/${CLI}_${VSN}*.zip                                            \
+    "$ROOT"/build/${CLI}_${VSN}*.deb                                            \
+    "$ROOT"/${CLI}/macos.sh                                                     \
+    "$ROOT"/${CLI}/windows.ps1                                                  \
+    "$ROOT"/${CLI}/deb.sh

@@ -5,15 +5,15 @@
 
 set -e
 
-DIR=`dirname $0`
-ROOT=$DIR/..
+DIR=`dirname "$0"`
+ROOT="$DIR"/..
 
 CLI=$1
 VERSION=$2
 
 found=0
 
-cat $ROOT/${CLI}/CHANGELOG.md | while IFS= read "line"; do
+cat "$ROOT"/${CLI}/CHANGELOG.md | while IFS= read "line"; do
     # Find the version heading
     if [ $found -eq 0 ] && (echo "$line" | grep -q -E "^(#|##) $VERSION$"); then
         found=1
