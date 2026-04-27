@@ -99,6 +99,6 @@ func main() {
 	}
 
 	if err != nil {
-		fmt.Printf("err: %v\n", err)
+		fmt.Fprintf(os.Stderr, "err: %v\n", err)
 	}
 }

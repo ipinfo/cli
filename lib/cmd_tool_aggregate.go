@@ -94,7 +94,7 @@ func CmdToolAggregate(
 				}
 			} else if err != nil {
 				if !f.Quiet {
-					fmt.Printf("Scan error: %v\n", err)
+					fmt.Fprintf(os.Stderr, "Scan error: %v\n", err)
 				}
 				return rows
 			}

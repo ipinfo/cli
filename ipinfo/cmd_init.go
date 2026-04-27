@@ -170,7 +170,7 @@ func cmdInit() error {
 		// Retrieving CLI token from signup URL.
 		parsedUrl, err := url.Parse(body.SignupURL)
 		if err != nil {
-			fmt.Println("Error parsing URL:", err)
+			fmt.Fprintln(os.Stderr, "Error parsing URL:", err)
 			return err
 		}
 		cliToken := parsedUrl.Query().Get("cli_token")

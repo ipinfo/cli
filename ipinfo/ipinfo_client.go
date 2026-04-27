@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"runtime"
 
 	"github.com/ipinfo/go/v2/ipinfo"
@@ -21,7 +22,7 @@ func prepareIpinfoClient(tok string) *ipinfo.Client {
 	if gConfig.CacheEnabled && !fNoCache {
 		boltdbCache, err := NewBoltdbCache()
 		if err != nil {
-			fmt.Printf("warn: cache will not be used: %v", err)
+			fmt.Fprintf(os.Stderr, "warn: cache will not be used: %v\n", err)
 		} else {
 			cache = ipinfo.NewCache(boltdbCache)
 		}

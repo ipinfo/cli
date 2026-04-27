@@ -124,6 +124,6 @@ func main() {
 	handleCompletions()
 
 	if err := cmd(); err != nil {
-		fmt.Printf("err: %v\n", err)
+		fmt.Fprintf(os.Stderr, "err: %v\n", err)
 	}
 }
