@@ -134,64 +134,7 @@ func CmdGrepIP(
 		f.NoFilename = true
 	}
 
-	// figure out exactly what IP versions we'll match; 0=all, 4=ipv4, 6=ipv6.
-	ipv := 0
-	if f.V4 && f.V6 {
-		ipv = 0
-	} else if f.V4 {
-		ipv = 4
-	} else if f.V6 {
-		ipv = 6
-	}
-
-	// prepare regexp
-	var rexp *regexp.Regexp
-	if ipv == 4 {
-		rexp = iputil.IpV4Regex
-		if f.CIDRsOnly && f.RangesOnly {
-			rexp = iputil.V4SubnetRegex
-		} else if f.IncludeCIDRs && f.IncludeRanges {
-			rexp = iputil.V4IpSubnetRegex
-		} else if f.IncludeCIDRs {
-			rexp = iputil.V4IpCidrRegex
-		} else if f.IncludeRanges {
-			rexp = iputil.V4IpRangeRegex
-		} else if f.CIDRsOnly {
-			rexp = iputil.V4CidrRegex
-		} else if f.RangesOnly {
-			rexp = iputil.V4RangeRegex
-		}
-	} else if ipv == 6 {
-		rexp = iputil.IpV6Regex
-		if f.CIDRsOnly && f.RangesOnly {
-			rexp = iputil.V6SubnetRegex
-		} else if f.IncludeCIDRs && f.IncludeRanges {
-			rexp = iputil.V6IpSubnetRegex
-		} else if f.IncludeCIDRs {
-			rexp = iputil.V6IpCidrRegex
-		} else if f.IncludeRanges {
-			rexp = iputil.V6IpRangeRegex
-		} else if f.CIDRsOnly {
-			rexp = iputil.V6CidrRegex
-		} else if f.RangesOnly {
-			rexp = iputil.V6RangeRegex
-		}
-	} else {
-		rexp = iputil.IpRegex
-		if f.CIDRsOnly && f.RangesOnly {
-			rexp = iputil.SubnetRegex
-		} else if f.IncludeCIDRs && f.IncludeRanges {
-			rexp = iputil.IpSubnetRegex
-		} else if f.IncludeCIDRs {
-			rexp = iputil.IpCidrRegex
-		} else if f.IncludeRanges {
-			rexp = iputil.IpRangeRegex
-		} else if f.CIDRsOnly {
-			rexp = iputil.CidrRegex
-		} else if f.RangesOnly {
-			rexp = iputil.RangeRegex
-		}
-	}
+	rexp := regexForFlags(f)
 
 	fmtSrc := color.New(color.FgMagenta)
 	fmtMatch := color.New(color.Bold, color.FgRed)
@@ -227,29 +170,9 @@ func CmdGrepIP(
 			} else {
 				matches = make([][]int, 0, len(allMatches))
 				for _, m := range allMatches {
-					mIPStr := d[m[0]:m[1]]
-					mIP := net.ParseIP(mIPStr)
-					if mIP == nil {
-						goto next_match
+					if !isBogonMatch(d[m[0]:m[1]]) {
+						matches = append(matches, m)
 					}
-					if strings.Contains(mIPStr, ":") {
-						ip, _ := iputil.IP6FromStdIP(mIP.To16())
-						for _, r := range iputil.BogonIP6List {
-							if ip.Gte(r.Start) && ip.Lte(r.End) {
-								goto next_match
-							}
-						}
-					} else {
-						ip := iputil.IPFromStdIP(mIP)
-						for _, r := range iputil.BogonIP4List {
-							if ip >= r.Start && ip <= r.End {
-								goto next_match
-							}
-						}
-					}
-
-					matches = append(matches, m)
-				next_match:
 				}
 			}
 
@@ -338,4 +261,131 @@ func CmdGrepIP(
 	}
 
 	return nil
+}
+
+// isBogonMatch reports whether a regex match (a single IP, a CIDR, or a
+// start-end range) falls inside a bogon range. Used by the --exclude-reserved
+// (-x) filter. Unparseable inputs are treated as bogon so they get dropped.
+func isBogonMatch(s string) bool {
+	// CIDR: check the network address.
+	if strings.Contains(s, "/") {
+		ip, _, err := net.ParseCIDR(s)
+		if err != nil {
+			return true
+		}
+		return isBogonIP(ip)
+	}
+
+	// Range: separator is `-` or `,` (see iputil regex). IPv6 addresses
+	// contain `:` but never `-` or `,`, so this split is unambiguous.
+	if i := strings.IndexAny(s, "-,"); i != -1 {
+		ip := net.ParseIP(s[:i])
+		if ip == nil {
+			return true
+		}
+		return isBogonIP(ip)
+	}
+
+	// Single IP.
+	ip := net.ParseIP(s)
+	if ip == nil {
+		return true
+	}
+	return isBogonIP(ip)
+}
+
+func isBogonIP(stdIP net.IP) bool {
+	if stdIP.To4() == nil {
+		ip, _ := iputil.IP6FromStdIP(stdIP.To16())
+		for _, r := range iputil.BogonIP6List {
+			if ip.Gte(r.Start) && ip.Lte(r.End) {
+				return true
+			}
+		}
+		return false
+	}
+	ip := iputil.IPFromStdIP(stdIP)
+	for _, r := range iputil.BogonIP4List {
+		if ip >= r.Start && ip <= r.End {
+			return true
+		}
+	}
+	return false
+}
+
+// regexForFlags returns the regexp that grepip should match against, based on
+// the v4/v6 selection and the include-/only-cidrs/ranges combination in f.
+func regexForFlags(f CmdGrepIPFlags) *regexp.Regexp {
+	ipv := 0
+	if f.V4 && f.V6 {
+		ipv = 0
+	} else if f.V4 {
+		ipv = 4
+	} else if f.V6 {
+		ipv = 6
+	}
+
+	if ipv == 4 {
+		if f.CIDRsOnly && f.RangesOnly {
+			return iputil.V4SubnetRegex
+		} else if f.IncludeCIDRs && f.IncludeRanges {
+			return iputil.V4IpSubnetRegex
+		} else if f.IncludeCIDRs {
+			return iputil.V4IpCidrRegex
+		} else if f.IncludeRanges {
+			return iputil.V4IpRangeRegex
+		} else if f.CIDRsOnly {
+			return iputil.V4CidrRegex
+		} else if f.RangesOnly {
+			return iputil.V4RangeRegex
+		}
+		return iputil.IpV4Regex
+	} else if ipv == 6 {
+		if f.CIDRsOnly && f.RangesOnly {
+			return iputil.V6SubnetRegex
+		} else if f.IncludeCIDRs && f.IncludeRanges {
+			return iputil.V6IpSubnetRegex
+		} else if f.IncludeCIDRs {
+			return iputil.V6IpCidrRegex
+		} else if f.IncludeRanges {
+			return iputil.V6IpRangeRegex
+		} else if f.CIDRsOnly {
+			return iputil.V6CidrRegex
+		} else if f.RangesOnly {
+			return iputil.V6RangeRegex
+		}
+		return iputil.IpV6Regex
+	} else {
+		if f.CIDRsOnly && f.RangesOnly {
+			return iputil.SubnetRegex
+		} else if f.IncludeCIDRs && f.IncludeRanges {
+			return iputil.IpSubnetRegex
+		} else if f.IncludeCIDRs {
+			return iputil.IpCidrRegex
+		} else if f.IncludeRanges {
+			return iputil.IpRangeRegex
+		} else if f.CIDRsOnly {
+			return iputil.CidrRegex
+		} else if f.RangesOnly {
+			return iputil.RangeRegex
+		}
+		return iputil.IpRegex
+	}
+}
+
+// GrepIPMatches returns the substrings of line that grepip would print as
+// matches under flags f. Pure function; intended for testing the matching
+// pipeline (regex selection + bogon filtering) without going through stdin.
+func GrepIPMatches(line string, f CmdGrepIPFlags) []string {
+	rexp := regexForFlags(f)
+	idxs := rexp.FindAllStringIndex(line, -1)
+	out := make([]string, 0, len(idxs))
+	for _, m := range idxs {
+		s := line[m[0]:m[1]]
+		if f.ExclRes && isBogonMatch(s) {
+			continue
+		}
+		out = append(out, s)
+	}
+	return out
 }
