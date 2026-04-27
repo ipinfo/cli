@@ -185,8 +185,7 @@ func cmdDefault() (err error) {
 
 	args := pflag.Args()
 	if len(args) != 0 && args[0] != "-" {
-		fmt.Printf("err: \"%s\" is not a command.\n", os.Args[1])
-		fmt.Println()
+		fmt.Fprintf(os.Stderr, "err: \"%s\" is not a command.\n\n", os.Args[1])
 		printHelpDefault()
 		return nil
 	}

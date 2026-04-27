@@ -1,9 +1,16 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
+
+func warnIfInitConfigFails() {
+	if err := InitConfig(); err != nil {
+		fmt.Fprintln(os.Stderr, "warn: error in creating config file.")
+	}
+}
 
 func init() {
-	if err := InitConfig(); err != nil {
-		fmt.Println("warn: error in creating config file.")
-	}
+	warnIfInitConfigFails()
 }

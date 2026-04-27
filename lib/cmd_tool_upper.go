@@ -3,6 +3,7 @@ package lib
 import (
 	"fmt"
 	"net"
+	"os"
 
 	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/spf13/pflag"
@@ -52,7 +53,7 @@ func CmdToolUpper(
 	}
 	err := iputil.GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(os.Stderr, err)
 	}
 
 	return nil

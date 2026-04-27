@@ -59,7 +59,7 @@ func cmdCache() error {
 			return fmt.Errorf("error clearing cache: %w", err)
 		}
 	default:
-		fmt.Printf("err: %s is not a valid subcommand\n\n", args[0])
+		fmt.Fprintf(os.Stderr, "err: %s is not a valid subcommand\n\n", args[0])
 		printHelpCache()
 		return nil
 	}

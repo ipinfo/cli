@@ -2,6 +2,7 @@ package lib
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/ipinfo/cli/lib/iputil"
 	"github.com/spf13/pflag"
@@ -45,7 +46,7 @@ func CmdToolNext(
 	}
 	err := iputil.GetInputFrom(args, true, true, actionFunc)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Fprintln(os.Stderr, err)
 	}
 
 	return nil
