@@ -1,3 +1,5 @@
+$ErrorActionPreference = "Stop"
+
 $VSN = "1.0.0"
 
 # build the filename for the Zip archive and exe file

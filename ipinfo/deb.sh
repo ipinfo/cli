@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 VSN=3.3.1
 DEFAULT_ARCH=amd64
 
