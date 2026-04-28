@@ -35,7 +35,12 @@ $ROOT/${CLI}/build-all-platforms.sh "$VSN" "$LINUX_ONLY"
 cd $ROOT/build
 for t in ${CLI}_${VSN}_* ; do
     if [[ $t == ${CLI}_*_windows_* ]]; then
-        zip -q ${t/.exe/.zip} $t
+        # winget (and users who unzip manually) expect the binary to be named
+        # <cli>.exe so the `<cli>` command works after install. Without this
+        # rename the extracted file is e.g. ipinfo_3.3.1_windows_amd64.exe.
+        cp $t ${CLI}.exe
+        zip -q ${t/.exe/.zip} ${CLI}.exe
+        rm ${CLI}.exe
     else
         tar -czf ${t}.tar.gz $t
     fi
