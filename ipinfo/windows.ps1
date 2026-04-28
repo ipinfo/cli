@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-$VSN = "3.3.1"
+$VSN = "3.3.2"
 
 # build the filename for the Zip archive and exe file
 $FileName = "ipinfo_$($VSN)_windows_amd64"
@@ -17,7 +17,7 @@ if (Test-Path "$env:LOCALAPPDATA\ipinfo\ipinfo.exe") {
 }
 Rename-Item -Path "$env:LOCALAPPDATA\ipinfo\$FileName.exe" -NewName "ipinfo.exe"
 
-# setting up env. 
+# setting up env.
 $PathContent = [Environment]::GetEnvironmentVariable('path', 'Machine')
 $IPinfoPath = "$env:LOCALAPPDATA\ipinfo"
 

@@ -1,3 +1,9 @@
+# 3.3.2
+
+- Errors now go to stderr instead of stdout.
+- Windows release zip now contains `splitcidr.exe` instead of the versioned filename.
+- Install scripts (`deb.sh`, `windows.ps1`) now fail loudly when installation does not succeed.
+
 # 1.0.0
 
-* Initial release of splitcidr which splits larger CIDRs into smaller CIDRs.
+- Initial release of splitcidr which splits larger CIDRs into smaller CIDRs.
