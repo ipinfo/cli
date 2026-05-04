@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -116,7 +115,7 @@ func ReadTokenFile() (string, error) {
 		return "", err
 	}
 
-	token, err := ioutil.ReadFile(path)
+	token, err := os.ReadFile(path)
 	if err != nil {
 		return "", err
 	}
@@ -136,7 +135,7 @@ func SaveConfig(config Config) error {
 		return err
 	}
 
-	if err := ioutil.WriteFile(configPath, jsonData, 0644); err != nil {
+	if err := os.WriteFile(configPath, jsonData, 0644); err != nil {
 		return err
 	}
 
@@ -150,7 +149,7 @@ func ReadConfig() (Config, error) {
 		return Config{}, err
 	}
 
-	data, err := ioutil.ReadFile(configPath)
+	data, err := os.ReadFile(configPath)
 	if err != nil {
 		return Config{}, err
 	}
