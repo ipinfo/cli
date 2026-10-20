@@ -2,7 +2,7 @@
 
 set -e
 
-VSN=1.0.0
+VSN=3.3.3
 PLAT=darwin_amd64
 
 curl -LO https://github.com/ipinfo/cli/releases/download/range2ip-${VSN}/range2ip_${VSN}_${PLAT}.tar.gz

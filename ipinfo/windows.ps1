@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-$VSN = "3.3.2"
+$VSN = "3.3.3"
 
 # build the filename for the Zip archive and exe file
 $FileName = "ipinfo_$($VSN)_windows_amd64"

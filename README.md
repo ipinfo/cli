@@ -24,7 +24,7 @@ brew install ipinfo-cli
 OR to install the latest `amd64` version without automatic updates:
 
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.2/macos.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.3/macos.sh | sh
 ```
 
 ### Ubuntu PPA
@@ -43,14 +43,14 @@ _Note_: this is a one-time installation; updates are not automatic. Use the PPA
 for automatic updates.
 
 ```bash
-curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.2/deb.sh | sh
+curl -Ls https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.3/deb.sh | sh
 ```
 
 OR
 
 ```bash
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.2/ipinfo_3.3.2_linux_{arch}.deb
-sudo dpkg -i ipinfo_3.3.2_linux_{arch}.deb
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.3/ipinfo_3.3.3_linux_{arch}.deb
+sudo dpkg -i ipinfo_3.3.3_linux_{arch}.deb
 ```
 
 where `{arch}` can be 386, amd64, arm, or arm64.
@@ -73,7 +73,7 @@ makepkg -si
 _Note_: run powershell as administrator before executing this command.
 
 ```bash
-iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.2/windows.ps1 | iex
+iwr -useb https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.3/windows.ps1 | iex
 ```
 
 ### Scoop
@@ -85,7 +85,7 @@ scoop install ipinfo-cli
 ### Docker
 
 ```bash
-docker run --rm -it ipinfo/ipinfo:3.3.2
+docker run --rm -it ipinfo/ipinfo:3.3.3
 ```
 
 To save the CLI's config, add `-v "/path_to_config:/root/.config/ipinfo"`. For
@@ -93,7 +93,7 @@ example, the following command saves the config to the `ipinfo` directory in
 the current working directory.
 
 ```bash
-docker run --rm -it -v "$PWD/ipinfo:/root/.config/ipinfo" ipinfo/ipinfo:3.3.2
+docker run --rm -it -v "$PWD/ipinfo:/root/.config/ipinfo" ipinfo/ipinfo:3.3.3
 ```
 
 ### Using `go install`
@@ -137,7 +137,6 @@ openbsd_arm64
 solaris_amd64
 windows_386
 windows_amd64
-windows_arm
 windows_arm64
 ```
 
@@ -145,12 +144,12 @@ After choosing a platform `PLAT` from above, run:
 
 ```bash
 # for Windows, use ".zip" instead of ".tar.gz"
-curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.2/ipinfo_3.3.2_${PLAT}.tar.gz
+curl -LO https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.3/ipinfo_3.3.3_${PLAT}.tar.gz
 # OR
-wget https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.2/ipinfo_3.3.2_${PLAT}.tar.gz
+wget https://github.com/ipinfo/cli/releases/download/ipinfo-3.3.3/ipinfo_3.3.3_${PLAT}.tar.gz
 
-tar -xvf ipinfo_3.3.2_${PLAT}.tar.gz
-sudo mv ipinfo_3.3.2_${PLAT} /usr/local/bin/ipinfo
+tar -xvf ipinfo_3.3.3_${PLAT}.tar.gz
+sudo mv ipinfo_3.3.3_${PLAT} /usr/local/bin/ipinfo
 ```
 
 ### Using `git`
@@ -197,16 +196,16 @@ Currently these subcommands are separately shipped:
 
 | CLI        | Version                                                               |
 | ---------- | --------------------------------------------------------------------- |
-| grepip     | [1.2.3](https://github.com/ipinfo/cli/releases/tag/grepip-1.2.3)      |
-| grepdomain | [1.0.0](https://github.com/ipinfo/cli/releases/tag/grepdomain-1.0.0)  |
-| matchip    | [1.0.0](https://github.com/ipinfo/cli/releases/tag/matchip-1.0.0)     |
-| prips      | [1.0.0](https://github.com/ipinfo/cli/releases/tag/prips-1.0.0)       |
-| cidr2range | [1.2.0](https://github.com/ipinfo/cli/releases/tag/cidr2range-1.2.0)  |
-| cidr2ip    | [1.0.0](https://github.com/ipinfo/cli/releases/tag/cidr2ip-1.0.0)     |
-| range2cidr | [1.3.0](https://github.com/ipinfo/cli/releases/tag/range2cidr-1.3.0)  |
-| range2ip   | [1.0.0](https://github.com/ipinfo/cli/releases/tag/range2ip-1.0.0)    |
-| randip     | [1.1.0](https://github.com/ipinfo/cli/releases/tag/randip-1.1.0)      |
-| splitcidr  | [1.0.0](https://github.com/ipinfo/cli/releases/tag/splitcidr-1.0.0)   |
+| grepip     | [3.3.3](https://github.com/ipinfo/cli/releases/tag/grepip-3.3.3)      |
+| grepdomain | [3.3.3](https://github.com/ipinfo/cli/releases/tag/grepdomain-3.3.3)  |
+| matchip    | [3.3.3](https://github.com/ipinfo/cli/releases/tag/matchip-3.3.3)     |
+| prips      | [3.3.3](https://github.com/ipinfo/cli/releases/tag/prips-3.3.3)       |
+| cidr2range | [3.3.3](https://github.com/ipinfo/cli/releases/tag/cidr2range-3.3.3)  |
+| cidr2ip    | [3.3.3](https://github.com/ipinfo/cli/releases/tag/cidr2ip-3.3.3)     |
+| range2cidr | [3.3.3](https://github.com/ipinfo/cli/releases/tag/range2cidr-3.3.3)  |
+| range2ip   | [3.3.3](https://github.com/ipinfo/cli/releases/tag/range2ip-3.3.3)    |
+| randip     | [3.3.3](https://github.com/ipinfo/cli/releases/tag/randip-3.3.3)      |
+| splitcidr  | [3.3.3](https://github.com/ipinfo/cli/releases/tag/splitcidr-3.3.3)   |
 | mmdb       | [1.4.2](https://github.com/ipinfo/mmdbctl/releases/tag/mmdbctl-1.4.2) |
 
 ## Quick Start

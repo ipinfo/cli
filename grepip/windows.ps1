@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-$VSN = "1.2.3"
+$VSN = "3.3.3"
 
 # build the filename for the Zip archive and exe file
 $FileName = "grepip_$($VSN)_windows_amd64"

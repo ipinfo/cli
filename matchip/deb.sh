@@ -2,7 +2,7 @@
 
 set -e
 
-VSN=1.0.0
+VSN=3.3.3
 DEFAULT_ARCH=amd64
 
 ARCH=$(uname -m)

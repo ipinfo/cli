@@ -1,3 +1,9 @@
+# 3.3.3
+
+- Built with Go 1.27.3, which includes the fix for CVE-2026-111943 (`crypto/x509`).
+- Dropped the 32-bit Windows ARM (`windows_arm`) build, which Go no longer supports.
+- The standalone CLIs (`grepip`, `grepdomain`, `matchip`, `prips`, `cidr2range`, `cidr2ip`, `range2cidr`, `range2ip`, `splitcidr`, `randip`) now share `ipinfo`'s version and are released together with it.
+
 # 3.3.2
 
 - Errors and warnings now go to stderr instead of stdout, so they no longer pollute pipelines.

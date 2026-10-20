@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-$VSN = "1.1.0"
+$VSN = "3.3.3"
 
 # build the filename for the Zip archive and exe file
 $FileName = "randip_$($VSN)_windows_amd64"
