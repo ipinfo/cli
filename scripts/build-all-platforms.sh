@@ -50,7 +50,6 @@ for t in                                                                      \
     solaris_amd64                                                             \
     windows_386                                                               \
     windows_amd64                                                             \
-    windows_arm                                                               \
     windows_arm64 ;
 do
     os="${t%_*}"
