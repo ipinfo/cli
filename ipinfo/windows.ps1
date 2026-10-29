@@ -2,20 +2,14 @@ $ErrorActionPreference = "Stop"
 
 $VSN = "3.3.3"
 
-# build the filename for the Zip archive and exe file
+# build the filename for the Zip archive
 $FileName = "ipinfo_$($VSN)_windows_amd64"
 $ZipFileName = "$($FileName).zip"
 
-# download and extract zip
+# download and extract zip; -Force overwrites any previously installed exe
 Invoke-WebRequest -Uri "https://github.com/ipinfo/cli/releases/download/ipinfo-$VSN/$FileName.zip" -OutFile ./$ZipFileName
 Unblock-File ./$ZipFileName
 Expand-Archive -Path ./$ZipFileName  -DestinationPath $env:LOCALAPPDATA\ipinfo -Force
-
-# delete if already exists
-if (Test-Path "$env:LOCALAPPDATA\ipinfo\ipinfo.exe") {
-  Remove-Item "$env:LOCALAPPDATA\ipinfo\ipinfo.exe"
-}
-Rename-Item -Path "$env:LOCALAPPDATA\ipinfo\$FileName.exe" -NewName "ipinfo.exe"
 
 # setting up env.
 $PathContent = [Environment]::GetEnvironmentVariable('path', 'Machine')
