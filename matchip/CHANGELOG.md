@@ -1,3 +1,7 @@
+# 3.3.4
+
+- Fixed the PowerShell install script (`windows.ps1`) failing after extracting the binary.
+
 # 3.3.3
 
 - Built with Go 1.27.3, which includes the fix for CVE-2026-111943 (`crypto/x509`).

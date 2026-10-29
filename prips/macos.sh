@@ -2,7 +2,7 @@
 
 set -e
 
-VSN=3.3.3
+VSN=3.3.4
 PLAT=darwin_amd64
 
 curl -LO https://github.com/ipinfo/cli/releases/download/prips-${VSN}/prips_${VSN}_${PLAT}.tar.gz

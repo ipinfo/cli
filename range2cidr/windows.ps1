@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-$VSN = "3.3.3"
+$VSN = "3.3.4"
 
 # build the filename for the Zip archive
 $FileName = "range2cidr_$($VSN)_windows_amd64"
