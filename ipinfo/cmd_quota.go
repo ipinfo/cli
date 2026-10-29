@@ -100,7 +100,14 @@ func cmdQuota() error {
 }
 
 func getUsageBar(percentage int) string {
-	usageBar := "[" + strings.Repeat("#", percentage) + strings.Repeat(" ", 100-percentage) + "]"
+	// Usage can go past the limit, so cap the bar but show the real percentage.
+	filled := percentage
+	if filled > 100 {
+		filled = 100
+	} else if filled < 0 {
+		filled = 0
+	}
+	usageBar := "[" + strings.Repeat("#", filled) + strings.Repeat(" ", 100-filled) + "]"
 	return fmt.Sprintf("%s %d%%\n", usageBar, percentage)
 }
 
